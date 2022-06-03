@@ -1,38 +1,55 @@
-import { motion, useMotionValue } from "framer-motion";
-import { useState } from "react";
-import { useWindowDimensions } from "../utils/hook";
+//import { motion, useMotionValue } from "framer-motion";
+import { forwardRef, useState, useRef } from "react";
 
-export function Ball() {
+import { animated, useSpring } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
+
+export const Ball = forwardRef(({ containerDimensions }, containerRef) => {
   const [tap, setTap] = useState(false);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const { width, height } = useWindowDimensions();
+  const ballRef = useRef(null);
+  const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0 }));
 
-  console.log(width, height);
+  const bind = useDrag(
+    ({ down, movement: [x, y], last, initial, offset }) => {
+      setTap(down);
+      let newX = 0;
+      let newY = 0;
+      if (containerRef) {
+        // Dimensiones y punto medio del Contenedor Padre
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const containerMiddleX = containerRect.width / 2;
+        const containerMiddleY = containerRect.height / 2;
 
-  const handleDrag = (newX, newY) => {
-    x.set(newX);
-    y.set(newY);
-  };
+        const ballDimensions = ballRef.current.getBoundingClientRect();
+
+        newX =
+          x < containerMiddleX ? 0 : containerRect.width - ballDimensions.width;
+        newY =
+          y < containerMiddleY
+            ? 0
+            : containerRect.height - ballDimensions.width;
+      }
+      console.log(offset);
+      console.log({ x, y });
+      console.log({ newX, newY });
+
+      return api.start(() => ({
+        x: down ? x : newX,
+        y: down ? y : newY,
+        immediate: down,
+      }));
+    },
+    { bounds: containerRef }
+  );
 
   return (
-    <motion.div
+    <animated.div
+      ref={ballRef}
       className="absolute"
-      whileHover={{ scale: 1.1 }}
-      onDragStart={() => setTap(true)}
-      onDragEnd={() => setTap(false)}
-      whileDrag={{ scale: 1 }}
-      drag
-      dragElastic={0}
-      dragConstraints={{
-        left: 0,
-        top: 0,
-        right: width - 32 - 96,
-        bottom: height - 32 - 96,
-      }}
-      dragSnapToOrigin={false}
+      {...bind()}
+      style={{ x, y, touchAction: "none" }}
     >
-      <div className="w-20 h-20 rounded-full shadow-xl bg-slate-600 hover:cursor-pointer flex justify-center items-center text-4xl">
+      <div className="w-20 h-20 rounded-full shadow-xl bg-slate-600 flex justify-center items-center text-4xl">
         <span
           className="inline-flex select-none"
           role="img"
@@ -41,6 +58,6 @@ export function Ball() {
           {tap ? "😲" : "😁"}
         </span>
       </div>
-    </motion.div>
+    </animated.div>
   );
-}
+});
