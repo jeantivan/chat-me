@@ -1,12 +1,16 @@
 import { Header, Ball } from "./components";
+import { useRef } from "react";
 
 function App() {
+  const containerRef = useRef(null);
+
   return (
     <>
       <Header />
-      <main className="main flex relative p-4">
-        <Ball />
-        <div className="w-full border-r-2 border-t-2 border-red-600" />
+      <main className="main flex p-4">
+        <div ref={containerRef} className="w-full h-full relative">
+          <Ball ref={containerRef} />
+        </div>
       </main>
     </>
   );
