@@ -3,7 +3,7 @@ import { GithubIcon } from "./GithubIcon";
 
 export function Header() {
   return (
-    <header className="dark:bg-slate-700">
+    <header className="header dark:bg-slate-700">
       <Container>
         <div className="flex justify-between items-center py-2">
           <h1 className="dark:text-white text-3xl font-bold">ChatMe</h1>
