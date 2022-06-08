@@ -1,6 +1,6 @@
 export function SunIcon() {
   return (
-    <span role="img" className="w-full h-full" aria-label="Light Mode Icon">
+    <span role="img" className="w-6 h-6" aria-label="Light Mode Icon">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="fill-current block"
