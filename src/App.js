@@ -12,7 +12,7 @@ function App() {
   return (
     <div className={`${mode} app-container`}>
       <Header />
-      <main className="main flex p-4 justify-center">
+      <main className="main dark:bg-slate-900 flex p-4 justify-center">
         {/* <ChatWindow />
         <div ref={containerRef} className="w-full h-full relative">
           <Ball ref={containerRef} />
