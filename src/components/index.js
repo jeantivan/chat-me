@@ -3,3 +3,8 @@ export { Container } from "./Container";
 export { Ball } from "./Ball";
 export { ChatWindow } from "./ChatWindow";
 export { DarkModeProvider, useDarkMode, DarkModeContext } from "./DarkMode";
+export { ChatList } from "./ChatList";
+export { ContactInfo } from "./ContactInfo";
+export { InputContainer } from "./InputContainer";
+export { Messages } from "./Messages";
+export { UserProfile } from "./UserProfile";
