@@ -1,17 +1,22 @@
-import { Header, Ball, ChatWindow } from "./components";
-import { useRef } from "react";
+import {
+  Header,
+  //Ball,
+  //ChatWindow,
+  useDarkMode,
+} from "./components";
 
 function App() {
-  const containerRef = useRef(null);
+  //const containerRef = useRef(null);
+  const { mode } = useDarkMode();
 
   return (
-    <div class="dark app-container">
+    <div className={`${mode} app-container`}>
       <Header />
       <main className="main flex p-4 justify-center">
-        <ChatWindow />
+        {/* <ChatWindow />
         <div ref={containerRef} className="w-full h-full relative">
           <Ball ref={containerRef} />
-        </div>
+        </div> */}
       </main>
     </div>
   );
