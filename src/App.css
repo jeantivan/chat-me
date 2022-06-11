@@ -1,0 +1,31 @@
+.chat-container {
+  display: grid;
+  grid-template-columns: 25% 1fr 1fr;
+  grid-template-rows: min-content 1fr min-content;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "user-profile contact-info contact-info"
+    "chats-list messages messages"
+    "chats-list input-container input-container";
+}
+
+.user-profile {
+  grid-area: user-profile;
+}
+
+.contact-info {
+  grid-area: contact-info;
+}
+
+.chats-list {
+  grid-area: chats-list;
+}
+
+.messages {
+  grid-area: messages;
+}
+
+.input-container {
+  grid-area: input-container;
+}
