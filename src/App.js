@@ -3,7 +3,13 @@ import {
   //Ball,
   //ChatWindow,
   useDarkMode,
+  ChatList,
+  ContactInfo,
+  InputContainer,
+  Messages,
+  UserProfile,
 } from "./components";
+import "./App.css";
 
 function App() {
   //const containerRef = useRef(null);
@@ -12,11 +18,12 @@ function App() {
   return (
     <div className={`${mode} app-container`}>
       <Header />
-      <main className="main dark:bg-slate-900 flex p-4 justify-center">
-        {/* <ChatWindow />
-        <div ref={containerRef} className="w-full h-full relative">
-          <Ball ref={containerRef} />
-        </div> */}
+      <main className="main chat-container dark:bg-slate-900">
+        <ContactInfo />
+        <UserProfile />
+        <ChatList />
+        <Messages />
+        <InputContainer />
       </main>
     </div>
   );
