@@ -1,32 +1,31 @@
 import { Container } from "./Container";
-import { GithubIcon } from "./GithubIcon";
-import { MoonIcon } from "./MoonIcon";
-import { SunIcon } from "./SunIcon";
-import { useState } from "react";
+import { useDarkMode } from "./DarkMode";
+import { BsGithub, BsMoonFill, BsFillSunFill } from "react-icons/bs";
 
 export function Header() {
-  const [darkMode, setDarkMode] = useState(false);
-  const toggleMode = () => {
-    setDarkMode(!darkMode);
-  };
+  const { mode, toggleDarkMode } = useDarkMode();
 
   return (
-    <header className="header dark:bg-slate-700">
+    <header className="header bg-slate-50 dark:bg-slate-700">
       <Container>
         <div className="flex justify-between items-center py-2">
           <h1 className="dark:text-white text-3xl font-bold">ChatMe</h1>
           <div className="flex">
             <button
-              onClick={() => toggleMode()}
-              className="relative p-2 w-10 h-10 rounded-full mr-2 inline-flex items-center justify-center dark:text-white hover:text-emerald-300 hover:bg-slate-600"
+              onClick={() => toggleDarkMode()}
+              className="relative p-2 w-10 h-10 rounded-full mr-2 inline-flex items-center justify-center dark:text-white  hover:bg-slate-200 dark:hover:bg-slate-600"
             >
-              {!darkMode ? <MoonIcon /> : <SunIcon />}
+              {mode === "light" ? (
+                <BsMoonFill className="w-full h-full" />
+              ) : (
+                <BsFillSunFill className="w-full h-full" />
+              )}
             </button>
             <a
               href="https://github.com/jeantivan"
-              className="no-underline p-2 w-10 h-10 -mr-2 ml-2 rounded-full dark:text-white hover:text-emerald-300 hover:bg-slate-600"
+              className="no-underline p-2 w-10 h-10 -mr-2 ml-2 rounded-full dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600"
             >
-              <GithubIcon />
+              <BsGithub className="w-full h-full" />
             </a>
           </div>
         </div>
