@@ -16,12 +16,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply dark:bg-gray-400/50;
-}
-
-html {
-  scrollbar-color: #6969dd transparent;
-  scrollbar-width: thin;
+  @apply bg-gray-400/50;
 }
 
 .app-container {
