@@ -1,6 +1,6 @@
 .chat-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 30% 1fr 1fr;
   grid-template-rows: minmax(56px, max-content) 1fr minmax(56px, max-content);
   gap: 0px 0px;
   grid-auto-flow: row;
