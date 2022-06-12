@@ -6,6 +6,24 @@ body {
   @apply dark:bg-slate-800;
 }
 
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply dark:bg-gray-400/50;
+}
+
+html {
+  scrollbar-color: #6969dd transparent;
+  scrollbar-width: thin;
+}
+
 .app-container {
   max-height: 100vh;
   height: 100vh;
