@@ -1,3 +1,3 @@
 export function Messages({ messages }) {
-  return <div class="messages"></div>;
+  return <div className="messages"></div>;
 }
