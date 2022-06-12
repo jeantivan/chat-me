@@ -18,7 +18,7 @@ function App() {
   return (
     <div className={`${mode} app-container`}>
       <Header />
-      <main className="main chat-container dark:bg-slate-900">
+      <main className="main chat-container dark:bg-slate-900 overflow-hidden">
         <ContactInfo />
         <UserProfile />
         <ChatList />
