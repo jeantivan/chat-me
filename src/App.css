@@ -23,6 +23,7 @@
 }
 
 .messages {
+  max-height: max-content;
   grid-area: messages;
 }
 

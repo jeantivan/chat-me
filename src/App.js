@@ -10,6 +10,7 @@ import {
   UserProfile,
 } from "./components";
 import "./App.css";
+import MESSAGES from "./utils/messages.json";
 
 function App() {
   //const containerRef = useRef(null);
@@ -22,7 +23,7 @@ function App() {
         <ContactInfo />
         <UserProfile />
         <ChatList />
-        <Messages />
+        <Messages messages={MESSAGES} />
         <InputContainer />
       </main>
     </div>
