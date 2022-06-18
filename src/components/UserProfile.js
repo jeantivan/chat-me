@@ -1,9 +1,6 @@
-import {
-  BsPlusCircle,
-  BsThreeDotsVertical,
-  BsChatLeftTextFill,
-} from "react-icons/bs";
+import { BsPlusCircle, BsChatLeftTextFill } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
+import { UserMenu } from "./UserMenu";
 
 export function UserProfile({ user }) {
   return (
@@ -21,8 +18,8 @@ export function UserProfile({ user }) {
         <div className="h-8 w-8 ml-2 rounded-full dark:text-gray-400 text-gray-500 hover:bg-slate-200 dark:hover:bg-slate-600 p-2">
           <BsChatLeftTextFill className="h-full w-full" />
         </div>
-        <div className="h-8 w-8 ml-2 rounded-full dark:text-gray-400 text-gray-500 hover:bg-slate-200 dark:hover:bg-slate-600 p-2">
-          <BsThreeDotsVertical className="h-full w-full" />
+        <div className="ml-2">
+          <UserMenu />
         </div>
       </div>
     </div>
