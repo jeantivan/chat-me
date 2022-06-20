@@ -1,11 +1,7 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
-import {
-  BsThreeDotsVertical,
-  BsGearFill,
-  BsBoxArrowInRight,
-} from "react-icons/bs";
+import { BsThreeDotsVertical, BsGearFill } from "react-icons/bs";
 import { BiExit } from "react-icons/bi";
 import { IoPeople } from "react-icons/io5";
 import { SwitchDarkMode } from "./SwitchDarkMode";
