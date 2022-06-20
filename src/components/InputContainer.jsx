@@ -19,6 +19,7 @@ export function InputContainer({ setMessages }) {
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
+    if (!message && e.target.value === " ") return;
     setMessage(e.target.value);
   };
 
