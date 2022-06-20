@@ -5,6 +5,8 @@ export function Message({ message, type, time, isFirstMessage }) {
       : "dark:bg-slate-700 bg-white";
   const alignSelf = type === "send" ? "self-end" : "self-start";
 
+  const corner = type === "send" ? "rounded-tl" : "rounded-tr";
+
   return (
     <div
       className={`${alignSelf} ${
@@ -12,24 +14,20 @@ export function Message({ message, type, time, isFirstMessage }) {
       }  relative max-w-7/10 drop-shadow`}
     >
       <div
-        className={`${bgColor} p-2 flex flex-wrap rounded relative shadow`}
-        style={
-          type === "send"
-            ? {
-                borderTopRightRadius: 0,
-              }
-            : {
-                borderTopLeftRadius: 0,
-              }
-        }
+        className={`${bgColor} ${
+          isFirstMessage ? "rounded-b" : "rounded"
+        } ${corner} p-2 flex flex-wrap  relative drop-shadow`}
       >
-        <p className="text-base dark:text-white leading-tight">{message}</p>
+        <p className="text-base dark:text-white leading-tight text-clip">
+          {message}
+        </p>
         <span className="text-xs dark:text-gray-400 text-neutral-500 ml-auto self-end pt-1 pl-1">
           {time}
         </span>
       </div>
       {isFirstMessage && (
         <span
+          aria-hidden={true}
           className={`${bgColor} ${
             type === "send" ? "left-full" : "left-0"
           } w-3 h-3 absolute top-0`}
