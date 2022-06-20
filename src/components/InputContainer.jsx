@@ -25,7 +25,12 @@ export function InputContainer({ setMessages }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     setMessages((prevMessages) => [
-      { id: generateRandomId(), message, type: "send", time: getMessageHour() },
+      {
+        id: generateRandomId(),
+        message: message.trim(),
+        type: "send",
+        time: getMessageHour(),
+      },
       ...prevMessages,
     ]);
     setMessage("");
@@ -43,7 +48,7 @@ export function InputContainer({ setMessages }) {
       <form onSubmit={handleSubmit} className="w-full flex ">
         <div className="w-full mx-4 dark:text-gray-400 text-gray-500 dark:bg-slate-600 bg-zinc-200 rounded-md">
           <input
-            className="w-full py-2 px-3 bg-transparent focus:outline-none dark:text-white text-black"
+            className="w-full py-2 max-w-full px-3 bg-transparent focus:outline-none dark:text-white text-black"
             placeholder="Escribe un mensaje aquí"
             value={message}
             onChange={handleChange}
