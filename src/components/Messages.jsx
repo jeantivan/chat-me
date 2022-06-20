@@ -11,17 +11,16 @@ export function Messages({ messages = [] }) {
         messagesContainer.current.scrollHeight
       );
     }
-  }, []);
+  }, [messages]);
 
   return (
     <div
       className="messages overflow-auto bg-neutral-200 dark:bg-slate-900"
       ref={messagesContainer}
     >
-      <div className="flex flex-col-reverse justify-start px-20 py-3">
+      <div className="flex flex-col-reverse justify-start px-20 py-5">
         {messages.map((message, i, array) => {
           if (i === array.length - 1) {
-            console.log("Last item");
             return (
               <Message key={message.id} {...message} isFirstMessage={true} />
             );
