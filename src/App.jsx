@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Header,
   //Ball,
@@ -13,8 +14,8 @@ import "./App.css";
 import MESSAGES from "./utils/messages.json";
 
 function App() {
-  //const containerRef = useRef(null);
   const { mode } = useDarkMode();
+  const [messages, setMessages] = useState([...MESSAGES]);
 
   return (
     <div className={`${mode} app-container`}>
@@ -23,8 +24,8 @@ function App() {
         <ContactInfo />
         <UserProfile />
         <ChatList />
-        <Messages messages={MESSAGES} />
-        <InputContainer />
+        <Messages messages={messages} />
+        <InputContainer setMessages={setMessages} />
       </main>
     </div>
   );

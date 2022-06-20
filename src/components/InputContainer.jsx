@@ -1,7 +1,35 @@
+import { useState } from "react";
 import { BsPaperclip, BsEmojiSmile } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
 
-export function InputContainer() {
+const generateRandomId = () => (Math.random() + 1).toString(36).substring(2);
+const getMessageHour = () => {
+  const date = new Date();
+  let minutes =
+    date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+
+  let hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
+
+  let terminal = date.getHours() > 12 ? "PM" : "AM";
+
+  return `${hours}:${minutes} ${terminal}`;
+};
+
+export function InputContainer({ setMessages }) {
+  const [message, setMessage] = useState("");
+
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setMessages((prevMessages) => [
+      { id: generateRandomId(), message, type: "send", time: getMessageHour() },
+      ...prevMessages,
+    ]);
+    setMessage("");
+  };
   return (
     <div className="input-container dark:bg-slate-700 h-full py-2 px-6 flex">
       <div className="flex items-center">
@@ -12,17 +40,25 @@ export function InputContainer() {
           <BsEmojiSmile className="w-full h-full" />
         </div>
       </div>
-      <div className="w-full mx-4 dark:text-gray-400 text-gray-500 dark:bg-slate-600 bg-zinc-200 rounded-md">
-        <input
-          className="w-full py-2 px-3 bg-transparent focus:outline-none"
-          placeholder="Escribe un mensaje aquí"
-        />
-      </div>
-      <div className="flex items-center">
-        <div className="w-7 h-7 dark:text-slate-500 text-slate-600 p-0.5">
-          <IoSend className="w-full h-full" />
+      <form onSubmit={handleSubmit} className="w-full flex ">
+        <div className="w-full mx-4 dark:text-gray-400 text-gray-500 dark:bg-slate-600 bg-zinc-200 rounded-md">
+          <input
+            className="w-full py-2 px-3 bg-transparent focus:outline-none dark:text-white text-black"
+            placeholder="Escribe un mensaje aquí"
+            value={message}
+            onChange={handleChange}
+          />
         </div>
-      </div>
+        <div className="flex items-center">
+          <button
+            type="submit"
+            disabled={!Boolean(message)}
+            className="w-7 h-7 dark:disabled:text-slate-500 disabled:text-slate-600 text-emerald-500 p-0.5"
+          >
+            <IoSend className="w-full h-full" />
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
