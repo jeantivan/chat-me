@@ -8,3 +8,4 @@ export { ContactInfo } from "./ContactInfo";
 export { InputContainer } from "./InputContainer";
 export { Messages } from "./Messages";
 export { UserProfile } from "./UserProfile";
+export { Welcome } from "./Welcome";
