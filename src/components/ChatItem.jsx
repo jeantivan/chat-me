@@ -1,9 +1,25 @@
 import { FaUserCircle } from "react-icons/fa";
 import { BsPinAngleFill } from "react-icons/bs";
+import cx from "classnames";
 
-export function ChatItem({ contactName, lastMessage, time }) {
+export function ChatItem({ contact, setSelectedChat, selectedChat }) {
+  const { contactName, lastMessage, time } = contact;
   return (
-    <div className="dark:bg-slate-800/80 dark:hover:bg-slate-700 bg-white hover:bg-slate-100 flex border-collapse border-b border-slate-200 dark:border-slate-600 border-solid">
+    <div
+      onClick={() => {
+        if (selectedChat.contactName === contactName) return;
+
+        setSelectedChat(contact);
+      }}
+      className={cx(
+        "flex border-collapse border-b border-slate-200 dark:border-slate-600 border-solid",
+        "dark:bg-slate-800/80 dark:hover:bg-slate-700 bg-white hover:bg-slate-100",
+        {
+          "dark:bg-slate-700 bg-slate-100":
+            contactName === selectedChat.contactName,
+        }
+      )}
+    >
       <div className="p-2 rounded-full w-16 h-16 overflow-hidden text-gray-400">
         <FaUserCircle className="w-full h-full" />
       </div>
