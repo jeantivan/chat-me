@@ -30,3 +30,8 @@
 .input-container {
   grid-area: input-container;
 }
+
+.welcome {
+  grid-column: span 2;
+  grid-row: span 3;
+}
