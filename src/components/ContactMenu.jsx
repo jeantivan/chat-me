@@ -1,12 +1,9 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
-import { BsThreeDotsVertical, BsGearFill } from "react-icons/bs";
-import { BiExit } from "react-icons/bi";
-import { IoPeople } from "react-icons/io5";
-import { SwitchDarkMode } from "./SwitchDarkMode";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
-export function ContactMenu() {
+export function ContactMenu({ setSelectedChat }) {
   return (
     <PopoverPrimitive.Root>
       <PopoverPrimitive.Trigger className="h-9 w-9 rounded-full dark:text-gray-400 cursor-pointer text-gray-500 hover:bg-slate-200 dark:hover:bg-slate-600 dark:focus:bg-slate-600 p-2">
@@ -30,8 +27,19 @@ export function ContactMenu() {
           <li className="w-full py-2 px-4 flex items center  dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
             Seleccionar mensajes
           </li>
-          <li className="w-full py-2 px-4 flex items center dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
-            Cerrar chat
+          <li>
+            <button
+              onClick={() => {
+                setSelectedChat({
+                  contactName: "",
+                  lastMessage: "",
+                  time: "",
+                });
+              }}
+              className="w-full py-2 px-4 flex items center dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              Cerrar chat
+            </button>
           </li>
           <li className="w-full py-2 px-4 flex items-stretch dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
             Silenciar notificaciones
