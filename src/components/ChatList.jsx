@@ -1,9 +1,7 @@
 import { BsSearch } from "react-icons/bs";
-
-import { CHATS } from "../utils/constants";
 import { ChatItem } from "./ChatItem";
 
-export function ChatList({ chats }) {
+export function ChatList({ chats, selectedChat, setSelectedChat }) {
   return (
     <div className="chats-list dark:bg-slate-800/80 border-solid border-r border-slate-200 dark:border-slate-600 flex flex-col">
       <div className="dark:bg-slate-800 bg-white p-2 sticky top-0 border-b border-slate-200 dark:border-slate-600 border-solid">
@@ -20,8 +18,13 @@ export function ChatList({ chats }) {
         </div>
       </div>
       <div className="flex flex-col overflow-y-auto">
-        {CHATS.map((chat) => (
-          <ChatItem key={chat.id} {...chat} />
+        {chats.map((chat) => (
+          <ChatItem
+            key={chat.id}
+            contact={chat}
+            selectedChat={selectedChat}
+            setSelectedChat={setSelectedChat}
+          />
         ))}
       </div>
     </div>
