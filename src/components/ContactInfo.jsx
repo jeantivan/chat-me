@@ -1,5 +1,6 @@
 import { FaUserCircle } from "react-icons/fa";
 import { BsThreeDotsVertical, BsSearch } from "react-icons/bs";
+import { ContactMenu } from "./ContactMenu";
 
 export function ContactInfo({ contact }) {
   return (
@@ -15,8 +16,8 @@ export function ContactInfo({ contact }) {
           <div className="h-9 w-9 ml-2 rounded-full dark:text-gray-400 text-gray-500 hover:bg-slate-200 dark:hover:bg-slate-600 p-2">
             <BsSearch className="h-full w-full" />
           </div>
-          <div className="h-9 w-9 ml-2 rounded-full dark:text-gray-400 text-gray-500 hover:bg-slate-200 dark:hover:bg-slate-600 p-2">
-            <BsThreeDotsVertical className="h-full w-full" />
+          <div className="ml-2">
+            <ContactMenu />
           </div>
         </div>
       </div>
