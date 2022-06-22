@@ -2,6 +2,7 @@ import * as PopoverPrimitive from "@radix-ui/react-popover";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { INITIAL_CHAT } from "../utils/constants";
 
 export function ContactMenu({ setSelectedChat }) {
   return (
@@ -30,11 +31,7 @@ export function ContactMenu({ setSelectedChat }) {
           <li>
             <button
               onClick={() => {
-                setSelectedChat({
-                  contactName: "",
-                  lastMessage: "",
-                  time: "",
-                });
+                setSelectedChat(INITIAL_CHAT);
               }}
               className="w-full py-2 px-4 flex items center dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
             >
