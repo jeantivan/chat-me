@@ -1,5 +1,13 @@
 export const COLOR_MODE_KEY = "chatme-dark-mode";
 
+export const INITIAL_CHAT = {
+  id: "",
+  contactName: "",
+  lastMessage: "",
+  time: "",
+  photo: "",
+};
+
 export const CHATS = [
   {
     id: "kDErF43A9",
