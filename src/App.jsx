@@ -13,22 +13,24 @@ import {
 } from "./components";
 import "./App.css";
 import MESSAGES from "./utils/messages.json";
-import { CHATS } from "./utils/constants";
+import { CHATS, INITIAL_CHAT } from "./utils/constants";
+import { useEffect } from "react";
 
 const CONTACTS = [];
 
 function App() {
   const { mode } = useDarkMode();
-  const [messages, setMessages] = useState([...MESSAGES]);
-  const [selectedChat, setSelectedChat] = useState({
-    id: "",
-    contactName: "",
-    lastMessage: "",
-    time: "",
-    photo: "",
-  });
+  const [messages, setMessages] = useState([]);
+  const [selectedChat, setSelectedChat] = useState(INITIAL_CHAT);
 
-  console.log(selectedChat);
+  useEffect(() => {
+    setMessages([]);
+    if (selectedChat.id !== INITIAL_CHAT.id) {
+      setTimeout(() => {
+        setMessages([...MESSAGES]);
+      }, 250);
+    }
+  }, [selectedChat]);
 
   return (
     <div className={`${mode} app-container`}>
