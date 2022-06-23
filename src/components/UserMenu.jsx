@@ -5,6 +5,7 @@ import { BsThreeDotsVertical, BsGearFill } from "react-icons/bs";
 import { BiExit } from "react-icons/bi";
 import { IoPeople } from "react-icons/io5";
 import { SwitchDarkMode } from "./SwitchDarkMode";
+import { Configuration } from "./Configuration";
 
 export function UserMenu() {
   return (
@@ -31,13 +32,8 @@ export function UserMenu() {
               </AccessibleIcon.Root>
             </span>
           </li>
-          <li className="w-full py-2 px-4 flex items center  dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
-            <div className="flex-1">Configuración</div>
-            <span className="w-6 text-neutral-700 dark:text-neutral-50">
-              <AccessibleIcon.Root label="Icono de configuración">
-                <BsGearFill className="w-full h-full" />
-              </AccessibleIcon.Root>
-            </span>
+          <li className="w-full ">
+            <Configuration />
           </li>
           <li className="w-full py-2 px-4 flex items center dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
             <SwitchDarkMode />
