@@ -80,11 +80,8 @@ export function Configuration() {
                 } h-screen absolute left-0 top-0 flex flex-col`}
               >
                 <AnimatePresence exitBeforeEnter>
-                  {renderComponent &&
-                    renderOptions[renderComponent]({ setRender, goBack })}
+                  {renderOptions[renderComponent]({ setRender, goBack })}
                 </AnimatePresence>
-                {/*                 <ConfigurationOptions />
-                 */}
               </motion.div>
             </Dialog.Content>
           </Dialog.Portal>
