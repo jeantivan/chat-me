@@ -76,7 +76,7 @@ export function Configuration() {
                 exit={{ x: "-100%" }}
                 style={{ width: "30vw", zIndex: 1000 }}
                 className={`${
-                  mode === "light" ? "bg-white" : "bg-slate-800"
+                  mode === "light" ? "bg-white" : "bg-slate-900"
                 } h-screen absolute left-0 top-0 flex flex-col`}
               >
                 <AnimatePresence exitBeforeEnter>
