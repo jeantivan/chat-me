@@ -63,7 +63,7 @@ export function Configuration() {
               animate={{ opacity: 1 }}
               initial={{ opacity: 0 }}
               exit={{ opacity: 0 }}
-              className="bg-black/50 w-screen h-screen"
+              className="bg-black/50 fixed inset-0 w-screen h-screen"
             />
             <Dialog.Content forceMount asChild>
               <motion.div
