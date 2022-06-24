@@ -8,13 +8,22 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { BsArrowLeft } from "react-icons/bs";
 import { useDarkMode } from "../DarkMode";
+import { getSystemColorMode } from "../../utils/getSystemColorMode";
 
 export function Theme({ goBack }) {
   const { mode, setDarkMode } = useDarkMode();
   const [value, setValue] = useState(mode);
 
   const handleOk = () => {
-    goBack();
+    if (value === "system") {
+      const systemColorMode = getSystemColorMode();
+
+      setDarkMode(systemColorMode);
+    } else if (mode !== value) {
+      setDarkMode(value);
+    }
+
+    return goBack();
   };
 
   return (
@@ -56,12 +65,18 @@ export function Theme({ goBack }) {
                 id="light"
                 className={cx(
                   "w-5 h-5 bg-white rounded-full mr-5",
-                  "inline-flex items-center justify-center"
+                  "inline-flex items-center justify-center",
+                  { "border shadow-sm": mode === "light" }
                 )}
               >
                 <RadioGroup.Indicator className="bg-emerald-500 w-2.5 h-2.5 rounded-full" />
               </RadioGroup.Item>
-              <Label.Root htmlFor="light" className="text-medium text-white">
+              <Label.Root
+                htmlFor="light"
+                className={`text-medium ${
+                  mode === "light" ? "text-black" : "text-white"
+                }`}
+              >
                 Claro
               </Label.Root>
             </div>
@@ -72,12 +87,18 @@ export function Theme({ goBack }) {
                 id="dark"
                 className={cx(
                   "w-5 h-5 bg-white rounded-full mr-5",
-                  "inline-flex items-center justify-center"
+                  "inline-flex items-center justify-center",
+                  { "border shadow-sm": mode === "light" }
                 )}
               >
                 <RadioGroup.Indicator className="bg-emerald-500 w-2.5 h-2.5 rounded-full" />
               </RadioGroup.Item>
-              <Label.Root htmlFor="dark" className="text-medium text-white">
+              <Label.Root
+                htmlFor="dark"
+                className={`text-medium ${
+                  mode === "light" ? "text-black" : "text-white"
+                }`}
+              >
                 Oscuro
               </Label.Root>
             </div>
@@ -87,12 +108,18 @@ export function Theme({ goBack }) {
                 id="system"
                 className={cx(
                   "w-5 h-5 bg-white rounded-full mr-5",
-                  "inline-flex items-center justify-center"
+                  "inline-flex items-center justify-center",
+                  { "border shadow-sm": mode === "light" }
                 )}
               >
                 <RadioGroup.Indicator className="bg-emerald-500 w-2.5 h-2.5 rounded-full" />
               </RadioGroup.Item>
-              <Label.Root htmlFor="system" className="text-medium text-white">
+              <Label.Root
+                htmlFor="system"
+                className={`text-medium ${
+                  mode === "light" ? "text-black" : "text-white"
+                }`}
+              >
                 Predeterminado por el sistema
               </Label.Root>
             </div>
