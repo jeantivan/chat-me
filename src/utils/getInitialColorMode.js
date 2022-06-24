@@ -4,7 +4,6 @@ export const getInitialColorMode = () => {
   // Si el usuario ya había elegido color para el tema se usa el mismo
   const hasColorMode = localStorage.getItem(COLOR_MODE_KEY) || "";
   if (hasColorMode === "light" || hasColorMode === "dark") {
-    console.log("Has Color Mode");
     return hasColorMode;
   }
 
