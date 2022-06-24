@@ -23,10 +23,12 @@ const BACKGROUND = "BACKGROUND";
 const SOL_INFO = "SOL_INFO";
 const HELP = "HELP";
 
-const User = (props) => (
+const User = ({ mode, ...rest }) => (
   <div
-    {...props}
-    className="flex items-center w-full px-4 py-3 hover:bg-slate-700"
+    {...rest}
+    className={`flex items-center w-full px-4 py-3 ${
+      mode === "light" ? "hover:bg-slate-50" : "hover:bg-slate-700"
+    }`}
   >
     <div className="mr-4">
       <div className="w-20 h-20 text-neutral-300">
@@ -34,21 +36,42 @@ const User = (props) => (
       </div>
     </div>
     <div className="flex-1">
-      <h2 className="text-neutral-50 font-medium text-xl">Jane Doe</h2>
-      <p className="text-neutral-300">Hola estoy usando ChatMe!</p>
+      <h2
+        className={`font-medium text-xl ${
+          mode === "light" ? "text-black" : "text-neutral-50"
+        }`}
+      >
+        Jane Doe
+      </h2>
+      <p
+        className={`${mode === "light" ? "text-gray-500" : "text-neutral-300"}`}
+      >
+        Hola estoy usando ChatMe!
+      </p>
     </div>
   </div>
 );
 
-const Item = ({ icon, label, ...rest }) => (
-  <button {...rest} className="w-full flex items-center hover:bg-slate-700">
+const Item = ({ icon, label, mode, ...rest }) => (
+  <button
+    {...rest}
+    className={`w-full flex items-center ${
+      mode === "light" ? "hover:bg-slate-50" : "hover:bg-slate-700"
+    }`}
+  >
     <span className="w-14 flex items-center justify-center">
       <span className="w-5 h-5 text-slate-400">
         <AccessibleIcon.Root label={label}>{icon}</AccessibleIcon.Root>
       </span>
     </span>
 
-    <span className="py-5 pl-4 flex-1 border-b border-slate-700 text-left text-lg text-slate-50">
+    <span
+      className={`py-5 pl-4 flex-1 border-b text-left text-lg ${
+        mode === "light"
+          ? "text-black border-slate-200 "
+          : "text-slate-50 border-slate-700 "
+      }`}
+    >
       {label}
     </span>
   </button>
@@ -82,6 +105,7 @@ export function Options({ setRender }) {
       <div className="overflow-y-auto flex-1">
         <div className="flex flex-col">
           <User
+            mode={mode}
             onClick={() => {
               setRender(PROFILE);
             }}
@@ -89,6 +113,7 @@ export function Options({ setRender }) {
           <Item
             icon={<BsBellFill className="w-full h-full" />}
             label="Notificaciones"
+            mode={mode}
             onClick={() => {
               console.log("Notificaciones");
               setRender(NOTIFICATIONS);
@@ -97,6 +122,7 @@ export function Options({ setRender }) {
           <Item
             icon={<BsLockFill className="w-full h-full" />}
             label="Privacidad"
+            mode={mode}
             onClick={() => {
               console.log("Privacidad");
               setRender(PRIVACY);
@@ -105,6 +131,7 @@ export function Options({ setRender }) {
           <Item
             icon={<BsShieldShaded className="w-full h-full" />}
             label="Seguridad"
+            mode={mode}
             onClick={() => {
               console.log("Seguridad");
               setRender(SECURITY);
@@ -113,6 +140,7 @@ export function Options({ setRender }) {
           <Item
             icon={<BsMoonStarsFill className="w-full h-full" />}
             label="Tema"
+            mode={mode}
             onClick={() => {
               console.log("Tema");
               setRender(THEME);
@@ -121,6 +149,7 @@ export function Options({ setRender }) {
           <Item
             icon={<ImFilePicture className="w-full h-full" />}
             label="Fondo de pantalla"
+            mode={mode}
             onClick={() => {
               console.log("Fondo");
               setRender(BACKGROUND);
@@ -129,6 +158,7 @@ export function Options({ setRender }) {
           <Item
             icon={<BsFileEarmarkTextFill className="w-full h-full" />}
             label="Solicitar info. de la cuenta"
+            mode={mode}
             onClick={() => {
               console.log("Info");
               setRender(SOL_INFO);
@@ -137,6 +167,7 @@ export function Options({ setRender }) {
           <Item
             icon={<BsQuestionCircleFill className="w-full h-full" />}
             label="Ayuda"
+            mode={mode}
             onClick={() => {
               console.log("Ayuda");
               setRender(HELP);
