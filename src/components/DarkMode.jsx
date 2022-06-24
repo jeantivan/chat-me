@@ -5,6 +5,7 @@ import { getInitialColorMode } from "../utils/getInitialColorMode";
 export const DarkModeContext = createContext({
   mode: "",
   toggleDarkMode: () => {},
+  setDarkMode: () => {},
 });
 
 export const useDarkMode = () => useContext(DarkModeContext);
@@ -13,7 +14,6 @@ export function DarkModeProvider({ children }) {
   const [mode, setDarkMode] = useState(() => getInitialColorMode());
 
   const toggleDarkMode = () => {
-    console.log("Hola");
     setDarkMode((prev) => {
       let nextColorMode = prev === "light" ? "dark" : "light";
 
@@ -23,7 +23,7 @@ export function DarkModeProvider({ children }) {
   };
 
   return (
-    <DarkModeContext.Provider value={{ mode, toggleDarkMode }}>
+    <DarkModeContext.Provider value={{ mode, toggleDarkMode, setDarkMode }}>
       {children}
     </DarkModeContext.Provider>
   );
