@@ -1,9 +1,8 @@
 import { createContext, useContext, useState } from "react";
 
 const INITIAL_USER = {
-  name: "",
-  phone: "",
-  status: "",
+  name: "Jane Doe",
+  status: "Hola estoy usando ChatMe!",
   picture: "",
 };
 export const UserInfoContext = createContext({
@@ -26,7 +25,9 @@ export function UserInfoProvider({ children }) {
     setUserInfo({ ...userInfo, status: newStatus });
   };
 
-  const changePicture = () => {};
+  const changePicture = (newPicture) => {
+    setUserInfo({ ...userInfo, picture: newPicture });
+  };
 
   return (
     <UserInfoContext.Provider
