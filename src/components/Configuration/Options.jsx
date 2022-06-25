@@ -81,12 +81,7 @@ export function Options({ setRender }) {
   const { mode } = useDarkMode();
 
   return (
-    <motion.div
-      transition={{ when: "afterChildren" }}
-      initial={{ display: "none" }}
-      animate={{ display: "block" }}
-      exit={{ display: "none" }}
-    >
+    <>
       <header className="pt-16 bg-slate-700 pb-5 ">
         <motion.div
           className="px-4 flex items-center"
@@ -198,6 +193,6 @@ export function Options({ setRender }) {
           </p>
         </footer>
       </div>
-    </motion.div>
+    </>
   );
 }
