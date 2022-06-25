@@ -1,5 +1,6 @@
 {
-  "name": "chat-window",
+  "name": "chat-me",
+  "author": "Jean Tivan <jptivan53@gmail.com>",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -11,6 +12,7 @@
     "@radix-ui/react-radio-group": "^0.1.6-rc.44",
     "@radix-ui/react-separator": "^0.1.5-rc.41",
     "@radix-ui/react-switch": "^0.1.6-rc.40",
+    "@radix-ui/react-visually-hidden": "^0.1.5-rc.41",
     "@react-spring/web": "^9.4.5",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
