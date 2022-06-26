@@ -2,8 +2,10 @@ import { USER_PROFILE_KEY, INITIAL_USER } from "./constants";
 
 export const changeLocalStorageUserInfo = (property, newValue) => {
   // Si la propiedad no existe en el objecto del localStorage
-  if (!(property in Object.entries(INITIAL_USER))) {
-    console.error(`The property ${property} does not exist in localStorage`);
+  if (!Object.keys(INITIAL_USER).includes(property)) {
+    console.error(
+      `The property ${property} does not exist in localStorage ${USER_PROFILE_KEY}`
+    );
     return false;
   }
 
