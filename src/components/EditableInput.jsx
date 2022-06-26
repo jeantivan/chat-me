@@ -1,19 +1,37 @@
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { BsPencilFill, BsCheck, BsX } from "react-icons/bs";
 import { useDarkMode } from "./DarkMode";
 
-export function EditableInput({ label, value, onSave, ...rest }) {
+export function EditableInput({ label, value, onSave, canBeEmpty, ...rest }) {
+  const inputRef = useRef(null);
   const { mode } = useDarkMode();
   const [isEditing, setIsEditing] = useState(false);
   const [newValue, setNewValue] = useState(value);
+  const [error, setError] = useState("");
+
+  const handleSave = () => {
+    if (newValue === "") {
+      inputRef.current.focus();
+      setError(`El ${label} no puedes estar vacío.`);
+
+      return;
+    }
+
+    onSave(newValue);
+    setIsEditing(false);
+  };
 
   return (
-    <div>
+    <div className="mb-5">
       <div className="text-emerald-600 text-sm mb-2">{label}</div>
       <div
-        className={`flex items-stretch border-b mb-5 ${
-          isEditing ? "border-emerald-500" : "border-transparent"
+        className={`flex items-stretch border-b ${
+          error
+            ? "border-red-500"
+            : isEditing
+            ? "border-emerald-500"
+            : "border-transparent"
         }`}
       >
         {isEditing ? (
@@ -28,12 +46,14 @@ export function EditableInput({ label, value, onSave, ...rest }) {
                 setNewValue(e.target.value);
               }}
               autoFocus
+              ref={inputRef}
             />
             <div className="self-center">
               <button
                 className="w-6 h-6 inline-flex items-center justify-center rounded-sm mr-2 border border-emerald-500  text-emerald-500"
                 title="Cancelar"
                 onClick={() => {
+                  setError("");
                   setIsEditing(false);
                 }}
               >
@@ -44,6 +64,7 @@ export function EditableInput({ label, value, onSave, ...rest }) {
               <button
                 className="w-6 h-6 inline-flex items-center justify-center rounded-sm text-white border border-emerald-500 bg-emerald-500"
                 title="Guardar cambios"
+                onClick={handleSave}
               >
                 <AccessibleIcon.Root label="Save Icon">
                   <BsCheck className="w-full h-full" />
@@ -74,6 +95,7 @@ export function EditableInput({ label, value, onSave, ...rest }) {
           </>
         )}
       </div>
+      {error && <span className="mt-2 text-xs text-red-500">{error}</span>}
     </div>
   );
 }
