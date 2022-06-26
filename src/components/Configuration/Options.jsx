@@ -8,11 +8,12 @@ import {
   BsQuestionCircleFill,
 } from "react-icons/bs";
 import { ImFilePicture } from "react-icons/im";
-import { FaUserCircle } from "react-icons/fa";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import { motion } from "framer-motion";
 import { useDarkMode } from "../DarkMode";
+import { UserImage } from "../UserImage";
+import { useUserInfo } from "../UserInfoProvider";
 
 const PROFILE = "PROFILE";
 const NOTIFICATIONS = "NOTIFICATIONS";
@@ -23,34 +24,40 @@ const BACKGROUND = "BACKGROUND";
 const SOL_INFO = "SOL_INFO";
 const HELP = "HELP";
 
-const User = ({ mode, ...rest }) => (
-  <div
-    {...rest}
-    className={`flex items-center w-full px-4 py-3 ${
-      mode === "light" ? "hover:bg-slate-50" : "hover:bg-slate-700"
-    }`}
-  >
-    <div className="mr-4">
-      <div className="w-20 h-20 text-neutral-300">
-        <FaUserCircle className="w-full h-full" />
+const User = ({ mode, ...rest }) => {
+  const { user } = useUserInfo();
+
+  return (
+    <div
+      {...rest}
+      className={`flex items-center w-full px-4 py-3 ${
+        mode === "light" ? "hover:bg-slate-50" : "hover:bg-slate-700"
+      }`}
+    >
+      <div className="mr-4">
+        <div className="w-20 h-20">
+          <UserImage />
+        </div>
+      </div>
+      <div className="flex-1">
+        <h2
+          className={`font-medium text-xl ${
+            mode === "light" ? "text-black" : "text-neutral-50"
+          }`}
+        >
+          {user.name}
+        </h2>
+        <p
+          className={`leading-none line-clamp-2 ${
+            mode === "light" ? "text-gray-500" : "text-neutral-400"
+          }`}
+        >
+          {user.status}
+        </p>
       </div>
     </div>
-    <div className="flex-1">
-      <h2
-        className={`font-medium text-xl ${
-          mode === "light" ? "text-black" : "text-neutral-50"
-        }`}
-      >
-        Jane Doe
-      </h2>
-      <p
-        className={`${mode === "light" ? "text-gray-500" : "text-neutral-300"}`}
-      >
-        Hola estoy usando ChatMe!
-      </p>
-    </div>
-  </div>
-);
+  );
+};
 
 const Item = ({ icon, label, mode, ...rest }) => (
   <button
