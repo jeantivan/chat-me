@@ -1,10 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { USER_PROFILE_KEY, INITIAL_USER } from "../utils/constants";
+import { changeLocalStorageUserInfo } from "../utils/changeLocalStorageUserInfo";
 
-const INITIAL_USER = {
-  name: "Jane Doe",
-  status: "Hola estoy usando ChatMe!",
-  picture: "",
-};
 export const UserInfoContext = createContext({
   user: INITIAL_USER,
   changeName: () => {},
@@ -17,16 +14,28 @@ export const useUserInfo = () => useContext(UserInfoContext);
 export function UserInfoProvider({ children }) {
   const [user, setUser] = useState(INITIAL_USER);
 
+  useEffect(() => {
+    if (!localStorage.getItem(USER_PROFILE_KEY)) {
+      localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(INITIAL_USER));
+    }
+  });
+
   const changeName = (newName) => {
-    setUser({ ...user, name: newName });
+    if (changeLocalStorageUserInfo("name", newName)) {
+      setUser({ ...user, name: newName });
+    }
   };
 
   const changeStatus = (newStatus) => {
-    setUser({ ...user, status: newStatus });
+    if (changeLocalStorageUserInfo("status", newStatus)) {
+      setUser({ ...user, status: newStatus });
+    }
   };
 
   const changePicture = (newPicture) => {
-    setUser({ ...user, picture: newPicture });
+    if (changeLocalStorageUserInfo("picture", newPicture)) {
+      setUser({ ...user, picture: newPicture });
+    }
   };
 
   return (
