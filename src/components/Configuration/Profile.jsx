@@ -1,17 +1,23 @@
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
-import { BsArrowLeft, BsPencilFill, BsCameraFill } from "react-icons/bs";
-import { FaUserCircle } from "react-icons/fa";
+import { BsArrowLeft } from "react-icons/bs";
 import { useDarkMode } from "../DarkMode";
 import { useUserInfo } from "../UserInfoProvider";
 import { EditableInput } from "../EditableInput";
+import { ChangeUserImage } from "../ChangeUserImage";
 
 export function Profile({ goBack }) {
   const { mode } = useDarkMode();
-  const { user } = useUserInfo();
+  const { user, changeName, changeStatus } = useUserInfo();
 
-  //console.log(user);
+  const handleSaveUserName = (newName) => {
+    changeName(newName);
+  };
+
+  const handleSaveUserStatus = (newStatus) => {
+    changeStatus(newStatus);
+  };
 
   return (
     <>
@@ -43,26 +49,16 @@ export function Profile({ goBack }) {
             exit={{ scale: 0.5, opacity: 0 }}
             transition={{ type: "tween" }}
           >
-            <div className="group w-[200px] h-[200px] relative rounded-full text-gray-400 overflow-hidden">
-              <span className="w-full h-full">
-                <FaUserCircle className="w-full h-full" />
-              </span>
-              <div className="hidden group-hover:flex select-none items-center justify-center absolute w-full h-full inset-0 bg-neutral-900/80">
-                <div className="w-3/4 flex flex-col items-center justify-center mt-5">
-                  <span className="w-6 h-6 mb-1 text-neutral-50">
-                    <BsCameraFill className="w-full h-full" />
-                  </span>
-                  <span className="uppercase text-center text-sm text-neutral-50 w-4/5">
-                    Elegir foto de perfil
-                  </span>
-                </div>
-              </div>
-            </div>
+            <ChangeUserImage />
           </motion.div>
         </div>
         <div className="p-6 ">
           <div className="mb-10">
-            <EditableInput label="Nombre" value={user.name} />
+            <EditableInput
+              label="Nombre"
+              value={user.name}
+              onSave={handleSaveUserName}
+            />
             <div
               className={`text-sm ${
                 mode === "light" ? "text-gray-500" : "text-gray-400"
@@ -73,19 +69,11 @@ export function Profile({ goBack }) {
             </div>
           </div>
           <div className="mb-5">
-            <div className="text-emerald-600 text-sm mb-2">Estado</div>
-            <div className="border-b border-emerald-500 p-2 pb-1 flex items-center">
-              <div
-                className={`flex-1  ${
-                  mode === "light" ? "text-black" : "text-white"
-                }`}
-              >
-                {user.status}
-              </div>
-              <div className="w-4 h-4 text-gray-500">
-                <BsPencilFill className="w-full h-full" />
-              </div>
-            </div>
+            <EditableInput
+              label="Estado"
+              value={user.status}
+              onSave={handleSaveUserStatus}
+            />
           </div>
         </div>
       </div>
