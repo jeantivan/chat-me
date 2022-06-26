@@ -9,16 +9,18 @@ export const UserInfoContext = createContext({
   changePicture: () => {},
 });
 
+const getInitialUser = () => {
+  if (!localStorage.getItem(USER_PROFILE_KEY)) {
+    localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(INITIAL_USER));
+  }
+
+  return JSON.parse(localStorage.getItem(USER_PROFILE_KEY));
+};
+
 export const useUserInfo = () => useContext(UserInfoContext);
 
 export function UserInfoProvider({ children }) {
-  const [user, setUser] = useState(INITIAL_USER);
-
-  useEffect(() => {
-    if (!localStorage.getItem(USER_PROFILE_KEY)) {
-      localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(INITIAL_USER));
-    }
-  });
+  const [user, setUser] = useState(getInitialUser());
 
   const changeName = (newName) => {
     if (changeLocalStorageUserInfo("name", newName)) {
