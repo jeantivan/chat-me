@@ -6,7 +6,7 @@ const INITIAL_USER = {
   picture: "",
 };
 export const UserInfoContext = createContext({
-  ...INITIAL_USER,
+  user: INITIAL_USER,
   changeName: () => {},
   changeStatus: () => {},
   changePicture: () => {},
@@ -15,23 +15,23 @@ export const UserInfoContext = createContext({
 export const useUserInfo = () => useContext(UserInfoContext);
 
 export function UserInfoProvider({ children }) {
-  const [userInfo, setUserInfo] = useState(INITIAL_USER);
+  const [user, setUser] = useState(INITIAL_USER);
 
   const changeName = (newName) => {
-    setUserInfo({ ...userInfo, name: newName });
+    setUser({ ...user, name: newName });
   };
 
   const changeStatus = (newStatus) => {
-    setUserInfo({ ...userInfo, status: newStatus });
+    setUser({ ...user, status: newStatus });
   };
 
   const changePicture = (newPicture) => {
-    setUserInfo({ ...userInfo, picture: newPicture });
+    setUser({ ...user, picture: newPicture });
   };
 
   return (
     <UserInfoContext.Provider
-      value={{ ...userInfo, changeName, changeStatus, changePicture }}
+      value={{ user, changeName, changeStatus, changePicture }}
     >
       {children}
     </UserInfoContext.Provider>
