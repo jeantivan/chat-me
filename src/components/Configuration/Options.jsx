@@ -35,7 +35,7 @@ const User = ({ mode, ...rest }) => {
       }`}
     >
       <div className="mr-4">
-        <div className="w-20 h-20">
+        <div className="w-20 h-20 rounded-full overflow-hidden">
           <UserImage />
         </div>
       </div>
