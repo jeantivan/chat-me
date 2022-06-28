@@ -1,11 +1,8 @@
 import { useState } from "react";
 import {
-  Header,
-  //Ball,
-  //ChatWindow,
   useDarkMode,
   ChatList,
-  ContactInfo,
+  ChatHeader,
   InputContainer,
   Messages,
   UserProfile,
@@ -47,7 +44,7 @@ function App() {
           <Welcome />
         ) : (
           <>
-            <ContactInfo
+            <ChatHeader
               setSelectedChat={setSelectedChat}
               selectedChat={selectedChat}
             />
