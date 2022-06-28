@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { BsGearFill } from "react-icons/bs";
-import { motion, AnimatePresence } from "framer-motion";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import { useDarkMode } from "../DarkMode";
+import { Drawer } from "../Drawer";
 import { Options } from "./Options";
 import { Notifications } from "./Notifications";
 import { Privacy } from "./Privacy";
@@ -13,8 +13,6 @@ import { Profile } from "./Profile";
 import { Security } from "./Security";
 import { SolInfo } from "./SolInfo";
 import { Theme } from "./Theme";
-
-const AnimatedOverlay = motion(Dialog.Overlay);
 
 const OPTIONS = "OPTIONS";
 const renderOptions = {
@@ -27,27 +25,6 @@ const renderOptions = {
   BACKGROUND: (props) => <Background {...props} />,
   SOL_INFO: (props) => <SolInfo {...props} />,
   HELP: (props) => <Help {...props} />,
-};
-
-// Variantes de la animaciones.
-const parentVariants = {
-  initial: {
-    x: "-100%",
-  },
-  enter: {
-    x: "0%",
-    transition: {
-      type: "tween",
-      when: "beforeChildren",
-      staggerChildren: 0.01,
-    },
-  },
-  exit: {
-    x: "-100%",
-    transition: {
-      type: "tween",
-    },
-  },
 };
 
 export function Configuration() {
@@ -72,39 +49,15 @@ export function Configuration() {
           </span>
         </button>
       </Dialog.Trigger>
-      <AnimatePresence>
-        {openModal ? (
-          <Dialog.Portal
-            forceMount
-            className="absolute inset-0 w-screen h-screen"
-          >
-            <AnimatedOverlay
-              forceMount
-              transition={{ duration: 0.15, type: "tween" }}
-              animate={{ opacity: 1 }}
-              initial={{ opacity: 0 }}
-              exit={{ opacity: 0 }}
-              className="bg-black/50 fixed inset-0 w-screen h-screen"
-            />
-            <Dialog.Content forceMount asChild>
-              <motion.div
-                variants={parentVariants}
-                initial="initial"
-                animate="enter"
-                exit="exit"
-                style={{ width: "30vw", zIndex: 1000 }}
-                className={`${
-                  mode === "light" ? "bg-white" : "bg-slate-800"
-                } h-screen absolute left-0 top-0 flex flex-col`}
-              >
-                <AnimatePresence exitBeforeEnter>
-                  {renderOptions[renderComponent]({ setRender, goBack })}
-                </AnimatePresence>
-              </motion.div>
-            </Dialog.Content>
-          </Dialog.Portal>
-        ) : null}
-      </AnimatePresence>
+      <Drawer from="left" open={openModal}>
+        <div
+          className={`${
+            mode === "light" ? "bg-white" : "bg-slate-800"
+          } w-full h-full flex flex-col`}
+        >
+          {renderOptions[renderComponent]({ setRender, goBack })}
+        </div>
+      </Drawer>
     </Dialog.Root>
   );
 }
