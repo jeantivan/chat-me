@@ -29,6 +29,27 @@ const renderOptions = {
   HELP: (props) => <Help {...props} />,
 };
 
+// Variantes de la animaciones.
+const parentVariants = {
+  initial: {
+    x: "-100%",
+  },
+  enter: {
+    x: "0%",
+    transition: {
+      type: "tween",
+      when: "beforeChildren",
+      staggerChildren: 0.01,
+    },
+  },
+  exit: {
+    x: "-100%",
+    transition: {
+      type: "tween",
+    },
+  },
+};
+
 export function Configuration() {
   const { mode } = useDarkMode();
 
@@ -67,13 +88,10 @@ export function Configuration() {
             />
             <Dialog.Content forceMount asChild>
               <motion.div
-                transition={{
-                  duration: 0.15,
-                  type: "tween",
-                }}
-                animate={{ x: "0%" }}
-                initial={{ x: "-100%" }}
-                exit={{ x: "-100%" }}
+                variants={parentVariants}
+                initial="initial"
+                animate="enter"
+                exit="exit"
                 style={{ width: "30vw", zIndex: 1000 }}
                 className={`${
                   mode === "light" ? "bg-white" : "bg-slate-800"

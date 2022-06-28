@@ -25,6 +25,21 @@ const BACKGROUND = "BACKGROUND";
 const SOL_INFO = "SOL_INFO";
 const HELP = "HELP";
 
+const childVariants = {
+  initial: {
+    x: -20,
+    opacity: 0,
+  },
+  enter: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: {
+    x: -20,
+    opacity: 0,
+  },
+};
+
 const User = ({ mode, ...rest }) => {
   const { user } = useUserInfo();
 
@@ -91,13 +106,7 @@ export function Options({ setRender }) {
   return (
     <>
       <header className="pt-16 bg-slate-700 pb-5 ">
-        <motion.div
-          className="px-4 flex items-center"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ delay: 0.2 }}
-        >
+        <motion.div className="px-4 flex items-center" variants={childVariants}>
           <Dialog.Close asChild>
             <button className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4">
               <AccessibleIcon.Root label="Cerrar configuración">
@@ -110,7 +119,7 @@ export function Options({ setRender }) {
           </Dialog.Title>
         </motion.div>
       </header>
-      <div className="overflow-y-auto flex-1">
+      <div className="overflow-y-auto overflow-x-hidden flex-1">
         <div className="flex flex-col">
           <User
             mode={mode}
@@ -118,6 +127,7 @@ export function Options({ setRender }) {
               setRender(PROFILE);
             }}
           />
+
           <Item
             icon={<BsBellFill className="w-full h-full" />}
             label="Notificaciones"
