@@ -19,7 +19,7 @@ export function UserMenu() {
         sideOffset={4}
         align="end"
         className={cx(
-          "w-56 rounded-lg py-2 shadow-md",
+          "w-56 rounded-lg py-2 shadow-md z-10",
           "bg-white dark:bg-slate-700"
         )}
       >
