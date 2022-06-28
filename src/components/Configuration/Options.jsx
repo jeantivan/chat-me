@@ -11,6 +11,7 @@ import { ImFilePicture } from "react-icons/im";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import { motion } from "framer-motion";
+import { Shortcut } from "./Shortcut";
 import { useDarkMode } from "../DarkMode";
 import { UserImage } from "../UserImage";
 import { useUserInfo } from "../UserInfoProvider";
@@ -171,6 +172,7 @@ export function Options({ setRender }) {
               setRender(SOL_INFO);
             }}
           />
+          <Shortcut mode={mode} />
           <Item
             icon={<BsQuestionCircleFill className="w-full h-full" />}
             label="Ayuda"
