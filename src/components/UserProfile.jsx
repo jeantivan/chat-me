@@ -12,7 +12,7 @@ export function UserProfile() {
   const [openModal, setOpenModal] = useState(false);
 
   return (
-    <div className="user-profile dark:bg-slate-800 bg-zinc-50 border-solid border-r border-b border-slate-200 dark:border-slate-600 z-10  px-3 py-2 flex">
+    <div className="user-profile dark:bg-slate-800 bg-zinc-50 border-solid border-r border-b border-slate-200 dark:border-slate-600 px-3 py-2 flex">
       <Dialog.Root open={openModal} onOpenChange={setOpenModal}>
         <div className="flex items-center flex-1">
           <Dialog.Trigger asChild>
