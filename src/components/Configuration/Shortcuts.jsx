@@ -1,10 +1,17 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import { BsKeyboardFill } from "react-icons/bs";
 
 export function Shortcuts({ mode }) {
+  const [openModal, setOpenModal] = useState(false);
   return (
-    <Dialog.Root id="shortcut-modal">
+    <Dialog.Root
+      id="shortcut-modal"
+      open={openModal}
+      onOpenChange={setOpenModal}
+    >
       <Dialog.Trigger asChild>
         <button
           className={`w-full flex items-center ${
@@ -30,38 +37,46 @@ export function Shortcuts({ mode }) {
           </span>
         </button>
       </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay
-          className="bg-black/50 fixed inset-0 w-screen h-screen"
-          style={{ zIndex: 1001 }}
-        />
-        <Dialog.Content
-          style={{ zIndex: 1001, height: "calc(100vh - 1rem)" }}
-          className={`w-4/5 shadow-lg fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-           `}
-        >
-          <div
-            className={`w-full h-full p-8 flex flex-col justify-start
-             ${mode === "light" ? "bg-white" : "bg-slate-800"}`}
-          >
-            <header className="mb-8">
-              <Dialog.Title
-                className={`text-xl font-medium ${
-                  mode === "light" ? "text-black" : "text-white"
+      <AnimatePresence>
+        {openModal ? (
+          <Dialog.Portal>
+            <Dialog.Overlay
+              className="bg-black/50 fixed inset-0 w-screen h-screen"
+              style={{ zIndex: 1001 }}
+            />
+            <Dialog.Content
+              style={{ zIndex: 1001, height: "calc(100vh - 1rem)" }}
+              className={`w-4/5 shadow-lg fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                transition={{ type: "tween" }}
+                className={`w-full h-full p-8 flex flex-col justify-start ${
+                  mode === "light" ? "bg-white" : "bg-slate-800"
                 }`}
               >
-                Atajos del teclado
-              </Dialog.Title>
-            </header>
-            <div className="flex-1 self-stretch"></div>
-            <footer className="flex justify-end">
-              <Dialog.Close className="py-2 px-4 inline-flex items-center justify-center rounded-md uppercase font-medium text-white bg-emerald-600">
-                Ok
-              </Dialog.Close>
-            </footer>
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
+                <header className="mb-8">
+                  <Dialog.Title
+                    className={`text-xl font-medium ${
+                      mode === "light" ? "text-black" : "text-white"
+                    }`}
+                  >
+                    Atajos del teclado
+                  </Dialog.Title>
+                </header>
+                <div className="flex-1 self-stretch"></div>
+                <footer className="flex justify-end">
+                  <Dialog.Close className="py-2 px-4 inline-flex items-center justify-center rounded-md uppercase font-medium text-white bg-emerald-600">
+                    Ok
+                  </Dialog.Close>
+                </footer>
+              </motion.div>
+            </Dialog.Content>
+          </Dialog.Portal>
+        ) : null}
+      </AnimatePresence>
     </Dialog.Root>
   );
 }
