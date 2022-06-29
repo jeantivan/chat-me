@@ -1,9 +1,10 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import { useState } from "react";
-import { BsX } from "react-icons/bs";
+import { BsX, BsChevronRight } from "react-icons/bs";
 import { useDarkMode } from "./DarkMode";
 import { Drawer } from "./Drawer";
+import { FaUserCircle } from "react-icons/fa";
 
 export function ContactInfo({ selectedChat }) {
   const { mode } = useDarkMode();
@@ -19,7 +20,7 @@ export function ContactInfo({ selectedChat }) {
       <Drawer from="right" open={open}>
         <div
           className={`${
-            mode === "light" ? "bg-white" : "bg-slate-900"
+            mode === "light" ? "bg-slate-50" : "bg-slate-900"
           } w-full h-full flex flex-col`}
         >
           <header
@@ -32,10 +33,71 @@ export function ContactInfo({ selectedChat }) {
                 <BsX className="w-full h-full" />
               </AccessibleIcon.Root>
             </Dialog.Close>
-            <Dialog.Title className="text-lg text-white">
+            <Dialog.Title
+              className={`text-lg ${isLight ? "text-black" : "text-white"}`}
+            >
               Info. del Contacto
             </Dialog.Title>
           </header>
+          <div className="flex flex-col overflow-y-auto">
+            <div
+              className={`py-3 px-5 flex flex-col mb-4 shadow ${
+                isLight ? "bg-white" : "bg-slate-800"
+              }`}
+            >
+              <div className="mx-auto mt-16 mb-4">
+                <div className="w-40 h-40 rounded-full text-gray-500">
+                  <FaUserCircle className="h-full w-full" />
+                </div>
+              </div>
+              <div className="mx-auto text-center">
+                <h2
+                  className={`text-2xl mb-3 ${
+                    isLight ? "text-neutral-900" : "text-white"
+                  }`}
+                >
+                  {selectedChat.contactName}
+                </h2>
+                <div className={`text-gray-500`}>081-454-0666</div>
+              </div>
+            </div>
+            <div
+              className={`py-3 px-5 mb-4 shadow ${
+                isLight ? "bg-white" : "bg-slate-800"
+              }`}
+            >
+              <div className="text-sm text-emerald-600">Info.</div>
+              <div
+                className={`text-lg ${
+                  isLight ? "text-neutral-900" : "text-white"
+                }`}
+              >
+                Hola estoy usando ChatMe!
+              </div>
+            </div>
+            <div
+              className={`py-3 px-5 mb-4 shadow ${
+                isLight ? "bg-white" : "bg-slate-800"
+              }`}
+            >
+              <div className="flex mb-4">
+                <div className="flex-1 text-sm text-emerald-600">
+                  Archivos, enlaces y documentos.
+                </div>
+                <div className="inline-flex items-center text-gray-500 text-sm">
+                  20
+                  <AccessibleIcon.Root class="Ver más">
+                    <BsChevronRight />
+                  </AccessibleIcon.Root>
+                </div>
+              </div>
+              <div className="px-2 flex flex-1">
+                <div className="w-36 h-36 rounded-md bg-gray-300 mr-2" />
+                <div className="w-36 h-36 rounded-md bg-gray-300 mr-2" />
+                <div className="w-36 h-36 rounded-md bg-gray-300 mr-2" />
+              </div>
+            </div>
+          </div>
         </div>
       </Drawer>
     </Dialog.Root>
