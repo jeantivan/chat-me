@@ -21,7 +21,10 @@ export function ChatHeader({ selectedChat, setSelectedChat }) {
             <BsSearch className="h-full w-full" />
           </div>
           <div className="ml-2">
-            <ContactMenu setSelectedChat={setSelectedChat} />
+            <ContactMenu
+              selectedChat={selectedChat}
+              setSelectedChat={setSelectedChat}
+            />
           </div>
         </div>
       </div>
