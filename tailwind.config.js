@@ -7,5 +7,12 @@ module.exports = {
     },
     extend: {},
   },
-  plugins: [require("@tailwindcss/line-clamp"), require("tailwindcss-radix")()],
+  corePlugins: {
+    aspectRatio: false,
+  },
+  plugins: [
+    require("@tailwindcss/line-clamp"),
+    require("@tailwindcss/aspect-ratio"),
+    require("tailwindcss-radix")(),
+  ],
 };
