@@ -1,8 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import * as Switch from "@radix-ui/react-switch";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
 import { useState } from "react";
+import { Switch } from "./Switch";
 import { useDarkMode } from "./DarkMode";
 import { Drawer } from "./Drawer";
 import { FaUserCircle, FaBan } from "react-icons/fa";
@@ -17,11 +17,72 @@ import {
   BsTrashFill,
 } from "react-icons/bs";
 
+const Item = ({ children, isDanger }) => {
+  const { mode } = useDarkMode();
+  const isLight = mode === "light";
+
+  return (
+    <div
+      className={cx(
+        "flex p-4 cursor-pointer",
+        { "text-gray-400": !isDanger, "text-red-500": isDanger },
+        {
+          "hover:bg-slate-50": isLight && isDanger,
+          "hover:bg-slate-700": !isLight && isDanger,
+        }
+      )}
+    >
+      <div className="flex text-lg w-full">{children}</div>
+    </div>
+  );
+};
+
+const ItemText = ({ children, isDanger, textHelper = "" }) => {
+  const { mode } = useDarkMode();
+  const isLight = mode === "light";
+  const textColor = isDanger
+    ? "text-red-500"
+    : isLight
+    ? "text-neutral-900"
+    : "text-gray-100";
+
+  return (
+    <div className={`flex-1 flex flex-col leading-none ${textColor}`}>
+      {children}
+
+      {textHelper && (
+        <span className="mt-1 text-sm text-gray-400">{textHelper}</span>
+      )}
+    </div>
+  );
+};
+
+const ItemIcon = ({ label, icon }) => (
+  <div className="w-1/6 flex justify-center text-inherit">
+    <CustomIcon Icon={icon} label={label} className="w-5 h-5 text-inherit" />
+  </div>
+);
+
+const ItemAction = ({ children }) => (
+  <div className="w-1/6 flex justify-center">{children}</div>
+);
+
+const CustomIcon = ({ label, Icon, className }) => (
+  <div className={className}>
+    <AccessibleIcon.Root label={label}>
+      <Icon className="w-full h-full" />
+    </AccessibleIcon.Root>
+  </div>
+);
+
 export function ContactInfo({ selectedChat }) {
   const { mode } = useDarkMode();
   const [open, setOpen] = useState(false);
 
   const isLight = mode === "light";
+
+  const bgColor = isLight ? "bg-white" : "bg-slate-800";
+  const textColor = isLight ? "text-neutral-900" : "text-white";
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -31,7 +92,7 @@ export function ContactInfo({ selectedChat }) {
       <Drawer from="right" open={open}>
         <div
           className={`${
-            mode === "light" ? "bg-slate-50" : "bg-slate-900"
+            isLight ? "bg-slate-50" : "bg-slate-900"
           } w-full h-full flex flex-col`}
         >
           <header
@@ -44,263 +105,127 @@ export function ContactInfo({ selectedChat }) {
                 <BsX className="w-full h-full" />
               </AccessibleIcon.Root>
             </Dialog.Close>
-            <Dialog.Title
-              className={`text-lg ${isLight ? "text-black" : "text-white"}`}
-            >
+            <Dialog.Title className={`text-lg ${textColor}`}>
               Info. del Contacto
             </Dialog.Title>
           </header>
           <div className="flex flex-col overflow-y-auto">
-            <div
-              className={`py-4 px-5 flex flex-col mb-4 shadow ${
-                isLight ? "bg-white" : "bg-slate-800"
-              }`}
-            >
+            <div className={`py-4 px-5 flex flex-col mb-4 shadow ${bgColor}`}>
               <div className="mx-auto mt-16 mb-4">
                 <div className="w-40 h-40 rounded-full text-gray-500">
                   <FaUserCircle className="h-full w-full" />
                 </div>
               </div>
               <div className="mx-auto text-center">
-                <h2
-                  className={`text-2xl mb-2 ${
-                    isLight ? "text-neutral-900" : "text-white"
-                  }`}
-                >
+                <h2 className={`text-2xl mb-2 ${textColor}`}>
                   {selectedChat.contactName}
                 </h2>
                 <div className={`text-gray-500`}>081-454-0666</div>
               </div>
             </div>
-            <div
-              className={`py-4 px-5 mb-4 shadow ${
-                isLight ? "bg-white" : "bg-slate-800"
-              }`}
-            >
+            <div className={`py-4 px-5 mb-4 shadow ${bgColor}`}>
               <div className="text-sm text-emerald-600">Info.</div>
-              <div
-                className={`text-lg ${
-                  isLight ? "text-neutral-900" : "text-white"
-                }`}
-              >
+              <div className={`text-lg ${textColor}`}>
                 Hola estoy usando ChatMe!
               </div>
             </div>
-            <div
-              className={`py-4 px-5 mb-4 shadow ${
-                isLight ? "bg-white" : "bg-slate-800"
-              }`}
-            >
+            <div className={`py-4 px-5 mb-4 shadow ${bgColor}`}>
               <div className="flex mb-4">
                 <div className="flex-1 text-sm text-emerald-600">
                   Archivos, enlaces y documentos.
                 </div>
                 <div className="inline-flex items-center text-gray-500 text-sm">
                   20
-                  <AccessibleIcon.Root class="Ver más">
+                  <AccessibleIcon.Root label="Ver más">
                     <BsChevronRight />
                   </AccessibleIcon.Root>
                 </div>
               </div>
               <div className="px-2 flex flex-row w-full mb-4">
-                <div className="w-1/3 aspect-w-1 aspect-h-1 rounded-md bg-gray-300 mx-2">
-                  <div />
-                </div>
-                <div className="w-1/3 aspect-w-1 aspect-h-1 rounded-md bg-gray-300 mx-2">
-                  <div />
-                </div>
-                <div className="w-1/3 aspect-w-1 aspect-h-1 rounded-md bg-gray-300 mx-2">
-                  <div />
-                </div>
+                <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
+                <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
+                <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
               </div>
-              <div
-                className={`text-sm ${
-                  isLight ? "text-neutral-900" : "text-white"
-                }`}
-              >
+              <div className={`text-sm ${textColor}`}>
                 Usa WhatsApp en tu teléfono para ver el historial de mensajes
                 completo.
               </div>
             </div>
-            <div className={`pt-3 ${isLight ? "bg-white" : "bg-slate-800"}`}>
+            <div className={`pt-3 ${bgColor}`}>
               <div className="w-full mb-5">
-                <div className="flex p-3 cursor-pointer">
-                  <div className="flex text-lg w-full mb-2">
-                    <div className="w-1/6 flex justify-center text-gray-400">
-                      <div className="w-5 h-5">
-                        <AccessibleIcon.Root label="Icono de estrella">
-                          <BsStarFill className="w-full h-full" />
-                        </AccessibleIcon.Root>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div
-                        className={`leading-none
-                  flex-1 ${isLight ? "text-neutral-900" : "text-gray-100"}`}
-                      >
-                        Mensajes destacados
-                      </div>
-                    </div>
-                    <div className="w-1/6 flex justify-center text-gray-400">
-                      <div className="w-5 h-5">
-                        <AccessibleIcon.Root label="Icono de campana">
-                          <BsChevronRight className="w-full h-full" />
-                        </AccessibleIcon.Root>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex p-3 cursor-pointer">
-                  <div className="flex text-lg w-full mb-2">
-                    <div className="w-1/6 flex justify-center text-gray-400">
-                      <div className="w-5 h-5">
-                        <AccessibleIcon.Root label="Icono de campana">
-                          <BsBellFill className="w-full h-full" />
-                        </AccessibleIcon.Root>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div
-                        className={`leading-none
-                  flex-1 ${isLight ? "text-neutral-900" : "text-gray-100"}`}
-                      >
-                        Silenciar notificaciones
-                      </div>
-                    </div>
-                    <div className="w-1/6 flex justify-center text-gray-400">
-                      <Switch.Root
-                        className={cx(
-                          "group",
-                          "radix-state-checked:bg-emerald-500",
-                          "radix-state-unchecked:bg-gray-400 dark:radix-state-unchecked:bg-gray-800",
-                          "relative inline-flex h-[24px] w-[44px] flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out",
-                          "focus:outline-none focus-visible:ring focus-visible:ring-emerald-500 focus-visible:ring-opacity-75"
-                        )}
-                      >
-                        <Switch.Thumb
-                          className={cx(
-                            "group-radix-state-checked:translate-x-5",
-                            "group-radix-state-unchecked:translate-x-0",
-                            "pointer-events-none inline-block h-[20px] w-[20px] p-1 transform rounded-full text-neutral-700 bg-white ring-0 transition duration-200 ease-in-out"
-                          )}
-                        />
-                      </Switch.Root>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex p-3 cursor-pointer">
-                  <div className="flex text-lg w-full">
-                    <div className="w-1/6 flex justify-center text-gray-400">
-                      <div className="w-5 h-5">
-                        <AccessibleIcon.Root label="Icono de temporizador">
-                          <BsClockHistory className="w-full h-full" />
-                        </AccessibleIcon.Root>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div
-                        className={`leading-none
-                  flex-1 ${isLight ? "text-neutral-900" : "text-gray-100"}`}
-                      >
-                        Mensajes temporales
-                      </div>
-                      <div className="mt-1 mr-9 text-sm text-gray-400">
-                        Desactivados
-                      </div>
-                    </div>
-                    <div className="w-1/6 flex justify-center text-gray-400">
-                      <div className="w-5 h-5">
-                        <AccessibleIcon.Root label="Icono de campana">
-                          <BsChevronRight className="w-full h-full" />
-                        </AccessibleIcon.Root>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex p-3 cursor-pointer">
-                  <div className="flex text-lg w-full mb-2">
-                    <div className="w-1/6 flex justify-center text-gray-400">
-                      <div className="w-5 h-5">
-                        <AccessibleIcon.Root label="Icono de candado">
-                          <BsLockFill className="w-full h-full" />
-                        </AccessibleIcon.Root>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div
-                        className={`leading-none
-                  flex-1 ${isLight ? "text-neutral-900" : "text-gray-100"}`}
-                      >
-                        Cifrado
-                      </div>
-                      <div className="mt-1 text-sm text-gray-400">
-                        Los mensajes están cifrados de extremo a extremo. Haz
-                        clic para verificarlo.
-                      </div>
-                    </div>
-                    <div className="w-1/6"></div>
-                  </div>
-                </div>
+                <Item>
+                  <ItemIcon icon={BsStarFill} label="Icono de campana" />
+                  <ItemText>Mensajes destacados</ItemText>
+
+                  <ItemAction>
+                    <CustomIcon
+                      Icon={BsChevronRight}
+                      label="Icono flecha derecha"
+                      className="w-5 h-5 text-inherit"
+                    />
+                  </ItemAction>
+                </Item>
+                <Item>
+                  <ItemIcon icon={BsBellFill} label="Icono de campana" />
+                  <ItemText>Silenciar notificaciones</ItemText>
+                  <ItemAction>
+                    <Switch />
+                  </ItemAction>
+                </Item>
+                <Item>
+                  <ItemIcon
+                    icon={BsClockHistory}
+                    label="Icono de temporizador"
+                  />
+                  <ItemText textHelper="Desactivados">
+                    Mensajes temporales
+                  </ItemText>
+                  <ItemAction>
+                    <CustomIcon
+                      Icon={BsChevronRight}
+                      label="Icono flecha derecha"
+                      className="w-5 h-5 text-inherit"
+                    />
+                  </ItemAction>
+                </Item>
+                <Item>
+                  <ItemIcon icon={BsLockFill} label="Icono de candado" />
+                  <ItemText
+                    textHelper="Los mensajes están cifrados de extremo a extremo. Haz clic
+                      para verificarlo."
+                  >
+                    Cifrado
+                  </ItemText>
+
+                  {/* Solo para ocupar el espacio */}
+                  <ItemAction />
+                </Item>
               </div>
               <div className="w-full">
-                <div
-                  className={`flex px-3 py-4 cursor-pointer text-red-500 ${
+                <Item
+                  className={
                     isLight ? "hover:bg-slate-50" : "hover:bg-slate-700"
-                  }`}
+                  }
+                  isDanger
                 >
-                  <div className="flex items-center text-lg w-full">
-                    <div className="w-1/6 flex justify-center">
-                      <div className="w-5 h-5">
-                        <AccessibleIcon.Root label="Icono de bloquear">
-                          <FaBan className="w-full h-full" />
-                        </AccessibleIcon.Root>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className={`leading-none flex-1`}>
-                        Bloquear a {selectedChat.contactName}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={`flex px-3 py-4 cursor-pointer text-red-500 ${
-                    isLight ? "hover:bg-slate-50" : "hover:bg-slate-700"
-                  }`}
-                >
-                  <div className="flex items-center text-lg w-full">
-                    <div className="w-1/6 flex justify-center">
-                      <div className="w-5 h-5">
-                        <AccessibleIcon.Root label="Icono de no me gusta">
-                          <BsHandThumbsDownFill className="w-full h-full" />
-                        </AccessibleIcon.Root>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className={`leading-none flex-1`}>
-                        Reportar a {selectedChat.contactName}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={`flex px-3 py-4 cursor-pointer text-red-500 ${
-                    isLight ? "hover:bg-slate-50" : "hover:bg-slate-700"
-                  }`}
-                >
-                  <div className="flex items-center text-lg w-full">
-                    <div className="w-1/6 flex justify-center">
-                      <div className="w-5 h-5">
-                        <AccessibleIcon.Root label="Icono de basura">
-                          <BsTrashFill className="w-full h-full" />
-                        </AccessibleIcon.Root>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className={`leading-none flex-1`}>Eliminar chat</div>
-                    </div>
-                  </div>
-                </div>
+                  <ItemIcon icon={FaBan} label="Icono de bloquear" />
+                  <ItemText isDanger>
+                    Bloquear a {selectedChat.contactName}
+                  </ItemText>
+                </Item>
+                <Item isDanger>
+                  <ItemIcon
+                    icon={BsHandThumbsDownFill}
+                    label="Icono de no me gusta"
+                  />
+                  <ItemText isDanger>
+                    Reportar a {selectedChat.contactName}
+                  </ItemText>
+                </Item>
+                <Item isDanger>
+                  <ItemIcon icon={BsTrashFill} label="Icono de basura" />
+                  <ItemText isDanger>Eliminar chat</ItemText>
+                </Item>
               </div>
             </div>
           </div>
