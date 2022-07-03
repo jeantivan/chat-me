@@ -78,6 +78,7 @@ const CustomIcon = ({ label, Icon, className }) => (
 export function ContactInfo({ selectedChat }) {
   const { mode } = useDarkMode();
   const [open, setOpen] = useState(false);
+  const { name, phone, picture } = selectedChat;
 
   const isLight = mode === "light";
 
@@ -113,14 +114,18 @@ export function ContactInfo({ selectedChat }) {
             <div className={`py-4 px-5 flex flex-col mb-4 shadow ${bgColor}`}>
               <div className="mx-auto mt-16 mb-4">
                 <div className="w-40 h-40 rounded-full text-gray-500">
-                  <FaUserCircle className="h-full w-full" />
+                  <img
+                    className="bg-gray-400 w-full h-full rounded-full"
+                    src={picture.large}
+                    alt={`Foto de perfil de ${name.fullName}`}
+                  />
                 </div>
               </div>
               <div className="mx-auto text-center">
                 <h2 className={`text-2xl mb-2 ${textColor}`}>
-                  {selectedChat.contactName}
+                  {name.fullName}
                 </h2>
-                <div className={`text-gray-500`}>081-454-0666</div>
+                <div className={`text-gray-500`}>{phone}</div>
               </div>
             </div>
             <div className={`py-4 px-5 mb-4 shadow ${bgColor}`}>
@@ -209,18 +214,14 @@ export function ContactInfo({ selectedChat }) {
                   isDanger
                 >
                   <ItemIcon icon={FaBan} label="Icono de bloquear" />
-                  <ItemText isDanger>
-                    Bloquear a {selectedChat.contactName}
-                  </ItemText>
+                  <ItemText isDanger>Bloquear a {name.fullName}</ItemText>
                 </Item>
                 <Item isDanger>
                   <ItemIcon
                     icon={BsHandThumbsDownFill}
                     label="Icono de no me gusta"
                   />
-                  <ItemText isDanger>
-                    Reportar a {selectedChat.contactName}
-                  </ItemText>
+                  <ItemText isDanger>Reportar a {name.fullName}</ItemText>
                 </Item>
                 <Item isDanger>
                   <ItemIcon icon={BsTrashFill} label="Icono de basura" />

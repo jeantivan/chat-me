@@ -1,7 +1,13 @@
 import { BsSearch } from "react-icons/bs";
 import { ChatItem } from "./ChatItem";
 
-export function ChatList({ chats, selectedChat, setSelectedChat }) {
+export function ChatList({
+  chats,
+  selectedChat,
+  setSelectedChat,
+  isError,
+  isLoading,
+}) {
   return (
     <div className="chats-list dark:bg-slate-800/80 border-solid border-r border-slate-200 dark:border-slate-600 flex flex-col">
       <div className="dark:bg-slate-800 bg-white p-2 sticky top-0 border-b border-slate-200 dark:border-slate-600 border-solid">
@@ -18,14 +24,26 @@ export function ChatList({ chats, selectedChat, setSelectedChat }) {
         </div>
       </div>
       <div className="flex flex-col overflow-y-auto">
-        {chats.map((chat) => (
-          <ChatItem
-            key={chat.id}
-            contact={chat}
-            selectedChat={selectedChat}
-            setSelectedChat={setSelectedChat}
-          />
-        ))}
+        {isError && (
+          <div className="py-4 mx-auto text-lg dark:text-white">
+            Ups algo salió mal
+          </div>
+        )}
+        {isLoading && (
+          <div className="py-4 mx-auto text-lg dark:text-white">
+            Cargando...
+          </div>
+        )}
+        {!isError &&
+          !isLoading &&
+          chats.map((chat) => (
+            <ChatItem
+              key={chat.phone}
+              contact={chat}
+              selectedChat={selectedChat}
+              setSelectedChat={setSelectedChat}
+            />
+          ))}
       </div>
     </div>
   );
