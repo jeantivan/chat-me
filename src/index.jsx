@@ -5,14 +5,20 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { DarkModeProvider, UserInfoProvider } from "./components";
 
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <DarkModeProvider>
-      <UserInfoProvider>
-        <App />
-      </UserInfoProvider>
-    </DarkModeProvider>
+    <QueryClientProvider client={queryClient}>
+      <DarkModeProvider>
+        <UserInfoProvider>
+          <App />
+        </UserInfoProvider>
+      </DarkModeProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
 
