@@ -20,8 +20,6 @@ function App() {
   const [selectedChat, setSelectedChat] = useState(INITIAL_CHAT);
   const { isError, isLoading, data } = useGetContacts();
 
-  console.log(data);
-
   useEffect(() => {
     setMessages([]);
     if (selectedChat.id !== INITIAL_CHAT.id) {
