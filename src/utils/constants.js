@@ -23,7 +23,7 @@ export const INITIAL_CHAT = {
   phone: "",
 };
 
-export const lastMessages = [
+export const LAST_MESSAGES = [
   {
     message:
       "faucibus cursus urna ut tellus nulla ut erat id mauris vulputate elementum nullam",
