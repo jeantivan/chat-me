@@ -10,15 +10,17 @@ import {
 } from "./components";
 import "./App.css";
 import MESSAGES from "./utils/messages.json";
-import { CHATS, INITIAL_CHAT } from "./utils/constants";
+import { INITIAL_CHAT } from "./utils/constants";
+import { useGetContacts } from "./utils/useGetContacts";
 import { useEffect } from "react";
-
-const CONTACTS = [];
 
 function App() {
   const { mode } = useDarkMode();
   const [messages, setMessages] = useState([]);
   const [selectedChat, setSelectedChat] = useState(INITIAL_CHAT);
+  const { isError, isLoading, data } = useGetContacts();
+
+  console.log(data);
 
   useEffect(() => {
     setMessages([]);
@@ -36,11 +38,12 @@ function App() {
         <ChatList
           selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
-          contacts={CONTACTS}
-          chats={CHATS}
+          chats={data}
+          isError={isError}
+          isLoading={isLoading}
         />
 
-        {!selectedChat.contactName ? (
+        {!selectedChat.name.fullName ? (
           <Welcome />
         ) : (
           <>
