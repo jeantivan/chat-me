@@ -8,172 +8,140 @@ export const INITIAL_USER = {
 };
 
 export const INITIAL_CHAT = {
-  id: "",
-  contactName: "",
-  lastMessage: "",
-  time: "",
-  photo: "",
+  name: {
+    title: "",
+    first: "",
+    last: "",
+    fullName: "",
+  },
+  picture: { large: "", medium: "", thumbnail: "" },
+  lastMessage: {
+    message: "",
+    time: "",
+    id: "",
+  },
+  phone: "",
 };
 
-export const CHATS = [
+export const lastMessages = [
   {
-    id: "kDErF43A9",
-    contactName: "Irvin McDugal",
-    lastMessage:
-      "ipsum integer a nibh in quis justo maecenas rhoncus aliquam lacus morbi quis tortor id",
-    time: "12:56 PM",
-    photo: "aenean sit amet",
+    message:
+      "faucibus cursus urna ut tellus nulla ut erat id mauris vulputate elementum nullam",
+    time: "5:09 AM",
+    id: "ede39581-5064-4a86-be9a-bbf4f9a8b242",
   },
   {
-    id: "SaNQJk",
-    contactName: "Giovanni Sworne",
-    lastMessage:
-      "eget congue eget semper rutrum nulla nunc purus phasellus in felis donec semper sapien a",
-    time: "7:55 PM",
-    photo: "fusce lacus purus",
+    message:
+      "in libero ut massa volutpat convallis morbi odio odio elementum eu interdum eu tincidunt in leo",
+    time: "9:21 PM",
+    id: "51f19b07-504c-4108-a64f-44da01649c75",
   },
   {
-    id: "nuOcCq",
-    contactName: "Stanton Grishin",
-    lastMessage:
-      "porttitor lacus at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non lectus",
-    time: "7:21 PM",
-    photo: "nisi at nibh",
+    message:
+      "id lobortis convallis tortor risus dapibus augue vel accumsan tellus nisi eu orci mauris lacinia sapien quis libero nullam",
+    time: "12:39 AM",
+    id: "f7e2c2a1-792c-45f7-96df-75fb25c63f7c",
   },
   {
-    id: "YoEmo2",
-    contactName: "Roana Coomber",
-    lastMessage:
-      "laoreet ut rhoncus aliquet pulvinar sed nisl nunc rhoncus dui vel sem sed sagittis nam",
-    time: "10:31 PM",
-    photo: "fringilla rhoncus mauris",
+    message:
+      "libero non mattis pulvinar nulla pede ullamcorper augue a suscipit",
+    time: "12:04 AM",
+    id: "d1824853-4e8f-4637-b0b2-4134ddd428bb",
   },
   {
-    id: "3dIlGFlX7",
-    contactName: "Sibelle Arndell",
-    lastMessage:
-      "pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse",
-    time: "9:36 PM",
-    photo: "rutrum rutrum neque",
+    message:
+      "vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae duis faucibus accumsan odio curabitur convallis",
+    time: "9:39 AM",
+    id: "33e6a8b5-bd97-4692-b146-64b65abaf749",
   },
   {
-    id: "v6rDuPN",
-    contactName: "Heather Jenton",
-    lastMessage:
-      "consectetuer adipiscing elit proin risus praesent lectus vestibulum quam sapien varius ut blandit non interdum",
-    time: "4:53 AM",
-    photo: "montes nascetur ridiculus",
+    message:
+      "in faucibus orci luctus et ultrices posuere cubilia curae mauris viverra diam vitae quam suspendisse potenti nullam porttitor lacus",
+    time: "1:06 PM",
+    id: "301a7e75-de49-44fd-b62d-167893f62dbb",
   },
   {
-    id: "ZzX4RENGj9J",
-    contactName: "Rosalie Grabb",
-    lastMessage:
-      "magnis dis parturient montes nascetur ridiculus mus etiam vel augue vestibulum rutrum rutrum neque aenean",
-    time: "12:35 AM",
-    photo: "bibendum morbi non",
+    message:
+      "vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean",
+    time: "2:50 AM",
+    id: "ea3886d1-73c4-452f-8263-c65ee096a995",
   },
   {
-    id: "UnZEwJTkl",
-    contactName: "Aline Martinec",
-    lastMessage:
-      "erat eros viverra eget congue eget semper rutrum nulla nunc purus phasellus in felis donec",
-    time: "10:54 AM",
-    photo: "amet diam in",
+    message:
+      "amet eros suspendisse accumsan tortor quis turpis sed ante vivamus tortor duis mattis egestas metus aenean",
+    time: "5:27 PM",
+    id: "85df818c-0926-4f4a-9ce4-fa6832509037",
   },
   {
-    id: "8okSFlM3",
-    contactName: "Kara Bosson",
-    lastMessage:
-      "ut erat id mauris vulputate elementum nullam varius nulla facilisi cras non velit nec nisi",
-    time: "1:35 AM",
-    photo: "in quam fringilla",
+    message:
+      "commodo vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin interdum mauris non ligula",
+    time: "8:53 PM",
+    id: "e1e0bf6f-d40d-4f22-a61f-041480b257b1",
   },
   {
-    id: "3Hf4H3",
-    contactName: "Amelia Van der Spohr",
-    lastMessage:
-      "in congue etiam justo etiam pretium iaculis justo in hac habitasse platea dictumst etiam faucibus",
-    time: "2:31 PM",
-    photo: "dapibus at diam",
+    message:
+      "donec diam neque vestibulum eget vulputate ut ultrices vel augue vestibulum ante ipsum primis in",
+    time: "6:59 AM",
+    id: "5b104ff0-16c8-488f-9b2d-3f6bf5c8c6da",
   },
   {
-    id: "knuldu",
-    contactName: "Bridie Stonelake",
-    lastMessage:
-      "mi integer ac neque duis bibendum morbi non quam nec dui luctus rutrum nulla tellus",
-    time: "11:09 PM",
-    photo: "pede lobortis ligula",
+    message:
+      "auctor gravida sem praesent id massa id nisl venenatis lacinia aenean sit",
+    time: "9:53 PM",
+    id: "f11ed3c0-3c76-4cc6-9f9b-d918af8cd690",
   },
   {
-    id: "H5lGD6EOt",
-    contactName: "Keriann Oels",
-    lastMessage:
-      "ac enim in tempor turpis nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh",
-    time: "5:16 PM",
-    photo: "cras mi pede",
+    message:
+      "nisi venenatis tristique fusce congue diam id ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu sed augue",
+    time: "9:17 AM",
+    id: "0c3b205f-a0f7-4f00-9ed9-552a75ddbbed",
   },
   {
-    id: "CoO4Qt",
-    contactName: "Findley Haydney",
-    lastMessage:
-      "dolor sit amet consectetuer adipiscing elit proin risus praesent lectus vestibulum quam sapien varius ut",
-    time: "6:33 PM",
-    photo: "justo morbi ut",
+    message:
+      "eget congue eget semper rutrum nulla nunc purus phasellus in felis donec semper sapien a libero",
+    time: "11:32 PM",
+    id: "083dd056-0501-49b3-89d1-b4c71688b2af",
   },
   {
-    id: "HGGCRZ",
-    contactName: "Rani Thomen",
-    lastMessage:
-      "aliquam non mauris morbi non lectus aliquam sit amet diam in magna bibendum imperdiet nullam",
-    time: "8:07 PM",
-    photo: "odio donec vitae",
+    message:
+      "in porttitor pede justo eu massa donec dapibus duis at velit eu est congue elementum in hac",
+    time: "4:44 AM",
+    id: "f518d0a7-9742-4ab7-bff4-5512b775dbe5",
   },
   {
-    id: "q5pRCZj1",
-    contactName: "Ignacio Gibbeson",
-    lastMessage:
-      "condimentum neque sapien placerat ante nulla justo aliquam quis turpis eget elit sodales scelerisque mauris",
-    time: "12:50 AM",
-    photo: "curabitur at ipsum",
+    message:
+      "elit proin risus praesent lectus vestibulum quam sapien varius ut blandit non interdum in ante vestibulum ante ipsum primis",
+    time: "5:32 PM",
+    id: "cd051272-b474-4f2e-bc8d-4de5e80936de",
   },
   {
-    id: "sp95cv3OmA",
-    contactName: "Gray Klyner",
-    lastMessage:
-      "eget semper rutrum nulla nunc purus phasellus in felis donec semper sapien a libero nam",
-    time: "10:57 AM",
-    photo: "sagittis sapien cum",
+    message:
+      "a feugiat et eros vestibulum ac est lacinia nisi venenatis tristique fusce congue diam id",
+    time: "1:04 AM",
+    id: "31624dd2-5fe5-4038-889a-4bd6958efdad",
   },
   {
-    id: "sarhjp9A",
-    contactName: "Ondrea Fugere",
-    lastMessage:
-      "eu nibh quisque id justo sit amet sapien dignissim vestibulum vestibulum ante ipsum primis in",
-    time: "8:01 PM",
-    photo: "nec sem duis",
+    message:
+      "cubilia curae donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi",
+    time: "2:17 AM",
+    id: "c1727583-0dfe-475e-9401-ac0c4ca1e5bf",
   },
   {
-    id: "h9HyW9",
-    contactName: "Aime Scamaden",
-    lastMessage:
-      "venenatis tristique fusce congue diam id ornare imperdiet sapien urna pretium nisl ut volutpat sapien",
-    time: "11:01 AM",
-    photo: "vel nisl duis",
+    message:
+      "pede ullamcorper augue a suscipit nulla elit ac nulla sed vel enim sit amet nunc viverra dapibus nulla suscipit",
+    time: "7:17 PM",
+    id: "a1294ed8-8f27-40fe-95cb-55b8aa3136e1",
   },
   {
-    id: "FUjFPnJmaz",
-    contactName: "Danni Speariett",
-    lastMessage:
-      "ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae nulla dapibus dolor vel",
-    time: "12:22 PM",
-    photo: "est donec odio",
+    message:
+      "vestibulum proin eu mi nulla ac enim in tempor turpis nec euismod scelerisque quam turpis adipiscing lorem vitae mattis",
+    time: "6:46 PM",
+    id: "7390bcab-9fbf-4344-b004-b4580c44692b",
   },
   {
-    id: "mE7PI6oa3G8",
-    contactName: "Danell Vanshin",
-    lastMessage:
-      "est lacinia nisi venenatis tristique fusce congue diam id ornare imperdiet sapien urna pretium nisl",
-    time: "3:22 PM",
-    photo: "maecenas tristique est",
+    message:
+      "viverra dapibus nulla suscipit ligula in lacus curabitur at ipsum",
+    time: "10:29 PM",
+    id: "e3f56e17-c218-4dca-98df-99f7e5aaf09e",
   },
 ];
