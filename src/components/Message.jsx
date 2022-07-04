@@ -1,3 +1,5 @@
+import { BsChevronDown } from "react-icons/bs";
+
 export function Message({ message, type, time, isFirstMessage }) {
   const bgColor =
     type === "send"
@@ -11,7 +13,7 @@ export function Message({ message, type, time, isFirstMessage }) {
     <div
       className={`${alignSelf} ${
         isFirstMessage ? "mt-4" : "mt-1"
-      }  relative max-w-7/10 drop-shadow`}
+      }  relative max-w-7/10 drop-shadow group`}
     >
       <div
         className={`${bgColor} ${
