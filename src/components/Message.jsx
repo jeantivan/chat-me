@@ -11,7 +11,7 @@ const reactions = [
     name: "thumbs-up",
   },
   {
-    emoji: "❤",
+    emoji: "💖",
     name: "heart",
   },
   {
