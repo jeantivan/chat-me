@@ -1,6 +1,6 @@
 .chat-container {
   display: grid;
-  grid-template-columns: 30% 1fr 1fr;
+  grid-template-columns: 45% repeat(2, 1fr);
   grid-template-rows: minmax(56px, max-content) 1fr minmax(56px, max-content);
   gap: 0px 0px;
   grid-auto-flow: row;
@@ -8,6 +8,22 @@
     "user-profile contact-info contact-info"
     "chats-list messages messages"
     "chats-list input-container input-container";
+}
+
+@media screen and (min-width: 900px) {
+  .chat-container {
+    grid-template-columns: 40% repeat(2, 1fr);
+  }
+}
+@media screen and (min-width: 901px) and (max-width: 1024px) {
+  .chat-container {
+    grid-template-columns: 35% repeat(2, 1fr);
+  }
+}
+@media screen and (min-width: 1025px) {
+  .chat-container {
+    grid-template-columns: 30% repeat(2, 1fr);
+  }
 }
 
 .user-profile {
