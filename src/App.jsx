@@ -30,8 +30,8 @@ function App() {
   }, [selectedChat]);
 
   return (
-    <div className={`${mode} app-container`}>
-      <main className="main chat-container dark:bg-slate-900 overflow-hidden">
+    <div className={`${mode} app-container md:overflow-x-auto`}>
+      <main className="main chat-container min-w-md dark:bg-slate-900 overflow-hidden">
         <UserProfile />
         <ChatList
           selectedChat={selectedChat}
