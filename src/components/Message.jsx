@@ -5,6 +5,24 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { BsChevronDown, BsEmojiSmileFill } from "react-icons/bs";
 
+const reactions = [
+  {
+    emoji: "👍",
+    name: "thumbs-up",
+  },
+  {
+    emoji: "❤",
+    name: "heart",
+  },
+  {
+    emoji: "😂",
+    name: "face-with-tears-of-joy",
+  },
+  { emoji: "😮", name: "face-with-open-mouth" },
+  { emoji: "😢", name: "crying-face" },
+  { emoji: "🙏", name: "folded-hands" },
+];
+
 const buttonVariants = {
   hidden: { opacity: 0, transition: { duration: 0.05 } },
   show: { opacity: 1, transition: { duration: 0.05 } },
