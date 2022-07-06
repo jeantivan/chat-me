@@ -5,6 +5,10 @@ module.exports = {
     maxWidth: {
       "7/10": "70%",
     },
+    minWidth: {
+      md: "768px",
+    },
+
     extend: {},
   },
   plugins: [require("@tailwindcss/line-clamp"), require("tailwindcss-radix")()],
