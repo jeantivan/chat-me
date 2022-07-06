@@ -18,7 +18,7 @@ export function Messages({ messages = [] }) {
       className="messages overflow-auto bg-neutral-200 dark:bg-slate-900"
       ref={messagesContainer}
     >
-      <div className="flex flex-col-reverse justify-start px-20 py-5">
+      <div className="flex flex-col-reverse py-5">
         {messages.map((message, i, array) => {
           if (i === array.length - 1) {
             return (
