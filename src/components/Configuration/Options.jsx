@@ -46,7 +46,7 @@ const User = ({ mode, ...rest }) => {
   return (
     <div
       {...rest}
-      className={`flex items-center w-full px-4 py-3 ${
+      className={`flex items-center cursor-pointer w-full px-4 py-3 ${
         mode === "light" ? "hover:bg-slate-50" : "hover:bg-slate-700"
       }`}
     >
