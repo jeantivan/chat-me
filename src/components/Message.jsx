@@ -2,7 +2,7 @@ import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import cx from "classnames";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { BsChevronDown, BsEmojiSmileFill } from "react-icons/bs";
 
 const reactions = [
@@ -56,27 +56,42 @@ const MessageMenu = ({ isSend }) => {
   );
 };
 
+const MenuRoot = ({ children, ...rest }) => (
+  <PopoverPrimitive.Root {...rest}>{children}</PopoverPrimitive.Root>
+);
+
+const ReactionRoot = ({ children, ...rest }) => (
+  <PopoverPrimitive.Root {...rest}>{children}</PopoverPrimitive.Root>
+);
+
 export function Message({ message, type, time, isFirstMessage }) {
   const [openMenu, setOpenMenu] = useState(false);
+  const [openReactions, setOpenReactions] = useState(false);
+  const controls = useAnimation();
   const isSend = type === "send";
 
   return (
-    <PopoverPrimitive.Root open={openMenu} onOpenChange={setOpenMenu}>
-      <motion.div
-        initial="hidden"
-        whileHover="show"
-        animate="hidden"
-        className={cx("px-5 md:px-10 lg:px-20", {
-          "mt-4": isFirstMessage,
-          "mt-1": !isFirstMessage,
+    <motion.div
+      onHoverStart={() => {
+        controls.start("show");
+      }}
+      onHoverEnd={() => {
+        if (openReactions) return;
+
+        controls.start("hidden");
+      }}
+      className={cx("px-5 md:px-10 lg:px-20", {
+        "mt-4": isFirstMessage,
+        "mt-1": !isFirstMessage,
+      })}
+    >
+      <div
+        className={cx("w-full flex", {
+          "justify-start": !isSend,
+          "justify-end": isSend,
         })}
       >
-        <div
-          className={cx("w-full flex", {
-            "justify-start": !isSend,
-            "justify-end": isSend,
-          })}
-        >
+        <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
           <div className="w-11/12 md:w-4/5  lg:w-3/4 drop-shadow">
             <div
               className={cx(
@@ -141,24 +156,59 @@ export function Message({ message, type, time, isFirstMessage }) {
               />
             )}
           </div>
+          <MessageMenu isSend={isSend} />
+        </MenuRoot>
+
+        <ReactionRoot open={openReactions} onOpenChange={setOpenReactions}>
           <div
             className={cx("mx-4 flex items-center flex-1", {
               "order-first": isSend,
               "justify-end": isSend,
             })}
           >
-            <motion.button
+            <motion.div
+              initial="hidden"
               variants={buttonVariants}
-              className="text-gray-300 dark:text-gray-500 rounded-full bg-neutral-900/50 dark:bg-neutral-900/80 p-1.5 w-9 h-9"
+              animate={controls}
             >
-              <AccessibleIcon.Root label="Reaccionar al mensaje">
-                <BsEmojiSmileFill className="w-full h-full" />
-              </AccessibleIcon.Root>
-            </motion.button>
+              <PopoverPrimitive.Trigger asChild>
+                <button
+                  className={cx(
+                    "text-gray-300 dark:text-gray-500 bg-neutral-900/50 dark:bg-neutral-900/80",
+                    "rounded-full p-1.5 w-9 h-9"
+                  )}
+                >
+                  <AccessibleIcon.Root label="Reaccionar al mensaje">
+                    <BsEmojiSmileFill className="w-full h-full" />
+                  </AccessibleIcon.Root>
+                </button>
+              </PopoverPrimitive.Trigger>
+            </motion.div>
+
+            <PopoverPrimitive.Content
+              sideOffset={4}
+              align="center"
+              side="top"
+              avoidCollisions={false}
+              className={cx(
+                "w-46 rounded-full p-2 shadow-md",
+                "bg-white dark:bg-slate-800",
+                "flex",
+                "z-50 select-none"
+              )}
+            >
+              {reactions.map(({ emoji, name }) => (
+                <div
+                  key={name}
+                  className="w-8 h-8 text-2xl flex justify-center items-baseline mx-1 rounded-full"
+                >
+                  {emoji}
+                </div>
+              ))}
+            </PopoverPrimitive.Content>
           </div>
-        </div>
-      </motion.div>
-      <MessageMenu isSend={isSend} />
-    </PopoverPrimitive.Root>
+        </ReactionRoot>
+      </div>
+    </motion.div>
   );
 }
