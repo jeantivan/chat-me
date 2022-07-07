@@ -1,14 +1,22 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
+import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { INITIAL_CHAT } from "../utils/constants";
 import { ContactInfo } from "./ContactInfo";
 
 export function ContactMenu({ selectedChat, setSelectedChat }) {
+  const [open, setOpen] = useState(false);
   return (
-    <PopoverPrimitive.Root>
-      <PopoverPrimitive.Trigger className="h-9 w-9 rounded-full dark:text-gray-400 cursor-pointer text-gray-500 hover:bg-slate-200 dark:hover:bg-slate-600 dark:focus:bg-slate-600 p-2">
+    <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
+      <PopoverPrimitive.Trigger
+        className={cx(
+          "h-9 w-9 rounded-full p-2 cursor-pointer",
+          "dark:text-gray-400 text-gray-500 hover:bg-slate-200 dark:hover:bg-slate-600",
+          { "dark:bg-slate-600 bg-slate-200": open }
+        )}
+      >
         <AccessibleIcon.Root label="Open Menu">
           <BsThreeDotsVertical className="h-full w-full" />
         </AccessibleIcon.Root>
