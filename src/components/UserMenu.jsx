@@ -1,4 +1,3 @@
-import * as PopoverPrimitive from "@radix-ui/react-popover";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
 import { useState } from "react";
@@ -7,56 +6,40 @@ import { BiExit } from "react-icons/bi";
 import { IoPeople } from "react-icons/io5";
 import { SwitchDarkMode } from "./SwitchDarkMode";
 import { Configuration } from "./Configuration";
+import { MenuRoot, MenuTrigger, MenuContent, MenuItem, MenuIcon } from "./Menu";
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
   return (
-    <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
-      <PopoverPrimitive.Trigger
+    <MenuRoot open={open} onOpenChange={setOpen}>
+      <MenuTrigger
         className={cx(
           "h-8 w-8 rounded-full p-2",
           "dark:text-gray-400 text-gray-500",
-          "hover:bg-slate-200 dark:hover:bg-slate-600",
-          { "dark:bg-slate-600 bg-slate-200": open }
+          "hover:bg-slate-200 dark:hover:bg-gray-600",
+          { "dark:bg-gray-600 bg-gray-200": open }
         )}
       >
         <AccessibleIcon.Root label="Open Menu">
           <BsThreeDotsVertical className="h-full w-full" />
         </AccessibleIcon.Root>
-      </PopoverPrimitive.Trigger>
-      <PopoverPrimitive.Content
-        sideOffset={4}
-        align="end"
-        className={cx(
-          "w-56 rounded-lg py-2 shadow-md z-10",
-          "bg-white dark:bg-slate-700"
-        )}
-      >
-        <ul>
-          <li className="w-full py-2 px-4 flex items center  dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
-            <div className="flex-1">Nuevo grupo</div>
-            <span className="w-6 text-neutral-700 dark:text-neutral-50">
-              <AccessibleIcon.Root label="Icono de crear nuevo grupo">
-                <IoPeople className="w-full h-full" />
-              </AccessibleIcon.Root>
-            </span>
-          </li>
-          <li className="w-full ">
-            <Configuration />
-          </li>
-          <li className="w-full py-2 px-4 flex items center dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
-            <SwitchDarkMode />
-          </li>
-          <li className="w-full py-2 px-4 flex items-stretch dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
-            <div className="flex-1">Cerrar sesión</div>
-            <span className="text-red-600 dark:text-red-700 w-6">
-              <AccessibleIcon.Root label="Icono de cerrar sesión">
-                <BiExit className="w-full h-full" />
-              </AccessibleIcon.Root>
-            </span>
-          </li>
-        </ul>
-      </PopoverPrimitive.Content>
-    </PopoverPrimitive.Root>
+      </MenuTrigger>
+      <MenuContent align="end" className="w-56">
+        <MenuItem className="py-2 px-4 flex items center">
+          <div className="flex-1">Nuevo grupo</div>
+          <MenuIcon Icon={IoPeople} label="Crear nuevo grupo" />
+        </MenuItem>
+        <MenuItem>
+          <Configuration />
+        </MenuItem>
+        <MenuItem className="py-2 px-4">
+          <SwitchDarkMode />
+        </MenuItem>
+        <MenuItem className="w-full py-2 px-4">
+          <div className="flex-1">Cerrar sesión</div>
+          <MenuIcon label="Cerrar sesión" Icon={BiExit} isDanger />
+        </MenuItem>
+      </MenuContent>
+    </MenuRoot>
   );
 }
