@@ -13,6 +13,7 @@ import { Profile } from "./Profile";
 import { Security } from "./Security";
 import { SolInfo } from "./SolInfo";
 import { Theme } from "./Theme";
+import { MenuIcon, MenuItem } from "../Menu";
 
 const OPTIONS = "OPTIONS";
 const renderOptions = {
@@ -39,16 +40,16 @@ export function Configuration() {
 
   return (
     <Dialog.Root open={openModal} onOpenChange={setOpenModal}>
-      <Dialog.Trigger asChild>
-        <button className="w-full py-2 px-4 flex items center dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
+      <MenuItem>
+        <Dialog.Trigger className="w-full py-2 px-4 flex items-center">
           <span>Configuración</span>
-          <span className="ml-auto w-6 text-neutral-700 dark:text-neutral-50">
-            <AccessibleIcon.Root label="Icono de configuración">
-              <BsGearFill className="w-full h-full" />
-            </AccessibleIcon.Root>
-          </span>
-        </button>
-      </Dialog.Trigger>
+          <MenuIcon
+            label="Abrir configuración"
+            Icon={BsGearFill}
+            className="ml-auto"
+          />
+        </Dialog.Trigger>
+      </MenuItem>
       <Drawer from="left" open={openModal}>
         <div
           className={`${
