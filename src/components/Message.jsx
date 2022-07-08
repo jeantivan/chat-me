@@ -4,6 +4,7 @@ import cx from "classnames";
 import { useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { BsChevronDown, BsEmojiSmileFill } from "react-icons/bs";
+import { MenuTrigger, MenuRoot, MenuItem, MenuContent } from "./Menu";
 
 const reactions = [
   {
@@ -28,36 +29,27 @@ const buttonVariants = {
   show: { opacity: 1, transition: { duration: 0.05 } },
 };
 
-const MenuItem = ({ children }) => (
-  <li className="px-4 py-2 w-full dark:text-white hover:bg-neutral-200 dark:hover:bg-slate-900">
-    {children}
-  </li>
-);
-
-const MessageMenu = ({ isSend }) => {
-  return (
-    <PopoverPrimitive.Content
-      sideOffset={4}
-      align={isSend ? "end" : "start"}
-      className={cx(
-        "w-48 rounded py-2 shadow-md",
-        "bg-white dark:bg-slate-800",
-        "z-50 select-none"
-      )}
-    >
-      <ul>
-        <MenuItem>Responder</MenuItem>
-        <MenuItem>Reaccionar al Mensaje</MenuItem>
-        <MenuItem>Reenviar mensaje</MenuItem>
-        <MenuItem>Destacar mensaje</MenuItem>
-        <MenuItem>Eliminar mensaje</MenuItem>
-      </ul>
-    </PopoverPrimitive.Content>
-  );
-};
-
-const MenuRoot = ({ children, ...rest }) => (
-  <PopoverPrimitive.Root {...rest}>{children}</PopoverPrimitive.Root>
+const MessageTail = ({ isSend }) => (
+  <span
+    aria-hidden={true}
+    className={cx(
+      "w-3 h-3 absolute top-0",
+      {
+        "dark:bg-emerald-700 bg-green-200": isSend,
+        "dark:bg-slate-700 bg-white": !isSend,
+      },
+      { "left-full": isSend, "left-0": !isSend }
+    )}
+    style={{
+      zIndex: "-1",
+      transform: isSend
+        ? "translate3d(-2%, 0, -10px)"
+        : "translate3d(-98%, 0, -10px)",
+      borderRadius: isSend
+        ? "95% 5% 100% 0% / 0% 5% 95% 100%"
+        : "5% 95% 0% 100% / 5% 0% 100% 95%",
+    }}
+  />
 );
 
 const ReactionRoot = ({ children, ...rest }) => (
@@ -110,7 +102,7 @@ export function Message({ message, type, time, isFirstMessage }) {
               <span className="text-xs dark:text-gray-400 text-neutral-500 ml-auto self-end pt-1 pl-1">
                 {time}
               </span>
-              <PopoverPrimitive.Trigger asChild>
+              <MenuTrigger asChild>
                 <button
                   className={cx(
                     "transition opacity-0 translate-x-full group-hover:-translate-x-0 group-hover:opacity-100",
@@ -130,33 +122,17 @@ export function Message({ message, type, time, isFirstMessage }) {
                     <BsChevronDown className="w-full h-full stroke-1" />
                   </AccessibleIcon.Root>
                 </button>
-              </PopoverPrimitive.Trigger>
+              </MenuTrigger>
             </div>
-
-            {isFirstMessage && (
-              <span
-                aria-hidden={true}
-                className={cx(
-                  "w-3 h-3 absolute top-0",
-                  {
-                    "dark:bg-emerald-700 bg-green-200": isSend,
-                    "dark:bg-slate-700 bg-white": !isSend,
-                  },
-                  { "left-full": isSend, "left-0": !isSend }
-                )}
-                style={{
-                  zIndex: "-1",
-                  transform: isSend
-                    ? "translate3d(-2%, 0, -10px)"
-                    : "translate3d(-98%, 0, -10px)",
-                  borderRadius: isSend
-                    ? "95% 5% 100% 0% / 0% 5% 95% 100%"
-                    : "5% 95% 0% 100% / 5% 0% 100% 95%",
-                }}
-              />
-            )}
+            {isFirstMessage && <MessageTail isSend={isSend} />}
           </div>
-          <MessageMenu isSend={isSend} />
+          <MenuContent align={isSend ? "end" : "start"} className="w-48">
+            <MenuItem>Responder</MenuItem>
+            <MenuItem>Reaccionar al Mensaje</MenuItem>
+            <MenuItem>Reenviar mensaje</MenuItem>
+            <MenuItem>Destacar mensaje</MenuItem>
+            <MenuItem>Eliminar mensaje</MenuItem>
+          </MenuContent>
         </MenuRoot>
 
         <ReactionRoot open={openReactions} onOpenChange={setOpenReactions}>
