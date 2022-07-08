@@ -13,9 +13,11 @@ import MESSAGES from "./utils/messages.json";
 import { INITIAL_CHAT } from "./utils/constants";
 import { useGetContacts } from "./utils/useGetContacts";
 import { useEffect } from "react";
+import { ContactInfoContent, useContactInfo } from "./components/ContactInfo";
 
 function App() {
   const { mode } = useDarkMode();
+  const { openContactInfo } = useContactInfo();
   const [messages, setMessages] = useState([]);
   const [selectedChat, setSelectedChat] = useState(INITIAL_CHAT);
   const { isError, isLoading, data } = useGetContacts();
@@ -53,6 +55,10 @@ function App() {
             <InputContainer setMessages={setMessages} />
           </>
         )}
+        <ContactInfoContent
+          selectedChat={selectedChat}
+          openContactInfo={openContactInfo}
+        />
       </main>
     </div>
   );
