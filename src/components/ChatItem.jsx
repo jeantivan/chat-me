@@ -39,11 +39,13 @@ export function ChatItem({ contact, setSelectedChat, selectedChat }) {
           <p className="text-sm dark:text-gray-400 text-gray-500 line-clamp-1 flex-1">
             {message}
           </p>
+          {/* 
+            TODO: Mostrar cuando la opción "pinear" este disponible en las opciones del chat
           <CustomIcon
             label="Chat fijado"
             Icon={BsPinAngleFill}
             className="w-4 h-4 ml-2 dark:text-gray-400 text-gray-500"
-          />
+          /> */}
         </div>
       </div>
     </div>
