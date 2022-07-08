@@ -7,11 +7,12 @@ export function SwitchDarkMode() {
 
   return (
     <div className="dark:text-white flex w-full">
-      <div className="flex items-center flex-1">Dark Mode</div>
+      <div className="flex-1">Modo oscuro</div>
 
       <Switch
         checked={mode === "dark"}
         onCheckedChange={() => toggleDarkMode()}
+        title={`${mode === "dark" ? "Desactivar" : "Activar"} el modo oscuro`}
       >
         <BsMoonStarsFill className="w-full h-full" />
       </Switch>
