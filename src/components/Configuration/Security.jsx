@@ -29,9 +29,7 @@ export function Security({ goBack }) {
             onClick={goBack}
             className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
           >
-            <AccessibleIcon.Root label="Cerrar configuración">
-              <BsArrowLeft className="w-full h-full" />
-            </AccessibleIcon.Root>
+            <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
           <Dialog.Title className="text-slate-50 text-xl">
@@ -48,12 +46,11 @@ export function Security({ goBack }) {
             transition={{ type: "tween" }}
             className="w-28 h-28 relative rounded-full flex justify-center items-center bg-emerald-200"
           >
-            <AccessibleIcon.Root asChild label="Shield-icon">
+            <AccessibleIcon.Root label="Icono de seguridad">
               <span className="w-16 h-20 text-slate-50">
                 <BsShieldFill className="w-full h-full" />
               </span>
-            </AccessibleIcon.Root>
-            <AccessibleIcon.Root asChild label="Lock-icon">
+
               <span className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-500">
                 <BsLockFill className="w-full h-full" />
               </span>
