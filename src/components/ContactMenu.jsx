@@ -3,9 +3,10 @@ import cx from "classnames";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { INITIAL_CHAT } from "../utils/constants";
-import { ContactInfo } from "./ContactInfo";
+//import { ContactInfo } from "./ContactInfo";
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
+import { ContactInfoTrigger } from "./ContactInfo";
 
 export function ContactMenu({ selectedChat, setSelectedChat }) {
   const [open, setOpen] = useState(false);
@@ -23,7 +24,9 @@ export function ContactMenu({ selectedChat, setSelectedChat }) {
       </MenuTrigger>
       <MenuContent align="end" className="w-56">
         <MenuItem>
-          <ContactInfo selectedChat={selectedChat} />
+          <ContactInfoTrigger className="w-full py-2 px-4 text-left">
+            Info. del Contacto
+          </ContactInfoTrigger>
         </MenuItem>
         <MenuItem>Seleccionar mensajes</MenuItem>
         <MenuItem>
