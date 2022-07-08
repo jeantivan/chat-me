@@ -26,7 +26,7 @@ export function ChatList({
           </div>
         </div>
       </div>
-      <div className="flex flex-col overflow-y-auto">
+      <div className="flex flex-col overflow-y-auto overflow-x-hidden">
         {isError && (
           <div className="py-4 mx-auto text-lg dark:text-white">
             Ups algo salió mal
