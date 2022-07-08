@@ -1,12 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
-import { useState } from "react";
-import { Switch } from "./Switch";
-import { useDarkMode } from "./DarkMode";
-import { Drawer } from "./Drawer";
-import { MenuItem } from "./Menu";
-import { CustomIcon } from "./CustomIcon";
 import { FaBan } from "react-icons/fa";
 import {
   BsX,
@@ -18,6 +11,12 @@ import {
   BsHandThumbsDownFill,
   BsTrashFill,
 } from "react-icons/bs";
+import { useDarkMode } from "../DarkMode";
+import { Switch } from "../Switch";
+import { Drawer } from "../Drawer";
+import { CustomIcon } from "../CustomIcon";
+
+export const ContactInfoTrigger = Dialog.Trigger;
 
 const Item = ({ children, isDanger }) => {
   const { mode } = useDarkMode();
@@ -69,9 +68,8 @@ const ItemAction = ({ children }) => (
   <div className="w-1/6 flex justify-center">{children}</div>
 );
 
-export function ContactInfo({ selectedChat }) {
+export function ContactInfoContent({ selectedChat, openContactInfo }) {
   const { mode } = useDarkMode();
-  const [open, setOpen] = useState(false);
   const { name, phone, picture } = selectedChat;
 
   const isLight = mode === "light";
@@ -80,14 +78,8 @@ export function ContactInfo({ selectedChat }) {
   const textColor = isLight ? "text-neutral-900" : "text-white";
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <MenuItem>
-        <Dialog.Trigger className="w-full py-2 px-4 text-left">
-          Info. del Contacto
-        </Dialog.Trigger>
-      </MenuItem>
-
-      <Drawer from="right" open={open}>
+    <>
+      <Drawer from="right" open={openContactInfo}>
         <div
           className={`${
             isLight ? "bg-slate-50" : "bg-slate-900"
@@ -136,9 +128,7 @@ export function ContactInfo({ selectedChat }) {
                 </div>
                 <div className="inline-flex items-center text-gray-500 text-sm">
                   20
-                  <AccessibleIcon.Root label="Ver más">
-                    <BsChevronRight />
-                  </AccessibleIcon.Root>
+                  <CustomIcon Icon={BsChevronRight} label="Ver más" />
                 </div>
               </div>
               <div className="px-2 flex flex-row w-full mb-4">
@@ -227,6 +217,6 @@ export function ContactInfo({ selectedChat }) {
           </div>
         </div>
       </Drawer>
-    </Dialog.Root>
+    </>
   );
 }
