@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BsPaperclip, BsEmojiSmile } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
+import { CustomIcon } from "./CustomIcon";
 
 const generateRandomId = () => (Math.random() + 1).toString(36).substring(2);
 const getMessageHour = () => {
@@ -39,11 +40,11 @@ export function InputContainer({ setMessages }) {
   return (
     <div className="input-container dark:bg-slate-700 h-full py-2 px-6 flex">
       <div className="flex items-center">
-        <div className="w-7 h-7 dark:text-slate-500 text-slate-600 rounded-full mr-1">
-          <BsPaperclip className="w-full h-full rotate-45" />
+        <div className="w-7 h-7 dark:text-slate-500 text-slate-600 p-0.5 rounded-full mr-1">
+          <CustomIcon Icon={BsEmojiSmile} label="Mostrar emojis" />
         </div>
-        <div className="w-7 h-7 dark:text-slate-500 text-slate-600 p-0.5 rounded-full ml-1">
-          <BsEmojiSmile className="w-full h-full" />
+        <div className="w-7 h-7 rotate-45 rounded-full ml-1 dark:text-slate-500 text-slate-600">
+          <CustomIcon Icon={BsPaperclip} label="Ajuntar archivos" />
         </div>
       </div>
       <form onSubmit={handleSubmit} className="w-full flex ">
@@ -61,7 +62,7 @@ export function InputContainer({ setMessages }) {
             disabled={!Boolean(message)}
             className="w-7 h-7 dark:disabled:text-slate-500 disabled:text-slate-600 text-emerald-500 p-0.5"
           >
-            <IoSend className="w-full h-full" />
+            <CustomIcon Icon={IoSend} label="Enviar mensaje" />
           </button>
         </div>
       </form>

@@ -1,7 +1,7 @@
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
 import { BsArrowLeft } from "react-icons/bs";
+import { CustomIcon } from "../CustomIcon";
 
 export function Background({ goBack }) {
   return (
@@ -18,9 +18,7 @@ export function Background({ goBack }) {
             onClick={goBack}
             className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
           >
-            <AccessibleIcon.Root label="Cerrar configuración">
-              <BsArrowLeft className="w-full h-full" />
-            </AccessibleIcon.Root>
+            <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
           <Dialog.Title className="text-slate-50 text-xl">

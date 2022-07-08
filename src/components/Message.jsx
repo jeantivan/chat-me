@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { BsChevronDown, BsEmojiSmileFill } from "react-icons/bs";
 import { MenuTrigger, MenuRoot, MenuItem, MenuContent } from "./Menu";
+import { CustomIcon } from "./CustomIcon";
 
 const reactions = [
   {
@@ -118,9 +119,7 @@ export function Message({ message, type, time, isFirstMessage }) {
                     }
                   )}
                 >
-                  <AccessibleIcon.Root label="Mostrar menu">
-                    <BsChevronDown className="w-full h-full stroke-1" />
-                  </AccessibleIcon.Root>
+                  <CustomIcon Icon={BsChevronDown} label="Mostrar menu" />
                 </button>
               </MenuTrigger>
             </div>
@@ -154,9 +153,10 @@ export function Message({ message, type, time, isFirstMessage }) {
                     "rounded-full p-1.5 w-9 h-9"
                   )}
                 >
-                  <AccessibleIcon.Root label="Reaccionar al mensaje">
-                    <BsEmojiSmileFill className="w-full h-full" />
-                  </AccessibleIcon.Root>
+                  <CustomIcon
+                    Icon={BsEmojiSmileFill}
+                    label="Reaccionar al mensaje"
+                  />
                 </button>
               </PopoverPrimitive.Trigger>
             </motion.div>

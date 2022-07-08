@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { BsCameraFill } from "react-icons/bs";
 import { useUserInfo } from "./UserInfoProvider";
 import { UserImage } from "./UserImage";
+import { CustomIcon } from "./CustomIcon";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
 const toMB = 1048576;
@@ -47,9 +48,11 @@ export function ChangeUserImage() {
           }}
           className="w-3/4 flex flex-col items-center justify-center mt-5"
         >
-          <span className="w-6 h-6 mb-1 text-neutral-50">
-            <BsCameraFill className="w-full h-full" />
-          </span>
+          <CustomIcon
+            label="Camara"
+            Icon={BsCameraFill}
+            className="w-6 h-6 mb-1 text-neutral-50"
+          />
           <span className="uppercase text-center text-sm text-neutral-50 w-4/5">
             Elegir foto de perfil
           </span>

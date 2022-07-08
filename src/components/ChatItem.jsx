@@ -1,6 +1,6 @@
-import { FaUserCircle } from "react-icons/fa";
 import { BsPinAngleFill } from "react-icons/bs";
 import cx from "classnames";
+import { CustomIcon } from "./CustomIcon";
 
 export function ChatItem({ contact, setSelectedChat, selectedChat }) {
   const { name, picture, lastMessage } = contact;
@@ -39,9 +39,11 @@ export function ChatItem({ contact, setSelectedChat, selectedChat }) {
           <p className="text-sm dark:text-gray-400 text-gray-500 line-clamp-1 flex-1">
             {message}
           </p>
-          <span className="text-sm dark:text-gray-400 text-gray-500">
-            <BsPinAngleFill className="w-full h-full p-0.5" />
-          </span>
+          <CustomIcon
+            label="Chat fijado"
+            Icon={BsPinAngleFill}
+            className="w-4 h-4 ml-2 dark:text-gray-400 text-gray-500"
+          />
         </div>
       </div>
     </div>

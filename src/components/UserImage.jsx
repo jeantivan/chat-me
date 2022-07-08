@@ -1,5 +1,6 @@
 import { FaUserCircle } from "react-icons/fa";
 import { useUserInfo } from "./UserInfoProvider";
+import { CustomIcon } from "./CustomIcon";
 
 export function UserImage() {
   const { user } = useUserInfo();
@@ -11,8 +12,10 @@ export function UserImage() {
       className="w-full h-full bg-gray-400"
     />
   ) : (
-    <span className="w-full h-full text-gray-400">
-      <FaUserCircle className="w-full h-full" />
-    </span>
+    <CustomIcon
+      label="Avatar"
+      Icon={FaUserCircle}
+      className="w-full h-full text-gray-400"
+    />
   );
 }

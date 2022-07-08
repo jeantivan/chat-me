@@ -2,6 +2,7 @@ import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import { useState, useRef } from "react";
 import { BsPencilFill, BsCheck, BsX } from "react-icons/bs";
 import { useDarkMode } from "./DarkMode";
+import { CustomIcon } from "./CustomIcon";
 
 export function EditableInput({ label, value, onSave, canBeEmpty, ...rest }) {
   const inputRef = useRef(null);
@@ -57,18 +58,14 @@ export function EditableInput({ label, value, onSave, canBeEmpty, ...rest }) {
                   setIsEditing(false);
                 }}
               >
-                <AccessibleIcon.Root label="Cancel Icon">
-                  <BsX className="w-full h-full" />
-                </AccessibleIcon.Root>
+                <CustomIcon Icon={BsX} label="Cancelar" />
               </button>
               <button
                 className="w-6 h-6 inline-flex items-center justify-center rounded-sm text-white border border-emerald-500 bg-emerald-500"
                 title="Guardar cambios"
                 onClick={handleSave}
               >
-                <AccessibleIcon.Root label="Save Icon">
-                  <BsCheck className="w-full h-full" />
-                </AccessibleIcon.Root>
+                <CustomIcon Icon={BsCheck} label="Guardar cambios" />
               </button>
             </div>
           </>
@@ -88,9 +85,7 @@ export function EditableInput({ label, value, onSave, canBeEmpty, ...rest }) {
                 setIsEditing(true);
               }}
             >
-              <AccessibleIcon.Root label="Edit Icon">
-                <BsPencilFill className="w-full h-full" />
-              </AccessibleIcon.Root>
+              <CustomIcon Icon={BsPencilFill} label="Edit Icon" />
             </button>
           </>
         )}

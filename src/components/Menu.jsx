@@ -1,6 +1,7 @@
 import * as Popover from "@radix-ui/react-popover";
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
+import { CustomIcon } from "./CustomIcon";
 
 export const MenuRoot = Popover.Root;
 
@@ -32,9 +33,7 @@ export const MenuIcon = ({ label, isDanger, Icon, className, ...rest }) => (
     )}
     {...rest}
   >
-    <AccessibleIcon.Root label={label}>
-      <Icon className="w-full h-full text-inherit" />
-    </AccessibleIcon.Root>
+    <CustomIcon Icon={Icon} label={label} />
   </span>
 );
 

@@ -9,12 +9,12 @@ import {
 } from "react-icons/bs";
 import { ImFilePicture } from "react-icons/im";
 import * as Dialog from "@radix-ui/react-dialog";
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import { motion } from "framer-motion";
 import { Shortcuts } from "./Shortcuts";
 import { useDarkMode } from "../DarkMode";
 import { UserImage } from "../UserImage";
 import { useUserInfo } from "../UserInfoProvider";
+import { CustomIcon } from "../CustomIcon";
 
 const PROFILE = "PROFILE";
 const NOTIFICATIONS = "NOTIFICATIONS";
@@ -84,7 +84,7 @@ const Item = ({ icon, label, mode, ...rest }) => (
   >
     <span className="w-14 flex items-center justify-center">
       <span className="w-5 h-5 text-slate-400">
-        <AccessibleIcon.Root label={label}>{icon}</AccessibleIcon.Root>
+        <CustomIcon Icon={icon} label={label} />
       </span>
     </span>
 
@@ -109,9 +109,7 @@ export function Options({ setRender }) {
         <motion.div className="px-4 flex items-center" variants={childVariants}>
           <Dialog.Close asChild>
             <button className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4">
-              <AccessibleIcon.Root label="Cerrar configuración">
-                <BsArrowLeft className="w-full h-full" />
-              </AccessibleIcon.Root>
+              <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
             </button>
           </Dialog.Close>
           <Dialog.Title className="text-slate-50 text-xl">
@@ -129,7 +127,7 @@ export function Options({ setRender }) {
           />
 
           <Item
-            icon={<BsBellFill className="w-full h-full" />}
+            icon={BsBellFill}
             label="Notificaciones"
             mode={mode}
             onClick={() => {
@@ -138,7 +136,7 @@ export function Options({ setRender }) {
             }}
           />
           <Item
-            icon={<BsLockFill className="w-full h-full" />}
+            icon={BsLockFill}
             label="Privacidad"
             mode={mode}
             onClick={() => {
@@ -147,7 +145,7 @@ export function Options({ setRender }) {
             }}
           />
           <Item
-            icon={<BsShieldShaded className="w-full h-full" />}
+            icon={BsShieldShaded}
             label="Seguridad"
             mode={mode}
             onClick={() => {
@@ -156,7 +154,7 @@ export function Options({ setRender }) {
             }}
           />
           <Item
-            icon={<BsMoonStarsFill className="w-full h-full" />}
+            icon={BsMoonStarsFill}
             label="Tema"
             mode={mode}
             onClick={() => {
@@ -165,7 +163,7 @@ export function Options({ setRender }) {
             }}
           />
           <Item
-            icon={<ImFilePicture className="w-full h-full" />}
+            icon={ImFilePicture}
             label="Fondo de pantalla"
             mode={mode}
             onClick={() => {
@@ -174,7 +172,7 @@ export function Options({ setRender }) {
             }}
           />
           <Item
-            icon={<BsFileEarmarkTextFill className="w-full h-full" />}
+            icon={BsFileEarmarkTextFill}
             label="Solicitar info. de la cuenta"
             mode={mode}
             onClick={() => {
@@ -184,7 +182,7 @@ export function Options({ setRender }) {
           />
           <Shortcuts mode={mode} />
           <Item
-            icon={<BsQuestionCircleFill className="w-full h-full" />}
+            icon={BsQuestionCircleFill}
             label="Ayuda"
             mode={mode}
             onClick={() => {

@@ -1,4 +1,3 @@
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import * as Label from "@radix-ui/react-label";
@@ -9,6 +8,7 @@ import { motion } from "framer-motion";
 import { BsArrowLeft } from "react-icons/bs";
 import { useDarkMode } from "../DarkMode";
 import { getSystemColorMode } from "../../utils/getSystemColorMode";
+import { CustomIcon } from "../CustomIcon";
 
 export function Theme({ goBack }) {
   const { mode, setDarkMode } = useDarkMode();
@@ -40,9 +40,7 @@ export function Theme({ goBack }) {
             onClick={goBack}
             className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
           >
-            <AccessibleIcon.Root label="Cerrar configuración">
-              <BsArrowLeft className="w-full h-full" />
-            </AccessibleIcon.Root>
+            <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
           <Dialog.Title className="text-slate-50 text-xl">

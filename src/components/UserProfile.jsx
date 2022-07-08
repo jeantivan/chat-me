@@ -6,6 +6,7 @@ import { UserImage } from "./UserImage";
 import { useDarkMode } from "./DarkMode";
 import { Drawer } from "./Drawer";
 import { Profile } from "./Configuration/Profile";
+import { CustomIcon } from "./CustomIcon";
 
 export function UserProfile() {
   const { mode } = useDarkMode();
@@ -37,11 +38,19 @@ export function UserProfile() {
       </Dialog.Root>
 
       <div className="flex items-center">
-        <div className="h-8 w-8 ml-2 rounded-full dark:text-gray-400 text-gray-500 hover:bg-slate-200 dark:hover:bg-slate-600   p-1">
-          <BsPlusCircle className="h-full w-full" />
+        <div className="h-8 w-8 ml-2 rounded-full p-1 hover:bg-slate-200 dark:hover:bg-slate-600 cursor-pointer">
+          <CustomIcon
+            Icon={BsPlusCircle}
+            label="Historias"
+            className="dark:text-gray-400 text-gray-500 "
+          />
         </div>
-        <div className="h-8 w-8 ml-2 rounded-full dark:text-gray-400 text-gray-500 hover:bg-slate-200 dark:hover:bg-slate-600 p-2">
-          <BsChatLeftTextFill className="h-full w-full" />
+        <div className="h-8 w-8 ml-2 rounded-full p-2 hover:bg-slate-200 dark:hover:bg-slate-600 cursor-pointer">
+          <CustomIcon
+            Icon={BsChatLeftTextFill}
+            label="Nuevo chat"
+            className="dark:text-gray-400 text-gray-500 "
+          />
         </div>
         <div className="ml-2">
           <UserMenu />

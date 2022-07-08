@@ -1,4 +1,3 @@
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
 import { BsArrowLeft } from "react-icons/bs";
@@ -6,6 +5,7 @@ import { useDarkMode } from "../DarkMode";
 import { useUserInfo } from "../UserInfoProvider";
 import { EditableInput } from "../EditableInput";
 import { ChangeUserImage } from "../ChangeUserImage";
+import { CustomIcon } from "../CustomIcon";
 
 export function Profile({ goBack }) {
   const { mode } = useDarkMode();
@@ -33,9 +33,7 @@ export function Profile({ goBack }) {
             onClick={goBack}
             className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
           >
-            <AccessibleIcon.Root label="Cerrar configuración">
-              <BsArrowLeft className="w-full h-full" />
-            </AccessibleIcon.Root>
+            <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
           <Dialog.Title className="text-slate-50 text-xl">Perfil</Dialog.Title>

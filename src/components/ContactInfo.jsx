@@ -6,6 +6,7 @@ import { Switch } from "./Switch";
 import { useDarkMode } from "./DarkMode";
 import { Drawer } from "./Drawer";
 import { MenuItem } from "./Menu";
+import { CustomIcon } from "./CustomIcon";
 import { FaBan } from "react-icons/fa";
 import {
   BsX,
@@ -68,14 +69,6 @@ const ItemAction = ({ children }) => (
   <div className="w-1/6 flex justify-center">{children}</div>
 );
 
-const CustomIcon = ({ label, Icon, className }) => (
-  <div className={className}>
-    <AccessibleIcon.Root label={label}>
-      <Icon className="w-full h-full" />
-    </AccessibleIcon.Root>
-  </div>
-);
-
 export function ContactInfo({ selectedChat }) {
   const { mode } = useDarkMode();
   const [open, setOpen] = useState(false);
@@ -106,9 +99,7 @@ export function ContactInfo({ selectedChat }) {
             }`}
           >
             <Dialog.Close className="w-7 h-7 text-slate-500  mr-4">
-              <AccessibleIcon.Root label="Cerrar info. del contacto">
-                <BsX className="w-full h-full" />
-              </AccessibleIcon.Root>
+              <CustomIcon label="Cerrar info. del contacto" Icon={BsX} />
             </Dialog.Close>
             <Dialog.Title className={`text-lg ${textColor}`}>
               Info. del Contacto

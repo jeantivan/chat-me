@@ -7,6 +7,7 @@ import { IoPeople } from "react-icons/io5";
 import { SwitchDarkMode } from "./SwitchDarkMode";
 import { Configuration } from "./Configuration";
 import { MenuRoot, MenuTrigger, MenuContent, MenuItem, MenuIcon } from "./Menu";
+import { CustomIcon } from "./CustomIcon";
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -20,9 +21,7 @@ export function UserMenu() {
           { "dark:bg-gray-600 bg-gray-200": open }
         )}
       >
-        <AccessibleIcon.Root label="Open Menu">
-          <BsThreeDotsVertical className="h-full w-full" />
-        </AccessibleIcon.Root>
+        <CustomIcon Icon={BsThreeDotsVertical} label="Abrir menu" />
       </MenuTrigger>
       <MenuContent align="end" className="w-56">
         <MenuItem className="py-2 px-4 flex items center">

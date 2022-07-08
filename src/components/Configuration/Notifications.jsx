@@ -1,4 +1,3 @@
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Label from "@radix-ui/react-label";
 import * as CheckBox from "@radix-ui/react-checkbox";
@@ -6,6 +5,7 @@ import { motion } from "framer-motion";
 import { BsArrowLeft, BsCheck } from "react-icons/bs";
 import cx from "classnames";
 import { useDarkMode } from "../DarkMode";
+import { CustomIcon } from "../CustomIcon";
 
 export function Notifications({ goBack }) {
   const { mode } = useDarkMode();
@@ -24,9 +24,7 @@ export function Notifications({ goBack }) {
             onClick={goBack}
             className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
           >
-            <AccessibleIcon.Root label="Cerrar configuración">
-              <BsArrowLeft className="w-full h-full" />
-            </AccessibleIcon.Root>
+            <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
           <Dialog.Title className="text-slate-50 text-xl">
