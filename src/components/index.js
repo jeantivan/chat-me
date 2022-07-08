@@ -14,3 +14,10 @@ export {
   useUserInfo,
   UserInfoContext,
 } from "./UserInfoProvider";
+export {
+  ContactInfoContext,
+  ContactInfoProvider,
+  useContactInfo,
+  ContactInfoTrigger,
+  ContactInfoContent,
+} from "./ContactInfo";
