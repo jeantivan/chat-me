@@ -3,7 +3,11 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { DarkModeProvider, UserInfoProvider } from "./components";
+import {
+  DarkModeProvider,
+  UserInfoProvider,
+  ContactInfoProvider,
+} from "./components";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -15,7 +19,9 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <DarkModeProvider>
         <UserInfoProvider>
-          <App />
+          <ContactInfoProvider>
+            <App />
+          </ContactInfoProvider>
         </UserInfoProvider>
       </DarkModeProvider>
     </QueryClientProvider>
