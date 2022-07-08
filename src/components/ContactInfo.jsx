@@ -5,7 +5,8 @@ import { useState } from "react";
 import { Switch } from "./Switch";
 import { useDarkMode } from "./DarkMode";
 import { Drawer } from "./Drawer";
-import { FaUserCircle, FaBan } from "react-icons/fa";
+import { MenuItem } from "./Menu";
+import { FaBan } from "react-icons/fa";
 import {
   BsX,
   BsChevronRight,
@@ -87,9 +88,12 @@ export function ContactInfo({ selectedChat }) {
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger className="w-full py-2 px-4 flex items center  dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
-        Info. del Contacto
-      </Dialog.Trigger>
+      <MenuItem>
+        <Dialog.Trigger className="w-full py-2 px-4 text-left">
+          Info. del Contacto
+        </Dialog.Trigger>
+      </MenuItem>
+
       <Drawer from="right" open={open}>
         <div
           className={`${
