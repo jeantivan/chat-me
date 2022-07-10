@@ -1,5 +1,4 @@
 import { createContext, useState, useContext } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
 
 export const ContactInfoContext = createContext({
   openContactInfo: false,
@@ -15,9 +14,7 @@ export function ContactInfoProvider({ children }) {
     <ContactInfoContext.Provider
       value={{ openContactInfo, setOpenContactInfo }}
     >
-      <Dialog.Root open={openContactInfo} onOpenChange={setOpenContactInfo}>
-        {children}
-      </Dialog.Root>
+      {children}
     </ContactInfoContext.Provider>
   );
 }

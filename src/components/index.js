@@ -18,6 +18,5 @@ export {
   ContactInfoContext,
   ContactInfoProvider,
   useContactInfo,
-  ContactInfoTrigger,
   ContactInfoContent,
 } from "./ContactInfo";

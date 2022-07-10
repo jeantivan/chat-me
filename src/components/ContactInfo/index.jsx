@@ -4,4 +4,4 @@ export {
   useContactInfo,
 } from "./Context";
 
-export { ContactInfoTrigger, ContactInfoContent } from "./Content";
+export { ContactInfoContent } from "./Content";
