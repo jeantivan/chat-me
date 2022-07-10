@@ -24,20 +24,6 @@ body {
 }
 
 .app-container {
-  max-height: 100vh;
   height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: min-content 1fr;
-  grid-template-areas:
-    "header"
-    "main";
-}
-
-.header {
-  grid-area: header;
-}
-
-.main {
-  grid-area: main;
+  width: 100vw;
 }
