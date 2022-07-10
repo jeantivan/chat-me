@@ -10,7 +10,7 @@ export function ChatList({
   isLoading,
 }) {
   return (
-    <div className="chats-list dark:bg-slate-800/80 border-solid border-r border-slate-200 dark:border-slate-600 flex flex-col">
+    <div className="chats-list h-full dark:bg-slate-800/80 border-solid border-r border-slate-200 dark:border-slate-600 flex flex-col">
       <div className="dark:bg-slate-800 bg-white p-2 sticky top-0 border-b border-slate-200 dark:border-slate-600 border-solid">
         <div className="flex dark:text-gray-400 text-gray-500 dark:bg-slate-700 bg-zinc-100 rounded-md">
           <CustomIcon
