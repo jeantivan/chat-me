@@ -11,11 +11,12 @@ import {
   BsTrashFill,
 } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
-import { useMediaQuery } from "usehooks-ts";
+import { useMediaQuery, useEventListener } from "usehooks-ts";
 import { useDarkMode } from "../DarkMode";
 import { useContactInfo } from "./Context";
 import { Switch } from "../Switch";
 import { CustomIcon } from "../CustomIcon";
+import { useRef } from "react";
 
 const Item = ({ children, isDanger }) => {
   const { mode } = useDarkMode();
@@ -80,10 +81,17 @@ export function ContactInfoContent({ selectedChat }) {
   const { mode } = useDarkMode();
   const isLg = useMediaQuery("(min-width: 1024px");
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
+  const documentRef = useRef(document);
   const { name, phone, picture } = selectedChat;
   const isLight = mode === "light";
   const bgColor = isLight ? "bg-white" : "bg-slate-800";
   const textColor = isLight ? "text-neutral-900" : "text-white";
+
+  const onKeyUp = (e) => {
+    if (e.key === "Escape") setOpenContactInfo(false);
+  };
+
+  useEventListener("keyup", onKeyUp, documentRef);
 
   return (
     <AnimatePresence>
