@@ -1,4 +1,3 @@
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -6,9 +5,10 @@ import { INITIAL_CHAT } from "../utils/constants";
 //import { ContactInfo } from "./ContactInfo";
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
-import { ContactInfoTrigger } from "./ContactInfo";
+import { useContactInfo } from "./ContactInfo";
 
-export function ContactMenu({ selectedChat, setSelectedChat }) {
+export function ContactMenu({ setSelectedChat }) {
+  const { setOpenContactInfo } = useContactInfo();
   const [open, setOpen] = useState(false);
   return (
     <MenuRoot open={open} onOpenChange={setOpen}>
@@ -24,9 +24,15 @@ export function ContactMenu({ selectedChat, setSelectedChat }) {
       </MenuTrigger>
       <MenuContent align="end" className="w-56">
         <MenuItem>
-          <ContactInfoTrigger className="w-full py-2 px-4 text-left">
+          <button
+            onClick={() => {
+              setOpenContactInfo(true);
+              setOpen(false);
+            }}
+            className="w-full py-2 px-4 text-left"
+          >
             Info. del Contacto
-          </ContactInfoTrigger>
+          </button>
         </MenuItem>
         <MenuItem>Seleccionar mensajes</MenuItem>
         <MenuItem>
