@@ -73,7 +73,7 @@ export function Message({ message, type, time, isFirstMessage }) {
 
         controls.start("hidden");
       }}
-      className={cx("px-5 md:px-10 lg:px-20", {
+      className={cx("px-5 md:px-[5%] lg:px-[9%]", {
         "mt-4": isFirstMessage,
         "mt-1": !isFirstMessage,
       })}

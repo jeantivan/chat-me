@@ -1,6 +1,6 @@
 export function Welcome() {
   return (
-    <div className="welcome dark:bg-slate-700 bg-slate-100  flex flex-col items-end p-5 border-b-8 border-emerald-500 ">
+    <div className="w-full h-full welcome dark:bg-slate-700 bg-slate-100  flex flex-col items-end p-5 border-b-8 border-emerald-500 ">
       <div className="w-full h-full flex justify-center items-center">
         <div className="mx-auto">
           <h1 className="text-4xl font-bold dark:text-white mb-5">
