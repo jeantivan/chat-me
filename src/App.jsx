@@ -7,17 +7,17 @@ import {
   Messages,
   UserProfile,
   Welcome,
+  SearchChats,
 } from "./components";
 import "./App.css";
 import MESSAGES from "./utils/messages.json";
 import { INITIAL_CHAT } from "./utils/constants";
 import { useGetContacts } from "./utils/useGetContacts";
 import { useEffect } from "react";
-import { ContactInfoContent, useContactInfo } from "./components/ContactInfo";
+import { ContactInfoContent } from "./components/ContactInfo";
 
 function App() {
   const { mode } = useDarkMode();
-  const { openContactInfo, setOpenContactInfo } = useContactInfo();
   const [messages, setMessages] = useState([]);
   const [selectedChat, setSelectedChat] = useState(INITIAL_CHAT);
   const { isError, isLoading, data } = useGetContacts();
@@ -36,8 +36,9 @@ function App() {
       className={`${mode} md:overflow-x-auto max-h-screen min-w-screen flex`}
     >
       <main className="app-container min-w-md w-full dark:bg-slate-900 overflow-hidden flex">
-        <div className="user-chats">
+        <section className="user-chats">
           <UserProfile />
+          <SearchChats />
           <ChatList
             selectedChat={selectedChat}
             setSelectedChat={setSelectedChat}
@@ -45,8 +46,8 @@ function App() {
             isError={isError}
             isLoading={isLoading}
           />
-        </div>
-        <div className="flex-1 w-full flex">
+        </section>
+        <section className="flex-1 w-full flex">
           <div className="chat-container flex-1">
             {!selectedChat.name.fullName ? (
               <Welcome />
@@ -62,7 +63,7 @@ function App() {
             )}
           </div>
           <ContactInfoContent selectedChat={selectedChat} />
-        </div>
+        </section>
       </main>
     </div>
   );

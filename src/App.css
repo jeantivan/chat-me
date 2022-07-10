@@ -1,5 +1,13 @@
 .user-chats {
   width: 40%;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(min-content, 2) 1fr;
+  grid-template-areas:
+    "user-profile"
+    "search-chats"
+    "chat-list";
 }
 
 @media screen and (min-width: 901px) and (max-width: 1024px) {
@@ -41,4 +49,16 @@
 .welcome {
   grid-column: span 1;
   grid-row: span 3;
+}
+
+.user-profile {
+  grid-area: user-profile;
+}
+
+.search-chats {
+  grid-area: search-chats;
+}
+
+.chat-list {
+  grid-area: chat-list;
 }
