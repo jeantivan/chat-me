@@ -3,7 +3,7 @@
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: repeat(min-content, 2) 1fr;
+  grid-template-rows: repeat(2, min-content) 1fr;
   grid-template-areas:
     "user-profile"
     "search-chats"
