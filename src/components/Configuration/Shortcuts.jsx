@@ -84,21 +84,30 @@ export function Shortcuts() {
         {openModal ? (
           <Dialog.Portal>
             <Dialog.Overlay
-              className="bg-neutral-900/80 fixed inset-0 w-screen h-screen"
+              className={cx("fixed inset-0 w-screen h-screen", {
+                "bg-neutral-900/80": !isLight,
+                "bg-neutral-50/80": isLight,
+              })}
               style={{ zIndex: 1000 }}
             />
             <Dialog.Content
-              style={{ zIndex: 1001, height: "calc(100vh - 1rem)" }}
-              className={`w-screen shadow-lg fixed inset-0 flex items-center justify-center`}
+              style={{ zIndex: 1001 }}
+              className={`w-screen h-screen shadow-lg fixed inset-0 flex items-center justify-center`}
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0 }}
                 transition={{ type: "tween" }}
-                className={`w-4/5 lg:w-3/5 h-full py-6 px-8 flex flex-col justify-start ${
-                  isLight ? "bg-neutral-100" : "bg-slate-800"
-                }`}
+                style={{ height: "calc(100vh - 1rem)" }}
+                className={cx(
+                  "w-4/5 lg:w-3/5 h-full py-6 px-8 shadow-xl",
+                  "flex flex-col justify-start",
+                  {
+                    "bg-neutral-100": isLight,
+                    "bg-slate-800": !isLight,
+                  }
+                )}
               >
                 <header className="mb-2">
                   <Dialog.Title
