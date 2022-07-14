@@ -43,9 +43,9 @@ export function Theme({ goBack }) {
             <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
-          <Dialog.Title className="text-slate-50 text-xl">
+          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
             Elegir Tema
-          </Dialog.Title>
+          </h2>
         </motion.div>
       </header>
       <div className="py-6 flex flex-col">

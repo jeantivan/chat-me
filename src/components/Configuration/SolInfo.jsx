@@ -24,9 +24,9 @@ export function SolInfo({ goBack }) {
             <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
-          <Dialog.Title className="text-slate-50 text-xl">
+          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
             Solicitar info de mi cuenta
-          </Dialog.Title>
+          </h2>
         </motion.div>
       </header>
       <div className="py-7 overflow-y-auto">

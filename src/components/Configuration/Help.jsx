@@ -21,7 +21,9 @@ export function Help({ goBack }) {
             <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
-          <Dialog.Title className="text-slate-50 text-xl">Ayuda</Dialog.Title>
+          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
+            Ayuda
+          </h2>
         </motion.div>
       </header>
     </>

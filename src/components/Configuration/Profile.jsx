@@ -6,9 +6,12 @@ import { useUserInfo } from "../UserInfoProvider";
 import { EditableInput } from "../EditableInput";
 import { ChangeUserImage } from "../ChangeUserImage";
 import { CustomIcon } from "../CustomIcon";
+import { useLeftDrawer } from "../LeftDrawer";
 
 export function Profile({ goBack }) {
+  const { closeLeftDrawer } = useLeftDrawer();
   const { mode } = useDarkMode();
+
   const { user, changeName, changeStatus } = useUserInfo();
 
   const handleSaveUserName = (newName) => {
@@ -30,13 +33,15 @@ export function Profile({ goBack }) {
           className="px-4 flex items-center"
         >
           <button
-            onClick={goBack}
+            onClick={goBack ? goBack : closeLeftDrawer}
             className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
           >
             <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
-          <Dialog.Title className="text-slate-50 text-xl">Perfil</Dialog.Title>
+          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
+            Perfil
+          </h2>
         </motion.div>
       </header>
       <div className="py-6 overflow-y-auto">

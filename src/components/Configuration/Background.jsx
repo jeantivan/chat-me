@@ -21,9 +21,9 @@ export function Background({ goBack }) {
             <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
-          <Dialog.Title className="text-slate-50 text-xl">
+          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
             Elegir color de fondo
-          </Dialog.Title>
+          </h2>
         </motion.div>
       </header>
     </>

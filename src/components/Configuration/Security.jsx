@@ -1,22 +1,16 @@
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
-import * as Dialog from "@radix-ui/react-dialog";
 import * as Label from "@radix-ui/react-label";
 import * as CheckBox from "@radix-ui/react-checkbox";
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { BsArrowLeft, BsLockFill, BsShieldFill, BsCheck } from "react-icons/bs";
 import { useDarkMode } from "../DarkMode";
+import { CustomIcon } from "../CustomIcon";
 
 export function Security({ goBack }) {
   const { mode } = useDarkMode();
 
   return (
-    <motion.div
-      transition={{ when: "afterChildren", staggerChildren: 0.5 }}
-      initial={{ display: "none" }}
-      animate={{ display: "block" }}
-      exit={{ display: "none" }}
-    >
+    <>
       <header className="pt-16 bg-slate-700 pb-5 ">
         <motion.div
           initial={{ x: 20, opacity: 0 }}
@@ -32,9 +26,9 @@ export function Security({ goBack }) {
             <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
-          <Dialog.Title className="text-slate-50 text-xl">
+          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
             Seguridad
-          </Dialog.Title>
+          </h2>
         </motion.div>
       </header>
       <div className="p-6 flex flex-col">
@@ -46,15 +40,13 @@ export function Security({ goBack }) {
             transition={{ type: "tween" }}
             className="w-28 h-28 relative rounded-full flex justify-center items-center bg-emerald-200"
           >
-            <AccessibleIcon.Root label="Icono de seguridad">
-              <span className="w-16 h-20 text-slate-50">
-                <BsShieldFill className="w-full h-full" />
-              </span>
+            <span className="w-16 h-20 text-slate-50">
+              <BsShieldFill className="w-full h-full" />
+            </span>
 
-              <span className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-500">
-                <BsLockFill className="w-full h-full" />
-              </span>
-            </AccessibleIcon.Root>
+            <span className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-500">
+              <BsLockFill className="w-full h-full" />
+            </span>
           </motion.div>
         </div>
         <motion.div
@@ -117,6 +109,6 @@ export function Security({ goBack }) {
           </div>
         </motion.div>
       </div>
-    </motion.div>
+    </>
   );
 }
