@@ -12,51 +12,36 @@ import {
 } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery, useEventListener } from "usehooks-ts";
-import { useDarkMode } from "../DarkMode";
 import { useContactInfo } from "./Context";
 import { Switch } from "../Switch";
 import { CustomIcon } from "../CustomIcon";
 import { useRef } from "react";
 
-const Item = ({ children, isDanger }) => {
-  const { mode } = useDarkMode();
-  const isLight = mode === "light";
+const Item = ({ children, isDanger }) => (
+  <div
+    className={cx(
+      "flex p-4 cursor-pointer",
+      "hover:bg-slate-50 dark:hover:bg-slate-700",
+      { "text-gray-400": !isDanger, "text-red-500": isDanger }
+    )}
+  >
+    <div className="flex text-lg w-full">{children}</div>
+  </div>
+);
 
-  return (
-    <div
-      className={cx(
-        "flex p-4 cursor-pointer",
-        { "text-gray-400": !isDanger, "text-red-500": isDanger },
-        {
-          "hover:bg-slate-50": isLight && isDanger,
-          "hover:bg-slate-700": !isLight && isDanger,
-        }
-      )}
-    >
-      <div className="flex text-lg w-full">{children}</div>
-    </div>
-  );
-};
+const ItemText = ({ children, isDanger, textHelper = "" }) => (
+  <div
+    className={`flex-1 flex flex-col leading-none ${
+      isDanger ? "text-red-500" : "dark:text-neutral-50 text-neutral-900"
+    }`}
+  >
+    {children}
 
-const ItemText = ({ children, isDanger, textHelper = "" }) => {
-  const { mode } = useDarkMode();
-  const isLight = mode === "light";
-  const textColor = isDanger
-    ? "text-red-500"
-    : isLight
-    ? "text-neutral-900"
-    : "text-gray-100";
-
-  return (
-    <div className={`flex-1 flex flex-col leading-none ${textColor}`}>
-      {children}
-
-      {textHelper && (
-        <span className="mt-1 text-sm text-gray-400">{textHelper}</span>
-      )}
-    </div>
-  );
-};
+    {textHelper && (
+      <span className="mt-1 text-sm text-gray-400">{textHelper}</span>
+    )}
+  </div>
+);
 
 const ItemIcon = ({ label, icon }) => (
   <div className="w-1/6 flex justify-center text-inherit">
@@ -78,14 +63,10 @@ const variants = {
 };
 
 export function ContactInfoContent({ selectedChat }) {
-  const { mode } = useDarkMode();
   const isLg = useMediaQuery("(min-width: 1024px");
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
   const documentRef = useRef(document);
   const { name, phone, picture } = selectedChat;
-  const isLight = mode === "light";
-  const bgColor = isLight ? "bg-white" : "bg-slate-800";
-  const textColor = isLight ? "text-neutral-900" : "text-white";
 
   const onKeyUp = (e) => {
     if (e.key === "Escape") setOpenContactInfo(false);
@@ -111,16 +92,8 @@ export function ContactInfoContent({ selectedChat }) {
             tabIndex="-1"
             className="pointer-events-auto h-full"
           >
-            <div
-              className={`${
-                isLight ? "bg-slate-50" : "bg-slate-900"
-              } w-full h-full flex flex-col`}
-            >
-              <header
-                className={`p-4 flex items-center h-14 ${
-                  isLight ? "bg-slate-100" : "bg-slate-700"
-                }`}
-              >
+            <div className="bg-slate-50 dark:bg-slate-900 w-full h-full flex flex-col">
+              <header className="p-4 flex items-center h-14 bg-slate-100 dark:bg-slate-700">
                 <button
                   className="w-7 h-7 text-slate-500 mr-4"
                   onClick={() => {
@@ -129,13 +102,16 @@ export function ContactInfoContent({ selectedChat }) {
                 >
                   <CustomIcon label="Cerrar info. del contacto" Icon={BsX} />
                 </button>
-                <h2 id="contact-info-title" className={`text-lg ${textColor}`}>
+                <h2
+                  id="contact-info-title"
+                  className={`text-lg  dark:text-neutral-50 text-neutral-900`}
+                >
                   Info. del Contacto
                 </h2>
               </header>
               <div className="flex flex-col overflow-y-auto">
                 <div
-                  className={`py-4 px-5 flex flex-col mb-4 shadow ${bgColor}`}
+                  className={`py-4 px-5 flex flex-col mb-4 shadow bg-slate-50 dark:bg-slate-800`}
                 >
                   <div className="mx-auto mt-16 mb-4">
                     <div className="w-40 h-40 rounded-full text-gray-500">
@@ -147,19 +123,27 @@ export function ContactInfoContent({ selectedChat }) {
                     </div>
                   </div>
                   <div className="mx-auto text-center">
-                    <h2 className={`text-2xl mb-2 ${textColor}`}>
+                    <h2
+                      className={`text-2xl mb-2 dark:text-neutral-50 text-neutral-900`}
+                    >
                       {name.fullName}
                     </h2>
                     <div className={`text-gray-500`}>{phone}</div>
                   </div>
                 </div>
-                <div className={`py-4 px-5 mb-4 shadow ${bgColor}`}>
+                <div
+                  className={`py-4 px-5 mb-4 shadow bg-slate-50 dark:bg-slate-800`}
+                >
                   <div className="text-sm text-emerald-600">Info.</div>
-                  <div className={`text-lg ${textColor}`}>
+                  <div
+                    className={`text-lg dark:text-neutral-50 text-neutral-900`}
+                  >
                     Hola estoy usando ChatMe!
                   </div>
                 </div>
-                <div className={`py-4 px-5 mb-4 shadow ${bgColor}`}>
+                <div
+                  className={`py-4 px-5 mb-4 shadow bg-slate-50 dark:bg-slate-800`}
+                >
                   <div className="flex mb-4">
                     <div className="flex-1 text-sm text-emerald-600">
                       Archivos, enlaces y documentos.
@@ -174,12 +158,14 @@ export function ContactInfoContent({ selectedChat }) {
                     <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
                     <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
                   </div>
-                  <div className={`text-sm ${textColor}`}>
+                  <div
+                    className={`text-sm dark:text-neutral-50 text-neutral-900`}
+                  >
                     Usa WhatsApp en tu teléfono para ver el historial de
                     mensajes completo.
                   </div>
                 </div>
-                <div className={`pt-3 ${bgColor}`}>
+                <div className={`pt-3 bg-slate-50 dark:bg-slate-800`}>
                   <div className="w-full mb-5">
                     <Item>
                       <ItemIcon icon={BsStarFill} label="Icono de campana" />
@@ -230,12 +216,7 @@ export function ContactInfoContent({ selectedChat }) {
                     </Item>
                   </div>
                   <div className="w-full">
-                    <Item
-                      className={
-                        isLight ? "hover:bg-slate-50" : "hover:bg-slate-700"
-                      }
-                      isDanger
-                    >
+                    <Item isDanger>
                       <ItemIcon icon={FaBan} label="Icono de bloquear" />
                       <ItemText isDanger>Bloquear a {name.fullName}</ItemText>
                     </Item>
