@@ -21,15 +21,9 @@ export function LeftDrawerProvider({ children }) {
   };
 
   const closeLeftDrawer = () => {
-    console.log("Cierra left drawer");
     setRenderContent("CONFIGURATION");
     setOpenLeftDrawer(false);
   };
-
-  useEffect(() => {
-    console.log({ openLeftDrawer });
-    console.log({ renderContent });
-  }, [openLeftDrawer, renderContent]);
 
   return (
     <LeftDrawerContext.Provider
