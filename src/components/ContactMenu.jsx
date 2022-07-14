@@ -8,7 +8,7 @@ import { CustomIcon } from "./CustomIcon";
 import { useContactInfo } from "./ContactInfo";
 
 export function ContactMenu({ setSelectedChat }) {
-  const { setOpenContactInfo } = useContactInfo();
+  const { openContactInfo, setOpenContactInfo } = useContactInfo();
   const [open, setOpen] = useState(false);
   return (
     <MenuRoot open={open} onOpenChange={setOpen}>
@@ -38,6 +38,7 @@ export function ContactMenu({ setSelectedChat }) {
         <MenuItem>
           <button
             onClick={() => {
+              if (openContactInfo) setOpenContactInfo(false);
               setSelectedChat(INITIAL_CHAT);
             }}
             className="py-2 px-4"
