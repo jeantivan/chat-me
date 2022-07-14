@@ -2,6 +2,8 @@ import { useRef } from "react";
 import { useEventListener } from "usehooks-ts";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLeftDrawer } from "./Context";
+import { Profile } from "../Configuration/Profile";
+import { Configuration } from "../Configuration";
 
 const drawerVariants = {
   initial: {
@@ -25,8 +27,8 @@ const drawerVariants = {
 };
 
 const contentOptions = {
-  CONFIGURATION: "CONFIGURATION",
-  USER_PROFILE: "USER_PROFILE",
+  CONFIGURATION: <Configuration />,
+  USER_PROFILE: <Profile />,
 };
 
 export function LeftDrawerContent() {
@@ -49,7 +51,13 @@ export function LeftDrawerContent() {
           style={{ zIndex: 1000 }}
           className="w-full h-screen top-0 left-0 absolute"
         >
-          <div className="bg-neutral-50 dark:bg-slate-800 w-full h-full flex flex-col">
+          <div
+            role="dialog"
+            id="left-drawer-dialog"
+            aria-labelledby="left-drawer-title"
+            tabIndex="-1"
+            className="bg-neutral-50 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-600 w-full h-full flex flex-col pointer-events-auto"
+          >
             {contentOptions[renderContent]}
           </div>
         </motion.div>
