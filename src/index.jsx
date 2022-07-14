@@ -7,6 +7,7 @@ import {
   DarkModeProvider,
   UserInfoProvider,
   ContactInfoProvider,
+  LeftDrawerProvider,
 } from "./components";
 
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -18,11 +19,13 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <DarkModeProvider>
-        <UserInfoProvider>
-          <ContactInfoProvider>
-            <App />
-          </ContactInfoProvider>
-        </UserInfoProvider>
+        <LeftDrawerProvider>
+          <UserInfoProvider>
+            <ContactInfoProvider>
+              <App />
+            </ContactInfoProvider>
+          </UserInfoProvider>
+        </LeftDrawerProvider>
       </DarkModeProvider>
     </QueryClientProvider>
   </React.StrictMode>

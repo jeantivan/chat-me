@@ -125,8 +125,8 @@ export function Drawer({ from, children, open }) {
               initial="initial"
               animate="enter"
               exit="exit"
-              style={{ width: "30vw", zIndex: 1000 }}
-              className={`h-screen fixed ${fromClasses[from]}`}
+              style={{ zIndex: 1000 }}
+              className={`drawer h-screen fixed ${fromClasses[from]}`}
             >
               {children}
             </motion.div>

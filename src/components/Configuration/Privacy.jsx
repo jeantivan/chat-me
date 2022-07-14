@@ -30,9 +30,9 @@ export function Privacy({ goBack }) {
             <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
           </button>
 
-          <Dialog.Title className="text-slate-50 text-xl">
+          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
             Privacidad
-          </Dialog.Title>
+          </h2>
         </motion.div>
       </header>
       <div
@@ -56,7 +56,6 @@ export function Privacy({ goBack }) {
               </div>
               <CustomIcon
                 Icon={FiChevronRight}
-                asChild
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -73,7 +72,6 @@ export function Privacy({ goBack }) {
               </div>
               <CustomIcon
                 Icon={FiChevronRight}
-                asChild
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -88,7 +86,6 @@ export function Privacy({ goBack }) {
               </div>
               <CustomIcon
                 Icon={FiChevronRight}
-                asChild
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -141,7 +138,6 @@ export function Privacy({ goBack }) {
               </div>
               <CustomIcon
                 Icon={FiChevronRight}
-                asChild
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -159,7 +155,6 @@ export function Privacy({ goBack }) {
               </div>
               <CustomIcon
                 Icon={FiChevronRight}
-                asChild
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -175,7 +170,6 @@ export function Privacy({ goBack }) {
               </div>
               <CustomIcon
                 Icon={FiChevronRight}
-                asChild
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />

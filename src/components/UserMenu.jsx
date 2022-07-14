@@ -8,9 +8,13 @@ import { SwitchDarkMode } from "./SwitchDarkMode";
 import { Configuration } from "./Configuration";
 import { MenuRoot, MenuTrigger, MenuContent, MenuItem, MenuIcon } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
+import { useLeftDrawer } from "./LeftDrawer";
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
+
+  const { openLeftDrawerAndRenderContent } = useLeftDrawer();
+
   return (
     <MenuRoot open={open} onOpenChange={setOpen}>
       <MenuTrigger
@@ -29,7 +33,14 @@ export function UserMenu() {
           <MenuIcon Icon={IoPeople} label="Crear nuevo grupo" />
         </MenuItem>
         <MenuItem>
-          <Configuration />
+          <button
+            onClick={() => {
+              openLeftDrawerAndRenderContent("CONFIGURATION");
+            }}
+            className="px-4 py-2 flex-1 text-left"
+          >
+            Configuración
+          </button>
         </MenuItem>
         <MenuItem className="py-2 px-4">
           <SwitchDarkMode />

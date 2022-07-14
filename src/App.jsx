@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import "./App.css";
 import {
   useDarkMode,
   ChatList,
@@ -8,13 +9,12 @@ import {
   UserProfile,
   Welcome,
   SearchChats,
+  LeftDrawerContent,
+  ContactInfoContent,
 } from "./components";
-import "./App.css";
 import MESSAGES from "./utils/messages.json";
 import { INITIAL_CHAT } from "./utils/constants";
 import { useGetContacts } from "./utils/useGetContacts";
-import { useEffect } from "react";
-import { ContactInfoContent } from "./components/ContactInfo";
 
 function App() {
   const { mode } = useDarkMode();
@@ -36,7 +36,7 @@ function App() {
       className={`${mode} md:overflow-x-auto max-h-screen min-w-screen flex`}
     >
       <main className="app-container min-w-md w-full dark:bg-slate-900 overflow-hidden flex">
-        <section className="user-chats">
+        <section className="user-chats relative">
           <UserProfile />
           <SearchChats />
           <ChatList
@@ -46,6 +46,7 @@ function App() {
             isError={isError}
             isLoading={isLoading}
           />
+          <LeftDrawerContent />
         </section>
         <section className="flex-1 w-full flex">
           <div className="chat-container flex-1">
