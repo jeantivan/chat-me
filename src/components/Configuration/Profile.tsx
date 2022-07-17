@@ -8,17 +8,21 @@ import { ChangeUserImage } from "../ChangeUserImage";
 import { CustomIcon } from "../CustomIcon";
 import { useLeftDrawer } from "../LeftDrawer";
 
-export function Profile({ goBack }) {
+interface ProfileProps {
+  goBack?: () => void;
+}
+
+export function Profile({ goBack }: ProfileProps) {
   const { closeLeftDrawer } = useLeftDrawer();
   const { mode } = useDarkMode();
 
   const { user, changeName, changeStatus } = useUserInfo();
 
-  const handleSaveUserName = (newName) => {
+  const handleSaveUserName = (newName: string) => {
     changeName(newName);
   };
 
-  const handleSaveUserStatus = (newStatus) => {
+  const handleSaveUserStatus = (newStatus: string) => {
     changeStatus(newStatus);
   };
 
@@ -62,11 +66,7 @@ export function Profile({ goBack }) {
               value={user.name}
               onSave={handleSaveUserName}
             />
-            <div
-              className={`text-sm ${
-                mode === "light" ? "text-gray-500" : "text-gray-400"
-              }`}
-            >
+            <div className="text-sm text-gray-500 dark:text-gray-400">
               Este no es tu nombre de usuario ni un PIN. Este nombre será
               visible para tus contactos de ChatMe.
             </div>

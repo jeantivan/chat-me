@@ -1,6 +1,11 @@
 import { USER_PROFILE_KEY, INITIAL_USER } from "./constants";
 
-export const changeLocalStorageUserInfo = (property, newValue) => {
+enum PropertyEnum {}
+
+export const changeLocalStorageUserInfo = (
+  property: "name" | "status" | "picture",
+  newValue: string
+) => {
   // Si la propiedad no existe en el objecto del localStorage
   if (!Object.keys(INITIAL_USER).includes(property)) {
     console.error(
@@ -10,7 +15,7 @@ export const changeLocalStorageUserInfo = (property, newValue) => {
   }
 
   // Obtiene el valor actual de la información del usuario en el localStorage
-  const storage = JSON.parse(localStorage.getItem(USER_PROFILE_KEY));
+  const storage = JSON.parse(localStorage.getItem(USER_PROFILE_KEY) || "");
 
   // Copia la información del usuario en el local storage
   const storageCopy = { ...storage };

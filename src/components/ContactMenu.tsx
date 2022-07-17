@@ -1,15 +1,20 @@
 import cx from "classnames";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { INITIAL_CHAT } from "../utils/constants";
 //import { ContactInfo } from "./ContactInfo";
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
 import { useContactInfo } from "./ContactInfo";
+import { Contact } from "../types";
 
-export function ContactMenu({ setSelectedChat }) {
+interface ContactMenuProps {
+  setSelectedChat: Dispatch<SetStateAction<Contact | null>>;
+}
+
+export function ContactMenu({ setSelectedChat }: ContactMenuProps) {
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   return (
     <MenuRoot open={open} onOpenChange={setOpen}>
       <MenuTrigger
@@ -39,7 +44,7 @@ export function ContactMenu({ setSelectedChat }) {
           <button
             onClick={() => {
               if (openContactInfo) setOpenContactInfo(false);
-              setSelectedChat(INITIAL_CHAT);
+              setSelectedChat(null);
             }}
             className="py-2 px-4"
           >

@@ -23,6 +23,7 @@ import { SolInfo } from "./SolInfo";
 import { Help } from "./Help";
 import { useState } from "react";
 import { useLeftDrawer } from "../LeftDrawer";
+import { IconType } from "react-icons";
 
 const PROFILE = "PROFILE";
 const NOTIFICATIONS = "NOTIFICATIONS";
@@ -33,15 +34,30 @@ const BACKGROUND = "BACKGROUND";
 const SOL_INFO = "SOL_INFO";
 const HELP = "HELP";
 
-const renderOptions = {
-  NOTIFICATIONS: (props) => <Notifications {...props} />,
-  PROFILE: (props) => <Profile {...props} />,
-  PRIVACY: (props) => <Privacy {...props} />,
-  SECURITY: (props) => <Security {...props} />,
-  THEME: (props) => <Theme {...props} />,
-  BACKGROUND: (props) => <Background {...props} />,
-  SOL_INFO: (props) => <SolInfo {...props} />,
-  HELP: (props) => <Help {...props} />,
+type Options =
+  | "PROFILE"
+  | "NOTIFICATIONS"
+  | "PRIVACY"
+  | "SECURITY"
+  | "THEME"
+  | "BACKGROUND"
+  | "SOL_INFO"
+  | "HELP"
+  | "";
+
+const renderOptions: { [x: string]: (goBack: () => void) => JSX.Element } = {
+  NOTIFICATIONS: (goBack) => <Notifications goBack={goBack} />,
+  PROFILE: (goBack) => <Profile goBack={goBack} />,
+  PRIVACY: (goBack) => <Privacy goBack={goBack} />,
+  SECURITY: (goBack) => <Security goBack={goBack} />,
+  THEME: (goBack) => <Theme goBack={goBack} />,
+  BACKGROUND: (goBack) => <Background goBack={goBack} />,
+  SOL_INFO: (goBack) => <SolInfo goBack={goBack} />,
+  HELP: (goBack) => <Help goBack={goBack} />,
+};
+
+const getRenderOption = (option: Options, goBack: () => void) => {
+  return renderOptions[option](goBack);
 };
 
 const childVariants = {
@@ -59,12 +75,12 @@ const childVariants = {
   },
 };
 
-const User = ({ mode, ...rest }) => {
+const User = (props: any) => {
   const { user } = useUserInfo();
 
   return (
     <div
-      {...rest}
+      {...props}
       className="flex items-center cursor-pointer w-full px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700"
     >
       <div className="mr-4">
@@ -84,9 +100,19 @@ const User = ({ mode, ...rest }) => {
   );
 };
 
-const Item = ({ icon, label, mode, ...rest }) => (
+const Item = ({
+  icon,
+  label,
+  onClick,
+  ...rest
+}: {
+  icon: IconType;
+  label: string;
+  onClick: () => void;
+}) => (
   <button
     {...rest}
+    onClick={onClick}
     className="w-full flex items-center hover:bg-slate-50 dark:hover:bg-slate-700"
   >
     <span className="w-14 flex items-center justify-center">
@@ -103,7 +129,7 @@ const Item = ({ icon, label, mode, ...rest }) => (
 
 export function Configuration() {
   const { closeLeftDrawer } = useLeftDrawer();
-  const [renderOption, setRenderOption] = useState("");
+  const [renderOption, setRenderOption] = useState<Options>("");
 
   const goBack = () => {
     setRenderOption("");
@@ -200,6 +226,6 @@ export function Configuration() {
       </div>
     </>
   ) : (
-    renderOptions[renderOption]({ goBack })
+    getRenderOption(renderOption, goBack)
   );
 }

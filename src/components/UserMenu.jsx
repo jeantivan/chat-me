@@ -42,9 +42,9 @@ export function UserMenu() {
             Configuración
           </button>
         </MenuItem>
-        <MenuItem className="py-2 px-4">
+        {/*         <MenuItem className="py-2 px-4">
           <SwitchDarkMode />
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem className="w-full py-2 px-4">
           <div className="flex-1">Cerrar sesión</div>
           <MenuIcon label="Cerrar sesión" Icon={BiExit} isDanger />

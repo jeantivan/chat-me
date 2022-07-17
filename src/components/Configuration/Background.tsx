@@ -1,9 +1,12 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
 import { BsArrowLeft } from "react-icons/bs";
 import { CustomIcon } from "../CustomIcon";
 
-export function Background({ goBack }) {
+interface BackgroundProps {
+  goBack: () => void;
+}
+
+export function Background({ goBack }: BackgroundProps) {
   return (
     <>
       <header className="pt-16 bg-slate-700 pb-5 ">

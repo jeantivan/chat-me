@@ -6,7 +6,11 @@ import { BsArrowLeft, BsLockFill, BsShieldFill, BsCheck } from "react-icons/bs";
 import { useDarkMode } from "../DarkMode";
 import { CustomIcon } from "../CustomIcon";
 
-export function Security({ goBack }) {
+interface SecurityProps {
+  goBack: () => void;
+}
+
+export function Security({ goBack }: SecurityProps) {
   const { mode } = useDarkMode();
 
   return (

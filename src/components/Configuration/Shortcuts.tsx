@@ -7,7 +7,7 @@ import { CustomIcon } from "../CustomIcon";
 import { useDarkMode } from "../DarkMode";
 import { KEYBOARD_SHORTCUTS } from "../../utils/keyboard-shortcuts";
 
-const Key = ({ text, isLight }) => (
+const Key = ({ text, isLight }: { text: string; isLight: boolean }) => (
   <div
     className={cx(
       "py-1 px-2 ml-2",
@@ -20,7 +20,7 @@ const Key = ({ text, isLight }) => (
   </div>
 );
 
-const Shortcut = ({ title, keys }) => {
+const Shortcut = ({ title, keys }: { title: string; keys: string[] }) => {
   const { mode } = useDarkMode();
   const isLight = mode === "light";
 
@@ -53,11 +53,7 @@ export function Shortcuts() {
   const isLight = mode === "light";
 
   return (
-    <Dialog.Root
-      id="shortcut-modal"
-      open={openModal}
-      onOpenChange={setOpenModal}
-    >
+    <Dialog.Root open={openModal} onOpenChange={setOpenModal}>
       <Dialog.Trigger
         className={`w-full flex items-center ${
           isLight ? "hover:bg-slate-50" : "hover:bg-slate-700"

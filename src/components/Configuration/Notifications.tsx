@@ -1,4 +1,3 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import * as Label from "@radix-ui/react-label";
 import * as CheckBox from "@radix-ui/react-checkbox";
 import { motion } from "framer-motion";
@@ -7,7 +6,11 @@ import cx from "classnames";
 import { useDarkMode } from "../DarkMode";
 import { CustomIcon } from "../CustomIcon";
 
-export function Notifications({ goBack }) {
+interface NotificationProps {
+  goBack: () => void;
+}
+
+export function Notifications({ goBack }: NotificationProps) {
   const { mode } = useDarkMode();
 
   return (

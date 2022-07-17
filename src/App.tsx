@@ -15,20 +15,20 @@ import {
 import MESSAGES from "./utils/messages.json";
 import { INITIAL_CHAT } from "./utils/constants";
 import { useGetContacts } from "./utils/useGetContacts";
+import { Contact } from "./types";
 
 function App() {
   const { mode } = useDarkMode();
-  const [messages, setMessages] = useState([]);
-  const [selectedChat, setSelectedChat] = useState(INITIAL_CHAT);
+  const [messages, setMessages] = useState<Array<Messages>>([]);
+  const [selectedChat, setSelectedChat] = useState<Contact | null>(null);
   const { isError, isLoading, data } = useGetContacts();
 
   useEffect(() => {
     setMessages([]);
-    if (selectedChat.id !== INITIAL_CHAT.id) {
-      setTimeout(() => {
-        setMessages([...MESSAGES.slice(0, 20)]);
-      }, 250);
-    }
+
+    setTimeout(() => {
+      setMessages([...MESSAGES.slice(0, 20)]);
+    }, 250);
   }, [selectedChat]);
 
   return (
@@ -50,7 +50,7 @@ function App() {
         </section>
         <section className="flex-1 w-full flex">
           <div className="chat-container flex-1">
-            {!selectedChat.name.fullName ? (
+            {!selectedChat ? (
               <Welcome />
             ) : (
               <>

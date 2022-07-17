@@ -1,6 +1,7 @@
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { IconType } from "react-icons";
 import { CustomIcon } from "./CustomIcon";
 
 const itemVariants = {
@@ -30,8 +31,15 @@ const tooltipVariants = {
   },
 };
 
-export function Fab({ label, icon, bgColor, beforeBgColor }) {
-  const [showTooltip, setShowTooltip] = useState();
+interface FabInterface {
+  label: string;
+  icon: IconType;
+  bgColor: string;
+  beforeBgColor?: string;
+}
+
+export function Fab({ label, icon, bgColor, beforeBgColor }: FabInterface) {
+  const [showTooltip, setShowTooltip] = useState<boolean>(false);
   return (
     <motion.div
       onHoverStart={() => {
@@ -57,7 +65,7 @@ export function Fab({ label, icon, bgColor, beforeBgColor }) {
       <AnimatePresence>
         {showTooltip && (
           <motion.div
-            tooltipVariants={tooltipVariants}
+            variants={tooltipVariants}
             initial="hidden"
             animate="show"
             exit="hidden"

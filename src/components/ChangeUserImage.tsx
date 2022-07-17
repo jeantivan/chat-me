@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { ChangeEvent, useRef } from "react";
 import { BsCameraFill } from "react-icons/bs";
 import { useUserInfo } from "./UserInfoProvider";
 import { UserImage } from "./UserImage";
@@ -9,9 +9,11 @@ const toMB = 1048576;
 
 export function ChangeUserImage() {
   const { changePicture } = useUserInfo();
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+
     const file = e.target.files[0];
 
     if (file) {
@@ -24,10 +26,13 @@ export function ChangeUserImage() {
       }
       let reader = new FileReader();
 
-      reader.onload = (e) => {
-        const { result } = e.target;
-        if (result) {
-          changePicture(result);
+      reader.onloadend = (e) => {
+        if (
+          e.target &&
+          e.target.result &&
+          typeof e.target.result === "string"
+        ) {
+          changePicture(e.target.result);
         }
       };
       reader.readAsDataURL(file);
@@ -49,7 +54,7 @@ export function ChangeUserImage() {
           className="w-3/4 flex flex-col items-center justify-center mt-5"
         >
           <CustomIcon
-            label="Camara"
+            label="Cámara"
             Icon={BsCameraFill}
             className="w-6 h-6 mb-1 text-neutral-50"
           />

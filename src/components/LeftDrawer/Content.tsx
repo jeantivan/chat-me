@@ -35,7 +35,7 @@ export function LeftDrawerContent() {
   const documentRef = useRef(document);
   const { openLeftDrawer, renderContent, closeLeftDrawer } = useLeftDrawer();
 
-  const onKeyUp = (e) => {
+  const onKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") closeLeftDrawer();
   };
 
@@ -55,7 +55,7 @@ export function LeftDrawerContent() {
             role="dialog"
             id="left-drawer-dialog"
             aria-labelledby="left-drawer-title"
-            tabIndex="-1"
+            tabIndex={-1}
             className="bg-neutral-50 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-600 w-full h-full flex flex-col pointer-events-auto"
           >
             {contentOptions[renderContent]}

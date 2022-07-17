@@ -4,7 +4,11 @@ import { BsArrowLeft, BsFileEarmarkTextFill } from "react-icons/bs";
 import { CustomIcon } from "../CustomIcon";
 import { useDarkMode } from "../DarkMode";
 
-export function SolInfo({ goBack }) {
+interface SolInfoProps {
+  goBack: () => void;
+}
+
+export function SolInfo({ goBack }: SolInfoProps) {
   const { mode } = useDarkMode();
 
   return (

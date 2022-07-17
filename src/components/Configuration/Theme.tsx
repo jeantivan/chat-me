@@ -10,7 +10,11 @@ import { useDarkMode } from "../DarkMode";
 import { getSystemColorMode } from "../../utils/getSystemColorMode";
 import { CustomIcon } from "../CustomIcon";
 
-export function Theme({ goBack }) {
+interface ThemeProps {
+  goBack: () => void;
+}
+
+export function Theme({ goBack }: ThemeProps) {
   const { mode, setDarkMode } = useDarkMode();
   const [value, setValue] = useState(mode);
 

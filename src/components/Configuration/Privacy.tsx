@@ -9,7 +9,11 @@ import { FiChevronRight } from "react-icons/fi";
 import { useDarkMode } from "../DarkMode";
 import { CustomIcon } from "../CustomIcon";
 
-export function Privacy({ goBack }) {
+interface PrivacyProps {
+  goBack: () => void;
+}
+
+export function Privacy({ goBack }: PrivacyProps) {
   const { mode } = useDarkMode();
   const isLight = mode === "light";
 
