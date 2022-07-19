@@ -6,10 +6,10 @@ import { INITIAL_CHAT } from "../utils/constants";
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
 import { useContactInfo } from "./ContactInfo";
-import { Contact } from "../types";
+import { ContactType } from "../types";
 
 interface ContactMenuProps {
-  setSelectedChat: Dispatch<SetStateAction<Contact | null>>;
+  setSelectedChat: Dispatch<SetStateAction<ContactType | null>>;
 }
 
 export function ContactMenu({ setSelectedChat }: ContactMenuProps) {
