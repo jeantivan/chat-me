@@ -1,9 +1,7 @@
 import cx from "classnames";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { BiExit } from "react-icons/bi";
-import { IoPeople } from "react-icons/io5";
-import { MenuRoot, MenuTrigger, MenuContent, MenuItem, MenuIcon } from "./Menu";
+import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
 import { useLeftDrawer } from "./LeftDrawer";
 
@@ -27,7 +25,12 @@ export function UserMenu() {
       <MenuContent align="end" className="w-56">
         <MenuItem className="py-2 px-4 flex items center">
           <div className="flex-1">Nuevo grupo</div>
-          <MenuIcon Icon={IoPeople} label="Crear nuevo grupo" />
+        </MenuItem>
+        <MenuItem className="py-2 px-4 flex items center">
+          <div className="flex-1">Archivados</div>
+        </MenuItem>
+        <MenuItem className="py-2 px-4 flex items center">
+          <div className="flex-1">Mensajes destacados</div>
         </MenuItem>
         <MenuItem>
           <button
@@ -42,7 +45,6 @@ export function UserMenu() {
 
         <MenuItem className="w-full py-2 px-4">
           <div className="flex-1">Cerrar sesión</div>
-          <MenuIcon label="Cerrar sesión" Icon={BiExit} isDanger />
         </MenuItem>
       </MenuContent>
     </MenuRoot>
