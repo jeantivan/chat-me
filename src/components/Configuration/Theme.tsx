@@ -7,7 +7,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { BsArrowLeft } from "react-icons/bs";
 import { useDarkMode } from "../DarkMode";
-import { getSystemColorMode } from "../../utils/getSystemColorMode";
 import { CustomIcon } from "../CustomIcon";
 
 interface ThemeProps {
@@ -19,14 +18,8 @@ export function Theme({ goBack }: ThemeProps) {
   const [value, setValue] = useState(mode);
 
   const handleOk = () => {
-    if (value === "system") {
-      const systemColorMode = getSystemColorMode();
-
-      setDarkMode(systemColorMode);
-    } else if (mode !== value) {
-      setDarkMode(value);
-    }
-
+    if (value !== "light" && value !== "dark") return;
+    setDarkMode(value);
     return goBack();
   };
 
@@ -102,27 +95,6 @@ export function Theme({ goBack }: ThemeProps) {
                 }`}
               >
                 Oscuro
-              </Label.Root>
-            </div>
-            <div className="flex items-center">
-              <RadioGroup.Item
-                value="system"
-                id="system"
-                className={cx(
-                  "w-5 h-5 bg-white rounded-full mr-5",
-                  "inline-flex items-center justify-center",
-                  { "border shadow-sm": mode === "light" }
-                )}
-              >
-                <RadioGroup.Indicator className="bg-emerald-500 w-2.5 h-2.5 rounded-full" />
-              </RadioGroup.Item>
-              <Label.Root
-                htmlFor="system"
-                className={`text-medium ${
-                  mode === "light" ? "text-black" : "text-white"
-                }`}
-              >
-                Predeterminado por el sistema
               </Label.Root>
             </div>
           </RadioGroup.Root>
