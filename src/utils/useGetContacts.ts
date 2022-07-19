@@ -1,11 +1,11 @@
-import { Contact } from "./../types";
+import { ContactType } from "./../types";
 import { useQuery } from "react-query";
-import { LAST_MESSAGES } from "./constants";
+import LAST_MESSAGES from "./mock-data/LAST_MESSAGES.json";
 
 const getRandomMessage = () =>
   LAST_MESSAGES[Math.floor(Math.random() * LAST_MESSAGES.length)];
 
-const fetchContacts = async (): Promise<Array<Contact> | undefined> => {
+const fetchContacts = async (): Promise<Array<ContactType> | undefined> => {
   try {
     const response = await fetch(
       "https://randomuser.me/api/?results=20&inc=name,phone,picture,id&noinfo"
@@ -22,13 +22,13 @@ const fetchContacts = async (): Promise<Array<Contact> | undefined> => {
         fullName: `${result.name.first} ${result.name.last}`,
       },
 
-      lastMessage: undefined,
+      lastMessage: getRandomMessage(),
     }));
 
-    return newResults as Array<Contact>;
-  } catch (e) {
+    return newResults as Array<ContactType>;
+  } catch (e: any) {
     console.error(`Ups! Algo salió mal.`, e);
-    return;
+    throw new Error(e);
   }
 };
 
