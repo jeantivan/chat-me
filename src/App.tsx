@@ -12,23 +12,28 @@ import {
   LeftDrawerContent,
   ContactInfoContent,
 } from "./components";
-import MESSAGES from "./utils/messages.json";
-import { INITIAL_CHAT } from "./utils/constants";
+import MESSAGES from "./utils/mock-data/messages.json";
 import { useGetContacts } from "./utils/useGetContacts";
-import { Contact } from "./types";
+import { ContactType, MessageType } from "./types";
+
+const messagesCopy = [...MESSAGES] as MessageType[];
 
 function App() {
   const { mode } = useDarkMode();
-  const [messages, setMessages] = useState<Array<Messages>>([]);
-  const [selectedChat, setSelectedChat] = useState<Contact | null>(null);
+  const [messages, setMessages] = useState<Array<MessageType>>(messagesCopy);
+  const [selectedChat, setSelectedChat] = useState<ContactType | null>(null);
   const { isError, isLoading, data } = useGetContacts();
+
+  console.log(data);
 
   useEffect(() => {
     setMessages([]);
 
     setTimeout(() => {
-      setMessages([...MESSAGES.slice(0, 20)]);
+      setMessages(messagesCopy);
     }, 250);
+
+    console.log(selectedChat);
   }, [selectedChat]);
 
   return (
@@ -63,7 +68,7 @@ function App() {
               </>
             )}
           </div>
-          <ContactInfoContent selectedChat={selectedChat} />
+          {selectedChat && <ContactInfoContent selectedChat={selectedChat} />}
         </section>
       </main>
     </div>
