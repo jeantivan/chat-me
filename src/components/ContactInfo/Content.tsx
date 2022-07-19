@@ -16,8 +16,16 @@ import { useContactInfo } from "./Context";
 import { Switch } from "../Switch";
 import { CustomIcon } from "../CustomIcon";
 import { useRef } from "react";
+import { IconType } from "react-icons";
+import { ContactType } from "../../types";
 
-const Item = ({ children, isDanger }) => (
+const Item = ({
+  children,
+  isDanger,
+}: {
+  children: React.ReactNode;
+  isDanger?: boolean;
+}) => (
   <div
     className={cx(
       "flex p-4 cursor-pointer",
@@ -29,7 +37,15 @@ const Item = ({ children, isDanger }) => (
   </div>
 );
 
-const ItemText = ({ children, isDanger, textHelper = "" }) => (
+const ItemText = ({
+  children,
+  isDanger,
+  textHelper,
+}: {
+  children: React.ReactNode;
+  isDanger?: boolean;
+  textHelper?: string;
+}) => (
   <div
     className={`flex-1 flex flex-col leading-none ${
       isDanger ? "text-red-500" : "dark:text-neutral-50 text-neutral-900"
@@ -43,18 +59,18 @@ const ItemText = ({ children, isDanger, textHelper = "" }) => (
   </div>
 );
 
-const ItemIcon = ({ label, icon }) => (
+const ItemIcon = ({ label, icon }: { label: string; icon: IconType }) => (
   <div className="w-1/6 flex justify-center text-inherit">
     <CustomIcon Icon={icon} label={label} className="w-5 h-5 text-inherit" />
   </div>
 );
 
-const ItemAction = ({ children }) => (
+const ItemAction = ({ children }: { children?: React.ReactNode }) => (
   <div className="w-1/6 flex justify-center">{children}</div>
 );
 
 const variants = {
-  show: (isLg) => ({
+  show: (isLg: boolean) => ({
     width: isLg ? "40%" : "100%",
     transition: { ease: "easeIn" },
   }),
@@ -62,13 +78,17 @@ const variants = {
   transition: { type: "tween", duration: 0.15 },
 };
 
-export function ContactInfoContent({ selectedChat }) {
+interface ContactInfoContentProps {
+  selectedChat: ContactType;
+}
+
+export function ContactInfoContent({ selectedChat }: ContactInfoContentProps) {
   const isLg = useMediaQuery("(min-width: 1024px");
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
   const documentRef = useRef(document);
   const { name, phone, picture } = selectedChat;
 
-  const onKeyUp = (e) => {
+  const onKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") setOpenContactInfo(false);
   };
 
@@ -89,7 +109,7 @@ export function ContactInfoContent({ selectedChat }) {
             role="dialog"
             id="contact-info"
             aria-labelledby="contact-info-title"
-            tabIndex="-1"
+            tabIndex={-1}
             className="pointer-events-auto h-full"
           >
             <div className="bg-slate-50 dark:bg-slate-900 w-full h-full flex flex-col">

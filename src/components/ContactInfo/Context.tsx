@@ -15,7 +15,11 @@ export const ContactInfoContext = createContext({} as ContactInfoInterface);
 
 export const useContactInfo = () => useContext(ContactInfoContext);
 
-export function ContactInfoProvider({ children }: { children: JSX.Element }) {
+export function ContactInfoProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [openContactInfo, setOpenContactInfo] = useState<boolean>(false);
 
   return (

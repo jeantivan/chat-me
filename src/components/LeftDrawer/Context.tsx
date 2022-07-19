@@ -15,7 +15,11 @@ export const LeftDrawerContext = createContext<LeftDrawerInterface>(
 
 export const useLeftDrawer = () => useContext(LeftDrawerContext);
 
-export function LeftDrawerProvider({ children }: { children: JSX.Element }) {
+export function LeftDrawerProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [openLeftDrawer, setOpenLeftDrawer] = useState(false);
   const [renderContent, setRenderContent] = useState<
     "CONFIGURATION" | "USER_PROFILE"

@@ -1,10 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { USER_PROFILE_KEY, INITIAL_USER } from "../utils/constants";
 import { changeLocalStorageUserInfo } from "../utils/changeLocalStorageUserInfo";
-import { User } from "../types";
+import { UserType } from "../types";
 
 interface UserInfoInterface {
-  user: User;
+  user: UserType;
   changeName: (newName: string) => void;
   changeStatus: (newStatus: string) => void;
   changePicture: (newPicture: string) => void;
@@ -14,7 +14,7 @@ export const UserInfoContext = createContext<UserInfoInterface>(
   {} as UserInfoInterface
 );
 
-const getInitialUser = (): User => {
+const getInitialUser = (): UserType => {
   if (!localStorage.getItem(USER_PROFILE_KEY)) {
     localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(INITIAL_USER));
   }
@@ -24,7 +24,7 @@ const getInitialUser = (): User => {
 
 export const useUserInfo = () => useContext(UserInfoContext);
 
-export function UserInfoProvider({ children }: { children: JSX.Element }) {
+export function UserInfoProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState(getInitialUser());
 
   const changeName = (newName: string) => {

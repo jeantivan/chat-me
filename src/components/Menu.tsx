@@ -14,7 +14,7 @@ export const MenuItem = ({
   ...rest
 }: {
   className?: string;
-  children: JSX.Element | string;
+  children: React.ReactNode;
 }) => (
   <li
     className={cx(
@@ -37,7 +37,7 @@ export const MenuIcon = ({
   ...rest
 }: {
   label: string;
-  isDanger: boolean;
+  isDanger?: boolean;
   Icon: IconType;
   className?: string;
 }) => (
@@ -63,7 +63,7 @@ export const MenuContent = ({
   align,
   ...rest
 }: {
-  children: Array<JSX.Element>;
+  children: Array<React.ReactNode>;
   className?: string;
   sideOffset?: number;
   align?: "start" | "center" | "end";
