@@ -1,6 +1,6 @@
 import { ContactType } from "./../types";
 import { useQuery } from "react-query";
-import LAST_MESSAGES from "./mock-data/LAST_MESSAGES.json";
+import LAST_MESSAGES from "./mock-data/last-messages.json";
 
 const getRandomMessage = () =>
   LAST_MESSAGES[Math.floor(Math.random() * LAST_MESSAGES.length)];
