@@ -35,7 +35,7 @@ export type ReactionType = {
 };
 
 export type SelectedChatState = {
-  selectedChat: ContactType;
+  selectedChat: ContactType | null;
   setSelectedChat: Dispatch<SetStateAction<ContactType | null>>;
 };
 
