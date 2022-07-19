@@ -4,15 +4,26 @@ import { BsPencilFill, BsCheck, BsX } from "react-icons/bs";
 import { useDarkMode } from "./DarkMode";
 import { CustomIcon } from "./CustomIcon";
 
-export function EditableInput({ label, value, onSave, canBeEmpty, ...rest }) {
-  const inputRef = useRef(null);
+interface EditableInputProps {
+  label: string;
+  value: string;
+  onSave: (newValue: string) => void;
+}
+
+export function EditableInput({
+  label,
+  value,
+  onSave,
+  ...rest
+}: EditableInputProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const { mode } = useDarkMode();
   const [isEditing, setIsEditing] = useState(false);
   const [newValue, setNewValue] = useState(value);
   const [error, setError] = useState("");
 
   const handleSave = () => {
-    if (newValue === "") {
+    if (newValue === "" && inputRef.current) {
       inputRef.current.focus();
       setError(`El ${label} no puedes estar vacío.`);
 
