@@ -1,11 +1,8 @@
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { BiExit } from "react-icons/bi";
 import { IoPeople } from "react-icons/io5";
-import { SwitchDarkMode } from "./SwitchDarkMode";
-import { Configuration } from "./Configuration";
 import { MenuRoot, MenuTrigger, MenuContent, MenuItem, MenuIcon } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
 import { useLeftDrawer } from "./LeftDrawer";
@@ -42,9 +39,7 @@ export function UserMenu() {
             Configuración
           </button>
         </MenuItem>
-        {/*         <MenuItem className="py-2 px-4">
-          <SwitchDarkMode />
-        </MenuItem> */}
+
         <MenuItem className="w-full py-2 px-4">
           <div className="flex-1">Cerrar sesión</div>
           <MenuIcon label="Cerrar sesión" Icon={BiExit} isDanger />
