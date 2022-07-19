@@ -6,6 +6,7 @@ import { BsKeyboardFill } from "react-icons/bs";
 import { CustomIcon } from "../CustomIcon";
 import { useDarkMode } from "../DarkMode";
 import { KEYBOARD_SHORTCUTS } from "../../utils/keyboard-shortcuts";
+import { ShortCut } from "../../types";
 
 const Key = ({ text, isLight }: { text: string; isLight: boolean }) => (
   <div
@@ -20,7 +21,7 @@ const Key = ({ text, isLight }: { text: string; isLight: boolean }) => (
   </div>
 );
 
-const Shortcut = ({ title, keys }: { title: string; keys: string[] }) => {
+const Shortcut = ({ title, keys }: ShortCut) => {
   const { mode } = useDarkMode();
   const isLight = mode === "light";
 
