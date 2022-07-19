@@ -6,6 +6,7 @@ import { motion, useAnimation } from "framer-motion";
 import { BsChevronDown, BsEmojiSmileFill } from "react-icons/bs";
 import { MenuTrigger, MenuRoot, MenuItem, MenuContent } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
+import { MessageType } from "../types";
 
 const reactions = [
   {
@@ -30,38 +31,46 @@ const buttonVariants = {
   show: { opacity: 1, transition: { duration: 0.05 } },
 };
 
-const MessageTail = ({ isSend }) => (
+const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
     aria-hidden={true}
     className={cx(
       "w-3 h-3 absolute top-0",
       {
-        "dark:bg-emerald-700 bg-green-200": isSend,
-        "dark:bg-slate-700 bg-white": !isSend,
+        "dark:bg-emerald-700 bg-green-200": isOwnMsg,
+        "dark:bg-slate-700 bg-white": !isOwnMsg,
       },
-      { "left-full": isSend, "left-0": !isSend }
+      { "left-full": isOwnMsg, "left-0": !isOwnMsg }
     )}
     style={{
       zIndex: "-1",
-      transform: isSend
+      transform: isOwnMsg
         ? "translate3d(-2%, 0, -10px)"
         : "translate3d(-98%, 0, -10px)",
-      borderRadius: isSend
+      borderRadius: isOwnMsg
         ? "95% 5% 100% 0% / 0% 5% 95% 100%"
         : "5% 95% 0% 100% / 5% 0% 100% 95%",
     }}
   />
 );
 
-const ReactionRoot = ({ children, ...rest }) => (
-  <PopoverPrimitive.Root {...rest}>{children}</PopoverPrimitive.Root>
-);
+const ReactionRoot: React.FC<PopoverPrimitive.PopoverProps> = ({
+  children,
+  ...rest
+}) => <PopoverPrimitive.Root {...rest}>{children}</PopoverPrimitive.Root>;
 
-export function Message({ message, type, time, isFirstMessage }) {
+type MessageProps = { isFirstMessage: boolean } & MessageType;
+
+export function Message({
+  message,
+  status,
+  isOwnMsg,
+  time,
+  isFirstMessage,
+}: MessageProps) {
   const [openMenu, setOpenMenu] = useState(false);
   const [openReactions, setOpenReactions] = useState(false);
   const controls = useAnimation();
-  const isSend = type === "send";
 
   return (
     <motion.div
@@ -80,8 +89,8 @@ export function Message({ message, type, time, isFirstMessage }) {
     >
       <div
         className={cx("w-full flex", {
-          "justify-start": !isSend,
-          "justify-end": isSend,
+          "justify-start": !isOwnMsg,
+          "justify-end": isOwnMsg,
         })}
       >
         <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
@@ -90,15 +99,15 @@ export function Message({ message, type, time, isFirstMessage }) {
               className={cx(
                 "overflow-hidden p-2 flex flex-wrap drop-shadow group",
                 {
-                  "dark:bg-emerald-700 bg-green-200": isSend,
-                  "dark:bg-slate-700 bg-white": !isSend,
+                  "dark:bg-emerald-700 bg-green-200": isOwnMsg,
+                  "dark:bg-slate-700 bg-white": !isOwnMsg,
                 },
                 { "rounded-b": isFirstMessage, rounded: !isFirstMessage },
-                { "rounded-tl": isSend, "rounded-tr": !isSend }
+                { "rounded-tl": isOwnMsg, "rounded-tr": !isOwnMsg }
               )}
             >
               <p className="text-base dark:text-white leading-tight text-clip">
-                {message}
+                {message.content}
               </p>
               <span className="text-xs dark:text-gray-400 text-neutral-500 ml-auto self-end pt-1 pl-1">
                 {time}
@@ -113,9 +122,9 @@ export function Message({ message, type, time, isFirstMessage }) {
                     "bg-gradient-to-bl",
                     {
                       "dark:from-emerald-700 dark:via-emerald-700 via-green-200 from-green-200":
-                        isSend,
+                        isOwnMsg,
                       "dark:from-slate-700 dark:via-slate-700 via-white from-white":
-                        !isSend,
+                        !isOwnMsg,
                     }
                   )}
                 >
@@ -123,9 +132,9 @@ export function Message({ message, type, time, isFirstMessage }) {
                 </button>
               </MenuTrigger>
             </div>
-            {isFirstMessage && <MessageTail isSend={isSend} />}
+            {isFirstMessage && <MessageTail isOwnMsg={isOwnMsg} />}
           </div>
-          <MenuContent align={isSend ? "end" : "start"} className="w-48">
+          <MenuContent align={isOwnMsg ? "end" : "start"} className="w-48">
             <MenuItem>Responder</MenuItem>
             <MenuItem>Reaccionar al Mensaje</MenuItem>
             <MenuItem>Reenviar mensaje</MenuItem>
@@ -137,8 +146,8 @@ export function Message({ message, type, time, isFirstMessage }) {
         <ReactionRoot open={openReactions} onOpenChange={setOpenReactions}>
           <div
             className={cx("mx-4 flex items-center flex-1", {
-              "order-first": isSend,
-              "justify-end": isSend,
+              "order-first": isOwnMsg,
+              "justify-end": isOwnMsg,
             })}
           >
             <motion.div

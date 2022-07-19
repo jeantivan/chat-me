@@ -1,8 +1,13 @@
 import { useRef, useEffect } from "react";
 import { Message } from "./Message";
+import { MessageType } from "../types";
 
-export function Messages({ messages = [] }) {
-  const messagesContainer = useRef(null);
+interface MessagesProps {
+  messages: Array<MessageType>;
+}
+
+export function Messages({ messages }: MessagesProps) {
+  const messagesContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (messagesContainer.current) {
@@ -29,7 +34,7 @@ export function Messages({ messages = [] }) {
             <Message
               key={message.id}
               {...message}
-              isFirstMessage={message.type !== array[i + 1].type}
+              isFirstMessage={message.isOwnMsg !== array[i + 1].isOwnMsg}
             />
           );
         })}

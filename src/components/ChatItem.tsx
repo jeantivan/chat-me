@@ -7,8 +7,17 @@ import { useState } from "react";
 import { CustomIcon } from "./CustomIcon";
 
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
+import { ContactType, SelectedChatState } from "../types";
 
-export function ChatItem({ contact, setSelectedChat, selectedChat }) {
+type ChatItemProps = {
+  contact: ContactType;
+} & SelectedChatState;
+
+export function ChatItem({
+  contact,
+  setSelectedChat,
+  selectedChat,
+}: ChatItemProps) {
   const { name, picture, lastMessage } = contact;
   const { message, time } = lastMessage;
   const [openMenu, setOpenMenu] = useState(false);
@@ -17,16 +26,16 @@ export function ChatItem({ contact, setSelectedChat, selectedChat }) {
     <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
       <div
         onClick={() => {
-          if (selectedChat.name.fullName === name.fullName) return;
+          if (selectedChat?.name.fullName === name.fullName) return;
 
           setSelectedChat(contact);
         }}
         className={cx(
-          "flex group select-none border-collapse border-b border-slate-200 dark:border-slate-600 border-solid",
+          "flex group select-none cursor-pointer border-collapse border-b border-slate-200 dark:border-slate-600 border-solid",
           "dark:bg-slate-800/80 dark:hover:bg-slate-700 bg-white hover:bg-slate-100",
           {
             "dark:bg-slate-700 bg-slate-100":
-              name.fullName === selectedChat.name.fullName,
+              selectedChat && name.fullName === selectedChat.name.fullName,
           }
         )}
       >
@@ -48,7 +57,7 @@ export function ChatItem({ contact, setSelectedChat, selectedChat }) {
           </div>
           <div className="flex">
             <p className="text-sm dark:text-gray-400 text-gray-500 line-clamp-1 flex-1">
-              {message}
+              {message.content}
             </p>
 
             <MenuTrigger

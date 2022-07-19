@@ -1,4 +1,5 @@
-export const KEYBOARD_SHORTCUTS = [
+import { ShortCut } from "./../types";
+export const KEYBOARD_SHORTCUTS: ShortCut[] = [
   {
     slug: "mark-as-read",
     title: "Marcar como leído",
