@@ -8,6 +8,7 @@ import { CustomIcon } from "./CustomIcon";
 
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { ContactType, SelectedChatState } from "../types";
+import { LastMessage } from "./LastMessage";
 
 type ChatItemProps = {
   contact: ContactType;
@@ -19,9 +20,12 @@ export function ChatItem({
   selectedChat,
 }: ChatItemProps) {
   const { name, picture, lastMessage } = contact;
-  const { message, time } = lastMessage;
+  const { time } = lastMessage;
   const [openMenu, setOpenMenu] = useState(false);
 
+  if (!lastMessage.isOwnMsg && lastMessage.status !== "read") {
+    console.log(lastMessage);
+  }
   return (
     <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
       <div
@@ -39,52 +43,43 @@ export function ChatItem({
           }
         )}
       >
-        <div className="p-2 rounded-full w-16 h-16 overflow-hidden text-gray-400">
+        <div className="py-2 px-4 overflow-hidden text-gray-400">
           <img
-            className="bg-gray-400 w-full h-full rounded-full"
+            className="bg-gray-400 w-12 h-12 rounded-full"
             src={picture.thumbnail}
             alt={`Foto de perfil de ${name.fullName}`}
           />
         </div>
-        <div className="flex-1 py-2 px-3 flex flex-col">
+        <div className="w-full py-2 pr-4 flex flex-col">
           <div className="flex items-center">
-            <p className="flex-1 text-lg dark:text-white mb-1">
-              {name.fullName}
-            </p>
+            <p className="flex-1 text-lg dark:text-white">{name.fullName}</p>
             <span className="text-xs dark:text-gray-400 text-gray-500">
               {time}
             </span>
           </div>
-          <div className="flex">
-            <p className="text-sm dark:text-gray-400 text-gray-500 line-clamp-1 flex-1">
-              {message.content}
-            </p>
+          <div className="flex items-center relative">
+            <LastMessage lastMessage={lastMessage} />
 
-            <MenuTrigger
-              className={cx(
-                "transition opacity-0 translate-x-full",
-                "group-hover:-translate-x-0 group-hover:opacity-100",
-                { "-translate-x-0 opacity-100": openMenu },
-                "w-4 h-4 ml-2 text-gray-400",
-                "z-10"
-              )}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <CustomIcon
-                Icon={BsChevronDown}
-                label="Abrir menu"
-                iconClassName="stroke-1"
-              />
-            </MenuTrigger>
-            <MenuContent align="start" sideOffset={0} className="w-56">
-              <MenuItem>Archivar chat</MenuItem>
-              <MenuItem>Silenciar notificaciones</MenuItem>
-              <MenuItem>Eliminar chat</MenuItem>
-              <MenuItem>Fijar chat</MenuItem>
-              <MenuItem>Marcar como leído</MenuItem>
-            </MenuContent>
+            <div className="px-0.5 flex items-center w-auto">
+              <MenuTrigger
+                className={cx(
+                  "transition opacity-0 translate-x-full",
+                  "group-hover:-translate-x-0 group-hover:opacity-100",
+                  { "-translate-x-0 opacity-100": openMenu },
+                  "w-4 h-4 ml-2 text-gray-400",
+                  "z-10"
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <CustomIcon
+                  Icon={BsChevronDown}
+                  label="Abrir menu"
+                  iconClassName="stroke-1"
+                />
+              </MenuTrigger>
+            </div>
 
             {/* 
             TODO: Mostrar cuando la opción "pinear" este disponible en las opciones del chat
@@ -94,6 +89,13 @@ export function ChatItem({
             className="w-4 h-4 ml-2 dark:text-gray-400 text-gray-500"
           /> */}
           </div>
+          <MenuContent align="start" sideOffset={0} className="w-56">
+            <MenuItem>Archivar chat</MenuItem>
+            <MenuItem>Silenciar notificaciones</MenuItem>
+            <MenuItem>Eliminar chat</MenuItem>
+            <MenuItem>Fijar chat</MenuItem>
+            <MenuItem>Marcar como leído</MenuItem>
+          </MenuContent>
         </div>
       </div>
     </MenuRoot>
