@@ -24,16 +24,12 @@ function App() {
   const [selectedChat, setSelectedChat] = useState<ContactType | null>(null);
   const { isError, isLoading, data } = useGetContacts();
 
-  console.log(data);
-
   useEffect(() => {
     setMessages([]);
 
     setTimeout(() => {
       setMessages(messagesCopy);
     }, 250);
-
-    console.log(selectedChat);
   }, [selectedChat]);
 
   return (
