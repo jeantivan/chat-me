@@ -25,12 +25,19 @@ export function LastMessage({ lastMessage }: LastMessageProps) {
 
   return (
     <>
-      {isOwnMsg && <MessageStatus status={status} className="w-6 h-6 mr-1" />}
-      <div className="text-sm dark:text-gray-400 text-gray-500 w-full flex items-center">
+      {isOwnMsg && (
+        <MessageStatus
+          status={status}
+          className="w-6 h-6 mr-1 inline-block shrink-0"
+        />
+      )}
+      <div className={cx("flex grow items-center min-w-[0]")}>
         {messageIcon && (
-          <div className="w-4 h-4 mr-1.5">
-            <CustomIcon Icon={messageIcon} label="Tipo de mensaje" />
-          </div>
+          <CustomIcon
+            Icon={messageIcon}
+            label="Tipo de mensaje"
+            className="w-4 h-4 mr-1.5 inline-block shrink-0"
+          />
         )}
 
         <div
@@ -38,7 +45,7 @@ export function LastMessage({ lastMessage }: LastMessageProps) {
             "text-base": message.type !== "text",
           })}
         >
-          <div className="flex">{content}</div>
+          {content}
         </div>
       </div>
     </>
