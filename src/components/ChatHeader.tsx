@@ -1,19 +1,19 @@
 import { BsSearch } from "react-icons/bs";
 import { ContactMenu } from "./ContactMenu";
 import { useContactInfo } from "./ContactInfo";
-import { Contact } from "../types";
+import { ContactType } from "../types";
 import { Dispatch, SetStateAction } from "react";
 
 interface ChatHeaderProps {
-  selectedChat: Contact;
-  setSelectedChat: Dispatch<SetStateAction<Contact | null>>;
+  selectedChat: ContactType;
+  setSelectedChat: Dispatch<SetStateAction<ContactType | null>>;
 }
 
 export function ChatHeader(props: ChatHeaderProps) {
   const { setOpenContactInfo } = useContactInfo();
   const { name, picture } = props.selectedChat;
   return (
-    <header className="chat-header dark:bg-slate-800 bg-zinc-50 border-solid border-b border-slate-200 dark:border-slate-600">
+    <header className="chat-header bg-slate-100 dark:bg-slate-700">
       <div className="flex items-center px-5 py-2">
         <button
           onClick={() => {
