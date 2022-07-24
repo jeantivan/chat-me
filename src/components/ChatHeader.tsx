@@ -13,7 +13,7 @@ export function ChatHeader(props: ChatHeaderProps) {
   const { setOpenContactInfo } = useContactInfo();
   const { name, picture } = props.selectedChat;
   return (
-    <header className="chat-header bg-slate-100 dark:bg-slate-700">
+    <header className="chat-header bg-slate-100 dark:bg-slate-700 shadow-lg">
       <div className="flex items-center px-5 py-2">
         <button
           onClick={() => {
