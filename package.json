@@ -10,7 +10,6 @@
     "@radix-ui/react-label": "^0.1.6-rc.41",
     "@radix-ui/react-popover": "^0.1.7-rc.40",
     "@radix-ui/react-radio-group": "^0.1.6-rc.44",
-    "@radix-ui/react-scroll-area": "^1.0.0",
     "@radix-ui/react-separator": "^0.1.5-rc.41",
     "@radix-ui/react-switch": "^0.1.6-rc.40",
     "@radix-ui/react-visually-hidden": "^0.1.5-rc.41",
