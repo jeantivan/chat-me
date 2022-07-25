@@ -7,6 +7,7 @@ import { EditableInput } from "../EditableInput";
 import { ChangeUserImage } from "../ChangeUserImage";
 import { CustomIcon } from "../CustomIcon";
 import { useLeftDrawer } from "../LeftDrawer";
+import { Header } from "./Header";
 
 interface ProfileProps {
   goBack?: () => void;
@@ -28,26 +29,7 @@ export function Profile({ goBack }: ProfileProps) {
 
   return (
     <>
-      <header className="pt-16 bg-slate-700 pb-5 ">
-        <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: 20, opacity: 0 }}
-          transition={{ type: "tween" }}
-          className="px-4 flex items-center"
-        >
-          <button
-            onClick={goBack ? goBack : closeLeftDrawer}
-            className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
-          >
-            <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
-          </button>
-
-          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
-            Perfil
-          </h2>
-        </motion.div>
-      </header>
+      <Header goBack={goBack ? goBack : closeLeftDrawer}>Perfil</Header>
       <div className="py-6 overflow-y-auto">
         <div className="w-full flex justify-center mb-5">
           <motion.div

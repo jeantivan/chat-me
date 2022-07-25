@@ -24,6 +24,7 @@ import { Help } from "./Help";
 import { useState } from "react";
 import { useLeftDrawer } from "../LeftDrawer";
 import { IconType } from "react-icons";
+import { Header } from "./Header";
 
 const PROFILE = "PROFILE";
 const NOTIFICATIONS = "NOTIFICATIONS";
@@ -137,19 +138,7 @@ export function Configuration() {
 
   return !renderOption ? (
     <>
-      <header className="pt-16 bg-slate-700 pb-5">
-        <motion.div className="px-4 flex items-center" variants={childVariants}>
-          <button
-            onClick={closeLeftDrawer}
-            className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
-          >
-            <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
-          </button>
-          <h2 id="left-drawer-title" className="text-neutral-50 text-xl">
-            Configuración
-          </h2>
-        </motion.div>
-      </header>
+      <Header goBack={closeLeftDrawer}>Configuración</Header>
       <div className="overflow-y-auto overflow-x-hidden flex-1">
         <div className="flex flex-col">
           <User
