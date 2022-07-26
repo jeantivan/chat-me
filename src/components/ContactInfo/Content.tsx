@@ -15,7 +15,7 @@ import { useMediaQuery, useEventListener } from "usehooks-ts";
 import { useContactInfo } from "./Context";
 import { Switch } from "../Switch";
 import { CustomIcon } from "../CustomIcon";
-import { useRef } from "react";
+import { ReactNode, useRef } from "react";
 import { IconType } from "react-icons";
 import { ContactType } from "../../types";
 
@@ -23,13 +23,13 @@ const Item = ({
   children,
   isDanger,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   isDanger?: boolean;
 }) => (
   <div
     className={cx(
       "flex p-4 cursor-pointer",
-      "hover:bg-slate-50 dark:hover:bg-slate-700",
+      "hover:bg-neutral-100 dark:hover:bg-slate-700",
       { "text-gray-400": !isDanger, "text-red-500": isDanger }
     )}
   >
@@ -42,7 +42,7 @@ const ItemText = ({
   isDanger,
   textHelper,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   isDanger?: boolean;
   textHelper?: string;
 }) => (
@@ -65,8 +65,14 @@ const ItemIcon = ({ label, icon }: { label: string; icon: IconType }) => (
   </div>
 );
 
-const ItemAction = ({ children }: { children?: React.ReactNode }) => (
+const ItemAction = ({ children }: { children?: ReactNode }) => (
   <div className="w-1/6 flex justify-center">{children}</div>
+);
+
+const Section = ({ children }: { children: ReactNode }) => (
+  <section className="py-4 mb-4 shadow bg-white dark:bg-slate-800">
+    {children}
+  </section>
 );
 
 const variants = {
@@ -112,7 +118,7 @@ export function ContactInfoContent({ selectedChat }: ContactInfoContentProps) {
             tabIndex={-1}
             className="pointer-events-auto h-full"
           >
-            <div className="bg-slate-50 dark:bg-slate-900 w-full h-full flex flex-col">
+            <div className="bg-slate-200 dark:bg-slate-900 w-full h-full flex flex-col">
               <header className="p-4 flex items-center h-14 bg-slate-100 dark:bg-slate-700">
                 <button
                   className="w-7 h-7 text-slate-500 mr-4"
@@ -130,41 +136,39 @@ export function ContactInfoContent({ selectedChat }: ContactInfoContentProps) {
                 </h2>
               </header>
               <div className="flex flex-col overflow-y-auto">
-                <div
-                  className={`py-4 px-5 flex flex-col mb-4 shadow bg-slate-50 dark:bg-slate-800`}
-                >
-                  <div className="mx-auto mt-16 mb-4">
-                    <div className="w-40 h-40 rounded-full text-gray-500">
-                      <img
-                        className="bg-gray-400 w-full h-full rounded-full"
-                        src={picture.large}
-                        alt={`Foto de perfil de ${name.fullName}`}
-                      />
+                <Section>
+                  <div className="flex flex-col px-5">
+                    <div className="mx-auto mt-16 mb-4">
+                      <div className="w-40 h-40 rounded-full text-gray-500">
+                        <img
+                          className="bg-gray-400 w-full h-full rounded-full"
+                          src={picture.large}
+                          alt={`Foto de perfil de ${name.fullName}`}
+                        />
+                      </div>
+                    </div>
+                    <div className="mx-auto text-center">
+                      <h2
+                        className={`text-2xl mb-2 dark:text-neutral-50 text-neutral-900`}
+                      >
+                        {name.fullName}
+                      </h2>
+                      <div className={`text-gray-500`}>{phone}</div>
                     </div>
                   </div>
-                  <div className="mx-auto text-center">
-                    <h2
-                      className={`text-2xl mb-2 dark:text-neutral-50 text-neutral-900`}
+                </Section>
+                <Section>
+                  <div className="px-5">
+                    <div className="text-sm text-emerald-600">Info.</div>
+                    <div
+                      className={`text-lg dark:text-neutral-50 text-neutral-900`}
                     >
-                      {name.fullName}
-                    </h2>
-                    <div className={`text-gray-500`}>{phone}</div>
+                      Hola estoy usando ChatMe!
+                    </div>
                   </div>
-                </div>
-                <div
-                  className={`py-4 px-5 mb-4 shadow bg-slate-50 dark:bg-slate-800`}
-                >
-                  <div className="text-sm text-emerald-600">Info.</div>
-                  <div
-                    className={`text-lg dark:text-neutral-50 text-neutral-900`}
-                  >
-                    Hola estoy usando ChatMe!
-                  </div>
-                </div>
-                <div
-                  className={`py-4 px-5 mb-4 shadow bg-slate-50 dark:bg-slate-800`}
-                >
-                  <div className="flex mb-4">
+                </Section>
+                <Section>
+                  <div className="flex px-5 mb-4">
                     <div className="flex-1 text-sm text-emerald-600">
                       Archivos, enlaces y documentos.
                     </div>
@@ -173,20 +177,20 @@ export function ContactInfoContent({ selectedChat }: ContactInfoContentProps) {
                       <CustomIcon Icon={BsChevronRight} label="Ver más" />
                     </div>
                   </div>
-                  <div className="px-2 flex flex-row w-full mb-4">
+                  <div className="px-5 flex flex-row w-full mb-4">
                     <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
                     <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
                     <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
                   </div>
                   <div
-                    className={`text-sm dark:text-neutral-50 text-neutral-900`}
+                    className={`text-sm dark:text-neutral-50 text-neutral-900 px-5`}
                   >
                     Usa WhatsApp en tu teléfono para ver el historial de
                     mensajes completo.
                   </div>
-                </div>
-                <div className={`pt-3 bg-slate-50 dark:bg-slate-800`}>
-                  <div className="w-full mb-5">
+                </Section>
+                <Section>
+                  <div className="w-full">
                     <Item>
                       <ItemIcon icon={BsStarFill} label="Icono de campana" />
                       <ItemText>Mensajes destacados</ItemText>
@@ -252,7 +256,7 @@ export function ContactInfoContent({ selectedChat }: ContactInfoContentProps) {
                       <ItemText isDanger>Eliminar chat</ItemText>
                     </Item>
                   </div>
-                </div>
+                </Section>
               </div>
             </div>
           </div>

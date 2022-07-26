@@ -36,10 +36,6 @@ export function ChatItem({
     setSelectedChat(contact);
   };
 
-  if (!lastMessage.isOwnMsg && lastMessage.status !== "read") {
-    console.log(lastMessage);
-  }
-
   useEffect(() => {
     if (!openMenu) {
       setShowButton(false);

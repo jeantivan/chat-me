@@ -56,7 +56,7 @@ export function LeftDrawerContent() {
             id="left-drawer-dialog"
             aria-labelledby="left-drawer-title"
             tabIndex={-1}
-            className="bg-neutral-50 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-600 w-full h-full flex flex-col pointer-events-auto"
+            className="bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-600 w-full h-full flex flex-col pointer-events-auto"
           >
             {contentOptions[renderContent]}
           </div>

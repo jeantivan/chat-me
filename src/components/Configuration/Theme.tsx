@@ -1,13 +1,11 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import * as Label from "@radix-ui/react-label";
 import cx from "classnames";
 import { useState } from "react";
 
-import { motion } from "framer-motion";
-import { BsArrowLeft } from "react-icons/bs";
 import { useDarkMode } from "../DarkMode";
-import { CustomIcon } from "../CustomIcon";
+import { Header } from "./Header";
+import { AnimateOptionChange } from "./AnimateOptionChange";
 
 interface ThemeProps {
   goBack: () => void;
@@ -24,27 +22,8 @@ export function Theme({ goBack }: ThemeProps) {
   };
 
   return (
-    <>
-      <header className="pt-16 bg-slate-700 pb-5 ">
-        <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: 20, opacity: 0 }}
-          transition={{ type: "tween" }}
-          className="px-4 flex items-center"
-        >
-          <button
-            onClick={goBack}
-            className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
-          >
-            <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
-          </button>
-
-          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
-            Elegir Tema
-          </h2>
-        </motion.div>
-      </header>
+    <AnimateOptionChange>
+      <Header goBack={goBack}>Elegir Tema</Header>
       <div className="py-6 flex flex-col">
         <div className="w-4/5 mx-auto mb-10">
           <RadioGroup.Root
@@ -114,6 +93,6 @@ export function Theme({ goBack }: ThemeProps) {
           </button>
         </div>
       </div>
-    </>
+    </AnimateOptionChange>
   );
 }

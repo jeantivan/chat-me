@@ -2,13 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
 body {
-  @apply dark:bg-slate-800;
+  @apply bg-slate-800;
 }
 
 ::-webkit-scrollbar {
   width: 6px !important;
   height: 6px !important;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(156 163 175 / 0.5) transparent;
 }
 
 ::-webkit-scrollbar-track {

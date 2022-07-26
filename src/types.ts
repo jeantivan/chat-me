@@ -44,3 +44,15 @@ export type ShortCut = {
   title: string;
   keys: string[];
 };
+
+export type ConfigurationOptionsType =
+  | "PROFILE"
+  | "NOTIFICATIONS"
+  | "PRIVACY"
+  | "SECURITY"
+  | "THEME"
+  | "BACKGROUND"
+  | "SOL_INFO"
+  | "HELP"
+  | "OPTIONS"
+  | "SHORTCUTS";

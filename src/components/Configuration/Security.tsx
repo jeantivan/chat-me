@@ -2,9 +2,10 @@ import * as Label from "@radix-ui/react-label";
 import * as CheckBox from "@radix-ui/react-checkbox";
 import cx from "classnames";
 import { motion } from "framer-motion";
-import { BsArrowLeft, BsLockFill, BsShieldFill, BsCheck } from "react-icons/bs";
+import { BsLockFill, BsShieldFill, BsCheck } from "react-icons/bs";
 import { useDarkMode } from "../DarkMode";
-import { CustomIcon } from "../CustomIcon";
+import { Header } from "./Header";
+import { AnimateOptionChange } from "./AnimateOptionChange";
 
 interface SecurityProps {
   goBack: () => void;
@@ -14,27 +15,8 @@ export function Security({ goBack }: SecurityProps) {
   const { mode } = useDarkMode();
 
   return (
-    <>
-      <header className="pt-16 bg-slate-700 pb-5 ">
-        <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: 20, opacity: 0 }}
-          transition={{ type: "tween" }}
-          className="px-4 flex items-center"
-        >
-          <button
-            onClick={goBack}
-            className="w-7 h-7 dark:text-slate-400 text-slate-500 hover:text-slate-400 mr-4"
-          >
-            <CustomIcon Icon={BsArrowLeft} label="Cerrar configuración" />
-          </button>
-
-          <h2 id="left-drawer-title" className="text-slate-50 text-xl">
-            Seguridad
-          </h2>
-        </motion.div>
-      </header>
+    <AnimateOptionChange>
+      <Header goBack={goBack}>Seguridad</Header>
       <div className="p-6 flex flex-col">
         <div className="mx-auto flex justify-center mb-8">
           <motion.div
@@ -60,7 +42,7 @@ export function Security({ goBack }: SecurityProps) {
           transition={{ type: "tween" }}
           className="w-full mb-8"
         >
-          <p className={mode === "light" ? "text-black" : "text-white"}>
+          <p className="text-neutral-900 dark:text-neutral-50">
             Los mensajes y llamadas en los chats cifrados de extremo a extremo
             son solo para ti y las personas con quienes decidas compartirlos, ni
             siquiera ChatMe puede leerlos ni escucharlos.{" "}
@@ -93,9 +75,7 @@ export function Security({ goBack }: SecurityProps) {
           <div className="flex-1 ml-3">
             <Label.Root
               htmlFor="preview"
-              className={`select-none text-lg leading-none ${
-                mode === "light" ? "text-gray-900" : "text-gray-100"
-              }`}
+              className="select-none text-lg leading-none text-gray-900 dark:text-gray-100"
             >
               Mostrar notificaciones de seguridad en esta computadora.
             </Label.Root>
@@ -113,6 +93,6 @@ export function Security({ goBack }: SecurityProps) {
           </div>
         </motion.div>
       </div>
-    </>
+    </AnimateOptionChange>
   );
 }

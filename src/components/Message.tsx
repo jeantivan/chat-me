@@ -5,6 +5,7 @@ import { motion, useAnimation } from "framer-motion";
 import { BsChevronDown, BsEmojiSmileFill } from "react-icons/bs";
 import { MenuTrigger, MenuRoot, MenuItem, MenuContent } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
+import { MessageStatus } from "./MessageStatus";
 import { MessageType } from "../types";
 
 const reactions = [
@@ -93,10 +94,10 @@ export function Message({
         })}
       >
         <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
-          <div className="w-11/12 md:w-4/5  lg:w-3/4 drop-shadow">
+          <div className="w-auto max-w-9/10 md:max-w-8/10 lg:max-w-7/10 drop-shadow">
             <div
               className={cx(
-                "overflow-hidden p-2 flex flex-wrap drop-shadow group",
+                "overflow-hidden p-1.5 flex flex-wrap drop-shadow group",
                 {
                   "dark:bg-emerald-700 bg-green-200": isOwnMsg,
                   "dark:bg-slate-700 bg-white": !isOwnMsg,
@@ -108,9 +109,17 @@ export function Message({
               <p className="text-base dark:text-white leading-tight text-clip">
                 {message.content}
               </p>
-              <span className="text-xs dark:text-gray-400 text-neutral-500 ml-auto self-end pt-1 pl-1">
-                {time}
-              </span>
+              <div className="text-xs  ml-auto self-end pt-1 pl-1 flex items-end">
+                <span className="dark:text-gray-400 text-neutral-500 mr-1">
+                  {time}
+                </span>
+                {isOwnMsg && (
+                  <MessageStatus
+                    status={status}
+                    className="w-5 -mb-0.5 inline-block"
+                  />
+                )}
+              </div>
               <MenuTrigger asChild>
                 <button
                   className={cx(

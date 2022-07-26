@@ -13,7 +13,7 @@ export function UserProfile() {
   const { openLeftDrawerAndRenderContent } = useLeftDrawer();
 
   return (
-    <div className="user-profile dark:bg-slate-800 bg-zinc-50 border-solid border-r border-b border-slate-200 dark:border-slate-600 px-3 py-2 flex">
+    <div className="user-profile bg-slate-100 dark:bg-slate-700 border-solid border-r border-slate-200 dark:border-slate-600 px-3 py-2 flex">
       <div className="flex items-center flex-1">
         <button
           onClick={() => {

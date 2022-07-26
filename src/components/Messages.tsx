@@ -20,7 +20,7 @@ export function Messages({ messages }: MessagesProps) {
 
   return (
     <div
-      className="messages overflow-auto bg-neutral-200 dark:bg-slate-900"
+      className="messages overflow-y-auto bg-neutral-200 dark:bg-slate-900"
       ref={messagesContainer}
     >
       <div className="flex flex-col-reverse py-5">
