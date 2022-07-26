@@ -6,14 +6,13 @@ const variants = {
     x: "0%",
     transition: {
       type: "tween",
-      duration: 0.3,
+      duration: 0.15,
       ease: "easeIn",
-      delayChildren: 0.5,
     },
   },
   hide: {
     x: "100%",
-    transition: { type: "tween", duration: 0.3, ease: "easeIn" },
+    transition: { type: "tween", duration: 0.15, ease: "easeIn" },
   },
 };
 
