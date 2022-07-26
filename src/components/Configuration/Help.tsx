@@ -1,6 +1,4 @@
-import { motion } from "framer-motion";
-import { BsArrowLeft } from "react-icons/bs";
-import { CustomIcon } from "../CustomIcon";
+import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Header } from "./Header";
 
 interface HelpProps {
@@ -9,8 +7,8 @@ interface HelpProps {
 
 export function Help({ goBack }: HelpProps) {
   return (
-    <>
+    <AnimateOptionChange>
       <Header goBack={goBack}>Ayuda</Header>
-    </>
+    </AnimateOptionChange>
   );
 }

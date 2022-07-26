@@ -1,8 +1,7 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
-import { BsArrowLeft, BsFileEarmarkTextFill } from "react-icons/bs";
+import { BsFileEarmarkTextFill } from "react-icons/bs";
 import { CustomIcon } from "../CustomIcon";
-import { useDarkMode } from "../DarkMode";
+import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Header } from "./Header";
 
 interface SolInfoProps {
@@ -10,10 +9,8 @@ interface SolInfoProps {
 }
 
 export function SolInfo({ goBack }: SolInfoProps) {
-  const { mode } = useDarkMode();
-
   return (
-    <>
+    <AnimateOptionChange>
       <Header goBack={goBack}>Solicitar info de mi cuenta</Header>
       <div className="py-7 overflow-y-auto">
         <div className="mx-auto flex flex-col">
@@ -30,11 +27,7 @@ export function SolInfo({ goBack }: SolInfoProps) {
               label="File-icon"
             />
           </motion.div>
-          <div
-            className={`text-sm p-7 ${
-              mode === "light" ? "text-gray-500" : "text-gray-400"
-            }`}
-          >
+          <div className="text-sm p-7 text-gray-500 dark:text-gray-400">
             Crea un informe de la configuración y la info. de tu cuenta de
             ChatMe. Puedes acceder a la información o transferirla a otra
             aplicación. El informe no incluye tus mensajes.{" "}
@@ -43,13 +36,7 @@ export function SolInfo({ goBack }: SolInfoProps) {
             </a>
           </div>
         </div>
-        <div
-          className={`border-y  p-7 ${
-            mode === "light"
-              ? "hover:bg-slate-50 border-slate-300"
-              : "hover:bg-slate-700 border-slate-600"
-          }`}
-        >
+        <div className="border-y p-7 hover:bg-neutral-100 hover:dark:bg-slate-700 border-neutral-300 dark:border-slate-600">
           <div className="flex items-center select-none">
             <CustomIcon
               label="Solicitar reporte"
@@ -57,20 +44,12 @@ export function SolInfo({ goBack }: SolInfoProps) {
               className="w-6 h-6 text-gray-400 mr-6"
             />
 
-            <div
-              className={`text-lg font-medium ${
-                mode === "light" ? "text-gray-800" : "text-white"
-              }`}
-            >
+            <div className="text-lg font-medium text-neutral-900 dark:text-neutral-50">
               Solicitar reporte
             </div>
           </div>
         </div>
-        <div
-          className={`p-7 ${
-            mode === "light" ? "text-gray-500" : "text-gray-400"
-          }`}
-        >
+        <div className="p-7 text-gray-500 dark:text-gray-400">
           <p className="text-sm mb-2">
             El informe estará listo en 3 días aproximadamente. Tendrás algunas
             semanas para descargarlo después de que esté disponible.
@@ -81,6 +60,6 @@ export function SolInfo({ goBack }: SolInfoProps) {
           </p>
         </div>
       </div>
-    </>
+    </AnimateOptionChange>
   );
 }

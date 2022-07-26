@@ -1,6 +1,4 @@
-import { motion } from "framer-motion";
-import { BsArrowLeft } from "react-icons/bs";
-import { CustomIcon } from "../CustomIcon";
+import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Header } from "./Header";
 
 interface BackgroundProps {
@@ -9,8 +7,8 @@ interface BackgroundProps {
 
 export function Background({ goBack }: BackgroundProps) {
   return (
-    <>
+    <AnimateOptionChange>
       <Header goBack={goBack}>Elegir color de fondo</Header>
-    </>
+    </AnimateOptionChange>
   );
 }

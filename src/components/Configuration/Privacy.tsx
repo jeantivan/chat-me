@@ -1,14 +1,13 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import * as Separator from "@radix-ui/react-separator";
 import * as Label from "@radix-ui/react-label";
-import * as CheckBox from "@radix-ui/react-checkbox";
 import cx from "classnames";
-import { motion } from "framer-motion";
-import { BsArrowLeft, BsCheck } from "react-icons/bs";
 import { FiChevronRight } from "react-icons/fi";
 import { useDarkMode } from "../DarkMode";
 import { CustomIcon } from "../CustomIcon";
+import { CheckBox } from "../CheckBox";
 import { Header } from "./Header";
+
+import { AnimateOptionChange } from "./AnimateOptionChange";
 
 interface PrivacyProps {
   goBack: () => void;
@@ -19,26 +18,20 @@ export function Privacy({ goBack }: PrivacyProps) {
   const isLight = mode === "light";
 
   return (
-    <>
+    <AnimateOptionChange>
       <Header goBack={goBack}>Privacidad</Header>
-      <div
-        className={`overflow-y-auto flex-1 bg-slate-900 ${
-          isLight && "bg-slate-100"
-        }`}
-      >
+      <div className="overflow-y-auto flex-1 bg-neutral-100 dark:bg-slate-900">
         <div className="flex flex-col">
-          <div className={`p-6 mb-5 ${isLight ? "bg-white" : "bg-slate-800"}`}>
+          <div className="p-6 mb-5 bg-white dark:bg-slate-800">
             <h2 className="text-emerald-600 mb-3">
               Quién puede ver mi información personal
             </h2>
             <div className="flex py-3 items-center text-sm">
               <div className="flex-1">
-                <h3 className={isLight ? "text-black" : "text-white"}>
+                <h3 className="text-neutral-900 dark:text-neutral-50">
                   Última vez en linea.
                 </h3>
-                <p className={isLight ? "text-gray-500" : "text-gray-400"}>
-                  Nadie
-                </p>
+                <p className="text-gray-500 dark:text-gray-400">Nadie</p>
               </div>
               <CustomIcon
                 Icon={FiChevronRight}
@@ -46,13 +39,13 @@ export function Privacy({ goBack }: PrivacyProps) {
                 className="w-6 h-6 text-gray-400"
               />
             </div>
-            <Separator.Root className="bg-gray-600 w-full h-px" />
+            <Separator.Root className="bg-gray-200 dark:bg-gray-600 w-full h-px" />
             <div className="flex py-3 items-center text-sm">
               <div className="flex-1">
-                <h3 className={isLight ? "text-black" : "text-white"}>
+                <h3 className="text-neutral-900 dark:text-neutral-50">
                   Foto de perfil.
                 </h3>
-                <p className={isLight ? "text-gray-500" : "text-gray-400"}>
+                <p className="text-gray-500 dark:text-gray-400">
                   Mis contactos
                 </p>
               </div>
@@ -62,11 +55,11 @@ export function Privacy({ goBack }: PrivacyProps) {
                 className="w-6 h-6 text-gray-400"
               />
             </div>
-            <Separator.Root className="bg-gray-600 w-full h-px" />
+            <Separator.Root className="bg-gray-200 dark:bg-gray-600 w-full h-px" />
             <div className="flex py-3 items-center text-sm">
               <div className="flex-1">
-                <h3 className={isLight ? "text-black" : "text-white"}>Info.</h3>
-                <p className={isLight ? "text-gray-500" : "text-gray-400"}>
+                <h3 className="text-neutral-900 dark:text-neutral-50">Info.</h3>
+                <p className="text-gray-500 dark:text-gray-400">
                   Mis contactos
                 </p>
               </div>
@@ -76,11 +69,11 @@ export function Privacy({ goBack }: PrivacyProps) {
                 className="w-6 h-6 text-gray-400"
               />
             </div>
-            <Separator.Root className="bg-gray-600 w-full h-px" />
+            <Separator.Root className="bg-gray-200 dark:bg-gray-600  w-full h-px" />
             <div className="flex pt-3 items-center">
               <Label.Root asChild htmlFor="preview">
                 <div
-                  className={`select-none mr-2 ${
+                  className={`select-none mr-2  ${
                     isLight ? "text-gray-900" : "text-gray-100"
                   }`}
                 >
@@ -94,33 +87,17 @@ export function Privacy({ goBack }: PrivacyProps) {
                   </span>
                 </div>
               </Label.Root>
-              <CheckBox.Root
-                defaultChecked
-                id="preview"
-                style={{ minWidth: 20 }}
-                className={cx(
-                  "flex h-5 w-5 items-center justify-center rounded border-2",
-                  "radix-state-checked:bg-emerald-500 radix-state-checked:border-emerald-500",
-                  "radix-state-unchecked:border-gray-400 radix-state-unchecked:bg-transparent",
-                  "focus:outline-none focus-visible:ring focus-visible:ring-emerald-500 focus-visible:ring-opacity-75"
-                )}
-              >
-                <CheckBox.Indicator>
-                  <BsCheck className="h-5 w-5 self-center text-white" />
-                </CheckBox.Indicator>
-              </CheckBox.Root>
+              <CheckBox defaultChecked id="preview" />
             </div>
           </div>
-          <div className={`p-6 mb-5 ${isLight ? "bg-white" : "bg-slate-800"}`}>
+          <div className="p-6 mb-5 bg-white dark:bg-slate-800">
             <h2 className="text-emerald-600 mb-5">Mensajes temporales</h2>
             <div className="flex py-3 items-center text-sm">
               <div className="flex-1">
-                <h3 className={isLight ? "text-black" : "text-white"}>
+                <h3 className="text-neutral-900 dark:text-neutral-50">
                   Duración predeterminada de los mensajes
                 </h3>
-                <p className={isLight ? "text-gray-500" : "text-gray-400"}>
-                  Desactivados
-                </p>
+                <p className="text-gray-500 dark:text-gray-400">Desactivados</p>
               </div>
               <CustomIcon
                 Icon={FiChevronRight}
@@ -129,13 +106,13 @@ export function Privacy({ goBack }: PrivacyProps) {
               />
             </div>
           </div>
-          <div className={`p-6 mb-5 ${isLight ? "bg-white" : "bg-slate-800"}`}>
+          <div className="p-6 mb-5 bg-white dark:bg-slate-800">
             <div className="flex py-3 items-center text-sm">
               <div className="flex-1">
-                <h3 className={isLight ? "text-black" : "text-white"}>
-                  Grupos.
+                <h3 className="text-neutral-900 dark:text-neutral-50">
+                  Grupos
                 </h3>
-                <p className={isLight ? "text-gray-500" : "text-gray-400"}>
+                <p className="text-gray-500 dark:text-gray-400">
                   Mis contactos
                 </p>
               </div>
@@ -147,12 +124,10 @@ export function Privacy({ goBack }: PrivacyProps) {
             </div>
             <div className="flex py-3 items-center text-sm">
               <div className="flex-1">
-                <h3 className={isLight ? "text-black" : "text-white"}>
+                <h3 className="text-neutral-900 dark:text-neutral-50">
                   Contactos bloqueados
                 </h3>
-                <p className={isLight ? "text-gray-500" : "text-gray-400"}>
-                  15
-                </p>
+                <p className="text-gray-500 dark:text-gray-400">15</p>
               </div>
               <CustomIcon
                 Icon={FiChevronRight}
@@ -163,6 +138,6 @@ export function Privacy({ goBack }: PrivacyProps) {
           </div>
         </div>
       </div>
-    </>
+    </AnimateOptionChange>
   );
 }

@@ -1,14 +1,11 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import * as Label from "@radix-ui/react-label";
 import cx from "classnames";
 import { useState } from "react";
 
-import { motion } from "framer-motion";
-import { BsArrowLeft } from "react-icons/bs";
 import { useDarkMode } from "../DarkMode";
-import { CustomIcon } from "../CustomIcon";
 import { Header } from "./Header";
+import { AnimateOptionChange } from "./AnimateOptionChange";
 
 interface ThemeProps {
   goBack: () => void;
@@ -25,7 +22,7 @@ export function Theme({ goBack }: ThemeProps) {
   };
 
   return (
-    <>
+    <AnimateOptionChange>
       <Header goBack={goBack}>Elegir Tema</Header>
       <div className="py-6 flex flex-col">
         <div className="w-4/5 mx-auto mb-10">
@@ -96,6 +93,6 @@ export function Theme({ goBack }: ThemeProps) {
           </button>
         </div>
       </div>
-    </>
+    </AnimateOptionChange>
   );
 }

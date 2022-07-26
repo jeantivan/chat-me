@@ -1,13 +1,10 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
-import { BsArrowLeft } from "react-icons/bs";
-import { useDarkMode } from "../DarkMode";
 import { useUserInfo } from "../UserInfoProvider";
 import { EditableInput } from "../EditableInput";
 import { ChangeUserImage } from "../ChangeUserImage";
-import { CustomIcon } from "../CustomIcon";
 import { useLeftDrawer } from "../LeftDrawer";
 import { Header } from "./Header";
+import { AnimateOptionChange } from "./AnimateOptionChange";
 
 interface ProfileProps {
   goBack?: () => void;
@@ -15,7 +12,6 @@ interface ProfileProps {
 
 export function Profile({ goBack }: ProfileProps) {
   const { closeLeftDrawer } = useLeftDrawer();
-  const { mode } = useDarkMode();
 
   const { user, changeName, changeStatus } = useUserInfo();
 
@@ -28,7 +24,7 @@ export function Profile({ goBack }: ProfileProps) {
   };
 
   return (
-    <>
+    <AnimateOptionChange>
       <Header goBack={goBack ? goBack : closeLeftDrawer}>Perfil</Header>
       <div className="py-6 overflow-y-auto">
         <div className="w-full flex justify-center mb-5">
@@ -36,7 +32,7 @@ export function Profile({ goBack }: ProfileProps) {
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ type: "tween" }}
+            transition={{ type: "tween", delay: 0.3 }}
           >
             <ChangeUserImage />
           </motion.div>
@@ -62,6 +58,6 @@ export function Profile({ goBack }: ProfileProps) {
           </div>
         </div>
       </div>
-    </>
+    </AnimateOptionChange>
   );
 }
