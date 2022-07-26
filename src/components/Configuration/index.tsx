@@ -1,18 +1,5 @@
-import {
-  BsArrowLeft,
-  BsBellFill,
-  BsLockFill,
-  BsShieldShaded,
-  BsMoonStarsFill,
-  BsFileEarmarkTextFill,
-  BsQuestionCircleFill,
-} from "react-icons/bs";
-import { ImFilePicture } from "react-icons/im";
-import { motion } from "framer-motion";
-import { Shortcuts } from "./Shortcuts";
-import { UserImage } from "../UserImage";
-import { useUserInfo } from "../UserInfoProvider";
-import { CustomIcon } from "../CustomIcon";
+import cx from "classnames";
+import { AnimatePresence, motion } from "framer-motion";
 import { Notifications } from "./Notifications";
 import { Profile } from "./Profile";
 import { Privacy } from "./Privacy";
@@ -23,198 +10,58 @@ import { SolInfo } from "./SolInfo";
 import { Help } from "./Help";
 import { useState } from "react";
 import { useLeftDrawer } from "../LeftDrawer";
-import { IconType } from "react-icons";
-import { Header } from "./Header";
-
-const PROFILE = "PROFILE";
-const NOTIFICATIONS = "NOTIFICATIONS";
-const PRIVACY = "PRIVACY";
-const SECURITY = "SECURITY";
-const THEME = "THEME";
-const BACKGROUND = "BACKGROUND";
-const SOL_INFO = "SOL_INFO";
-const HELP = "HELP";
-
-type Options =
-  | "PROFILE"
-  | "NOTIFICATIONS"
-  | "PRIVACY"
-  | "SECURITY"
-  | "THEME"
-  | "BACKGROUND"
-  | "SOL_INFO"
-  | "HELP"
-  | "";
+import { ConfigurationOptionsType } from "../../types";
+import { Options } from "./Options";
 
 const renderOptions: { [x: string]: (goBack: () => void) => JSX.Element } = {
-  NOTIFICATIONS: (goBack) => <Notifications goBack={goBack} />,
-  PROFILE: (goBack) => <Profile goBack={goBack} />,
-  PRIVACY: (goBack) => <Privacy goBack={goBack} />,
-  SECURITY: (goBack) => <Security goBack={goBack} />,
-  THEME: (goBack) => <Theme goBack={goBack} />,
-  BACKGROUND: (goBack) => <Background goBack={goBack} />,
-  SOL_INFO: (goBack) => <SolInfo goBack={goBack} />,
-  HELP: (goBack) => <Help goBack={goBack} />,
+  NOTIFICATIONS: (goBack) => (
+    <Notifications key="NOTIFICATIONS" goBack={goBack} />
+  ),
+  PROFILE: (goBack) => <Profile key="NOTIFICATION" goBack={goBack} />,
+  PRIVACY: (goBack) => <Privacy key="PRIVACY" goBack={goBack} />,
+  SECURITY: (goBack) => <Security key="SECURITY" goBack={goBack} />,
+  THEME: (goBack) => <Theme key="THEME" goBack={goBack} />,
+  BACKGROUND: (goBack) => <Background key="BACKGROUND" goBack={goBack} />,
+  SOL_INFO: (goBack) => <SolInfo key="SOL_INFO" goBack={goBack} />,
+  HELP: (goBack) => <Help key="HELP" goBack={goBack} />,
 };
 
-const getRenderOption = (option: Options, goBack: () => void) => {
+const getRenderOption = (
+  option: ConfigurationOptionsType,
+  goBack: () => void
+) => {
   return renderOptions[option](goBack);
 };
 
-const childVariants = {
-  initial: {
-    x: -20,
-    opacity: 0,
-  },
-  enter: {
-    x: 0,
-    opacity: 1,
-  },
-  exit: {
-    x: -20,
-    opacity: 0,
-  },
-};
+export function Configuration() {
+  const { closeLeftDrawer } = useLeftDrawer();
+  const [renderOption, setRenderOption] =
+    useState<ConfigurationOptionsType>("OPTIONS");
 
-const User = (props: any) => {
-  const { user } = useUserInfo();
+  const goBack = () => {
+    setRenderOption("OPTIONS");
+  };
 
   return (
     <div
-      {...props}
-      className="flex items-center cursor-pointer w-full px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700"
+      className={cx(
+        "overflow-hidden relative",
+        "before:content[''] before:absolute before:top-0 before:left-0",
+        "before:bg-emerald-700 before:dark:bg-slate-700",
+        "before:w-full before:h-[112px]"
+      )}
     >
-      <div className="mr-4">
-        <div className="w-20 h-20 rounded-full overflow-hidden">
-          <UserImage />
-        </div>
-      </div>
-      <div className="flex-1">
-        <h2 className="font-medium text-xl text-neutral-900 dark:text-neutral-50">
-          {user.name}
-        </h2>
-        <p className="leading-none line-clamp-2 text-neutral-400">
-          {user.status}
-        </p>
-      </div>
+      <AnimatePresence exitBeforeEnter initial={false}>
+        {renderOption === "OPTIONS" ? (
+          <Options
+            key="OPTIONS"
+            goBack={closeLeftDrawer}
+            setRenderOption={setRenderOption}
+          />
+        ) : (
+          getRenderOption(renderOption, goBack)
+        )}
+      </AnimatePresence>
     </div>
-  );
-};
-
-const Item = ({
-  icon,
-  label,
-  onClick,
-  ...rest
-}: {
-  icon: IconType;
-  label: string;
-  onClick: () => void;
-}) => (
-  <button
-    {...rest}
-    onClick={onClick}
-    className="w-full flex items-center hover:bg-slate-50 dark:hover:bg-slate-700"
-  >
-    <span className="w-14 flex items-center justify-center">
-      <span className="w-5 h-5 text-slate-400">
-        <CustomIcon Icon={icon} label={label} />
-      </span>
-    </span>
-
-    <span className="py-5 pl-4 flex-1 border-b text-left text-lg text-neutral-900 dark:text-neutral-50 border-slate-200 dark:border-slate-700">
-      {label}
-    </span>
-  </button>
-);
-
-export function Configuration() {
-  const { closeLeftDrawer } = useLeftDrawer();
-  const [renderOption, setRenderOption] = useState<Options>("");
-
-  const goBack = () => {
-    setRenderOption("");
-  };
-
-  return !renderOption ? (
-    <>
-      <Header goBack={closeLeftDrawer}>Configuración</Header>
-      <div className="overflow-y-auto overflow-x-hidden flex-1">
-        <div className="flex flex-col">
-          <User
-            onClick={() => {
-              setRenderOption(PROFILE);
-            }}
-          />
-
-          <Item
-            icon={BsBellFill}
-            label="Notificaciones"
-            onClick={() => {
-              setRenderOption(NOTIFICATIONS);
-            }}
-          />
-          <Item
-            icon={BsLockFill}
-            label="Privacidad"
-            onClick={() => {
-              setRenderOption(PRIVACY);
-            }}
-          />
-          <Item
-            icon={BsShieldShaded}
-            label="Seguridad"
-            onClick={() => {
-              setRenderOption(SECURITY);
-            }}
-          />
-          <Item
-            icon={BsMoonStarsFill}
-            label="Tema"
-            onClick={() => {
-              setRenderOption(THEME);
-            }}
-          />
-          <Item
-            icon={ImFilePicture}
-            label="Fondo de pantalla"
-            onClick={() => {
-              setRenderOption(BACKGROUND);
-            }}
-          />
-          <Item
-            icon={BsFileEarmarkTextFill}
-            label="Solicitar info. de la cuenta"
-            onClick={() => {
-              setRenderOption(SOL_INFO);
-            }}
-          />
-          <Shortcuts />
-          <Item
-            icon={BsQuestionCircleFill}
-            label="Ayuda"
-            onClick={() => {
-              setRenderOption(HELP);
-            }}
-          />
-        </div>
-        <footer className="flex w-full justify-center p-3 mt-5">
-          <p className="text-base  text-neutral-900 dark:text-neutral-50">
-            Made with{" "}
-            <span className="mx-2" aria-label="Cup of coffee">
-              ☕
-            </span>
-            <a
-              className="text-emerald-500 hover:underline uppercase"
-              href="https://github.com/jeantivan"
-            >
-              Jean Tivan
-            </a>
-          </p>
-        </footer>
-      </div>
-    </>
-  ) : (
-    getRenderOption(renderOption, goBack)
   );
 }
