@@ -4,7 +4,7 @@ import { CustomIcon } from "../CustomIcon";
 import { BsArrowLeft } from "react-icons/bs";
 
 const headerVariants = {
-  transition: { type: "tween" },
+  transition: { type: "tween", delay: 0.15 },
   initial: {
     x: -20,
     opacity: 0,
@@ -12,10 +12,6 @@ const headerVariants = {
   enter: {
     x: 0,
     opacity: 1,
-  },
-  exit: {
-    x: -20,
-    opacity: 0,
   },
 };
 
@@ -26,7 +22,18 @@ interface HeaderProps {
 export function Header({ children, goBack }: HeaderProps) {
   return (
     <header className="pt-16 bg-emerald-700 dark:bg-slate-700 pb-5">
-      <motion.div variants={headerVariants} className="px-4 flex items-center">
+      <motion.div
+        transition={{ type: "tween", delay: 0.15 }}
+        initial={{
+          x: -20,
+          opacity: 0,
+        }}
+        animate={{
+          x: 0,
+          opacity: 1,
+        }}
+        className="px-4 flex items-center"
+      >
         <button onClick={goBack} className="w-7 h-7 text-neutral-50 mr-4">
           <CustomIcon Icon={BsArrowLeft} label="Volver atrás" />
         </button>
