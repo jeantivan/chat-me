@@ -16,6 +16,7 @@ import { useUserInfo } from "../UserInfoProvider";
 import { Header } from "./Header";
 import { Shortcuts } from "./Shortcuts";
 import { AnimateOptionChange } from "./AnimateOptionChange";
+import { Theme } from "./Theme";
 
 const User = (props: any) => {
   const { user } = useUserInfo();
@@ -143,6 +144,8 @@ export function Options({ goBack, setRenderOption }: OptionsProps) {
             );
           } else if (option.route === "SHORTCUTS") {
             return <Shortcuts key={option.route} />;
+          } else if (option.route === "THEME") {
+            return <Theme />;
           } else {
             return (
               <Item
