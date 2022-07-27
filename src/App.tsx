@@ -19,7 +19,7 @@ import { ContactType, MessageType } from "./types";
 const messagesCopy = [...MESSAGES] as MessageType[];
 
 function App() {
-  const { mode } = useDarkMode();
+  const { isDarkMode } = useDarkMode();
   const [messages, setMessages] = useState<Array<MessageType>>(messagesCopy);
   const [selectedChat, setSelectedChat] = useState<ContactType | null>(null);
   const { isError, isLoading, data } = useGetContacts();
@@ -34,7 +34,9 @@ function App() {
 
   return (
     <div
-      className={`${mode} md:overflow-x-auto max-h-screen min-w-screen flex`}
+      className={`${
+        isDarkMode ? "dark" : "light"
+      } md:overflow-x-auto max-h-screen min-w-screen flex`}
     >
       <main className="app-container min-w-md w-full dark:bg-slate-900 overflow-hidden flex">
         <section className="user-chats relative">

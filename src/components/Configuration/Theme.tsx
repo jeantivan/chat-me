@@ -12,11 +12,10 @@ interface ThemeProps {
 }
 
 export function Theme({ goBack }: ThemeProps) {
-  const { mode, setDarkMode } = useDarkMode();
-  const [value, setValue] = useState(mode);
+  const { isDarkMode, ternaryDarkMode, setDarkMode } = useDarkMode();
+  const [value, setValue] = useState(ternaryDarkMode);
 
   const handleOk = () => {
-    if (value !== "light" && value !== "dark") return;
     setDarkMode(value);
     return goBack();
   };
@@ -27,11 +26,13 @@ export function Theme({ goBack }: ThemeProps) {
       <div className="py-6 flex flex-col">
         <div className="w-4/5 mx-auto mb-10">
           <RadioGroup.Root
-            defaultValue={mode}
+            defaultValue={ternaryDarkMode}
             aria-label="Elegir tema"
             className="flex flex-col justify-center"
             value={value}
-            onValueChange={setValue}
+            onValueChange={(e) => {
+              setValue(e as typeof ternaryDarkMode);
+            }}
           >
             <div className="flex mb-5 items-center">
               <RadioGroup.Item
@@ -40,7 +41,7 @@ export function Theme({ goBack }: ThemeProps) {
                 className={cx(
                   "w-5 h-5 bg-white rounded-full mr-5",
                   "inline-flex items-center justify-center",
-                  { "border shadow-sm": mode === "light" }
+                  { "border shadow": !isDarkMode }
                 )}
               >
                 <RadioGroup.Indicator className="bg-emerald-500 w-2.5 h-2.5 rounded-full" />
@@ -48,13 +49,12 @@ export function Theme({ goBack }: ThemeProps) {
               <Label.Root
                 htmlFor="light"
                 className={`text-medium ${
-                  mode === "light" ? "text-black" : "text-white"
+                  !isDarkMode ? "text-black" : "text-white"
                 }`}
               >
                 Claro
               </Label.Root>
             </div>
-
             <div className="flex mb-5 items-center">
               <RadioGroup.Item
                 value="dark"
@@ -62,7 +62,7 @@ export function Theme({ goBack }: ThemeProps) {
                 className={cx(
                   "w-5 h-5 bg-white rounded-full mr-5",
                   "inline-flex items-center justify-center",
-                  { "border shadow-sm": mode === "light" }
+                  { "border shadow": !isDarkMode }
                 )}
               >
                 <RadioGroup.Indicator className="bg-emerald-500 w-2.5 h-2.5 rounded-full" />
@@ -70,10 +70,32 @@ export function Theme({ goBack }: ThemeProps) {
               <Label.Root
                 htmlFor="dark"
                 className={`text-medium ${
-                  mode === "light" ? "text-black" : "text-white"
+                  !isDarkMode ? "text-black" : "text-white"
                 }`}
               >
                 Oscuro
+              </Label.Root>
+            </div>
+
+            <div className="flex mb-5 items-center">
+              <RadioGroup.Item
+                value="system"
+                id="system"
+                className={cx(
+                  "w-5 h-5 bg-white rounded-full mr-5",
+                  "inline-flex items-center justify-center",
+                  { "border shadow": !isDarkMode }
+                )}
+              >
+                <RadioGroup.Indicator className="bg-emerald-500 w-2.5 h-2.5 rounded-full" />
+              </RadioGroup.Item>
+              <Label.Root
+                htmlFor="dark"
+                className={`text-medium ${
+                  !isDarkMode ? "text-black" : "text-white"
+                }`}
+              >
+                Predeterminado por el sistema
               </Label.Root>
             </div>
           </RadioGroup.Root>
