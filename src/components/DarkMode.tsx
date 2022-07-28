@@ -1,17 +1,10 @@
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
-import { COLOR_MODE_KEY } from "../utils/constants";
-import { getInitialColorMode } from "../utils/getInitialColorMode";
+import { createContext, Dispatch, SetStateAction, useContext } from "react";
+import { useTernaryDarkMode } from "usehooks-ts";
 
 interface DarkModeInterface {
-  mode: string;
-  toggleDarkMode: () => void;
-  setDarkMode: Dispatch<SetStateAction<"dark" | "light">>;
+  isDarkMode: boolean;
+  ternaryDarkMode: "dark" | "light" | "system";
+  setDarkMode: Dispatch<SetStateAction<"dark" | "light" | "system">>;
 }
 
 export const DarkModeContext = createContext<DarkModeInterface>(
@@ -21,18 +14,13 @@ export const DarkModeContext = createContext<DarkModeInterface>(
 export const useDarkMode = () => useContext(DarkModeContext);
 
 export function DarkModeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setDarkMode] = useState<"dark" | "light">(() =>
-    getInitialColorMode()
-  );
-
-  const toggleDarkMode = () => {
-    let nextColorMode: "dark" | "light" = mode === "light" ? "dark" : "light";
-    localStorage.setItem(COLOR_MODE_KEY, nextColorMode);
-    setDarkMode(nextColorMode);
-  };
+  const { isDarkMode, ternaryDarkMode, setTernaryDarkMode } =
+    useTernaryDarkMode();
 
   return (
-    <DarkModeContext.Provider value={{ mode, toggleDarkMode, setDarkMode }}>
+    <DarkModeContext.Provider
+      value={{ isDarkMode, ternaryDarkMode, setDarkMode: setTernaryDarkMode }}
+    >
       {children}
     </DarkModeContext.Provider>
   );

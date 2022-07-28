@@ -8,13 +8,13 @@ import { useDarkMode } from "../DarkMode";
 import { KEYBOARD_SHORTCUTS } from "../../utils/keyboard-shortcuts";
 import { ShortCut } from "../../types";
 
-const Key = ({ text, isLight }: { text: string; isLight: boolean }) => (
+const Key = ({ text, isDarkMode }: { text: string; isDarkMode: boolean }) => (
   <div
     className={cx(
       "py-1 px-2 ml-2",
       "text-xs capitalize",
       "border rounded border-neutral-400 shadow-sm",
-      { "bg-neutral-700": !isLight, "bg-neutral-200": isLight }
+      { "bg-neutral-700": isDarkMode, "bg-neutral-200": !isDarkMode }
     )}
   >
     {text}
@@ -22,8 +22,7 @@ const Key = ({ text, isLight }: { text: string; isLight: boolean }) => (
 );
 
 const Shortcut = ({ title, keys }: ShortCut) => {
-  const { mode } = useDarkMode();
-  const isLight = mode === "light";
+  const { isDarkMode } = useDarkMode();
 
   return (
     <div
@@ -32,15 +31,15 @@ const Shortcut = ({ title, keys }: ShortCut) => {
         "flex items-center justify-between",
         "p-3",
         {
-          "text-neutral-50": !isLight,
-          "text-neutral-900": isLight,
+          "text-neutral-50": isDarkMode,
+          "text-neutral-900": !isDarkMode,
         }
       )}
     >
       <div className={"text-sm mr-2 grow-0 shrink"}>{title}</div>
       <div className="flex flex-1 justify-end">
         {keys.map((key) => (
-          <Key key={key} text={key} isLight={isLight} />
+          <Key key={key} text={key} isDarkMode={isDarkMode} />
         ))}
       </div>
     </div>
@@ -48,16 +47,14 @@ const Shortcut = ({ title, keys }: ShortCut) => {
 };
 
 export function Shortcuts() {
-  const { mode } = useDarkMode();
+  const { isDarkMode } = useDarkMode();
   const [openModal, setOpenModal] = useState(false);
-
-  const isLight = mode === "light";
 
   return (
     <Dialog.Root open={openModal} onOpenChange={setOpenModal}>
       <Dialog.Trigger
         className={`w-full flex items-center ${
-          isLight ? "hover:bg-slate-50" : "hover:bg-slate-700"
+          !isDarkMode ? "hover:bg-slate-50" : "hover:bg-slate-700"
         }`}
       >
         <span className="w-14 flex items-center justify-center">
@@ -69,7 +66,7 @@ export function Shortcuts() {
         </span>
         <span
           className={`py-5 pl-4 flex-1 border-b text-left text-lg ${
-            isLight
+            !isDarkMode
               ? "text-black border-slate-200"
               : "text-slate-50 border-slate-700 "
           }`}
@@ -82,8 +79,8 @@ export function Shortcuts() {
           <Dialog.Portal>
             <Dialog.Overlay
               className={cx("fixed inset-0 w-screen h-screen", {
-                "bg-neutral-900/80": !isLight,
-                "bg-neutral-50/80": isLight,
+                "bg-neutral-900/80": isDarkMode,
+                "bg-neutral-50/80": !isDarkMode,
               })}
               style={{ zIndex: 1000 }}
             />
@@ -101,15 +98,15 @@ export function Shortcuts() {
                   "w-4/5 lg:w-3/5 h-full py-6 px-8 shadow-xl",
                   "flex flex-col justify-start",
                   {
-                    "bg-neutral-100": isLight,
-                    "bg-slate-800": !isLight,
+                    "bg-neutral-100": !isDarkMode,
+                    "bg-slate-800": isDarkMode,
                   }
                 )}
               >
                 <header className="mb-2">
                   <Dialog.Title
                     className={`text-xl ${
-                      isLight ? "text-neutral-900" : "text-neutral-50"
+                      !isDarkMode ? "text-neutral-900" : "text-neutral-50"
                     }`}
                   >
                     Atajos del teclado

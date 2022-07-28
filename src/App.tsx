@@ -15,14 +15,44 @@ import {
 import MESSAGES from "./utils/mock-data/messages.json";
 import { useGetContacts } from "./utils/useGetContacts";
 import { ContactType, MessageType } from "./types";
+import { CreateMessage } from "./components/CreateMessage";
 
 const messagesCopy = [...MESSAGES] as MessageType[];
 
 function App() {
-  const { mode } = useDarkMode();
+  const { isDarkMode } = useDarkMode();
   const [messages, setMessages] = useState<Array<MessageType>>(messagesCopy);
   const [selectedChat, setSelectedChat] = useState<ContactType | null>(null);
   const { isError, isLoading, data } = useGetContacts();
+
+  const addMessage = (newMessage: MessageType) => {
+    setMessages([newMessage, ...messages]);
+
+    setTimeout(() => {
+      findAndUpdateMessageStatus(newMessage.id);
+      setTimeout(() => {
+        findAndUpdateMessageStatus(newMessage.id);
+      }, 1000);
+    }, 1000);
+  };
+
+  const findAndUpdateMessageStatus = (id: string) => {
+    setMessages((prevMessages) => {
+      const newMessages = prevMessages.map((message) => {
+        if (message.id !== id) return message;
+
+        let newMessage = message;
+        if (message.status === "send") {
+          newMessage = { ...message, status: "received" };
+        } else if (message.status === "received") {
+          newMessage = { ...message, status: "read" };
+        }
+        return newMessage;
+      });
+
+      return newMessages;
+    });
+  };
 
   useEffect(() => {
     setMessages([]);
@@ -34,7 +64,9 @@ function App() {
 
   return (
     <div
-      className={`${mode} md:overflow-x-auto max-h-screen min-w-screen flex`}
+      className={`${
+        isDarkMode ? "dark" : "light"
+      } md:overflow-x-auto max-h-screen min-w-screen flex`}
     >
       <main className="app-container min-w-md w-full dark:bg-slate-900 overflow-hidden flex">
         <section className="user-chats relative">
@@ -60,7 +92,9 @@ function App() {
                   selectedChat={selectedChat}
                 />
                 <Messages messages={messages} />
-                <InputContainer setMessages={setMessages} />
+                <InputContainer>
+                  <CreateMessage addMessage={addMessage} />
+                </InputContainer>
               </>
             )}
           </div>
