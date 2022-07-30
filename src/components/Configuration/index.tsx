@@ -20,7 +20,7 @@ const renderOptions: { [x: string]: (goBack: () => void) => JSX.Element } = {
   PROFILE: (goBack) => <Profile key="NOTIFICATION" goBack={goBack} />,
   PRIVACY: (goBack) => <Privacy key="PRIVACY" goBack={goBack} />,
   SECURITY: (goBack) => <Security key="SECURITY" goBack={goBack} />,
-  THEME: (goBack) => <Theme key="THEME" goBack={goBack} />,
+  THEME: () => <Theme key="THEME" />,
   BACKGROUND: (goBack) => <Background key="BACKGROUND" goBack={goBack} />,
   SOL_INFO: (goBack) => <SolInfo key="SOL_INFO" goBack={goBack} />,
   HELP: (goBack) => <Help key="HELP" goBack={goBack} />,
