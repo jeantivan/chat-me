@@ -1,7 +1,5 @@
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import { useState, useRef } from "react";
 import { BsPencilFill, BsCheck, BsX } from "react-icons/bs";
-import { useDarkMode } from "./DarkMode";
 import { CustomIcon } from "./CustomIcon";
 
 interface EditableInputProps {
@@ -17,7 +15,6 @@ export function EditableInput({
   ...rest
 }: EditableInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { mode } = useDarkMode();
   const [isEditing, setIsEditing] = useState(false);
   const [newValue, setNewValue] = useState(value);
   const [error, setError] = useState("");
@@ -49,9 +46,7 @@ export function EditableInput({
         {isEditing ? (
           <>
             <input
-              className={`p-2 pb-1 flex-1 focus:outline-none bg-transparent ${
-                mode === "light" ? "text-black" : "text-white"
-              }`}
+              className="p-2 pb-1 flex-1 focus:outline-none bg-transparent text-neutral-900 dark:text-neutral-50"
               name={label}
               defaultValue={value}
               onChange={(e) => {
@@ -82,11 +77,7 @@ export function EditableInput({
           </>
         ) : (
           <>
-            <div
-              className={`flex-1 p-2 pb-1  ${
-                mode === "light" ? "text-black" : "text-white"
-              }`}
-            >
+            <div className="flex-1 p-2 pb-1 text-neutral-900 dark:text-neutral-50">
               {value}
             </div>
             <button
