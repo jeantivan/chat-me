@@ -28,7 +28,7 @@ const drawerVariants = {
 
 const contentOptions = {
   CONFIGURATION: <Configuration />,
-  USER_PROFILE: <Profile />,
+  USER_PROFILE: <Profile isNotAnimated />,
 };
 
 export function LeftDrawerContent() {
