@@ -29,7 +29,11 @@ function App() {
   const { isError, isLoading, data } = useGetContacts();
 
   const addMessage = (newMessage: MessageType) => {
-    setMessages([newMessage, ...messages]);
+    let copyMessages = [...messages];
+
+    copyMessages.push(newMessage);
+
+    setMessages(copyMessages);
 
     setTimeout(() => {
       findAndUpdateMessageStatus(newMessage.id);
@@ -105,12 +109,15 @@ function App() {
                 />
                 <Messages ref={messagesContainer}>
                   {messages.map((message, i, array) => {
-                    const isFirstMsg = i === array.length - 1;
+                    let hasTail =
+                      i === 0
+                        ? true
+                        : message.isOwnMsg !== array[i - 1].isOwnMsg;
 
                     return (
                       <MessageContainer
                         key={message.id}
-                        isFirstMsg={isFirstMsg}
+                        hasTail={hasTail}
                         isOwnMsg={message.isOwnMsg}
                       >
                         <Message {...message} />
