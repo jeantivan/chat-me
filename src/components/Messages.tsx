@@ -10,6 +10,6 @@ export const Messages = forwardRef<Ref, Props>(({ children }, ref) => (
     className="messages overflow-y-auto bg-neutral-200 dark:bg-slate-900"
     ref={ref}
   >
-    <div className="flex flex-col-reverse py-5">{children}</div>
+    <div className="py-5">{children}</div>
   </div>
 ));
