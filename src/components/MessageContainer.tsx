@@ -37,13 +37,13 @@ const buttonVariants = {
 interface MessageContainerProps {
   children: ReactNode;
   isOwnMsg: boolean;
-  isFirstMsg: boolean;
+  hasTail: boolean;
 }
 
 export function MessageContainer({
   children,
-  isFirstMsg,
   isOwnMsg,
+  hasTail,
 }: MessageContainerProps) {
   const [openMenu, setOpenMenu] = useState(false);
   const [openReactions, setOpenReactions] = useState(false);
@@ -60,8 +60,8 @@ export function MessageContainer({
         controls.start("hidden");
       }}
       className={cx("px-5 md:px-[5%] lg:px-[9%]", {
-        "mt-4": isFirstMsg,
-        "mt-1": !isFirstMsg,
+        "mt-4": hasTail,
+        "mt-1": !hasTail,
       })}
     >
       <div
@@ -79,7 +79,7 @@ export function MessageContainer({
                   "dark:bg-emerald-700 bg-green-200": isOwnMsg,
                   "dark:bg-slate-700 bg-white": !isOwnMsg,
                 },
-                { "rounded-b": isFirstMsg, rounded: !isFirstMsg },
+                { "rounded-b": hasTail, rounded: !hasTail },
                 { "rounded-tl": isOwnMsg, "rounded-tr": !isOwnMsg }
               )}
             >
@@ -106,7 +106,7 @@ export function MessageContainer({
                 />
               </MenuTrigger>
             </div>
-            {isFirstMsg && <MessageTail isOwnMsg={isOwnMsg} />}
+            {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
           </div>
           <MenuContent align={isOwnMsg ? "end" : "start"} className="w-48">
             <MenuItem>Responder</MenuItem>
