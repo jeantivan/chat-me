@@ -29,7 +29,7 @@ export const ReactionsTrigger = () => (
       className={cx(
         "text-gray-300 dark:text-gray-500",
         "bg-neutral-900/50 dark:bg-neutral-900/80",
-        "rounded-full p-1.5 w-9 h-9"
+        "rounded-full p-1.5 w-8 h-8"
       )}
     >
       <CustomIcon Icon={BsEmojiSmileFill} label="Reaccionar al mensaje" />
