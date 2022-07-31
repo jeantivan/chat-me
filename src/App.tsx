@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import {
   useDarkMode,
@@ -11,22 +11,29 @@ import {
   SearchChats,
   LeftDrawerContent,
   ContactInfoContent,
+  MessageContainer,
+  Message,
+  CreateMessage,
 } from "./components";
 import MESSAGES from "./utils/mock-data/messages.json";
 import { useGetContacts } from "./utils/useGetContacts";
 import { ContactType, MessageType } from "./types";
-import { CreateMessage } from "./components/CreateMessage";
 
 const messagesCopy = [...MESSAGES] as MessageType[];
 
 function App() {
+  const messagesContainer = useRef<HTMLDivElement>(null);
   const { isDarkMode } = useDarkMode();
   const [messages, setMessages] = useState<Array<MessageType>>(messagesCopy);
   const [selectedChat, setSelectedChat] = useState<ContactType | null>(null);
   const { isError, isLoading, data } = useGetContacts();
 
   const addMessage = (newMessage: MessageType) => {
-    setMessages([newMessage, ...messages]);
+    let copyMessages = [...messages];
+
+    copyMessages.push(newMessage);
+
+    setMessages(copyMessages);
 
     setTimeout(() => {
       findAndUpdateMessageStatus(newMessage.id);
@@ -62,6 +69,15 @@ function App() {
     }, 250);
   }, [selectedChat]);
 
+  useEffect(() => {
+    if (messagesContainer.current) {
+      messagesContainer.current.scrollTo(
+        0,
+        messagesContainer.current.scrollHeight
+      );
+    }
+  }, [messages]);
+
   return (
     <div
       className={`${
@@ -91,7 +107,24 @@ function App() {
                   setSelectedChat={setSelectedChat}
                   selectedChat={selectedChat}
                 />
-                <Messages messages={messages} />
+                <Messages ref={messagesContainer}>
+                  {messages.map((message, i, array) => {
+                    let hasTail =
+                      i === 0
+                        ? true
+                        : message.isOwnMsg !== array[i - 1].isOwnMsg;
+
+                    return (
+                      <MessageContainer
+                        key={message.id}
+                        hasTail={hasTail}
+                        isOwnMsg={message.isOwnMsg}
+                      >
+                        <Message {...message} />
+                      </MessageContainer>
+                    );
+                  })}
+                </Messages>
                 <InputContainer>
                   <CreateMessage addMessage={addMessage} />
                 </InputContainer>

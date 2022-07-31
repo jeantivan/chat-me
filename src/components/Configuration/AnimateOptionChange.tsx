@@ -16,16 +16,26 @@ const variants = {
   },
 };
 
-export function AnimateOptionChange({ children }: { children: ReactNode }) {
-  return (
-    <motion.div
-      className="flex flex-col h-full"
-      variants={variants}
-      initial="hide"
-      animate="show"
-      exit="hide"
-    >
-      {children}
-    </motion.div>
-  );
+export function AnimateOptionChange({
+  children,
+  isNotAnimated,
+}: {
+  children: ReactNode;
+  isNotAnimated?: boolean;
+}) {
+  if (isNotAnimated) {
+    return <div className="flex flex-col h-full">{children}</div>;
+  } else {
+    return (
+      <motion.div
+        className="flex flex-col h-full"
+        variants={variants}
+        initial="hide"
+        animate="show"
+        exit="hide"
+      >
+        {children}
+      </motion.div>
+    );
+  }
 }

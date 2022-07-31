@@ -8,9 +8,10 @@ import { AnimateOptionChange } from "./AnimateOptionChange";
 
 interface ProfileProps {
   goBack?: () => void;
+  isNotAnimated?: boolean;
 }
 
-export function Profile({ goBack }: ProfileProps) {
+export function Profile({ goBack, isNotAnimated }: ProfileProps) {
   const { closeLeftDrawer } = useLeftDrawer();
 
   const { user, changeName, changeStatus } = useUserInfo();
@@ -24,7 +25,7 @@ export function Profile({ goBack }: ProfileProps) {
   };
 
   return (
-    <AnimateOptionChange>
+    <AnimateOptionChange isNotAnimated={isNotAnimated}>
       <Header goBack={goBack ? goBack : closeLeftDrawer}>Perfil</Header>
       <div className="py-6 overflow-y-auto">
         <div className="w-full flex justify-center mb-5">

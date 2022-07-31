@@ -1,12 +1,16 @@
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import * as Label from "@radix-ui/react-label";
-import * as Dialog from "@radix-ui/react-dialog";
 import cx from "classnames";
 import { ReactNode, useState } from "react";
 import { BsMoonStarsFill } from "react-icons/bs";
-import { motion, AnimatePresence } from "framer-motion";
 import { useDarkMode } from "../DarkMode";
 import { CustomIcon } from "../CustomIcon";
+import {
+  DialogRoot,
+  DialogTrigger,
+  DialogTitle,
+  DialogContent,
+} from "../Dialog";
 
 const Button: React.FC<{
   children: ReactNode;
@@ -78,14 +82,14 @@ function ThemeContent({ goBack }: ThemeProps) {
 
   return (
     <div className="p-6">
-      <Dialog.Title
+      <DialogTitle
         className={cx("text-xl mb-5", {
           "text-neutral-900": !isDarkMode,
           "text-neutral-50": isDarkMode,
         })}
       >
         Elegir Tema
-      </Dialog.Title>
+      </DialogTitle>
       <div className="flex flex-col">
         <RadioGroup.Root
           defaultValue={ternaryDarkMode}
@@ -120,30 +124,13 @@ function ThemeContent({ goBack }: ThemeProps) {
   );
 }
 
-const modalVariants = {
-  enter: {
-    scale: 1,
-    transition: {
-      type: "tween",
-      ease: "easeIn",
-    },
-  },
-  exit: {
-    scale: 0,
-    transition: {
-      type: "tween",
-      ease: "easeIn",
-    },
-  },
-};
-
 export function Theme() {
   const [openModal, setOpenModal] = useState(false);
   const { isDarkMode } = useDarkMode();
 
   return (
-    <Dialog.Root open={openModal} onOpenChange={setOpenModal}>
-      <Dialog.Trigger
+    <DialogRoot open={openModal} onOpenChange={setOpenModal}>
+      <DialogTrigger
         className={`w-full flex items-center ${
           !isDarkMode ? "hover:bg-slate-50" : "hover:bg-slate-700"
         }`}
@@ -164,42 +151,14 @@ export function Theme() {
         >
           Tema
         </span>
-      </Dialog.Trigger>
-
-      <Dialog.Portal>
-        <Dialog.Overlay
-          className={cx("fixed inset-0 w-screen h-screen", {
-            "bg-neutral-900/80": isDarkMode,
-            "bg-neutral-50/80": !isDarkMode,
-          })}
-          style={{ zIndex: 1000 }}
+      </DialogTrigger>
+      <DialogContent className="w-[60%] md:w-[50%] lg:w-[40%]" open={openModal}>
+        <ThemeContent
+          goBack={() => {
+            setOpenModal(false);
+          }}
         />
-        <Dialog.Content
-          style={{ zIndex: 1001 }}
-          className={`w-screen h-screen shadow-lg fixed inset-0 flex items-center justify-center`}
-        >
-          <AnimatePresence>
-            {openModal && (
-              <motion.div
-                variants={modalVariants}
-                initial="exit"
-                animate="enter"
-                exit="exit"
-                className={cx("w-3/5 lg:w-2/5 shadow-xl", {
-                  "bg-white": !isDarkMode,
-                  "bg-gray-600": isDarkMode,
-                })}
-              >
-                <ThemeContent
-                  goBack={() => {
-                    setOpenModal(false);
-                  }}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+      </DialogContent>
+    </DialogRoot>
   );
 }
