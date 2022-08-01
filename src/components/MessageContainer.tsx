@@ -20,8 +20,8 @@ const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
     style={{
       //zIndex: "-1",
       transform: isOwnMsg
-        ? "translate3d(-2%, 0, -10px)"
-        : "translate3d(-98%, 0, -10px)",
+        ? "translate3d(-2%, 0, 10px)"
+        : "translate3d(-98%, 0, 10px)",
       borderRadius: isOwnMsg
         ? "95% 5% 100% 0% / 0% 5% 95% 100%"
         : "5% 95% 0% 100% / 5% 0% 100% 95%",
@@ -72,48 +72,47 @@ export function MessageContainer({
       >
         <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
           <div className="w-auto max-w-9/10 md:max-w-8/10 lg:max-w-7/10 drop-shadow">
-            <div>
-              <div
+            <div
+              className={cx(
+                "rounded-md overflow-hidden group relative",
+                {
+                  "dark:bg-emerald-700 bg-green-200": isOwnMsg,
+                  "dark:bg-slate-700 bg-white": !isOwnMsg,
+                },
+                {
+                  "rounded-tl-none": hasTail && !isOwnMsg,
+                  "rounded-tr-none": hasTail && isOwnMsg,
+                }
+              )}
+            >
+              <div className={cx("p-1.5 flex flex-wrap")}>{children}</div>
+              <MenuTrigger
                 className={cx(
-                  "overflow-hidden p-1.5 flex flex-wrap group",
+                  "transition opacity-0 translate-x-full group-hover:-translate-x-0 group-hover:opacity-100",
+                  { "-translate-x-0 opacity-100": openMenu },
+                  "text-lg text-gray-400",
+                  "w-10 rounded-tr-md inline-flex justify-center",
+                  "px-2 py-0.5 absolute top-0 right-0",
+                  "menu-trigger-bg",
                   {
-                    "dark:bg-emerald-700 bg-green-200": isOwnMsg,
-                    "dark:bg-slate-700 bg-white": !isOwnMsg,
-                  },
-                  { "rounded-b": hasTail, rounded: !hasTail },
-                  { "rounded-tl": isOwnMsg, "rounded-tr": !isOwnMsg }
+                    "menu-trigger-bg-main dark:menu-trigger-bg-main": isOwnMsg,
+                    "menu-trigger-bg-secondary dark:menu-trigger-bg-secondary":
+                      !isOwnMsg,
+                  }
                 )}
               >
-                {children}
-                <MenuTrigger
-                  className={cx(
-                    "transition opacity-0 translate-x-full group-hover:-translate-x-0 group-hover:opacity-100",
-                    { "-translate-x-0 opacity-100": openMenu },
-                    "text-lg text-gray-400",
-                    "w-10 rounded-tr inline-flex justify-center",
-                    "px-2 py-0.5 absolute top-0 right-0",
-                    "menu-trigger-bg",
-                    {
-                      "menu-trigger-bg-main dark:menu-trigger-bg-main":
-                        isOwnMsg,
-                      "menu-trigger-bg-secondary dark:menu-trigger-bg-secondary":
-                        !isOwnMsg,
-                    }
-                  )}
-                >
-                  <CustomIcon
-                    Icon={BsChevronDown}
-                    label="Mostrar menu"
-                    className="inline-block w-5"
-                    iconClassName="stroke-1"
-                  />
-                </MenuTrigger>
-              </div>
+                <CustomIcon
+                  Icon={BsChevronDown}
+                  label="Mostrar menu"
+                  className="inline-block w-5"
+                  iconClassName="stroke-1"
+                />
+              </MenuTrigger>
             </div>
             {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
           </div>
           <MenuContent align={isOwnMsg ? "end" : "start"} className="w-48">
-            <MenuItem>Info. del mensaje</MenuItem>
+            {isOwnMsg && <MenuItem>Info. del mensaje</MenuItem>}
             <MenuItem>Responder</MenuItem>
             <MenuItem>Reaccionar al Mensaje</MenuItem>
             <MenuItem>Reenviar mensaje</MenuItem>
