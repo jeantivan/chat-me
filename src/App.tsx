@@ -108,24 +108,22 @@ function App() {
                   selectedChat={selectedChat}
                 />
                 <Messages ref={messagesContainer}>
-                  {[...messages, selectedChat.lastMessage].map(
-                    (message, i, array) => {
-                      let hasTail =
-                        i === 0
-                          ? true
-                          : message.isOwnMsg !== array[i - 1].isOwnMsg;
+                  {messages.map((message, i, array) => {
+                    let hasTail =
+                      i === 0
+                        ? true
+                        : message.isOwnMsg !== array[i - 1].isOwnMsg;
 
-                      return (
-                        <MessageContainer
-                          key={message.id}
-                          hasTail={hasTail}
-                          isOwnMsg={message.isOwnMsg}
-                        >
-                          <Message {...message} />
-                        </MessageContainer>
-                      );
-                    }
-                  )}
+                    return (
+                      <MessageContainer
+                        key={message.id}
+                        hasTail={hasTail}
+                        isOwnMsg={message.isOwnMsg}
+                      >
+                        <Message {...message} />
+                      </MessageContainer>
+                    );
+                  })}
                 </Messages>
                 <InputContainer>
                   <CreateMessage addMessage={addMessage} />
