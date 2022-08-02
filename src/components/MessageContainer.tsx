@@ -10,7 +10,7 @@ const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
     aria-hidden={true}
     className={cx(
-      "w-3 h-3 absolute top-0",
+      "w-3 h-3 fixed top-0",
       {
         "dark:bg-emerald-700 bg-green-200": isOwnMsg,
         "dark:bg-slate-700 bg-white": !isOwnMsg,
@@ -18,10 +18,10 @@ const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
       { "left-full": isOwnMsg, "left-0": !isOwnMsg }
     )}
     style={{
-      zIndex: "-1",
+      //zIndex: "-1",
       transform: isOwnMsg
-        ? "translate3d(-2%, 0, -10px)"
-        : "translate3d(-98%, 0, -10px)",
+        ? "translate3d(-2%, 0, 10px)"
+        : "translate3d(-98%, 0, 10px)",
       borderRadius: isOwnMsg
         ? "95% 5% 100% 0% / 0% 5% 95% 100%"
         : "5% 95% 0% 100% / 5% 0% 100% 95%",
@@ -71,30 +71,33 @@ export function MessageContainer({
         })}
       >
         <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
-          <div className="w-auto max-w-9/10 md:max-w-8/10 lg:max-w-7/10 drop-shadow">
+          <div className="w-auto max-w-9/10 md:max-w-8/10 lg:max-w-7/10 flex-none drop-shadow">
             <div
               className={cx(
-                "overflow-hidden p-1.5 flex flex-wrap drop-shadow group",
+                "p-1.5 pb-2 rounded-md overflow-hidden group relative",
                 {
                   "dark:bg-emerald-700 bg-green-200": isOwnMsg,
                   "dark:bg-slate-700 bg-white": !isOwnMsg,
                 },
-                { "rounded-b": hasTail, rounded: !hasTail },
-                { "rounded-tl": isOwnMsg, "rounded-tr": !isOwnMsg }
+                {
+                  "rounded-tl-none": hasTail && !isOwnMsg,
+                  "rounded-tr-none": hasTail && isOwnMsg,
+                }
               )}
             >
               {children}
               <MenuTrigger
                 className={cx(
-                  "transition opacity-0 translate-x-full group-hover:-translate-x-0 group-hover:opacity-100",
-                  { "-translate-x-0 opacity-100": openMenu },
                   "text-lg text-gray-400",
-                  "px-2 py-1 fixed top-0 right-0",
-                  "bg-gradient-to-bl",
+                  "w-10 rounded-tr-md inline-flex justify-center",
+                  "px-2 py-0.5 absolute top-0 right-0",
+                  "transition opacity-0 translate-x-full",
+                  "group-hover:-translate-x-0 group-hover:opacity-100",
+                  "menu-trigger-bg",
+                  { "-translate-x-0 opacity-100": openMenu },
                   {
-                    "dark:from-emerald-700 dark:via-emerald-700 via-green-200 from-green-200":
-                      isOwnMsg,
-                    "dark:from-slate-700 dark:via-slate-700 via-white from-white":
+                    "menu-trigger-bg-main dark:menu-trigger-bg-main": isOwnMsg,
+                    "menu-trigger-bg-secondary dark:menu-trigger-bg-secondary":
                       !isOwnMsg,
                   }
                 )}
@@ -102,6 +105,7 @@ export function MessageContainer({
                 <CustomIcon
                   Icon={BsChevronDown}
                   label="Mostrar menu"
+                  className="inline-block w-5"
                   iconClassName="stroke-1"
                 />
               </MenuTrigger>
@@ -109,6 +113,7 @@ export function MessageContainer({
             {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
           </div>
           <MenuContent align={isOwnMsg ? "end" : "start"} className="w-48">
+            {isOwnMsg && <MenuItem>Info. del mensaje</MenuItem>}
             <MenuItem>Responder</MenuItem>
             <MenuItem>Reaccionar al Mensaje</MenuItem>
             <MenuItem>Reenviar mensaje</MenuItem>
