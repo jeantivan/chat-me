@@ -71,10 +71,10 @@ export function MessageContainer({
         })}
       >
         <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
-          <div className="w-auto max-w-9/10 md:max-w-8/10 lg:max-w-7/10 drop-shadow">
+          <div className="w-auto max-w-9/10 md:max-w-8/10 lg:max-w-7/10 flex-none drop-shadow">
             <div
               className={cx(
-                "rounded-md overflow-hidden group relative",
+                "p-1.5 pb-2 rounded-md overflow-hidden group relative",
                 {
                   "dark:bg-emerald-700 bg-green-200": isOwnMsg,
                   "dark:bg-slate-700 bg-white": !isOwnMsg,
@@ -85,15 +85,16 @@ export function MessageContainer({
                 }
               )}
             >
-              <div className={cx("p-1.5 flex flex-wrap")}>{children}</div>
+              {children}
               <MenuTrigger
                 className={cx(
-                  "transition opacity-0 translate-x-full group-hover:-translate-x-0 group-hover:opacity-100",
-                  { "-translate-x-0 opacity-100": openMenu },
                   "text-lg text-gray-400",
                   "w-10 rounded-tr-md inline-flex justify-center",
                   "px-2 py-0.5 absolute top-0 right-0",
+                  "transition opacity-0 translate-x-full",
+                  "group-hover:-translate-x-0 group-hover:opacity-100",
                   "menu-trigger-bg",
+                  { "-translate-x-0 opacity-100": openMenu },
                   {
                     "menu-trigger-bg-main dark:menu-trigger-bg-main": isOwnMsg,
                     "menu-trigger-bg-secondary dark:menu-trigger-bg-secondary":
