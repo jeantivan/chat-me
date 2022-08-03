@@ -1,7 +1,12 @@
-import { MessageStatus } from "./MessageStatus";
-import { MessageType } from "../types";
+import { MessageStatus } from "../MessageStatus";
+import { MessageType } from "../../types";
 
-export function Message({ message, status, isOwnMsg, time }: MessageType) {
+export function MessageContent({
+  message,
+  status,
+  isOwnMsg,
+  time,
+}: MessageType) {
   return (
     <div className="relative">
       <div className="relative whitespace-pre-wrap break-words">
