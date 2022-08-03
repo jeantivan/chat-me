@@ -1,5 +1,4 @@
 import * as Popover from "@radix-ui/react-popover";
-import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
 import cx from "classnames";
 import { CustomIcon } from "./CustomIcon";
 import { IconType } from "react-icons";
