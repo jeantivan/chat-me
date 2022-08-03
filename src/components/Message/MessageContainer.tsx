@@ -2,9 +2,10 @@ import cx from "classnames";
 import { ReactNode, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { BsChevronDown } from "react-icons/bs";
-import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "./Menu";
-import { CustomIcon } from "./CustomIcon";
-import { Reactions, ReactionsRoot, ReactionsTrigger } from "./Reactions";
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../Menu";
+import { CustomIcon } from "../CustomIcon";
+import { Reactions, ReactionsRoot, ReactionsTrigger } from "../Reactions";
+import { DeleteMessage } from "./DeleteMessage";
 
 const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
@@ -38,12 +39,16 @@ interface MessageContainerProps {
   children: ReactNode;
   isOwnMsg: boolean;
   hasTail: boolean;
+  msgId: string;
+  deleteMsg: (id: string) => void;
 }
 
 export function MessageContainer({
   children,
   isOwnMsg,
   hasTail,
+  msgId,
+  deleteMsg,
 }: MessageContainerProps) {
   const [openMenu, setOpenMenu] = useState(false);
   const [openReactions, setOpenReactions] = useState(false);
@@ -118,7 +123,17 @@ export function MessageContainer({
             <MenuItem>Reaccionar al Mensaje</MenuItem>
             <MenuItem>Reenviar mensaje</MenuItem>
             <MenuItem>Destacar mensaje</MenuItem>
-            <MenuItem>Eliminar mensaje</MenuItem>
+            {/* <MenuItem>
+              <button
+                className="px-4 py-2"
+                onClick={() => {
+                  deleteMsg(msgId);
+                }}
+              >
+                Eliminar mensaje
+              </button>
+            </MenuItem> */}
+            <DeleteMessage msgId={msgId} deleteMsg={deleteMsg} />
           </MenuContent>
         </MenuRoot>
 
