@@ -11,7 +11,6 @@ import {
   SearchChats,
   LeftDrawerContent,
   ContactInfoContent,
-  MessageContainer,
   Message,
   CreateMessage,
 } from "./components";
@@ -59,6 +58,23 @@ function App() {
 
       return newMessages;
     });
+  };
+
+  const findAndDeleteMessageById = (id: string) => {
+    const indexOfMessageToDelete = messages.findIndex(
+      (message) => message.id === id
+    );
+
+    if (indexOfMessageToDelete < 0) {
+      console.log("No hay mensaje para borrar");
+      return;
+    }
+
+    let newMessageList = [...messages];
+
+    newMessageList.splice(indexOfMessageToDelete, 1);
+
+    setMessages(newMessageList);
   };
 
   useEffect(() => {
@@ -115,13 +131,11 @@ function App() {
                         : message.isOwnMsg !== array[i - 1].isOwnMsg;
 
                     return (
-                      <MessageContainer
-                        key={message.id}
+                      <Message
                         hasTail={hasTail}
-                        isOwnMsg={message.isOwnMsg}
-                      >
-                        <Message {...message} />
-                      </MessageContainer>
+                        deleteMsg={findAndDeleteMessageById}
+                        message={message}
+                      />
                     );
                   })}
                 </Messages>
