@@ -15,10 +15,11 @@ import {
   CreateMessage,
 } from "./components";
 import MESSAGES from "./utils/mock-data/messages.json";
+import NEW_MESSAGES from "./utils/mock-data/new_messages.json";
 import { useGetContacts } from "./utils/useGetContacts";
 import { ContactType, MessageType } from "./types";
 
-const messagesCopy = [...MESSAGES] as MessageType[];
+const messagesCopy = [...NEW_MESSAGES] as MessageType[];
 
 function App() {
   const messagesContainer = useRef<HTMLDivElement>(null);
@@ -124,20 +125,22 @@ function App() {
                   selectedChat={selectedChat}
                 />
                 <Messages ref={messagesContainer}>
-                  {messages.map((message, i, array) => {
-                    let hasTail =
-                      i === 0
-                        ? true
-                        : message.isOwnMsg !== array[i - 1].isOwnMsg;
+                  {messages
+                    .filter((message) => message.reactions.length > 0)
+                    .map((message, i, array) => {
+                      let hasTail =
+                        i === 0
+                          ? true
+                          : message.isOwnMsg !== array[i - 1].isOwnMsg;
 
-                    return (
-                      <Message
-                        hasTail={hasTail}
-                        deleteMsg={findAndDeleteMessageById}
-                        message={message}
-                      />
-                    );
-                  })}
+                      return (
+                        <Message
+                          hasTail={hasTail}
+                          deleteMsg={findAndDeleteMessageById}
+                          message={message}
+                        />
+                      );
+                    })}
                 </Messages>
                 <InputContainer>
                   <CreateMessage addMessage={addMessage} />
