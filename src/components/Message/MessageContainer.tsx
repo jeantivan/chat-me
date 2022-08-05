@@ -94,8 +94,8 @@ export function MessageContainer({
               <MenuTrigger
                 className={cx(
                   "text-lg text-gray-400",
-                  "w-10 rounded-tr-md inline-flex justify-center",
-                  "px-2 py-0.5 absolute top-0 right-0",
+                  "w-10 min-h-[32px] rounded-tr-md inline-flex justify-center",
+                  "px-2 py-0.5 absolute top-0 right-0 z-20",
                   "transition opacity-0 translate-x-full",
                   "group-hover:-translate-x-0 group-hover:opacity-100",
                   "menu-trigger-bg",
