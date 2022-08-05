@@ -2,24 +2,16 @@ import * as PrimitivePopover from "@radix-ui/react-popover";
 import cx from "classnames";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { CustomIcon } from "./CustomIcon";
+import { ReactionListType } from "../types";
 
-const reactions = [
-  {
-    emoji: "👍",
-    name: "thumbs-up",
-  },
-  {
-    emoji: "💖",
-    name: "heart",
-  },
-  {
-    emoji: "😂",
-    name: "face-with-tears-of-joy",
-  },
-  { emoji: "😮", name: "face-with-open-mouth" },
-  { emoji: "😢", name: "crying-face" },
-  { emoji: "🙏", name: "folded-hands" },
-];
+const reactionsList = {
+  "thumbs-up": "👍",
+  heart: "💖",
+  "face-with-tears-of-joy": "😂",
+  "face-with-open-mouth": "😮",
+  "crying-face": "😢",
+  "folded-hands": "🙏",
+};
 
 export const ReactionsRoot = PrimitivePopover.Root;
 
@@ -38,6 +30,7 @@ export const ReactionsTrigger = () => (
 );
 
 export function Reactions() {
+  const reactionsArray = Object.keys(reactionsList) as ReactionListType[];
   return (
     <PrimitivePopover.Content
       sideOffset={4}
@@ -45,18 +38,24 @@ export function Reactions() {
       side="top"
       avoidCollisions={false}
       className={cx(
-        "w-46 rounded-full p-2 shadow-md",
+        "w-46 rounded-full p-1.5 shadow-md",
         "bg-white dark:bg-slate-800",
         "flex",
         "z-50 select-none"
       )}
     >
-      {reactions.map(({ emoji, name }) => (
+      {reactionsArray.map((emoji, i) => (
         <div
-          key={name}
-          className="w-8 h-8 text-2xl flex justify-center items-baseline mx-1 rounded-full"
+          key={emoji}
+          className={cx(
+            "p-1 w-12 h-12 rounded-full",
+            "flex justify-center center"
+            // {
+            //   "bg-slate-300/20": i === 2,
+            // }
+          )}
         >
-          {emoji}
+          <span className="text-2xl leading-9">{reactionsList[emoji]}</span>
         </div>
       ))}
     </PrimitivePopover.Content>
