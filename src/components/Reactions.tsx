@@ -48,7 +48,7 @@ export function Reactions() {
         <div
           key={emoji}
           className={cx(
-            "p-1 w-12 h-12 rounded-full",
+            "p-1 w-11 h-11 rounded-full",
             "flex justify-center center"
             // {
             //   "bg-slate-300/20": i === 2,
