@@ -1,10 +1,13 @@
 import { MessageStatus } from "../MessageStatus";
 import { MessageType } from "../../types";
+import { CustomIcon } from "../CustomIcon";
+import { BsStarFill } from "react-icons/bs";
 
 export function MessageContent({
   message,
   status,
   isOwnMsg,
+  isFavMsg,
   time,
 }: MessageType) {
   return (
@@ -18,7 +21,14 @@ export function MessageContent({
 
       <div className="relative float-right z-10 -mt-3 -mb-[5px]">
         <span className="text-xs flex items-end">
-          <span className="dark:text-gray-400 text-neutral-500 mr-1 whitespace-nowrap">
+          {isFavMsg === 1 && (
+            <CustomIcon
+              Icon={BsStarFill}
+              className="text-gray-400 self-center inline-block"
+              label="Fav Msg"
+            />
+          )}
+          <span className="dark:text-gray-400 text-neutral-500 mx-1 whitespace-nowrap">
             {time}
           </span>
           {isOwnMsg && (
