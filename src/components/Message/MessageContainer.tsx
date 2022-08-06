@@ -38,17 +38,21 @@ const buttonVariants = {
 interface MessageContainerProps {
   children: ReactNode;
   isOwnMsg: boolean;
+  isFavMsg: number;
   hasTail: boolean;
   msgId: string;
   deleteMsg: (id: string) => void;
+  favMsg: (id: string) => void;
 }
 
 export function MessageContainer({
   children,
   isOwnMsg,
+  isFavMsg,
   hasTail,
   msgId,
   deleteMsg,
+  favMsg,
 }: MessageContainerProps) {
   const [openMenu, setOpenMenu] = useState(false);
   const [openReactions, setOpenReactions] = useState(false);
@@ -122,10 +126,20 @@ export function MessageContainer({
             <MenuItem>Responder</MenuItem>
             <MenuItem>Reaccionar al Mensaje</MenuItem>
             <MenuItem>Reenviar mensaje</MenuItem>
-            <MenuItem>Destacar mensaje</MenuItem>
-            {/* <MenuItem>
+            <MenuItem>
               <button
                 className="px-4 py-2"
+                onClick={() => {
+                  favMsg(msgId);
+                  setOpenMenu(false);
+                }}
+              >
+                {isFavMsg < 0 ? "Destacar mensaje" : "No destacar mensaje"}
+              </button>
+            </MenuItem>
+            {/* <MenuItem>
+              <button
+                
                 onClick={() => {
                   deleteMsg(msgId);
                 }}

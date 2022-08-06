@@ -78,6 +78,18 @@ function App() {
     setMessages(newMessageList);
   };
 
+  const findAndToggleFavMessage = (id: string) => {
+    let messagesCopy = [...messages];
+
+    let newMessages = messagesCopy.map((message) =>
+      message.id === id
+        ? { ...message, isFavMsg: message.isFavMsg < 0 ? 1 : -1 }
+        : message
+    );
+
+    setMessages(newMessages);
+  };
+
   useEffect(() => {
     setMessages([]);
 
@@ -126,7 +138,7 @@ function App() {
                 />
                 <Messages ref={messagesContainer}>
                   {messages
-                    .filter((message) => message.reactions.length > 0)
+                    //.filter((message) => message.reactions.length > 0)
                     .map((message, i, array) => {
                       let hasTail =
                         i === 0
@@ -137,6 +149,7 @@ function App() {
                         <Message
                           hasTail={hasTail}
                           deleteMsg={findAndDeleteMessageById}
+                          favMsg={findAndToggleFavMessage}
                           message={message}
                         />
                       );
