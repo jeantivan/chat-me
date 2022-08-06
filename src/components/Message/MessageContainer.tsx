@@ -124,7 +124,16 @@ export function MessageContainer({
           <MenuContent align={isOwnMsg ? "end" : "start"} className="w-48">
             {isOwnMsg && <MenuItem>Info. del mensaje</MenuItem>}
             <MenuItem>Responder</MenuItem>
-            <MenuItem>Reaccionar al Mensaje</MenuItem>
+            <MenuItem>
+              <button
+                className="px-4 py-2"
+                onClick={() => {
+                  setOpenReactions(true);
+                }}
+              >
+                Reaccionar al Mensaje
+              </button>
+            </MenuItem>
             <MenuItem>Reenviar mensaje</MenuItem>
             <MenuItem>
               <button
