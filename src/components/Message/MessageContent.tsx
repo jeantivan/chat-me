@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { MessageStatus } from "../MessageStatus";
 import { MessageType } from "../../types";
 import { CustomIcon } from "../CustomIcon";
@@ -16,7 +17,12 @@ export function MessageContent({
         <span className="text-base dark:text-white leading-tight">
           {message.content}
         </span>
-        <span className="w-[84px] inline-block" />
+        <span
+          className={cx("inline-block", {
+            "w-[84px]": isFavMsg < 0,
+            "w-[96px]": isFavMsg > 0,
+          })}
+        />
       </div>
 
       <div className="relative float-right z-10 -mt-3 -mb-[5px]">
@@ -28,7 +34,7 @@ export function MessageContent({
               label="Fav Msg"
             />
           )}
-          <span className="dark:text-gray-400 text-neutral-500 mx-1 whitespace-nowrap">
+          <span className="dark:text-gray-400 text-neutral-500 mx-1.5 whitespace-nowrap">
             {time}
           </span>
           {isOwnMsg && (
