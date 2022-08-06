@@ -146,16 +146,6 @@ export function MessageContainer({
                 {isFavMsg < 0 ? "Destacar mensaje" : "No destacar mensaje"}
               </button>
             </MenuItem>
-            {/* <MenuItem>
-              <button
-                
-                onClick={() => {
-                  deleteMsg(msgId);
-                }}
-              >
-                Eliminar mensaje
-              </button>
-            </MenuItem> */}
             <DeleteMessage msgId={msgId} deleteMsg={deleteMsg} />
           </MenuContent>
         </MenuRoot>
