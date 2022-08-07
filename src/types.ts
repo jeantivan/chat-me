@@ -27,14 +27,15 @@ export type MessageType = {
     content: string | number;
   };
   time: string;
-  reactions: Array<ReactionType> | [];
+  reactions: ReactionType[] | [];
 };
 
 export type ReactionType = {
-  isOwnReaction: boolean;
-  type: ReactionListType;
+  reaction: {
+    isOwnReaction: boolean;
+    type: ReactionListType;
+  };
 };
-
 export type ReactionListType =
   | "thumbs-up"
   | "heart"
