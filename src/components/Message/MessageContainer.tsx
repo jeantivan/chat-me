@@ -6,6 +6,8 @@ import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../Menu";
 import { CustomIcon } from "../CustomIcon";
 import { Reactions, ReactionsRoot, ReactionsTrigger } from "../Reactions";
 import { DeleteMessage } from "./DeleteMessage";
+import { MessageType, ReactionListType } from "../../types";
+import { MessageReactions } from "./MessageReactions";
 
 const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
@@ -30,19 +32,50 @@ const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   />
 );
 
+const MessageMenuTrigger = ({
+  openMenu,
+  isOwnMsg,
+}: {
+  openMenu: boolean;
+  isOwnMsg: boolean;
+}) => (
+  <MenuTrigger
+    className={cx(
+      "text-lg text-gray-400",
+      "w-10 min-h-[32px] rounded-tr-md inline-flex justify-center",
+      "px-2 py-0.5 absolute top-0 right-0 z-20",
+      "transition opacity-0 translate-x-full",
+      "group-hover:-translate-x-0 group-hover:opacity-100",
+      "menu-trigger-bg",
+      { "-translate-x-0 opacity-100": openMenu },
+      {
+        "menu-trigger-bg-main dark:menu-trigger-bg-main": isOwnMsg,
+        "menu-trigger-bg-secondary dark:menu-trigger-bg-secondary": !isOwnMsg,
+      }
+    )}
+  >
+    <CustomIcon
+      Icon={BsChevronDown}
+      label="Mostrar menu"
+      className="inline-block w-5"
+      iconClassName="stroke-1"
+    />
+  </MenuTrigger>
+);
+
 const buttonVariants = {
   hidden: { opacity: 0, transition: { duration: 0.05 } },
   show: { opacity: 1, transition: { duration: 0.05 } },
 };
 
-interface MessageContainerProps {
+interface MessageContainerProps extends MessageType {
   children: ReactNode;
-  isOwnMsg: boolean;
-  isFavMsg: number;
   hasTail: boolean;
-  msgId: string;
   deleteMsg: (id: string) => void;
   favMsg: (id: string) => void;
+  addOwnReaction: (id: string, reactionType: ReactionListType) => void;
+  changeOwnReaction: (id: string, reactionType: ReactionListType) => void;
+  deleteOwnReaction: (id: string) => void;
 }
 
 export function MessageContainer({
@@ -50,13 +83,21 @@ export function MessageContainer({
   isOwnMsg,
   isFavMsg,
   hasTail,
-  msgId,
+  reactions,
   deleteMsg,
   favMsg,
+  id,
+  addOwnReaction,
+  changeOwnReaction,
+  deleteOwnReaction,
 }: MessageContainerProps) {
   const [openMenu, setOpenMenu] = useState(false);
   const [openReactions, setOpenReactions] = useState(false);
   const controls = useAnimation();
+
+  const ownReaction = reactions.find(
+    ({ reaction }) => reaction.isOwnReaction === true
+  );
 
   return (
     <motion.div
@@ -87,38 +128,17 @@ export function MessageContainer({
                 {
                   "dark:bg-emerald-700 bg-green-200": isOwnMsg,
                   "dark:bg-slate-700 bg-white": !isOwnMsg,
-                },
-                {
                   "rounded-tl-none": hasTail && !isOwnMsg,
                   "rounded-tr-none": hasTail && isOwnMsg,
                 }
               )}
             >
               {children}
-              <MenuTrigger
-                className={cx(
-                  "text-lg text-gray-400",
-                  "w-10 min-h-[32px] rounded-tr-md inline-flex justify-center",
-                  "px-2 py-0.5 absolute top-0 right-0 z-20",
-                  "transition opacity-0 translate-x-full",
-                  "group-hover:-translate-x-0 group-hover:opacity-100",
-                  "menu-trigger-bg",
-                  { "-translate-x-0 opacity-100": openMenu },
-                  {
-                    "menu-trigger-bg-main dark:menu-trigger-bg-main": isOwnMsg,
-                    "menu-trigger-bg-secondary dark:menu-trigger-bg-secondary":
-                      !isOwnMsg,
-                  }
-                )}
-              >
-                <CustomIcon
-                  Icon={BsChevronDown}
-                  label="Mostrar menu"
-                  className="inline-block w-5"
-                  iconClassName="stroke-1"
-                />
-              </MenuTrigger>
+              <MessageMenuTrigger isOwnMsg={isOwnMsg} openMenu={openMenu} />
             </div>
+            {reactions.length > 0 && (
+              <MessageReactions isOwnMsg={isOwnMsg} reactions={reactions} />
+            )}
             {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
           </div>
           <MenuContent align={isOwnMsg ? "end" : "start"} className="w-48">
@@ -139,14 +159,14 @@ export function MessageContainer({
               <button
                 className="px-4 py-2"
                 onClick={() => {
-                  favMsg(msgId);
+                  favMsg(id);
                   setOpenMenu(false);
                 }}
               >
                 {isFavMsg < 0 ? "Destacar mensaje" : "No destacar mensaje"}
               </button>
             </MenuItem>
-            <DeleteMessage msgId={msgId} deleteMsg={deleteMsg} />
+            <DeleteMessage msgId={id} deleteMsg={deleteMsg} />
           </MenuContent>
         </MenuRoot>
 
@@ -161,11 +181,21 @@ export function MessageContainer({
               initial="hidden"
               variants={buttonVariants}
               animate={controls}
+              className={cx({ "-mt-[30px]": reactions.length > 0 })}
             >
               <ReactionsTrigger />
             </motion.div>
 
-            <Reactions />
+            <Reactions
+              closeMenu={() => {
+                setOpenReactions(false);
+              }}
+              ownReaction={ownReaction}
+              msgId={id}
+              addOwnReaction={addOwnReaction}
+              deleteOwnReaction={deleteOwnReaction}
+              changeOwnReaction={changeOwnReaction}
+            />
           </div>
         </ReactionsRoot>
       </div>
