@@ -210,6 +210,7 @@ function App() {
 
                     return (
                       <Message
+                        key={message.id}
                         hasTail={hasTail}
                         deleteMsg={findAndDeleteMessageById}
                         favMsg={findAndToggleFavMessage}
