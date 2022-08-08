@@ -31,16 +31,14 @@ export const Reaction = ({ type }: { type: ReactionListType }) => {
 export const ReactionsRoot = PrimitivePopover.Root;
 
 export const ReactionsTrigger = () => (
-  <PrimitivePopover.Trigger>
-    <button
-      className={cx(
-        "text-gray-300 dark:text-gray-500",
-        "bg-neutral-900/50 dark:bg-neutral-900/80",
-        "rounded-full p-1.5 w-8 h-8"
-      )}
-    >
-      <CustomIcon Icon={BsEmojiSmileFill} label="Reaccionar al mensaje" />
-    </button>
+  <PrimitivePopover.Trigger
+    className={cx(
+      "text-gray-300 dark:text-gray-500",
+      "bg-neutral-900/50 dark:bg-neutral-900/80",
+      "rounded-full p-1.5 w-8 h-8"
+    )}
+  >
+    <CustomIcon Icon={BsEmojiSmileFill} label="Reaccionar al mensaje" />
   </PrimitivePopover.Trigger>
 );
 
