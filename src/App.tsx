@@ -204,9 +204,7 @@ function App() {
                 <Messages ref={messagesContainer}>
                   {messages.map((message, i, array) => {
                     let hasTail =
-                      i === 0
-                        ? true
-                        : message.isOwnMsg !== array[i - 1].isOwnMsg;
+                      i === 0 || message.isOwnMsg !== array[i - 1].isOwnMsg;
 
                     return (
                       <Message
