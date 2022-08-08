@@ -14,11 +14,12 @@ import {
   Message,
   CreateMessage,
 } from "./components";
-import MESSAGES from "./utils/mock-data/messages.json";
+import MESSAGES from "./assets/mock-data/messages.json";
+import NEW_MESSAGES from "./assets/mock-data/new_messages.json";
 import { useGetContacts } from "./utils/useGetContacts";
-import { ContactType, MessageType } from "./types";
+import { ContactType, MessageType, ReactionListType } from "./types";
 
-const messagesCopy = [...MESSAGES] as MessageType[];
+const messagesCopy = [...NEW_MESSAGES] as MessageType[];
 
 function App() {
   const messagesContainer = useRef<HTMLDivElement>(null);
@@ -66,7 +67,7 @@ function App() {
     );
 
     if (indexOfMessageToDelete < 0) {
-      console.log("No hay mensaje para borrar");
+      console.error("No hay mensaje para borrar");
       return;
     }
 
@@ -77,13 +78,90 @@ function App() {
     setMessages(newMessageList);
   };
 
-  useEffect(() => {
-    setMessages([]);
+  const findAndToggleFavMessage = (id: string) => {
+    let messagesCopy = [...messages];
 
-    setTimeout(() => {
-      setMessages(messagesCopy);
-    }, 250);
-  }, [selectedChat]);
+    let newMessages = messagesCopy.map((message) =>
+      message.id === id
+        ? { ...message, isFavMsg: message.isFavMsg < 0 ? 1 : -1 }
+        : message
+    );
+
+    setMessages(newMessages);
+  };
+
+  const addOwnReaction = (id: string, reactionType: ReactionListType) => {
+    const messageCopy = [...messages];
+
+    const newMessages = messageCopy.map((message) => {
+      if (message.id !== id) {
+        return message;
+      }
+
+      let newReaction = {
+        reaction: {
+          isOwnReaction: true,
+          type: reactionType,
+        },
+      };
+
+      return { ...message, reactions: [...message.reactions, newReaction] };
+    });
+
+    setMessages(newMessages);
+  };
+
+  const changeOwnReaction = (id: string, reactionType: ReactionListType) => {
+    const messageCopy = [...messages];
+
+    const newMessages = messageCopy.map((message) => {
+      if (message.id !== id) {
+        return message;
+      }
+
+      return {
+        ...message,
+        reactions: message.reactions.map(({ reaction }) => {
+          if (!reaction.isOwnReaction) {
+            return { reaction };
+          }
+
+          return {
+            reaction: { ...reaction, type: reactionType },
+          };
+        }),
+      };
+    });
+
+    setMessages(newMessages);
+  };
+
+  const deleteOwnReaction = (id: string) => {
+    const messageCopy = [...messages];
+
+    const newMessages = messageCopy.map((message) => {
+      if (message.id !== id) {
+        return message;
+      }
+
+      return {
+        ...message,
+        reactions: message.reactions.filter(
+          ({ reaction }) => reaction.isOwnReaction !== true
+        ),
+      };
+    });
+
+    setMessages(newMessages);
+  };
+
+  // useEffect(() => {
+  //   setMessages([]);
+
+  //   setTimeout(() => {
+  //     setMessages(messagesCopy);
+  //   }, 250);
+  // }, [selectedChat]);
 
   useEffect(() => {
     if (messagesContainer.current) {
@@ -132,9 +210,14 @@ function App() {
 
                     return (
                       <Message
+                        key={message.id}
                         hasTail={hasTail}
                         deleteMsg={findAndDeleteMessageById}
-                        message={message}
+                        favMsg={findAndToggleFavMessage}
+                        addOwnReaction={addOwnReaction}
+                        deleteOwnReaction={deleteOwnReaction}
+                        changeOwnReaction={changeOwnReaction}
+                        {...message}
                       />
                     );
                   })}

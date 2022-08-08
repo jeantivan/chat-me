@@ -24,11 +24,11 @@ export function AnimateOptionChange({
   isNotAnimated?: boolean;
 }) {
   if (isNotAnimated) {
-    return <div className="flex flex-col h-full">{children}</div>;
+    return <div className="flex flex-col h-screen">{children}</div>;
   } else {
     return (
       <motion.div
-        className="flex flex-col h-full"
+        className="flex flex-col h-screen"
         variants={variants}
         initial="hide"
         animate="show"

@@ -22,6 +22,7 @@ const createMessage = (content: string): MessageType => {
     message: { type: "text", content },
     status: "send",
     isOwnMsg: true,
+    isFavMsg: -1,
     reactions: [],
     time: getMessageHour(),
   };

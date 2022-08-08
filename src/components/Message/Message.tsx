@@ -1,21 +1,19 @@
 import { MessageContent } from "./MessageContent";
 import { MessageContainer } from "./MessageContainer";
-import { MessageType } from "../../types";
+import { MessageType, ReactionListType } from "../../types";
 
-interface MessageProps {
+type MessageProps = MessageType & {
   hasTail: boolean;
-  message: MessageType;
   deleteMsg: (id: string) => void;
-}
-export function Message({ message, hasTail, deleteMsg }: MessageProps) {
+  favMsg: (id: string) => void;
+  addOwnReaction: (id: string, reactionType: ReactionListType) => void;
+  changeOwnReaction: (id: string, reactionType: ReactionListType) => void;
+  deleteOwnReaction: (id: string) => void;
+};
+export function Message(props: MessageProps) {
   return (
-    <MessageContainer
-      hasTail={hasTail}
-      isOwnMsg={message.isOwnMsg}
-      msgId={message.id}
-      deleteMsg={deleteMsg}
-    >
-      <MessageContent {...message} />
+    <MessageContainer {...props}>
+      <MessageContent {...props} />
     </MessageContainer>
   );
 }

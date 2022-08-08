@@ -20,19 +20,29 @@ export type ContactType = {
 export type MessageType = {
   id: string;
   isOwnMsg: boolean;
+  isFavMsg: number;
   status: "send" | "received" | "read";
   message: {
     type: "audio" | "video" | "image" | "text";
-    content: string;
+    content: string | number;
   };
   time: string;
-  reactions: Array<ReactionType> | null;
+  reactions: ReactionType[] | [];
 };
 
 export type ReactionType = {
-  emoji: string;
-  title: string;
+  reaction: {
+    isOwnReaction: boolean;
+    type: ReactionListType;
+  };
 };
+export type ReactionListType =
+  | "thumbs-up"
+  | "heart"
+  | "face-with-tears-of-joy"
+  | "face-with-open-mouth"
+  | "crying-face"
+  | "folded-hands";
 
 export type SelectedChatState = {
   selectedChat: ContactType | null;
