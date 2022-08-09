@@ -5,7 +5,7 @@ import LAST_MESSAGES from "../assets/mock-data/last-messages.json";
 const getRandomMessage = () =>
   LAST_MESSAGES[Math.floor(Math.random() * LAST_MESSAGES.length)];
 
-const fetchContacts = async (): Promise<Array<ContactType> | undefined> => {
+const fetchContacts = async (): Promise<ContactType[]> => {
   try {
     const response = await fetch(
       "https://randomuser.me/api/?results=20&inc=name,phone,picture,id&noinfo"
@@ -25,7 +25,7 @@ const fetchContacts = async (): Promise<Array<ContactType> | undefined> => {
       lastMessage: getRandomMessage(),
     }));
 
-    return newResults as Array<ContactType>;
+    return newResults;
   } catch (e: any) {
     console.error(`Ups! Algo salió mal.`, e);
     throw new Error(e);
