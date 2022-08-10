@@ -25,6 +25,7 @@ export type MessageType = {
   message: {
     type: "audio" | "video" | "image" | "text";
     content: string | number;
+    orientation?: "squarish" | "landscape" | "portrait";
   };
   time: string;
   reactions: ReactionType[] | [];
