@@ -15,11 +15,10 @@ import {
   CreateMessage,
 } from "./components";
 import MESSAGES from "./assets/mock-data/messages.json";
-import NEW_MESSAGES from "./assets/mock-data/new_messages.json";
 import { useGetContacts } from "./utils/useGetContacts";
 import { ContactType, MessageType, ReactionListType } from "./types";
 
-const messagesCopy = [...NEW_MESSAGES] as MessageType[];
+const messagesCopy = [...MESSAGES] as MessageType[];
 
 function App() {
   const messagesContainer = useRef<HTMLDivElement>(null);
@@ -170,7 +169,7 @@ function App() {
         messagesContainer.current.scrollHeight
       );
     }
-  }, [messages]);
+  }, []);
 
   return (
     <div
