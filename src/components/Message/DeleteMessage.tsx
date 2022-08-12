@@ -47,11 +47,9 @@ export function DeleteMessage({ msgId, deleteMsg }: DeleteMessageProps) {
 
   return (
     <AlertDialogRoot open={openModal} onOpenChange={setOpenModal}>
-      <MenuItem>
-        <AlertDialogTrigger className="px-4 py-2">
-          Eliminar Mensaje
-        </AlertDialogTrigger>
-      </MenuItem>
+      <AlertDialogTrigger asChild>
+        <MenuItem>Eliminar Mensaje</MenuItem>
+      </AlertDialogTrigger>
       <AlertDialogContent
         open={openModal}
         className="w-[60%] md:w-[50%] lg:w-[40%]"
