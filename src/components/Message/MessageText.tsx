@@ -5,12 +5,18 @@ import { CustomIcon } from "../CustomIcon";
 import { BsChevronDown, BsStarFill } from "react-icons/bs";
 import { MenuTrigger } from "../Menu";
 
-const MessageMenuTrigger = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
-  <MenuTrigger
+const MessageMenuTrigger = ({
+  isOwnMsg,
+  openMenu,
+}: {
+  isOwnMsg: boolean;
+  openMenu: boolean;
+}) => (
+  <span
     className={cx(
-      "text-lg text-gray-400",
-      "w-16 min-h-[32px] rounded-tr-md inline-flex justify-end",
-      "px-2 py-0.5 absolute top-0 right-0 z-20",
+      "w-16 min-h-[32px] rounded-tr",
+      "inline-flex justify-end items-start",
+      "pr-1 py-0.5 absolute top-0 right-0 z-20",
       "transition opacity-0 translate-x-full",
       "group-hover:-translate-x-0 group-hover:opacity-100",
       "menu-trigger-bg",
@@ -18,19 +24,23 @@ const MessageMenuTrigger = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
         "menu-trigger-bg-main dark:menu-trigger-bg-main": isOwnMsg,
         "menu-trigger-bg-secondary dark:menu-trigger-bg-secondary": !isOwnMsg,
       },
-      "radix-state-open:-translate-x-0 radix-state-open:opacity-100"
+      { "-translate-x-0": openMenu, "opacity-100": openMenu }
     )}
   >
-    <CustomIcon
-      Icon={BsChevronDown}
-      label="Mostrar menu"
-      className="inline-block w-5"
-      iconClassName="stroke-1"
-    />
-  </MenuTrigger>
+    <MenuTrigger className={cx("text-lg text-gray-400")}>
+      <CustomIcon
+        Icon={BsChevronDown}
+        label="Mostrar menu"
+        className="inline-block w-5"
+        iconClassName="stroke-1"
+      />
+    </MenuTrigger>
+  </span>
 );
 
-interface MessageTextProps extends MessageType {}
+interface MessageTextProps extends MessageType {
+  openMenu: boolean;
+}
 
 export function MessageText({
   message,
@@ -38,6 +48,7 @@ export function MessageText({
   isOwnMsg,
   isFavMsg,
   time,
+  openMenu,
 }: MessageTextProps) {
   return (
     <div
@@ -76,7 +87,7 @@ export function MessageText({
           )}
         </span>
       </div>
-      <MessageMenuTrigger isOwnMsg={isOwnMsg} />
+      <MessageMenuTrigger isOwnMsg={isOwnMsg} openMenu={openMenu} />
     </div>
   );
 }
