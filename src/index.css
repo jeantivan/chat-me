@@ -56,9 +56,9 @@ body {
 
 .menu-trigger-bg {
   background: linear-gradient(
-    to left bottom,
+    200deg,
     var(--menu-trigger-bg) 0%,
-    var(--menu-trigger-bg) 70%,
-    transparent 100%
+    var(--menu-trigger-bg) 55%,
+    transparent 65%
   );
 }
