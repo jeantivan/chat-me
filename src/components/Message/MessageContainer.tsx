@@ -1,9 +1,7 @@
 import cx from "classnames";
 import { ReactNode, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
-import { BsChevronDown } from "react-icons/bs";
-import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../Menu";
-import { CustomIcon } from "../CustomIcon";
+import { MenuContent, MenuItem } from "../Menu";
 import { Reactions, ReactionsRoot, ReactionsTrigger } from "../Reactions";
 import { DeleteMessage } from "./DeleteMessage";
 import { MessageType, ReactionListType } from "../../types";
@@ -58,9 +56,9 @@ export function MessageContainer({
   addOwnReaction,
   changeOwnReaction,
   deleteOwnReaction,
+  favMsg,
   message,
 }: MessageContainerProps) {
-  const [openMenu, setOpenMenu] = useState(false);
   const [openReactions, setOpenReactions] = useState(false);
   const controls = useAnimation();
 
@@ -69,81 +67,79 @@ export function MessageContainer({
   );
 
   return (
-    <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
-      <motion.div
-        onHoverStart={() => {
-          controls.start("show");
-        }}
-        onHoverEnd={() => {
-          if (openReactions) return;
+    <motion.div
+      onHoverStart={() => {
+        controls.start("show");
+      }}
+      onHoverEnd={() => {
+        if (openReactions) return;
 
-          controls.start("hidden");
-        }}
-        className={cx("px-5 md:px-[5%] lg:px-[9%]", {
-          "mt-4": hasTail,
-          "mt-1.5": !hasTail,
-        })}
-      >
-        <div className="w-full flex">
+        controls.start("hidden");
+      }}
+      className={cx("px-5 md:px-[5%] lg:px-[9%]", {
+        "mt-4": hasTail,
+        "mt-1.5": !hasTail,
+      })}
+    >
+      <div className="w-full flex">
+        <div
+          className={cx(
+            "relative drop-shadow",
+            "max-w-9/10 md:max-w-8/10 lg:max-w-7/10",
+            {
+              "justify-start": !isOwnMsg,
+              "justify-end": isOwnMsg,
+            },
+            {
+              "w-[45%]": message.orientation === "squarish",
+              "w-1/2": message.orientation === "landscape",
+              "w-[35%]": message.orientation === "portrait",
+            }
+          )}
+        >
+          {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
           <div
-            className={cx(
-              "relative drop-shadow",
-              "max-w-9/10 md:max-w-8/10 lg:max-w-7/10",
-              {
-                "justify-start": !isOwnMsg,
-                "justify-end": isOwnMsg,
-              },
-              {
-                "w-[45%]": message.orientation === "squarish",
-                "w-1/2": message.orientation === "landscape",
-                "w-[35%]": message.orientation === "portrait",
-              }
-            )}
+            className={cx("rounded-md overflow-hidden group", {
+              "rounded-tl-none": hasTail && !isOwnMsg,
+              "rounded-tr-none": hasTail && isOwnMsg,
+            })}
           >
-            {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
-            <div
-              className={cx("rounded-md overflow-hidden group", {
-                "rounded-tl-none": hasTail && !isOwnMsg,
-                "rounded-tr-none": hasTail && isOwnMsg,
-              })}
-            >
-              {children}
-            </div>
-            {reactions.length > 0 && (
-              <MessageReactions isOwnMsg={isOwnMsg} reactions={reactions} />
-            )}
+            {children}
           </div>
-
-          <ReactionsRoot open={openReactions} onOpenChange={setOpenReactions}>
-            <div
-              className={cx("mx-4 flex items-center flex-1", {
-                "order-first": isOwnMsg,
-                "justify-end": isOwnMsg,
-              })}
-            >
-              <motion.div
-                initial="hidden"
-                variants={buttonVariants}
-                animate={controls}
-                className={cx({ "-mt-[30px]": reactions.length > 0 })}
-              >
-                <ReactionsTrigger />
-              </motion.div>
-
-              <Reactions
-                closeMenu={() => {
-                  setOpenReactions(false);
-                }}
-                ownReaction={ownReaction}
-                msgId={id}
-                addOwnReaction={addOwnReaction}
-                deleteOwnReaction={deleteOwnReaction}
-                changeOwnReaction={changeOwnReaction}
-              />
-            </div>
-          </ReactionsRoot>
+          {reactions.length > 0 && (
+            <MessageReactions isOwnMsg={isOwnMsg} reactions={reactions} />
+          )}
         </div>
-      </motion.div>
+
+        <ReactionsRoot open={openReactions} onOpenChange={setOpenReactions}>
+          <div
+            className={cx("mx-4 flex items-center flex-1", {
+              "order-first": isOwnMsg,
+              "justify-end": isOwnMsg,
+            })}
+          >
+            <motion.div
+              initial="hidden"
+              variants={buttonVariants}
+              animate={controls}
+              className={cx({ "-mt-[30px]": reactions.length > 0 })}
+            >
+              <ReactionsTrigger />
+            </motion.div>
+
+            <Reactions
+              closeMenu={() => {
+                setOpenReactions(false);
+              }}
+              ownReaction={ownReaction}
+              msgId={id}
+              addOwnReaction={addOwnReaction}
+              deleteOwnReaction={deleteOwnReaction}
+              changeOwnReaction={changeOwnReaction}
+            />
+          </div>
+        </ReactionsRoot>
+      </div>
       <MenuContent align={isOwnMsg ? "end" : "start"} className="w-48">
         {isOwnMsg && <MenuItem>Info. del mensaje</MenuItem>}
         <MenuItem>Responder</MenuItem>
@@ -155,11 +151,15 @@ export function MessageContainer({
           Reaccionar al Mensaje
         </MenuItem>
         <MenuItem>Reenviar mensaje</MenuItem>
-        <MenuItem>
+        <MenuItem
+          onClick={() => {
+            favMsg(id);
+          }}
+        >
           {isFavMsg < 0 ? "Destacar mensaje" : "No destacar mensaje"}
         </MenuItem>
         <DeleteMessage msgId={id} deleteMsg={deleteMsg} />
       </MenuContent>
-    </MenuRoot>
+    </motion.div>
   );
 }
