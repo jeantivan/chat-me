@@ -1,5 +1,6 @@
-import { MessageContent } from "./MessageContent";
 import { MessageContainer } from "./MessageContainer";
+import { MessageText } from "./MessageText";
+import { MessageMultimedia } from "./MessageMultimedia";
 import { MessageType, ReactionListType } from "../../types";
 
 type MessageProps = MessageType & {
@@ -13,7 +14,10 @@ type MessageProps = MessageType & {
 export function Message(props: MessageProps) {
   return (
     <MessageContainer {...props}>
-      <MessageContent {...props} />
+      {props.message.type === "text" && <MessageText {...props} />}
+      {(props.message.type === "video" || props.message.type === "image") && (
+        <MessageMultimedia {...props} />
+      )}
     </MessageContainer>
   );
 }
