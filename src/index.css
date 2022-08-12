@@ -40,6 +40,9 @@ body {
   --dark-menu-trigger-bg-secondary: #334155; /* White */
   --menu-trigger-bg-secondary: #ffffff; /* Slate 700*/
   --menu-trigger-bg: transparent;
+  --multimedia-trigger-bg: rgba(23, 23, 23, 0.7);
+  --bg-start: 55%;
+  --bg-stop: 65%;
 }
 .dark .dark\:menu-trigger-bg-main {
   --menu-trigger-bg: var(--dark-menu-trigger-bg-main);
@@ -54,11 +57,16 @@ body {
   --menu-trigger-bg: var(--menu-trigger-bg-secondary);
 }
 
+.multimedia-menu-bg {
+  --menu-trigger-bg: var(--multimedia-trigger-bg);
+  --bg-start: 10%;
+  --bg-stop: 40%;
+}
+
 .menu-trigger-bg {
   background: linear-gradient(
     200deg,
-    var(--menu-trigger-bg) 0%,
-    var(--menu-trigger-bg) 55%,
-    transparent 65%
+    var(--menu-trigger-bg) var(--bg-start),
+    transparent var(--bg-stop)
   );
 }
