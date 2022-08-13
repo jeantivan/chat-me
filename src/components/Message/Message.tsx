@@ -4,6 +4,7 @@ import { MessageMultimedia } from "./MessageMultimedia";
 import { MessageType, ReactionListType } from "../../types";
 import { useState } from "react";
 import { MenuRoot } from "../Menu";
+import { MessageAudio } from "./MessageAudio";
 
 type MessageProps = MessageType & {
   hasTail: boolean;
@@ -23,6 +24,9 @@ export function Message(props: MessageProps) {
         )}
         {(props.message.type === "video" || props.message.type === "image") && (
           <MessageMultimedia {...props} openMenu={openMenu} />
+        )}
+        {props.message.type === "audio" && (
+          <MessageAudio {...props} openMenu={openMenu} />
         )}
       </MessageContainer>
     </MenuRoot>
