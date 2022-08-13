@@ -1,8 +1,16 @@
 import cx from "classnames";
-import { BsChevronDown, BsImage, BsPlayCircleFill } from "react-icons/bs";
+import {
+  BsChevronDown,
+  BsImage,
+  BsCameraVideoFill,
+  BsPlayCircleFill,
+  BsStarFill,
+} from "react-icons/bs";
 import { MessageType } from "../../types";
+import { secondsToMin } from "../../utils/secondsToMin";
 import { CustomIcon } from "../CustomIcon";
 import { MenuTrigger } from "../Menu";
+import { MessageStatus } from "../MessageStatus";
 
 const MessageMenuTrigger = ({ openMenu }: { openMenu: boolean }) => (
   <span
@@ -38,12 +46,23 @@ const MultimediaContent = ({ type }: { type: any }) => {
   );
 };
 
+const VideoDuration = ({ duration }: { duration: number }) => (
+  <span className="text-neutral-100 ml-2 mr-auto flex">
+    <CustomIcon
+      className="inline-block w-3"
+      Icon={BsCameraVideoFill}
+      label="Video cámara"
+    />
+    <span className="ml-2">{secondsToMin(duration)}</span>
+  </span>
+);
+
 interface MessageMultimediaProps extends MessageType {
   openMenu: boolean;
 }
 
 export function MessageMultimedia(props: MessageMultimediaProps) {
-  const { message, isOwnMsg } = props;
+  const { message, isOwnMsg, isFavMsg, time, status } = props;
   return (
     <div className="w-full">
       <div
@@ -64,6 +83,31 @@ export function MessageMultimedia(props: MessageMultimediaProps) {
           <div className="relative overflow-hidden w-full h-full">
             <MultimediaContent type={message.type} />
             <MessageMenuTrigger openMenu={props.openMenu} />
+            <div className="absolute w-full bottom-0 z-10 p-1 bg-gradient-to-t from-neutral-900/60 via-transparent">
+              <span className="text-xs flex">
+                {message.type === "video" && (
+                  <VideoDuration duration={Number(message.content)} />
+                )}
+                <span className="ml-auto">
+                  {isFavMsg === 1 && (
+                    <CustomIcon
+                      Icon={BsStarFill}
+                      className="text-neutral-100 self-center inline-block mr-0.5"
+                      label="Fav Msg"
+                    />
+                  )}
+                  <span className="text-neutral-100 mx-1 whitespace-nowrap">
+                    {time}
+                  </span>
+                  {isOwnMsg && (
+                    <MessageStatus
+                      status={status}
+                      className="w-5 -mb-1.5 inline-block"
+                    />
+                  )}
+                </span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
