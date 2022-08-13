@@ -94,6 +94,7 @@ export function MessageContainer({
               "w-[45%]": message.orientation === "squarish",
               "w-1/2": message.orientation === "landscape",
               "w-[35%]": message.orientation === "portrait",
+              "w-2/5": message.type === "audio",
             }
           )}
         >
