@@ -15,17 +15,18 @@ import {
   CreateMessage,
 } from "./components";
 import MESSAGES from "./assets/mock-data/messages.json";
-import { useGetContacts } from "./utils/useGetContacts";
-import { ContactType, MessageType, ReactionListType } from "./types";
+import { useGetChats } from "./utils/useGetChats";
+import { MessageType, ReactionListType } from "./types";
+import { useCurrentChat } from "./components/CurrentChat";
 
 const messagesCopy = [...MESSAGES] as MessageType[];
 
 function App() {
   const messagesContainer = useRef<HTMLDivElement>(null);
   const { isDarkMode } = useDarkMode();
+  const { currentChat } = useCurrentChat();
   const [messages, setMessages] = useState<Array<MessageType>>(messagesCopy);
-  const [selectedChat, setSelectedChat] = useState<ContactType | null>(null);
-  const { isError, isLoading, data } = useGetContacts();
+  const { isError, isLoading, data } = useGetChats();
 
   const addMessage = (newMessage: MessageType) => {
     let copyMessages = [...messages];
@@ -154,14 +155,6 @@ function App() {
     setMessages(newMessages);
   };
 
-  // useEffect(() => {
-  //   setMessages([]);
-
-  //   setTimeout(() => {
-  //     setMessages(messagesCopy);
-  //   }, 250);
-  // }, [selectedChat]);
-
   useEffect(() => {
     if (messagesContainer.current) {
       messagesContainer.current.scrollTo(
@@ -169,7 +162,7 @@ function App() {
         messagesContainer.current.scrollHeight
       );
     }
-  }, []);
+  }, [currentChat]);
 
   return (
     <div
@@ -181,30 +174,20 @@ function App() {
         <section className="user-chats relative">
           <UserProfile />
           <SearchChats />
-          <ChatList
-            selectedChat={selectedChat}
-            setSelectedChat={setSelectedChat}
-            chats={data}
-            isError={isError}
-            isLoading={isLoading}
-          />
+          <ChatList chats={data} isError={isError} isLoading={isLoading} />
           <LeftDrawerContent />
         </section>
         <section className="flex-1 w-full flex">
           <div className="chat-container flex-1">
-            {!selectedChat ? (
+            {!currentChat ? (
               <Welcome />
             ) : (
               <>
-                <ChatHeader
-                  setSelectedChat={setSelectedChat}
-                  selectedChat={selectedChat}
-                />
+                <ChatHeader />
                 <Messages ref={messagesContainer}>
                   {messages.map((message, i, array) => {
                     let hasTail =
                       i === 0 || message.isOwnMsg !== array[i - 1].isOwnMsg;
-
                     return (
                       <Message
                         key={message.id}
@@ -225,7 +208,7 @@ function App() {
               </>
             )}
           </div>
-          {selectedChat && <ContactInfoContent selectedChat={selectedChat} />}
+          <ContactInfoContent />
         </section>
       </main>
     </div>
