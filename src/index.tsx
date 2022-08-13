@@ -7,6 +7,7 @@ import {
   UserInfoProvider,
   ContactInfoProvider,
   LeftDrawerProvider,
+  CurrentChatProvider,
 } from "./components";
 
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -23,7 +24,9 @@ root.render(
         <LeftDrawerProvider>
           <UserInfoProvider>
             <ContactInfoProvider>
-              <App />
+              <CurrentChatProvider>
+                <App />
+              </CurrentChatProvider>
             </ContactInfoProvider>
           </UserInfoProvider>
         </LeftDrawerProvider>
