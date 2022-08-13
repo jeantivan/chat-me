@@ -14,7 +14,13 @@ export type ContactType = {
     medium: string;
     thumbnail: string;
   };
+};
+
+export type ChatType = {
+  contact: ContactType;
   lastMessage: MessageType;
+  pinned: boolean;
+  mutedNotf: boolean;
 };
 
 export type MessageType = {
