@@ -1,19 +1,14 @@
 import cx from "classnames";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { INITIAL_CHAT } from "../utils/constants";
-//import { ContactInfo } from "./ContactInfo";
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
 import { useContactInfo } from "./ContactInfo";
-import { ContactType } from "../types";
+import { useCurrentChat } from "./CurrentChat";
 
-interface ContactMenuProps {
-  setSelectedChat: Dispatch<SetStateAction<ContactType | null>>;
-}
-
-export function ContactMenu({ setSelectedChat }: ContactMenuProps) {
+export function ContactMenu() {
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
+  const { setCurrentChat } = useCurrentChat();
   const [open, setOpen] = useState<boolean>(false);
   return (
     <MenuRoot open={open} onOpenChange={setOpen}>
@@ -28,28 +23,23 @@ export function ContactMenu({ setSelectedChat }: ContactMenuProps) {
         <CustomIcon Icon={BsThreeDotsVertical} label="Abrir menu" />
       </MenuTrigger>
       <MenuContent align="end" className="w-56">
-        <MenuItem>
-          <button
-            onClick={() => {
-              setOpenContactInfo(true);
-              setOpen(false);
-            }}
-            className="w-full py-2 px-4 text-left"
-          >
-            Info. del Contacto
-          </button>
+        <MenuItem
+          onClick={() => {
+            setOpenContactInfo(true);
+            setOpen(false);
+          }}
+        >
+          Info. del Contacto
         </MenuItem>
         <MenuItem>Seleccionar mensajes</MenuItem>
-        <MenuItem>
-          <button
-            onClick={() => {
-              if (openContactInfo) setOpenContactInfo(false);
-              setSelectedChat(null);
-            }}
-            className="py-2 px-4"
-          >
-            Cerrar chat
-          </button>
+        <MenuItem
+          onClick={() => {
+            if (openContactInfo) setOpenContactInfo(false);
+
+            setCurrentChat(null);
+          }}
+        >
+          Cerrar chat
         </MenuItem>
         <MenuItem>Silenciar notificaciones</MenuItem>
         <MenuItem>Mensajes temporales</MenuItem>

@@ -18,6 +18,7 @@ import { CustomIcon } from "../CustomIcon";
 import { ReactNode, useRef } from "react";
 import { IconType } from "react-icons";
 import { ContactType } from "../../types";
+import { useCurrentChat } from "../CurrentChat";
 
 const Item = ({
   children,
@@ -84,21 +85,22 @@ const variants = {
   transition: { type: "tween", duration: 0.15 },
 };
 
-interface ContactInfoContentProps {
-  selectedChat: ContactType;
-}
+interface ContactInfoContentProps {}
 
-export function ContactInfoContent({ selectedChat }: ContactInfoContentProps) {
+export function ContactInfoContent(props: ContactInfoContentProps) {
   const isLg = useMediaQuery("(min-width: 1024px");
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
+  const { currentChat } = useCurrentChat();
   const documentRef = useRef(document);
-  const { name, phone, picture } = selectedChat;
-
   const onKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") setOpenContactInfo(false);
   };
 
   useEventListener("keyup", onKeyUp, documentRef);
+
+  if (!currentChat) return null;
+
+  const { name, phone, picture } = currentChat.contact;
 
   return (
     <AnimatePresence>

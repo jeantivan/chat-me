@@ -10,23 +10,36 @@ export const MenuTrigger = Popover.Trigger;
 export const MenuItem = ({
   className,
   children,
+  onClick,
   ...rest
 }: {
   className?: string;
   children: React.ReactNode;
-}) => (
-  <li
-    className={cx(
-      "w-full dark:text-white hover:bg-neutral-200 dark:hover:bg-gray-800",
-      "flex items-center",
-      { "px-4 py-2": typeof children === "string" },
-      className
-    )}
-    {...rest}
-  >
-    {children}
-  </li>
-);
+  onClick?: (event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => any;
+}) => {
+  const componentClassName = cx(
+    "w-full px-4 py-2",
+    "dark:text-white hover:bg-neutral-200 dark:hover:bg-gray-800",
+    "flex items-center",
+    className
+  );
+
+  if (onClick) {
+    return (
+      <li>
+        <button {...rest} onClick={onClick} className={componentClassName}>
+          {children}
+        </button>
+      </li>
+    );
+  }
+
+  return (
+    <li className={componentClassName} {...rest}>
+      {children}
+    </li>
+  );
+};
 
 export const MenuIcon = ({
   label,
