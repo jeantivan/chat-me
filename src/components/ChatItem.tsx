@@ -8,32 +8,32 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CustomIcon } from "./CustomIcon";
 
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
-import { ContactType, SelectedChatState } from "../types";
+import { ChatType } from "../types";
 import { LastMessage } from "./LastMessage";
-
-type ChatItemProps = {
-  contact: ContactType;
-} & SelectedChatState;
+import { useCurrentChat } from "./CurrentChat";
 
 const buttonVariants = {
   hidden: { opacity: 0, x: "100%", transition: { duration: 0.05 } },
   show: { opacity: 1, x: "0%", transition: { duration: 0.05 } },
 };
 
-export function ChatItem({
-  contact,
-  setSelectedChat,
-  selectedChat,
-}: ChatItemProps) {
-  const { name, picture, lastMessage } = contact;
+interface ChatItemProps {
+  chat: ChatType;
+}
+
+export function ChatItem({ chat }: ChatItemProps) {
+  const { currentChat, setCurrentChat } = useCurrentChat();
+
+  const { name, picture, phone } = chat.contact;
+  const { lastMessage } = chat;
   const { time } = lastMessage;
   const [openMenu, setOpenMenu] = useState(true);
   const [showButton, setShowButton] = useState(false);
 
   const handleClick = () => {
-    if (selectedChat?.name.fullName === name.fullName) return;
+    if (currentChat?.contact.phone === phone) return;
 
-    setSelectedChat(contact);
+    setCurrentChat(chat);
   };
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export function ChatItem({
           "dark:bg-slate-800/80 dark:hover:bg-slate-700/60 bg-white hover:bg-slate-100/60",
           {
             "dark:bg-slate-700 bg-slate-100":
-              selectedChat && name.fullName === selectedChat.name.fullName,
+              currentChat && phone === currentChat.contact.phone,
           }
         )}
       >
