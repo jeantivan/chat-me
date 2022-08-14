@@ -91,10 +91,10 @@ export function MessageContainer({
               "justify-end": isOwnMsg,
             },
             {
-              "w-[45%]": message.orientation === "squarish",
-              "w-1/2": message.orientation === "landscape",
-              "w-[35%]": message.orientation === "portrait",
-              "w-2/5": message.type === "audio",
+              "w-[350px]":
+                message.orientation === "squarish" || message.type === "audio",
+              "w-[390px]": message.orientation === "landscape",
+              "w-[273px]": message.orientation === "portrait",
             }
           )}
         >
