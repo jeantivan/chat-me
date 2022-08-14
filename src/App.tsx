@@ -162,7 +162,7 @@ function App() {
         messagesContainer.current.scrollHeight
       );
     }
-  }, [currentChat]);
+  }, [currentChat, messages.length]);
 
   return (
     <div
