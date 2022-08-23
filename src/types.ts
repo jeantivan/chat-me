@@ -11,14 +11,31 @@ export type UserType = {
   };
 };
 
+type NotificationsConfig = {
+  allNoti: boolean;
+  sound: boolean;
+  alerts: boolean;
+  previewMsg: boolean;
+  reactionsNot: boolean;
+};
+
+type PrivacyConfig = {
+  lastTimeOnline: "all" | "contacts" | "none";
+  profilePicture: "all" | "contacts" | "none";
+  info: "all" | "contacts" | "none";
+  readConfirmation: boolean;
+  tempMsg: "deactivated" | "24h" | "7d" | "90d";
+  groups: "all" | "contacts";
+};
+
+type SecurityConfig = {
+  showSecurityNoti: boolean;
+};
+
 export type ConfigType = {
-  notifications: {
-    allNot: boolean;
-    sound: boolean;
-    alerts: boolean;
-    previewMsg: boolean;
-    reactionsNot: boolean;
-  };
+  notifications: NotificationsConfig;
+  privacy: PrivacyConfig;
+  security: SecurityConfig;
 };
 
 export type ContactType = {
