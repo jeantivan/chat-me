@@ -61,8 +61,8 @@ export type ChatType = {
 export type MessageType = {
   id: string;
   isOwnMsg: boolean;
-  isFavMsg: number;
-  status: "send" | "received" | "read";
+  isFavMsg: boolean;
+  status: "idle" | "send" | "received" | "read";
   message: {
     type: "audio" | "video" | "image" | "text";
     content: string | number;
