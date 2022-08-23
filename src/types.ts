@@ -16,7 +16,7 @@ type NotificationsConfig = {
   sound: boolean;
   alerts: boolean;
   previewMsg: boolean;
-  reactionsNot: boolean;
+  reactionsNoti: boolean;
 };
 
 type PrivacyConfig = {
