@@ -49,10 +49,13 @@ export type ContactType = {
 };
 
 export type ChatType = {
-  contact: ContactType;
-  lastMessage: MessageType;
-  pinned: boolean;
-  mutedNotf: boolean;
+  contact: UserType;
+  isPinned: boolean;
+  isMuted: boolean;
+  isArchived: boolean;
+  hasUnreadMsg: boolean;
+  shouldLoadOldMsg: boolean;
+  messages: MessageType[];
 };
 
 export type MessageType = {
