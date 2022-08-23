@@ -3,7 +3,22 @@ import { Dispatch, SetStateAction } from "react";
 export type UserType = {
   name: string;
   status: string;
-  picture: string;
+  phone: string;
+  picture: {
+    large: string;
+    medium: string;
+    thumbnail: string;
+  };
+};
+
+export type ConfigType = {
+  notifications: {
+    allNot: boolean;
+    sound: boolean;
+    alerts: boolean;
+    previewMsg: boolean;
+    reactionsNot: boolean;
+  };
 };
 
 export type ContactType = {
