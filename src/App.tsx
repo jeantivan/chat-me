@@ -82,9 +82,7 @@ function App() {
     let messagesCopy = [...messages];
 
     let newMessages = messagesCopy.map((message) =>
-      message.id === id
-        ? { ...message, isFavMsg: message.isFavMsg < 0 ? 1 : -1 }
-        : message
+      message.id === id ? { ...message, isFavMsg: !message.isFavMsg } : message
     );
 
     setMessages(newMessages);
