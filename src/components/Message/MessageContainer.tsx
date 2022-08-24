@@ -157,7 +157,7 @@ export function MessageContainer({
             favMsg(id);
           }}
         >
-          {isFavMsg < 0 ? "Destacar mensaje" : "No destacar mensaje"}
+          {!isFavMsg ? "Destacar mensaje" : "No destacar mensaje"}
         </MenuItem>
         <DeleteMessage msgId={id} deleteMsg={deleteMsg} />
       </MenuContent>

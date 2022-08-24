@@ -89,7 +89,7 @@ export function MessageMultimedia(props: MessageMultimediaProps) {
                   <VideoDuration duration={Number(message.content)} />
                 )}
                 <span className="ml-auto">
-                  {isFavMsg === 1 && (
+                  {isFavMsg && (
                     <CustomIcon
                       Icon={BsStarFill}
                       className="text-neutral-100 self-center inline-block mr-0.5"

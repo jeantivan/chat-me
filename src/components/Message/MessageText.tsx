@@ -63,15 +63,15 @@ export function MessageText({
         </span>
         <span
           className={cx("inline-block", {
-            "w-[84px]": isFavMsg < 0,
-            "w-[96px]": isFavMsg > 0,
+            "w-[84px]": !isFavMsg,
+            "w-[96px]": isFavMsg,
           })}
         />
       </div>
 
       <div className="relative float-right z-10 -mt-3 -mb-[5px]">
         <span className="text-xs flex items-end">
-          {isFavMsg === 1 && (
+          {isFavMsg && (
             <CustomIcon
               Icon={BsStarFill}
               className="text-gray-400 self-center inline-block"

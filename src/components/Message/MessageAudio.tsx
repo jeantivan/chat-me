@@ -105,7 +105,7 @@ export function MessageAudio({
                   {secondsToMin(Number(message.content))}
                 </span>
                 <span className="ml-auto">
-                  {isFavMsg === 1 && (
+                  {isFavMsg && (
                     <CustomIcon
                       Icon={BsStarFill}
                       className="text-gray-400 self-center inline-block mr-0.5"
