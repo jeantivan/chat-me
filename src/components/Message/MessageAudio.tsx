@@ -82,10 +82,12 @@ export function MessageAudio({
               alt={
                 isOwnMsg
                   ? "Tu foto de perfil."
-                  : `Foto de: ${currentChat?.contact.name.fullName}`
+                  : `Foto de: ${currentChat?.contact.name}`
               }
               src={
-                isOwnMsg ? user.picture : currentChat?.contact.picture.medium
+                isOwnMsg
+                  ? user.picture.medium
+                  : currentChat?.contact.picture.medium
               }
               className="w-full h-full bg-gray-400 object-fill"
             />
