@@ -145,7 +145,7 @@ export function Options({ goBack, setRenderOption }: OptionsProps) {
           } else if (option.route === "SHORTCUTS") {
             return <Shortcuts key={option.route} />;
           } else if (option.route === "THEME") {
-            return <Theme />;
+            return <Theme key={option.route} />;
           } else {
             return (
               <Item
