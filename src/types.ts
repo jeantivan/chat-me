@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 export type UserType = {
+  id: string;
   name: string;
   status: string;
   phone: string;
@@ -49,6 +50,7 @@ export type ContactType = {
 };
 
 export type ChatType = {
+  id: string;
   contact: UserType;
   isPinned: boolean;
   isMuted: boolean;
