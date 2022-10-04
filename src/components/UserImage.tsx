@@ -8,7 +8,7 @@ export function UserImage() {
   return user.picture ? (
     <img
       alt="Tu foto de perfil."
-      src={user.picture}
+      src={user.picture.medium}
       className="w-full h-full bg-gray-400"
     />
   ) : (
