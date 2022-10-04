@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
-import { useUserInfo } from "../UserInfoProvider";
 import { EditableInput } from "../EditableInput";
 import { ChangeUserImage } from "../ChangeUserImage";
 import { useLeftDrawer } from "../LeftDrawer";
 import { Header } from "./Header";
 import { AnimateOptionChange } from "./AnimateOptionChange";
+import useStore from "../../store";
 
 interface ProfileProps {
   goBack?: () => void;
@@ -14,7 +14,11 @@ interface ProfileProps {
 export function Profile({ goBack, isNotAnimated }: ProfileProps) {
   const { closeLeftDrawer } = useLeftDrawer();
 
-  const { user, changeName, changeStatus } = useUserInfo();
+  const { name, status } = useStore((state) => state.profile);
+  const { changeName, changeStatus } = useStore((state) => ({
+    changeName: state.changeName,
+    changeStatus: state.changeStatus,
+  }));
 
   const handleSaveUserName = (newName: string) => {
     changeName(newName);
@@ -42,7 +46,7 @@ export function Profile({ goBack, isNotAnimated }: ProfileProps) {
           <div className="mb-10">
             <EditableInput
               label="Nombre"
-              value={user.name}
+              value={name}
               onSave={handleSaveUserName}
             />
             <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -53,7 +57,7 @@ export function Profile({ goBack, isNotAnimated }: ProfileProps) {
           <div className="mb-5">
             <EditableInput
               label="Estado"
-              value={user.status}
+              value={status}
               onSave={handleSaveUserStatus}
             />
           </div>

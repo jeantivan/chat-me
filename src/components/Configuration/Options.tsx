@@ -12,14 +12,14 @@ import { ImFilePicture } from "react-icons/im";
 import { ConfigurationOptionsType } from "../../types";
 import { CustomIcon } from "../CustomIcon";
 import { UserImage } from "../UserImage";
-import { useUserInfo } from "../UserInfoProvider";
 import { Header } from "./Header";
 import { Shortcuts } from "./Shortcuts";
 import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Theme } from "./Theme";
+import useStore from "../../store";
 
 const User = (props: any) => {
-  const { user } = useUserInfo();
+  const { name, status } = useStore((state) => state.profile);
 
   return (
     <div
@@ -33,11 +33,9 @@ const User = (props: any) => {
       </div>
       <div className="flex-1">
         <h2 className="font-medium text-xl text-neutral-900 dark:text-neutral-50">
-          {user.name}
+          {name}
         </h2>
-        <p className="leading-none line-clamp-2 text-neutral-400">
-          {user.status}
-        </p>
+        <p className="leading-none line-clamp-2 text-neutral-400">{status}</p>
       </div>
     </div>
   );
