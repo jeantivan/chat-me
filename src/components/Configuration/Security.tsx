@@ -1,19 +1,20 @@
 import * as Label from "@radix-ui/react-label";
-import * as CheckBox from "@radix-ui/react-checkbox";
-import cx from "classnames";
+import { CheckBox } from "../CheckBox";
 import { motion } from "framer-motion";
-import { BsLockFill, BsShieldFill, BsCheck } from "react-icons/bs";
-import { useDarkMode } from "../DarkMode";
+import { BsLockFill, BsShieldFill } from "react-icons/bs";
 import { Header } from "./Header";
 import { AnimateOptionChange } from "./AnimateOptionChange";
+import useStore from "../../store";
 
 interface SecurityProps {
   goBack: () => void;
 }
 
 export function Security({ goBack }: SecurityProps) {
-  const { mode } = useDarkMode();
-
+  const { toggleSecurityNoti, showSecurityNoti } = useStore((state) => ({
+    showSecurityNoti: state.config.security.showSecurityNoti,
+    toggleSecurityNoti: state.toggleSecurityNoti,
+  }));
   return (
     <AnimateOptionChange>
       <Header goBack={goBack}>Seguridad</Header>
@@ -58,23 +59,17 @@ export function Security({ goBack }: SecurityProps) {
           transition={{ type: "tween" }}
           className="flex w-full"
         >
-          <CheckBox.Root
-            id="preview"
-            style={{ minWidth: 20 }}
-            className={cx(
-              "flex h-5 w-5 items-center justify-center rounded border-2",
-              "radix-state-checked:bg-emerald-500 radix-state-checked:border-emerald-500",
-              "radix-state-unchecked:border-gray-400 radix-state-unchecked:bg-transparent",
-              "focus:outline-none focus-visible:ring focus-visible:ring-emerald-500 focus-visible:ring-opacity-75"
-            )}
-          >
-            <CheckBox.Indicator>
-              <BsCheck className="h-5 w-5 self-center text-white" />
-            </CheckBox.Indicator>
-          </CheckBox.Root>
+          <CheckBox
+            id="securityNoti"
+            checked={showSecurityNoti}
+            onCheckedChange={() => {
+              toggleSecurityNoti();
+            }}
+          />
+
           <div className="flex-1 ml-3">
             <Label.Root
-              htmlFor="preview"
+              htmlFor="securityNoti"
               className="select-none text-lg leading-none text-gray-900 dark:text-gray-100"
             >
               Mostrar notificaciones de seguridad en esta computadora.

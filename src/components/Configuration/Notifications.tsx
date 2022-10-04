@@ -3,12 +3,15 @@ import { motion } from "framer-motion";
 import { CheckBox } from "../CheckBox";
 import { Header } from "./Header";
 import { AnimateOptionChange } from "./AnimateOptionChange";
+import useStore from "../../store";
 
 interface NotificationProps {
   goBack: () => void;
 }
 
 export function Notifications({ goBack }: NotificationProps) {
+  const notifications = useStore((state) => state.config.notifications);
+  const toggleNotification = useStore((state) => state.toggleNotifications);
   return (
     <AnimateOptionChange>
       <Header goBack={goBack}>Notificaciones</Header>
@@ -20,17 +23,29 @@ export function Notifications({ goBack }: NotificationProps) {
       >
         <div className="py-6 px-12">
           <div className="flex items-center w-full mb-5">
-            <CheckBox id="mute" />
+            <CheckBox
+              id="allNoti"
+              checked={notifications.allNoti}
+              onCheckedChange={() => {
+                toggleNotification("ALL");
+              }}
+            />
 
             <Label.Root
-              htmlFor="mute"
+              htmlFor="allNoti"
               className="ml-3 select-none text-sm text-gray-900 dark:text-gray-100"
             >
               Silenciar todas las notificaciones
             </Label.Root>
           </div>
           <div className="flex items-center w-full mb-5">
-            <CheckBox id="sound" defaultChecked />
+            <CheckBox
+              id="sound"
+              checked={notifications.sound}
+              onCheckedChange={() => {
+                toggleNotification("SOUND");
+              }}
+            />
 
             <Label.Root
               htmlFor="sound"
@@ -40,7 +55,13 @@ export function Notifications({ goBack }: NotificationProps) {
             </Label.Root>
           </div>
           <div className="flex items-center w-full mb-5">
-            <CheckBox id="alerts" defaultChecked />
+            <CheckBox
+              id="alerts"
+              checked={notifications.alerts}
+              onCheckedChange={() => {
+                toggleNotification("ALERTS");
+              }}
+            />
 
             <Label.Root
               htmlFor="alerts"
@@ -50,7 +71,13 @@ export function Notifications({ goBack }: NotificationProps) {
             </Label.Root>
           </div>
           <div className="flex w-full mb-5">
-            <CheckBox id="preview" />
+            <CheckBox
+              id="preview"
+              checked={notifications.previewMsg}
+              onCheckedChange={() => {
+                toggleNotification("PREV_MSG");
+              }}
+            />
             <Label.Root
               htmlFor="preview"
               className="ml-3 select-none text-sm text-gray-900 dark:text-gray-100"
@@ -62,7 +89,13 @@ export function Notifications({ goBack }: NotificationProps) {
             </Label.Root>
           </div>
           <div className="flex items-center w-full mb-5">
-            <CheckBox id="reactions" />
+            <CheckBox
+              id="reactions"
+              checked={notifications.reactionsNoti}
+              onCheckedChange={() => {
+                toggleNotification("REACTIONS");
+              }}
+            />
             <Label.Root
               htmlFor="reactions"
               className="ml-3 select-none text-sm text-gray-900 dark:text-gray-100"
