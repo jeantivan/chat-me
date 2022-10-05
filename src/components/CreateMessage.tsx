@@ -21,17 +21,13 @@ const createMessage = (content: string): MessageType => {
   return {
     id: uuid(),
     message: { type: "text", content },
-    status: "idle",
+    status: "read",
     isOwnMsg: true,
     isFavMsg: false,
     reactions: [],
     time: getMessageHour(),
   };
 };
-
-interface CreateMessageProps {
-  addMessage: (message: MessageType) => void;
-}
 
 export function CreateMessage() {
   const [content, setContent] = useState("");
@@ -41,7 +37,7 @@ export function CreateMessage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!content) return;
-    addMessage(createMessage(content), currentChatId);
+    addMessage(createMessage(content), currentChatId!);
     setContent("");
   };
 
