@@ -8,8 +8,6 @@ import { MessageAudio } from "./MessageAudio";
 
 type MessageProps = MessageType & {
   hasTail: boolean;
-  deleteMsg: (id: string) => void;
-  favMsg: (id: string) => void;
   addOwnReaction: (id: string, reactionType: ReactionListType) => void;
   changeOwnReaction: (id: string, reactionType: ReactionListType) => void;
   deleteOwnReaction: (id: string) => void;
