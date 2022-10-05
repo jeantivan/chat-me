@@ -8,9 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CustomIcon } from "./CustomIcon";
 
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
-import { ChatType } from "../types";
 import { LastMessage } from "./LastMessage";
-import { useCurrentChat } from "./CurrentChat";
+import useStore from "../store";
 
 const buttonVariants = {
   hidden: { opacity: 0, x: "100%", transition: { duration: 0.05 } },
@@ -18,23 +17,21 @@ const buttonVariants = {
 };
 
 interface ChatItemProps {
-  chat: ChatType;
+  id: string;
 }
 
-export function ChatItem({ chat }: ChatItemProps) {
-  const { currentChat, setCurrentChat } = useCurrentChat();
-
-  const { name, picture, phone } = chat.contact;
-  const { lastMessage } = chat;
+export function ChatItem({ id }: ChatItemProps) {
+  const [currentChat, setCurrentChatId] = useStore((state) => [
+    state.currentChatId,
+    state.setCurrentChatId,
+  ]);
+  const chat = useStore((state) => state.chats.find((chat) => chat.id === id));
+  const { name, picture } = chat!.contact;
+  const { messages } = chat!;
+  const lastMessage = messages[messages.length - 1];
   const { time } = lastMessage;
   const [openMenu, setOpenMenu] = useState(true);
   const [showButton, setShowButton] = useState(false);
-
-  const handleClick = () => {
-    if (currentChat?.contact.phone === phone) return;
-
-    setCurrentChat(chat);
-  };
 
   useEffect(() => {
     if (!openMenu) {
@@ -45,7 +42,9 @@ export function ChatItem({ chat }: ChatItemProps) {
   return (
     <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
       <motion.div
-        onClick={handleClick}
+        onClick={() => {
+          setCurrentChatId(id);
+        }}
         onHoverStart={() => {
           setShowButton(true);
         }}
@@ -58,8 +57,7 @@ export function ChatItem({ chat }: ChatItemProps) {
           "flex select-none cursor-pointer",
           "dark:bg-slate-800/80 dark:hover:bg-slate-700/60 bg-white hover:bg-slate-100/60",
           {
-            "dark:bg-slate-700 bg-slate-100":
-              currentChat && phone === currentChat.contact.phone,
+            "dark:bg-slate-700 bg-slate-100": currentChat === id,
           }
         )}
       >
@@ -68,13 +66,13 @@ export function ChatItem({ chat }: ChatItemProps) {
             <img
               className="bg-gray-400 w-full h-full overflow-hidden rounded-full"
               src={picture.thumbnail}
-              alt={`Foto de perfil de ${name.fullName}`}
+              alt={`Foto de perfil de ${name}`}
             />
           </div>
         </div>
         <div className="flex flex-col basis-auto justify-center grow min-w-[0] py-2 pr-4 border-b border-slate-200/60 dark:border-slate-600/60 border-solid">
           <div className="flex items-center">
-            <p className="flex-1 text-lg dark:text-white">{name.fullName}</p>
+            <p className="flex-1 text-lg dark:text-white">{name}</p>
             <span className="text-xs dark:text-gray-400 text-gray-500">
               {time}
             </span>
