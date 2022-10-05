@@ -6,6 +6,7 @@ import { Reactions, ReactionsRoot, ReactionsTrigger } from "../Reactions";
 import { DeleteMessage } from "./DeleteMessage";
 import { MessageType, ReactionListType } from "../../types";
 import { MessageReactions } from "./MessageReactions";
+import useStore from "../../store";
 
 const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
@@ -38,8 +39,6 @@ const buttonVariants = {
 interface MessageContainerProps extends MessageType {
   children: ReactNode;
   hasTail: boolean;
-  deleteMsg: (id: string) => void;
-  favMsg: (id: string) => void;
   addOwnReaction: (id: string, reactionType: ReactionListType) => void;
   changeOwnReaction: (id: string, reactionType: ReactionListType) => void;
   deleteOwnReaction: (id: string) => void;
@@ -51,16 +50,16 @@ export function MessageContainer({
   isFavMsg,
   hasTail,
   reactions,
-  deleteMsg,
   id,
   addOwnReaction,
   changeOwnReaction,
   deleteOwnReaction,
-  favMsg,
   message,
 }: MessageContainerProps) {
   const [openReactions, setOpenReactions] = useState(false);
   const controls = useAnimation();
+
+  const toggleFavMessage = useStore((state) => state.toggleFavMessage);
 
   const ownReaction = reactions.find(
     ({ reaction }) => reaction.isOwnReaction === true
@@ -154,12 +153,13 @@ export function MessageContainer({
         <MenuItem>Reenviar mensaje</MenuItem>
         <MenuItem
           onClick={() => {
-            favMsg(id);
+            console.log("Favear");
+            toggleFavMessage(id);
           }}
         >
           {!isFavMsg ? "Destacar mensaje" : "No destacar mensaje"}
         </MenuItem>
-        <DeleteMessage msgId={id} deleteMsg={deleteMsg} />
+        <DeleteMessage msgId={id} />
       </MenuContent>
     </motion.div>
   );
