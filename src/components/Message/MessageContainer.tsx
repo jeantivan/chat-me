@@ -60,6 +60,7 @@ export function MessageContainer({
   const controls = useAnimation();
 
   const toggleFavMessage = useStore((state) => state.toggleFavMessage);
+  const currentChatId = useStore((state) => state.currentChatId);
 
   const ownReaction = reactions.find(
     ({ reaction }) => reaction.isOwnReaction === true
@@ -153,8 +154,7 @@ export function MessageContainer({
         <MenuItem>Reenviar mensaje</MenuItem>
         <MenuItem
           onClick={() => {
-            console.log("Favear");
-            toggleFavMessage(id);
+            toggleFavMessage(id, currentChatId!);
           }}
         >
           {!isFavMsg ? "Destacar mensaje" : "No destacar mensaje"}

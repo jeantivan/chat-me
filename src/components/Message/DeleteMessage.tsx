@@ -45,6 +45,7 @@ export function DeleteMessage({ msgId }: DeleteMessageProps) {
   const { isDarkMode } = useDarkMode();
   const [openModal, setOpenModal] = useState(false);
   const deleteMessage = useStore((state) => state.deleteMessage);
+  const currentChatId = useStore((state) => state.currentChatId);
 
   return (
     <AlertDialogRoot open={openModal} onOpenChange={setOpenModal}>
@@ -77,7 +78,7 @@ export function DeleteMessage({ msgId }: DeleteMessageProps) {
               <Button
                 type="filled"
                 onClick={() => {
-                  deleteMessage(msgId);
+                  deleteMessage(msgId, currentChatId!);
                 }}
                 className="py-2 px-4 rounded-md inline-flex justify-center uppercase"
               >
