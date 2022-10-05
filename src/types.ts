@@ -55,6 +55,7 @@ export type ChatType = {
   isPinned: boolean;
   isMuted: boolean;
   isArchived: boolean;
+  isOpenChat: boolean;
   hasUnreadMsg: boolean;
   shouldLoadOldMsg: boolean;
   messages: MessageType[];

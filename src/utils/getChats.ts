@@ -15,6 +15,7 @@ export const getChats = () => {
     isPinned: randomPinnedChat === index,
     isMuted: false,
     isArchived: false,
+    isOpenChat: false,
     hasUnreadMsg: false,
     shouldLoadOldMsg: true,
     messages: [getRandomMsg()],
