@@ -99,7 +99,7 @@ export function MessageAudio({
             <span className="flex-1 h-1 rounded-full bg-gray-400 mr-2" />
             <MessageMenuTrigger openMenu={openMenu} isOwnMsg={isOwnMsg} />
             <div className="absolute w-full bottom-0 left-0 z-10 p-0.5">
-              <span className="text-xs flex">
+              <span className="text-xs flex items-end">
                 <span className="mr-auto text-gray-400">
                   {secondsToMin(Number(message.content))}
                 </span>
@@ -115,10 +115,7 @@ export function MessageAudio({
                     {time}
                   </span>
                   {isOwnMsg && (
-                    <MessageStatus
-                      status={status}
-                      className="w-5 ml-1 -mb-1.5 inline-block"
-                    />
+                    <MessageStatus status={status} className="-mb-1" />
                   )}
                 </span>
               </span>
