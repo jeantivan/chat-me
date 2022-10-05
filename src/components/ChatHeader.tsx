@@ -2,14 +2,17 @@ import { BsSearch } from "react-icons/bs";
 import { ContactMenu } from "./ContactMenu";
 import { useContactInfo } from "./ContactInfo";
 import { useCurrentChat } from "./CurrentChat";
+import useStore from "../store";
 
 export function ChatHeader() {
   const { setOpenContactInfo } = useContactInfo();
-  const { currentChat } = useCurrentChat();
+  const chat = useStore((state) =>
+    state.chats.find((chat) => chat.id === state.currentChatId)
+  );
 
-  if (!currentChat) return null;
+  if (!chat) return null;
 
-  const { name, picture } = currentChat.contact;
+  const { name, picture } = chat.contact;
   return (
     <header className="chat-header bg-slate-100 dark:bg-slate-700 shadow-lg">
       <div className="flex items-center px-5 py-2">
@@ -23,12 +26,12 @@ export function ChatHeader() {
             <img
               className="bg-gray-400 w-full h-full rounded-full"
               src={picture.thumbnail}
-              alt={`Foto de perfil de ${name.fullName}`}
+              alt={`Foto de perfil de ${name}`}
             />
           </span>
           <span className="flex items-center">
             <span className="font-bold dark:text-white leading-none">
-              {name.fullName}
+              {name}
             </span>
           </span>
         </button>
