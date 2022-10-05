@@ -70,7 +70,7 @@ export function MessageText({
       </div>
 
       <div className="relative float-right z-10 -mt-3 -mb-[5px]">
-        <span className="text-xs flex items-end">
+        <span className="text-xs flex items-center">
           {isFavMsg && (
             <CustomIcon
               Icon={BsStarFill}
@@ -79,12 +79,7 @@ export function MessageText({
             />
           )}
           <span className="text-gray-400 mx-1 whitespace-nowrap">{time}</span>
-          {isOwnMsg && (
-            <MessageStatus
-              status={status}
-              className="w-5 -mb-0.5 inline-block"
-            />
-          )}
+          {isOwnMsg && <MessageStatus status={status} />}
         </span>
       </div>
       <MessageMenuTrigger isOwnMsg={isOwnMsg} openMenu={openMenu} />
