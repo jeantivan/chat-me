@@ -21,7 +21,7 @@ const createMessage = (content: string): MessageType => {
   return {
     id: uuid(),
     message: { type: "text", content },
-    status: "send",
+    status: "idle",
     isOwnMsg: true,
     isFavMsg: false,
     reactions: [],
