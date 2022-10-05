@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { IoSend } from "react-icons/io5";
+import { v4 as uuid } from "uuid";
+import useStore from "../store";
 import { MessageType } from "../types";
 import { CustomIcon } from "./CustomIcon";
 
-const generateRandomId = () => (Math.random() + 1).toString(36).substring(2);
 const getMessageHour = () => {
   const date = new Date();
   let minutes =
@@ -18,11 +19,11 @@ const getMessageHour = () => {
 
 const createMessage = (content: string): MessageType => {
   return {
-    id: generateRandomId(),
+    id: uuid(),
     message: { type: "text", content },
     status: "send",
     isOwnMsg: true,
-    isFavMsg: -1,
+    isFavMsg: false,
     reactions: [],
     time: getMessageHour(),
   };
@@ -32,8 +33,9 @@ interface CreateMessageProps {
   addMessage: (message: MessageType) => void;
 }
 
-export function CreateMessage({ addMessage }: CreateMessageProps) {
+export function CreateMessage() {
   const [content, setContent] = useState("");
+  const addMessage = useStore((state) => state.addMessage);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
