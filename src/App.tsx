@@ -41,33 +41,6 @@ function App() {
   //   });
   // };
 
-  // const findAndDeleteMessageById = (id: string) => {
-  //   const indexOfMessageToDelete = messages.findIndex(
-  //     (message) => message.id === id
-  //   );
-
-  //   if (indexOfMessageToDelete < 0) {
-  //     console.error("No hay mensaje para borrar");
-  //     return;
-  //   }
-
-  //   let newMessageList = [...messages];
-
-  //   newMessageList.splice(indexOfMessageToDelete, 1);
-
-  //   setMessages(newMessageList);
-  // };
-
-  // const findAndToggleFavMessage = (id: string) => {
-  //   let messagesCopy = [...messages];
-
-  //   let newMessages = messagesCopy.map((message) =>
-  //     message.id === id ? { ...message, isFavMsg: !message.isFavMsg } : message
-  //   );
-
-  //   setMessages(newMessages);
-  // };
-
   // const addOwnReaction = (id: string, reactionType: ReactionListType) => {
   //   const messageCopy = [...messages];
 
@@ -132,15 +105,6 @@ function App() {
 
   //   setMessages(newMessages);
   // };
-
-  // useEffect(() => {
-  //   if (messagesContainer.current) {
-  //     messagesContainer.current.scrollTo(
-  //       0,
-  //       messagesContainer.current.scrollHeight
-  //     );
-  //   }
-  // }, [currentChat, messages.length]);
 
   return (
     <div
