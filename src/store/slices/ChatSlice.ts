@@ -26,58 +26,6 @@ export const createChatSlice: StateCreator<
       });
     }, 1000);
   },
-  addMessage: (message) => {
-    const currentChat = get().currentChatId;
-
-    if (!currentChat) return;
-
-    const indexOfCurrentChat = get().chats.findIndex(
-      (chat) => chat.id === currentChat
-    );
-
-    set((state) => {
-      state.chats[indexOfCurrentChat].messages.push(message);
-    });
-  },
-
-  deleteMessage: (messageId) => {
-    const indexOfCurrentChat = get().chats.findIndex(
-      (chat) => chat.id === get().currentChatId
-    );
-
-    if (indexOfCurrentChat !== undefined) {
-      set((state) => {
-        // Encuentra el index del Mensaje con id = messageId
-        let indexOfMessage = state.chats[indexOfCurrentChat].messages.findIndex(
-          (message) => message.id === messageId
-        );
-        if (indexOfMessage) {
-          state.chats[indexOfCurrentChat].messages.splice(indexOfMessage, 1);
-        }
-      });
-    }
-  },
-  toggleFavMessage: (messageId) => {
-    const indexOfCurrentChat = get().chats.findIndex(
-      (chat) => chat.id === get().currentChatId
-    );
-    console.log("index of currentChat");
-    console.log(indexOfCurrentChat);
-
-    if (indexOfCurrentChat !== undefined) {
-      set((state) => {
-        // Encuentra el index del Mensaje con id = messageId
-        let indexOfMessage = state.chats[indexOfCurrentChat].messages.findIndex(
-          (message) => message.id === messageId
-        );
-
-        if (indexOfMessage) {
-          state.chats[indexOfCurrentChat].messages[indexOfMessage].isFavMsg =
-            !state.chats[indexOfCurrentChat].messages[indexOfMessage].isFavMsg;
-        }
-      });
-    }
-  },
   pinChat: (chatId) => {
     // Encuentra el index del chat en el array de chats
     const indexOfChat = get().chats.findIndex((chat) => (chat.id = chatId));
