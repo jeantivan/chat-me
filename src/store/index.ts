@@ -1,5 +1,3 @@
-import { getContacts } from "./../utils/getContacts";
-import { getChats } from "../utils/getChats";
 import create from "zustand";
 import { persist, devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -9,6 +7,8 @@ import {
   createConfigSlice,
   createContactsSlice,
   createProfileSlice,
+  createCurrentChatIdSlice,
+  createChatSlice,
 } from "./slices";
 
 const useStore = create<StoreSlice>()(
@@ -19,6 +19,8 @@ const useStore = create<StoreSlice>()(
         ...createProfileSlice(...a),
         ...createContactsSlice(...a),
         ...createChatsSlice(...a),
+        ...createCurrentChatIdSlice(...a),
+        ...createChatSlice(...a),
       })),
       {
         name: "zustand-chat-me",
