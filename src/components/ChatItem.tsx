@@ -1,7 +1,4 @@
-import {
-  BsChevronDown,
-  //BsPinAngleFill,
-} from "react-icons/bs";
+import { BsChevronDown, BsPinAngleFill } from "react-icons/bs";
 import cx from "classnames";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +7,7 @@ import { CustomIcon } from "./CustomIcon";
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { LastMessage } from "./LastMessage";
 import useStore from "../store";
+import { ChatType } from "../types";
 
 const buttonVariants = {
   hidden: { opacity: 0, x: "100%", transition: { duration: 0.05 } },
@@ -17,17 +15,13 @@ const buttonVariants = {
 };
 
 interface ChatItemProps {
-  id: string;
+  chat: ChatType;
 }
 
-export function ChatItem({ id }: ChatItemProps) {
-  const [currentChat, setCurrentChatId] = useStore((state) => [
-    state.currentChatId,
-    state.setCurrentChatId,
-  ]);
-  const chat = useStore((state) => state.chats.find((chat) => chat.id === id));
-  const { name, picture } = chat!.contact;
-  const { messages } = chat!;
+export function ChatItem({ chat }: ChatItemProps) {
+  const setCurrentChatId = useStore((state) => state.setCurrentChatId);
+  const { name, picture } = chat.contact;
+  const { messages } = chat;
   const lastMessage = messages[messages.length - 1];
   const { time } = lastMessage;
   const [openMenu, setOpenMenu] = useState(true);
@@ -43,7 +37,7 @@ export function ChatItem({ id }: ChatItemProps) {
     <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
       <motion.div
         onClick={() => {
-          setCurrentChatId(id);
+          setCurrentChatId(chat.id);
         }}
         onHoverStart={() => {
           setShowButton(true);
@@ -57,7 +51,7 @@ export function ChatItem({ id }: ChatItemProps) {
           "flex select-none cursor-pointer",
           "dark:bg-slate-800/80 dark:hover:bg-slate-700/60 bg-white hover:bg-slate-100/60",
           {
-            "dark:bg-slate-700 bg-slate-100": currentChat === id,
+            "dark:bg-slate-700/80 bg-slate-100": chat.isOpenChat,
           }
         )}
       >
@@ -109,11 +103,11 @@ export function ChatItem({ id }: ChatItemProps) {
 
             {/* 
             TODO: Mostrar cuando la opción "pinear" este disponible en las opciones del chat
-          <CustomIcon
-            label="Chat fijado"
-            Icon={BsPinAngleFill}
-            className="w-4 h-4 ml-2 dark:text-gray-400 text-gray-500"
-          /> */}
+                <CustomIcon
+                  label="Chat fijado"
+                  Icon={BsPinAngleFill}
+                  className="w-4 h-4 ml-2 dark:text-gray-400 text-gray-500"
+                /> */}
           </div>
           <MenuContent align="start" sideOffset={0} className="w-56">
             <MenuItem>Archivar chat</MenuItem>
