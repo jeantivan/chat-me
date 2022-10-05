@@ -9,6 +9,7 @@ import {
   createProfileSlice,
   createCurrentChatIdSlice,
   createChatSlice,
+  createMessageSlice,
 } from "./slices";
 
 const useStore = create<StoreSlice>()(
@@ -21,6 +22,7 @@ const useStore = create<StoreSlice>()(
         ...createChatsSlice(...a),
         ...createCurrentChatIdSlice(...a),
         ...createChatSlice(...a),
+        ...createMessageSlice(...a),
       })),
       {
         name: "zustand-chat-me",

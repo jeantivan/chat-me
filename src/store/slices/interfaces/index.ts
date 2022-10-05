@@ -39,13 +39,15 @@ export interface ChatSlice {
   pinChat: (chatId: string) => void;
   muteChat: (chatId: string) => void;
   getAllMessages: () => void;
-  addMessage: (message: MessageType) => void;
-  deleteMessage: (messageId: string) => void;
-  toggleFavMessage: (messageId: string) => void;
 }
 
-// TODO: Interface para las reacciones a los mensajes
-export interface ReactionsSlice {}
+// TODO: Interface para las acciones de los mensajes
+export interface MessageSlice {
+  addMessage: (message: MessageType, chatId: string) => void;
+  deleteMessage: (messageId: string, chatId: string) => void;
+  toggleFavMessage: (messageId: string, chatId: string) => void;
+  updateMessageStatus: (messageId: string, chatId: string) => void;
+}
 
 export interface StoreSlice
   extends ContactsSlice,
@@ -53,4 +55,5 @@ export interface StoreSlice
     ConfigSlice,
     ProfileSlice,
     CurrentChatIdSlice,
-    ChatSlice {}
+    ChatSlice,
+    MessageSlice {}
