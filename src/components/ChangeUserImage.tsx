@@ -1,14 +1,14 @@
 import { ChangeEvent, useRef } from "react";
 import { BsCameraFill } from "react-icons/bs";
-import { useUserInfo } from "./UserInfoProvider";
 import { UserImage } from "./UserImage";
 import { CustomIcon } from "./CustomIcon";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import useStore from "../store";
 
 const toMB = 1048576;
 
 export function ChangeUserImage() {
-  const { changePicture } = useUserInfo();
+  const changePicture = useStore((state) => state.changePicture);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

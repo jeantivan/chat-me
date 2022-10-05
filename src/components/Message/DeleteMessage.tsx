@@ -12,6 +12,7 @@ import {
 } from "../AlertDialog";
 import { MenuItem } from "../Menu";
 import { useDarkMode } from "../DarkMode";
+import useStore from "../../store";
 
 const Button: React.FC<{
   children: ReactNode;
@@ -38,12 +39,12 @@ const Button: React.FC<{
 
 interface DeleteMessageProps {
   msgId: string;
-  deleteMsg: (id: string) => void;
 }
 
-export function DeleteMessage({ msgId, deleteMsg }: DeleteMessageProps) {
+export function DeleteMessage({ msgId }: DeleteMessageProps) {
   const { isDarkMode } = useDarkMode();
   const [openModal, setOpenModal] = useState(false);
+  const deleteMessage = useStore((state) => state.deleteMessage);
 
   return (
     <AlertDialogRoot open={openModal} onOpenChange={setOpenModal}>
@@ -76,7 +77,7 @@ export function DeleteMessage({ msgId, deleteMsg }: DeleteMessageProps) {
               <Button
                 type="filled"
                 onClick={() => {
-                  deleteMsg(msgId);
+                  deleteMessage(msgId);
                 }}
                 className="py-2 px-4 rounded-md inline-flex justify-center uppercase"
               >

@@ -5,6 +5,19 @@ import LAST_MESSAGES from "../assets/mock-data/last-messages.json";
 const getRandomMessage = () =>
   LAST_MESSAGES[Math.floor(Math.random() * LAST_MESSAGES.length)];
 
+const formatContactInfo = (contact: any) => ({
+  contact: {
+    ...contact,
+    name: {
+      ...contact.name,
+      fullName: `${contact.name.first} ${contact.name.last}`,
+    },
+  },
+  pinned: false,
+  mutedNotf: false,
+  lastMessage: getRandomMessage(),
+});
+
 const getChats = async (): Promise<ChatType[]> => {
   try {
     const response = await fetch(
@@ -15,18 +28,7 @@ const getChats = async (): Promise<ChatType[]> => {
 
     const { results } = data;
 
-    const chats: ChatType[] = results.map((contact: any) => ({
-      contact: {
-        ...contact,
-        name: {
-          ...contact.name,
-          fullName: `${contact.name.first} ${contact.name.last}`,
-        },
-      },
-      pinned: false,
-      mutedNotf: false,
-      lastMessage: getRandomMessage(),
-    }));
+    const chats: ChatType[] = results.map(formatContactInfo);
 
     return chats;
   } catch (e: any) {

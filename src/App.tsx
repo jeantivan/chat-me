@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import {
   useDarkMode,
@@ -6,163 +6,141 @@ import {
   ChatHeader,
   InputContainer,
   Messages,
+  Message,
   UserProfile,
   Welcome,
   SearchChats,
   LeftDrawerContent,
   ContactInfoContent,
-  Message,
   CreateMessage,
 } from "./components";
-import MESSAGES from "./assets/mock-data/messages.json";
-import { useGetChats } from "./utils/useGetChats";
-import { MessageType, ReactionListType } from "./types";
-import { useCurrentChat } from "./components/CurrentChat";
 
-const messagesCopy = [...MESSAGES] as MessageType[];
+import useStore from "./store";
+import { MessageType } from "./types";
 
 function App() {
-  const messagesContainer = useRef<HTMLDivElement>(null);
   const { isDarkMode } = useDarkMode();
-  const { currentChat } = useCurrentChat();
-  const [messages, setMessages] = useState<Array<MessageType>>(messagesCopy);
-  const { isError, isLoading, data } = useGetChats();
 
-  const addMessage = (newMessage: MessageType) => {
-    let copyMessages = [...messages];
+  const currentChatId = useStore((state) => state.currentChatId);
 
-    copyMessages.push(newMessage);
+  // const findAndUpdateMessageStatus = (id: string) => {
+  //   setMessages((prevMessages) => {
+  //     const newMessages = prevMessages.map((message) => {
+  //       if (message.id !== id) return message;
 
-    setMessages(copyMessages);
+  //       let newMessage = message;
+  //       if (message.status === "send") {
+  //         newMessage = { ...message, status: "received" };
+  //       } else if (message.status === "received") {
+  //         newMessage = { ...message, status: "read" };
+  //       }
+  //       return newMessage;
+  //     });
 
-    setTimeout(() => {
-      findAndUpdateMessageStatus(newMessage.id);
-      setTimeout(() => {
-        findAndUpdateMessageStatus(newMessage.id);
-      }, 1000);
-    }, 1000);
-  };
+  //     return newMessages;
+  //   });
+  // };
 
-  const findAndUpdateMessageStatus = (id: string) => {
-    setMessages((prevMessages) => {
-      const newMessages = prevMessages.map((message) => {
-        if (message.id !== id) return message;
+  // const findAndDeleteMessageById = (id: string) => {
+  //   const indexOfMessageToDelete = messages.findIndex(
+  //     (message) => message.id === id
+  //   );
 
-        let newMessage = message;
-        if (message.status === "send") {
-          newMessage = { ...message, status: "received" };
-        } else if (message.status === "received") {
-          newMessage = { ...message, status: "read" };
-        }
-        return newMessage;
-      });
+  //   if (indexOfMessageToDelete < 0) {
+  //     console.error("No hay mensaje para borrar");
+  //     return;
+  //   }
 
-      return newMessages;
-    });
-  };
+  //   let newMessageList = [...messages];
 
-  const findAndDeleteMessageById = (id: string) => {
-    const indexOfMessageToDelete = messages.findIndex(
-      (message) => message.id === id
-    );
+  //   newMessageList.splice(indexOfMessageToDelete, 1);
 
-    if (indexOfMessageToDelete < 0) {
-      console.error("No hay mensaje para borrar");
-      return;
-    }
+  //   setMessages(newMessageList);
+  // };
 
-    let newMessageList = [...messages];
+  // const findAndToggleFavMessage = (id: string) => {
+  //   let messagesCopy = [...messages];
 
-    newMessageList.splice(indexOfMessageToDelete, 1);
+  //   let newMessages = messagesCopy.map((message) =>
+  //     message.id === id ? { ...message, isFavMsg: !message.isFavMsg } : message
+  //   );
 
-    setMessages(newMessageList);
-  };
+  //   setMessages(newMessages);
+  // };
 
-  const findAndToggleFavMessage = (id: string) => {
-    let messagesCopy = [...messages];
+  // const addOwnReaction = (id: string, reactionType: ReactionListType) => {
+  //   const messageCopy = [...messages];
 
-    let newMessages = messagesCopy.map((message) =>
-      message.id === id
-        ? { ...message, isFavMsg: message.isFavMsg < 0 ? 1 : -1 }
-        : message
-    );
+  //   const newMessages = messageCopy.map((message) => {
+  //     if (message.id !== id) {
+  //       return message;
+  //     }
 
-    setMessages(newMessages);
-  };
+  //     let newReaction = {
+  //       reaction: {
+  //         isOwnReaction: true,
+  //         type: reactionType,
+  //       },
+  //     };
 
-  const addOwnReaction = (id: string, reactionType: ReactionListType) => {
-    const messageCopy = [...messages];
+  //     return { ...message, reactions: [...message.reactions, newReaction] };
+  //   });
 
-    const newMessages = messageCopy.map((message) => {
-      if (message.id !== id) {
-        return message;
-      }
+  //   setMessages(newMessages);
+  // };
 
-      let newReaction = {
-        reaction: {
-          isOwnReaction: true,
-          type: reactionType,
-        },
-      };
+  // const changeOwnReaction = (id: string, reactionType: ReactionListType) => {
+  //   const messageCopy = [...messages];
 
-      return { ...message, reactions: [...message.reactions, newReaction] };
-    });
+  //   const newMessages = messageCopy.map((message) => {
+  //     if (message.id !== id) {
+  //       return message;
+  //     }
 
-    setMessages(newMessages);
-  };
+  //     return {
+  //       ...message,
+  //       reactions: message.reactions.map(({ reaction }) => {
+  //         if (!reaction.isOwnReaction) {
+  //           return { reaction };
+  //         }
 
-  const changeOwnReaction = (id: string, reactionType: ReactionListType) => {
-    const messageCopy = [...messages];
+  //         return {
+  //           reaction: { ...reaction, type: reactionType },
+  //         };
+  //       }),
+  //     };
+  //   });
 
-    const newMessages = messageCopy.map((message) => {
-      if (message.id !== id) {
-        return message;
-      }
+  //   setMessages(newMessages);
+  // };
 
-      return {
-        ...message,
-        reactions: message.reactions.map(({ reaction }) => {
-          if (!reaction.isOwnReaction) {
-            return { reaction };
-          }
+  // const deleteOwnReaction = (id: string) => {
+  //   const messageCopy = [...messages];
 
-          return {
-            reaction: { ...reaction, type: reactionType },
-          };
-        }),
-      };
-    });
+  //   const newMessages = messageCopy.map((message) => {
+  //     if (message.id !== id) {
+  //       return message;
+  //     }
 
-    setMessages(newMessages);
-  };
+  //     return {
+  //       ...message,
+  //       reactions: message.reactions.filter(
+  //         ({ reaction }) => reaction.isOwnReaction !== true
+  //       ),
+  //     };
+  //   });
 
-  const deleteOwnReaction = (id: string) => {
-    const messageCopy = [...messages];
+  //   setMessages(newMessages);
+  // };
 
-    const newMessages = messageCopy.map((message) => {
-      if (message.id !== id) {
-        return message;
-      }
-
-      return {
-        ...message,
-        reactions: message.reactions.filter(
-          ({ reaction }) => reaction.isOwnReaction !== true
-        ),
-      };
-    });
-
-    setMessages(newMessages);
-  };
-
-  useEffect(() => {
-    if (messagesContainer.current) {
-      messagesContainer.current.scrollTo(
-        0,
-        messagesContainer.current.scrollHeight
-      );
-    }
-  }, [currentChat, messages.length]);
+  // useEffect(() => {
+  //   if (messagesContainer.current) {
+  //     messagesContainer.current.scrollTo(
+  //       0,
+  //       messagesContainer.current.scrollHeight
+  //     );
+  //   }
+  // }, [currentChat, messages.length]);
 
   return (
     <div
@@ -174,36 +152,20 @@ function App() {
         <section className="user-chats relative">
           <UserProfile />
           <SearchChats />
-          <ChatList chats={data} isError={isError} isLoading={isLoading} />
+          <ChatList />
           <LeftDrawerContent />
         </section>
         <section className="flex-1 w-full flex">
           <div className="chat-container flex-1">
-            {!currentChat ? (
+            {!currentChatId ? (
               <Welcome />
             ) : (
               <>
                 <ChatHeader />
-                <Messages ref={messagesContainer}>
-                  {messages.map((message, i, array) => {
-                    let hasTail =
-                      i === 0 || message.isOwnMsg !== array[i - 1].isOwnMsg;
-                    return (
-                      <Message
-                        key={message.id}
-                        hasTail={hasTail}
-                        deleteMsg={findAndDeleteMessageById}
-                        favMsg={findAndToggleFavMessage}
-                        addOwnReaction={addOwnReaction}
-                        deleteOwnReaction={deleteOwnReaction}
-                        changeOwnReaction={changeOwnReaction}
-                        {...message}
-                      />
-                    );
-                  })}
-                </Messages>
+                <Messages />
+
                 <InputContainer>
-                  <CreateMessage addMessage={addMessage} />
+                  <CreateMessage />
                 </InputContainer>
               </>
             )}

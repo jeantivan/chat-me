@@ -1,9 +1,42 @@
 import { Dispatch, SetStateAction } from "react";
 
 export type UserType = {
+  id: string;
   name: string;
   status: string;
-  picture: string;
+  phone: string;
+  picture: {
+    large: string;
+    medium: string;
+    thumbnail: string;
+  };
+};
+
+type NotificationsConfig = {
+  allNoti: boolean;
+  sound: boolean;
+  alerts: boolean;
+  previewMsg: boolean;
+  reactionsNoti: boolean;
+};
+
+type PrivacyConfig = {
+  lastTimeOnline: "all" | "contacts" | "none";
+  profilePicture: "all" | "contacts" | "none";
+  info: "all" | "contacts" | "none";
+  readConfirmation: boolean;
+  tempMsg: "deactivated" | "24h" | "7d" | "90d";
+  groups: "all" | "contacts";
+};
+
+type SecurityConfig = {
+  showSecurityNoti: boolean;
+};
+
+export type ConfigType = {
+  notifications: NotificationsConfig;
+  privacy: PrivacyConfig;
+  security: SecurityConfig;
 };
 
 export type ContactType = {
@@ -17,17 +50,21 @@ export type ContactType = {
 };
 
 export type ChatType = {
-  contact: ContactType;
-  lastMessage: MessageType;
-  pinned: boolean;
-  mutedNotf: boolean;
+  id: string;
+  contact: UserType;
+  isPinned: boolean;
+  isMuted: boolean;
+  isArchived: boolean;
+  hasUnreadMsg: boolean;
+  shouldLoadOldMsg: boolean;
+  messages: MessageType[];
 };
 
 export type MessageType = {
   id: string;
   isOwnMsg: boolean;
-  isFavMsg: number;
-  status: "send" | "received" | "read";
+  isFavMsg: boolean;
+  status: "idle" | "send" | "received" | "read";
   message: {
     type: "audio" | "video" | "image" | "text";
     content: string | number;

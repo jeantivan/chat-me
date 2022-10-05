@@ -1,21 +1,21 @@
 import { FaUserCircle } from "react-icons/fa";
-import { useUserInfo } from "./UserInfoProvider";
 import { CustomIcon } from "./CustomIcon";
+import useStore from "../store";
 
 export function UserImage() {
-  const { user } = useUserInfo();
+  const picture = useStore((state) => state.profile.picture);
 
-  return user.picture ? (
-    <img
-      alt="Tu foto de perfil."
-      src={user.picture}
-      className="w-full h-full bg-gray-400"
-    />
-  ) : (
+  return !picture.medium ? (
     <CustomIcon
       label="Avatar"
       Icon={FaUserCircle}
       className="w-full h-full text-gray-400"
+    />
+  ) : (
+    <img
+      alt="Tu foto de perfil."
+      src={picture.medium}
+      className="w-full h-full bg-gray-400"
     />
   );
 }

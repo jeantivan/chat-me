@@ -1,13 +1,12 @@
 import cx from "classnames";
 import { BsChevronDown, BsPlayFill, BsStarFill } from "react-icons/bs";
 import { CustomIcon } from "../CustomIcon";
-import { ContactType, MessageType } from "../../types";
-import { useUserInfo } from "../UserInfoProvider";
-import { FaUserCircle } from "react-icons/fa";
+import { MessageType } from "../../types";
+
 import { MenuTrigger } from "../Menu";
 import { MessageStatus } from "../MessageStatus";
 import { secondsToMin } from "../../utils/secondsToMin";
-import { useCurrentChat } from "../CurrentChat";
+import useStore from "../../store";
 
 const MessageMenuTrigger = ({
   isOwnMsg,
@@ -54,8 +53,10 @@ export function MessageAudio({
   isFavMsg,
   isOwnMsg,
 }: MessageAudioProps) {
-  const { user } = useUserInfo();
-  const { currentChat } = useCurrentChat();
+  const { name, picture } = useStore((state) => state.profile);
+  const chat = useStore((state) =>
+    state.chats.find((chat) => chat.id === state.currentChatId)
+  );
   return (
     <div
       className={cx("w-full px-2 min-h-[56px]", {
@@ -82,11 +83,9 @@ export function MessageAudio({
               alt={
                 isOwnMsg
                   ? "Tu foto de perfil."
-                  : `Foto de: ${currentChat?.contact.name.fullName}`
+                  : `Foto de: ${chat?.contact.name}`
               }
-              src={
-                isOwnMsg ? user.picture : currentChat?.contact.picture.medium
-              }
+              src={isOwnMsg ? picture.medium : chat?.contact.picture.medium}
               className="w-full h-full bg-gray-400 object-fill"
             />
           </div>
@@ -105,7 +104,7 @@ export function MessageAudio({
                   {secondsToMin(Number(message.content))}
                 </span>
                 <span className="ml-auto">
-                  {isFavMsg === 1 && (
+                  {isFavMsg && (
                     <CustomIcon
                       Icon={BsStarFill}
                       className="text-gray-400 self-center inline-block mr-0.5"
