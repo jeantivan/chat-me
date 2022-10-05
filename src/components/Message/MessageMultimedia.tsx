@@ -100,10 +100,7 @@ export function MessageMultimedia(props: MessageMultimediaProps) {
                     {time}
                   </span>
                   {isOwnMsg && (
-                    <MessageStatus
-                      status={status}
-                      className="w-5 -mb-1.5 inline-block"
-                    />
+                    <MessageStatus status={status} className="-mb-1" />
                   )}
                 </span>
               </span>
