@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import useStore from "../store";
 import { Message } from "./Message";
+import { Loader } from "./Loader";
 
 export function Messages() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,8 @@ export function Messages() {
       ref={containerRef}
     >
       <div className="py-5">
+        {chat!.shouldLoadOldMsg && <Loader />}
+
         {chat!.messages.map((message, i, array) => (
           <Message
             key={message.id}
