@@ -10,6 +10,7 @@ import faceWithTearsOfJoy from "../assets/reactions-emojis/face-with-tears-of-jo
 import faceWithOpenMouth from "../assets/reactions-emojis/face-with-open-mouth.svg";
 import cryingFace from "../assets/reactions-emojis/crying-face.svg";
 import foldedHands from "../assets/reactions-emojis/folded-hands.svg";
+import useStore from "../store";
 
 const reactionsList = {
   "thumbs-up": thumbsUp,
@@ -45,27 +46,28 @@ export const ReactionsTrigger = () => (
 export function Reactions({
   ownReaction,
   closeMenu,
-  addOwnReaction,
+
   msgId,
-  changeOwnReaction,
-  deleteOwnReaction,
 }: {
   ownReaction?: ReactionType;
   closeMenu: () => void;
   msgId: string;
-  addOwnReaction: (id: string, reactionType: ReactionListType) => void;
-  changeOwnReaction: (id: string, reactionType: ReactionListType) => void;
-  deleteOwnReaction: (id: string) => void;
 }) {
   const reactionsArray = Object.keys(reactionsList) as ReactionListType[];
+  const { addReaction, deleteReaction, changeReaction } = useStore((state) => ({
+    addReaction: state.addReaction,
+    changeReaction: state.changeReaction,
+    deleteReaction: state.deleteReaction,
+  }));
+  const currentChatId = useStore((state) => state.currentChatId);
 
   const reactToMsg = (reactionType: ReactionListType) => {
     if (!ownReaction) {
-      addOwnReaction(msgId, reactionType);
+      addReaction(msgId, reactionType, currentChatId!);
     } else if (ownReaction.reaction.type === reactionType) {
-      deleteOwnReaction(msgId);
+      deleteReaction(msgId, currentChatId!);
     } else {
-      changeOwnReaction(msgId, reactionType);
+      changeReaction(msgId, reactionType, currentChatId!);
     }
 
     closeMenu();

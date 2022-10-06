@@ -39,9 +39,6 @@ const buttonVariants = {
 interface MessageContainerProps extends MessageType {
   children: ReactNode;
   hasTail: boolean;
-  addOwnReaction: (id: string, reactionType: ReactionListType) => void;
-  changeOwnReaction: (id: string, reactionType: ReactionListType) => void;
-  deleteOwnReaction: (id: string) => void;
 }
 
 export function MessageContainer({
@@ -51,9 +48,6 @@ export function MessageContainer({
   hasTail,
   reactions,
   id,
-  addOwnReaction,
-  changeOwnReaction,
-  deleteOwnReaction,
   message,
 }: MessageContainerProps) {
   const [openReactions, setOpenReactions] = useState(false);
@@ -134,9 +128,6 @@ export function MessageContainer({
               }}
               ownReaction={ownReaction}
               msgId={id}
-              addOwnReaction={addOwnReaction}
-              deleteOwnReaction={deleteOwnReaction}
-              changeOwnReaction={changeOwnReaction}
             />
           </div>
         </ReactionsRoot>
