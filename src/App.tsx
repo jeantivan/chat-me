@@ -6,7 +6,6 @@ import {
   ChatHeader,
   InputContainer,
   Messages,
-  Message,
   UserProfile,
   Welcome,
   SearchChats,
@@ -22,89 +21,6 @@ function App() {
   const { isDarkMode } = useDarkMode();
 
   const currentChatId = useStore((state) => state.currentChatId);
-
-  // const findAndUpdateMessageStatus = (id: string) => {
-  //   setMessages((prevMessages) => {
-  //     const newMessages = prevMessages.map((message) => {
-  //       if (message.id !== id) return message;
-
-  //       let newMessage = message;
-  //       if (message.status === "send") {
-  //         newMessage = { ...message, status: "received" };
-  //       } else if (message.status === "received") {
-  //         newMessage = { ...message, status: "read" };
-  //       }
-  //       return newMessage;
-  //     });
-
-  //     return newMessages;
-  //   });
-  // };
-
-  // const addOwnReaction = (id: string, reactionType: ReactionListType) => {
-  //   const messageCopy = [...messages];
-
-  //   const newMessages = messageCopy.map((message) => {
-  //     if (message.id !== id) {
-  //       return message;
-  //     }
-
-  //     let newReaction = {
-  //       reaction: {
-  //         isOwnReaction: true,
-  //         type: reactionType,
-  //       },
-  //     };
-
-  //     return { ...message, reactions: [...message.reactions, newReaction] };
-  //   });
-
-  //   setMessages(newMessages);
-  // };
-
-  // const changeOwnReaction = (id: string, reactionType: ReactionListType) => {
-  //   const messageCopy = [...messages];
-
-  //   const newMessages = messageCopy.map((message) => {
-  //     if (message.id !== id) {
-  //       return message;
-  //     }
-
-  //     return {
-  //       ...message,
-  //       reactions: message.reactions.map(({ reaction }) => {
-  //         if (!reaction.isOwnReaction) {
-  //           return { reaction };
-  //         }
-
-  //         return {
-  //           reaction: { ...reaction, type: reactionType },
-  //         };
-  //       }),
-  //     };
-  //   });
-
-  //   setMessages(newMessages);
-  // };
-
-  // const deleteOwnReaction = (id: string) => {
-  //   const messageCopy = [...messages];
-
-  //   const newMessages = messageCopy.map((message) => {
-  //     if (message.id !== id) {
-  //       return message;
-  //     }
-
-  //     return {
-  //       ...message,
-  //       reactions: message.reactions.filter(
-  //         ({ reaction }) => reaction.isOwnReaction !== true
-  //       ),
-  //     };
-  //   });
-
-  //   setMessages(newMessages);
-  // };
 
   return (
     <div
