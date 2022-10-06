@@ -1,4 +1,10 @@
-import { ConfigType, UserType, ChatType, MessageType } from "./../../../types";
+import {
+  ConfigType,
+  UserType,
+  ChatType,
+  MessageType,
+  ReactionListType,
+} from "./../../../types";
 
 // Interface para todos los Contactos
 export interface ContactsSlice {
@@ -41,12 +47,23 @@ export interface ChatSlice {
   getAllMessages: () => void;
 }
 
-// TODO: Interface para las acciones de los mensajes
+// Interface para las acciones de los mensajes
 export interface MessageSlice {
   addMessage: (message: MessageType, chatId: string) => void;
   deleteMessage: (messageId: string, chatId: string) => void;
   toggleFavMessage: (messageId: string, chatId: string) => void;
   updateMessageStatus: (messageId: string, chatId: string) => void;
+  addReaction: (
+    messageId: string,
+    reaction: ReactionListType,
+    chatId: string
+  ) => void;
+  deleteReaction: (messageId: string, chatId: string) => void;
+  changeReaction: (
+    messageId: string,
+    reaction: ReactionListType,
+    chatId: string
+  ) => void;
 }
 
 export interface StoreSlice

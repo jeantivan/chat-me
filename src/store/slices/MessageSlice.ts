@@ -1,3 +1,4 @@
+import { ReactionType } from "./../../types";
 import { StateCreator } from "zustand";
 import { MessageSlice, StoreSlice } from "./interfaces";
 
@@ -73,6 +74,72 @@ export const createMessageSlice: StateCreator<
         if (indexOfMessage) {
           state.chats[chatIndex].messages[indexOfMessage].isFavMsg =
             !state.chats[chatIndex].messages[indexOfMessage].isFavMsg;
+        }
+      });
+    }
+  },
+  addReaction: (messageId, reactionType, chatId) => {
+    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+
+    if (chatIndex !== undefined) {
+      set((state) => {
+        // Encuentra el index del Mensaje con id = messageId
+        let indexOfMessage = state.chats[chatIndex].messages.findIndex(
+          (message) => message.id === messageId
+        );
+
+        if (indexOfMessage) {
+          let reaction: ReactionType = {
+            reaction: {
+              isOwnReaction: true,
+              type: reactionType,
+            },
+          };
+
+          state.chats[chatIndex].messages[indexOfMessage].reactions.push(
+            reaction as never
+          );
+        }
+      });
+    }
+  },
+  deleteReaction: (messageId, chatId) => {
+    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+
+    if (chatIndex !== undefined) {
+      set((state) => {
+        // Encuentra el index del Mensaje con id = messageId
+        let indexOfMessage = state.chats[chatIndex].messages.findIndex(
+          (message) => message.id === messageId
+        );
+
+        if (indexOfMessage) {
+          state.chats[chatIndex].messages[indexOfMessage].reactions =
+            state.chats[chatIndex].messages[indexOfMessage].reactions.filter(
+              ({ reaction }) => !reaction.isOwnReaction
+            );
+        }
+      });
+    }
+  },
+  changeReaction: (messageId, reactionType, chatId) => {
+    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+
+    if (chatIndex !== undefined) {
+      set((state) => {
+        // Encuentra el index del Mensaje con id = messageId
+        let indexOfMessage = state.chats[chatIndex].messages.findIndex(
+          (message) => message.id === messageId
+        );
+
+        if (indexOfMessage) {
+          state.chats[chatIndex].messages[indexOfMessage].reactions =
+            state.chats[chatIndex].messages[indexOfMessage].reactions.map(
+              ({ reaction }) =>
+                !reaction.isOwnReaction
+                  ? { reaction }
+                  : { reaction: { ...reaction, type: reactionType } }
+            );
         }
       });
     }
