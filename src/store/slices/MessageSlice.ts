@@ -20,26 +20,29 @@ export const createMessageSlice: StateCreator<
       });
     }
   },
-  updateMessageStatus: (messageId) => {
-    // set(state => {
-    //   let indexOfNewMessage = state.chats[
-    //     indexOfCurrentChat
-    //   ].messages.findIndex((msg) => msg.id === message.id);
-    //   let newMessage =
-    //     state.chats[indexOfCurrentChat].messages[indexOfNewMessage];
-    // })
-    // switch (newMessage.status) {
-    //   case "idle":
-    //     newMessage.status = "send";
-    //     break;
-    //   case "send":
-    //     newMessage.status = "received";
-    //     break;
-    //   case "received":
-    //     newMessage.status = "read";
-    //     break;
-    //   default:
-    //     break;
+  updateMessageStatus: (messageId, chatId) => {
+    // Investigar una buena manera de implementar la acción
+    // const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+    // if (chatIndex !== undefined) {
+    //   set((state) => {
+    //     let messageIndex = state.chats[chatIndex].messages.findIndex(
+    //       (msg) => msg.id === messageId
+    //     );
+    //     switch (state.chats[chatIndex].messages[messageIndex].status) {
+    //       case "idle":
+    //         state.chats[chatIndex].messages[messageIndex].status = "send";
+    //         break;
+    //       case "send":
+    //         state.chats[chatIndex].messages[messageIndex].status = "received";
+    //         break;
+    //       case "received":
+    //         state.chats[chatIndex].messages[messageIndex].status = "read";
+    //         break;
+    //       default:
+    //         break;
+    //     }
+    //     state.chats[chatIndex].messages[messageIndex].status = "send";
+    //   });
     // }
   },
   deleteMessage: (messageId, chatId) => {
