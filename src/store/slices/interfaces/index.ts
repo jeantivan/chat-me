@@ -44,6 +44,8 @@ export interface CurrentChatIdSlice {
 export interface ChatSlice {
   pinChat: (chatId: string) => void;
   muteChat: (chatId: string) => void;
+  deleteChat: (chatId: string) => void;
+  archiveChat: (chatId: string) => void;
   getAllMessages: () => void;
 }
 

@@ -28,7 +28,7 @@ export const createChatSlice: StateCreator<
   },
   pinChat: (chatId) => {
     // Encuentra el index del chat en el array de chats
-    const indexOfChat = get().chats.findIndex((chat) => (chat.id = chatId));
+    const indexOfChat = get().chats.findIndex((chat) => chat.id === chatId);
 
     if (indexOfChat !== undefined) {
       set((state) => {
@@ -58,5 +58,24 @@ export const createChatSlice: StateCreator<
       }
     });
   },
-  // TODO: Implementar métodos
+  deleteChat: (chatId: string) => {
+    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+
+    if (chatIndex !== undefined) {
+      set((state) => {
+        state.chats.splice(chatIndex, 1);
+      });
+    }
+  },
+  archiveChat: (chatId: string) => {
+    // Encuentra el index del chat en el array de chats
+    const indexOfChat = get().chats.findIndex((chat) => chat.id === chatId);
+
+    if (indexOfChat !== undefined) {
+      set((state) => {
+        state.chats[indexOfChat].isArchived =
+          !state.chats[indexOfChat].isArchived;
+      });
+    }
+  },
 });
