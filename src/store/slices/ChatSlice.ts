@@ -38,7 +38,7 @@ export const createChatSlice: StateCreator<
   },
   muteChat: (chatId) => {
     // Encuentra el index del chat en el array de chats
-    const indexOfChat = get().chats.findIndex((chat) => (chat.id = chatId));
+    const indexOfChat = get().chats.findIndex((chat) => chat.id === chatId);
 
     if (indexOfChat !== undefined) {
       set((state) => {
