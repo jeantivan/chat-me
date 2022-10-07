@@ -4,12 +4,16 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
 import { useContactInfo } from "./ContactInfo";
-import { useCurrentChat } from "./CurrentChat";
+import useStore from "../store";
+import { ChatType } from "../types";
 
-export function ContactMenu() {
+export function ContactMenu({ chat }: { chat: ChatType }) {
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
-  const { setCurrentChat } = useCurrentChat();
   const [open, setOpen] = useState<boolean>(false);
+
+  const closeChat = useStore((state) => state.closeChat);
+  const muteChat = useStore((state) => state.muteChat);
+
   return (
     <MenuRoot open={open} onOpenChange={setOpen}>
       <MenuTrigger
@@ -36,12 +40,21 @@ export function ContactMenu() {
           onClick={() => {
             if (openContactInfo) setOpenContactInfo(false);
 
-            setCurrentChat(null);
+            closeChat();
           }}
         >
           Cerrar chat
         </MenuItem>
-        <MenuItem>Silenciar notificaciones</MenuItem>
+        <MenuItem
+          onClick={() => {
+            muteChat(chat.id);
+            setOpen(false);
+          }}
+        >
+          {!chat.isMuted
+            ? "Silenciar notificaciones"
+            : "Activar notificaciones"}
+        </MenuItem>
         <MenuItem>Mensajes temporales</MenuItem>
         <MenuItem>Vaciar mensajes</MenuItem>
         <MenuItem>Eliminar chat</MenuItem>
