@@ -36,7 +36,6 @@ export const createChatSlice: StateCreator<
       });
     }
   },
-
   muteChat: (chatId) => {
     // Encuentra el index del chat en el array de chats
     const indexOfChat = get().chats.findIndex((chat) => (chat.id = chatId));
@@ -46,6 +45,18 @@ export const createChatSlice: StateCreator<
         state.chats[indexOfChat].isMuted = !state.chats[indexOfChat].isMuted;
       });
     }
+  },
+  closeChat: () => {
+    set((state) => {
+      const indexOfChat = state.chats.findIndex(
+        (chat) => chat.id === state.currentChatId
+      );
+
+      if (indexOfChat >= 0) {
+        state.chats[indexOfChat].isOpenChat = false;
+        state.currentChatId = undefined;
+      }
+    });
   },
   // TODO: Implementar métodos
 });
