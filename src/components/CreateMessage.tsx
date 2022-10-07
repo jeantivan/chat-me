@@ -29,15 +29,14 @@ const createMessage = (content: string): MessageType => {
   };
 };
 
-export function CreateMessage() {
+export function CreateMessage({ chatId }: { chatId: string }) {
   const [content, setContent] = useState("");
   const addMessage = useStore((state) => state.addMessage);
-  const currentChatId = useStore((state) => state.currentChatId);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!content) return;
-    addMessage(createMessage(content), currentChatId!);
+    addMessage(createMessage(content), chatId);
     setContent("");
   };
 
