@@ -1,18 +1,18 @@
+import { useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
 import { ContactMenu } from "./ContactMenu";
 import { useContactInfo } from "./ContactInfo";
-import { useCurrentChat } from "./CurrentChat";
-import useStore from "../store";
+import { ChatType } from "../types";
 
-export function ChatHeader() {
+export function ChatHeader({ chat }: { chat: ChatType }) {
   const { setOpenContactInfo } = useContactInfo();
-  const chat = useStore((state) =>
-    state.chats.find((chat) => chat.id === state.currentChatId)
-  );
-
-  if (!chat) return null;
 
   const { name, picture } = chat.contact;
+
+  useEffect(() => {
+    setOpenContactInfo(false);
+  }, [chat]);
+
   return (
     <header className="chat-header bg-slate-100 dark:bg-slate-700 shadow-lg">
       <div className="flex items-center px-5 py-2">
