@@ -11,7 +11,7 @@ export function ChatHeader({ chat }: { chat: ChatType }) {
 
   useEffect(() => {
     setOpenContactInfo(false);
-  }, [chat]);
+  }, [chat.isOpenChat]);
 
   return (
     <header className="chat-header bg-slate-100 dark:bg-slate-700 shadow-lg">
@@ -40,7 +40,7 @@ export function ChatHeader({ chat }: { chat: ChatType }) {
             <BsSearch className="h-full w-full" />
           </div>
           <div className="ml-2">
-            <ContactMenu />
+            <ContactMenu chat={chat} />
           </div>
         </div>
       </div>
