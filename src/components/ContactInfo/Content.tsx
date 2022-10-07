@@ -94,6 +94,8 @@ export function ContactInfoContent({ chat }: ContactInfoContentProps) {
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
   const { name, phone, status, picture } = chat.contact;
 
+  const muteChat = useStore((state) => state.muteChat);
+
   return (
     <AnimatePresence>
       {openContactInfo && (
@@ -201,7 +203,12 @@ export function ContactInfoContent({ chat }: ContactInfoContentProps) {
                       <ItemIcon icon={BsBellFill} label="Icono de campana" />
                       <ItemText>Silenciar notificaciones</ItemText>
                       <ItemAction>
-                        <Switch />
+                        <Switch
+                          checked={chat.isMuted}
+                          onCheckedChange={() => {
+                            muteChat(chat.id);
+                          }}
+                        />
                       </ItemAction>
                     </Item>
                     <Item>
