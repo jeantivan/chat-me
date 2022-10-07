@@ -2,23 +2,21 @@ import { useRef, useEffect } from "react";
 import useStore from "../store";
 import { Message } from "./Message";
 import { Loader } from "./Loader";
+import { MessageType } from "../types";
 
-export function Messages() {
+interface MessagesProps {
+  messages: MessageType[];
+  shouldLoadOldMsg: boolean;
+}
+
+export function Messages({ messages, shouldLoadOldMsg }: MessagesProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const chat = useStore((state) =>
-    state.chats.find((chat) => chat.id === state.currentChatId)
-  );
-  const getAllMessages = useStore((state) => state.getAllMessages);
-
-  if (chat!.shouldLoadOldMsg) {
-    getAllMessages();
-  }
 
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
     }
-  }, [chat!.messages]);
+  }, [messages]);
 
   return (
     <div
@@ -26,9 +24,9 @@ export function Messages() {
       ref={containerRef}
     >
       <div className="py-5">
-        {chat!.shouldLoadOldMsg && <Loader />}
+        {shouldLoadOldMsg && <Loader />}
 
-        {chat!.messages.map((message, i, array) => (
+        {messages.map((message, i, array) => (
           <Message
             key={message.id}
             hasTail={i === 0 || message.isOwnMsg !== array[i - 1].isOwnMsg}
