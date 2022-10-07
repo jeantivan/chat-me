@@ -1,7 +1,12 @@
 import * as PrimitiveSwitch from "@radix-ui/react-switch";
 import cx from "classnames";
 
-export function Switch({ children, ...rest }: { children?: React.ReactNode }) {
+type SwitchType = React.ComponentPropsWithoutRef<typeof PrimitiveSwitch.Root>;
+
+export function Switch({
+  children,
+  ...rest
+}: { children?: React.ReactNode } & SwitchType) {
   return (
     <PrimitiveSwitch.Root
       {...rest}
