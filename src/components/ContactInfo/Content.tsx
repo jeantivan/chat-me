@@ -11,14 +11,14 @@ import {
   BsTrashFill,
 } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
-import { useMediaQuery, useEventListener } from "usehooks-ts";
+import { useMediaQuery } from "usehooks-ts";
 import { useContactInfo } from "./Context";
 import { Switch } from "../Switch";
 import { CustomIcon } from "../CustomIcon";
-import { ReactNode, useRef } from "react";
+import { ReactNode } from "react";
 import { IconType } from "react-icons";
-import { ContactType } from "../../types";
-import { useCurrentChat } from "../CurrentChat";
+import { ChatType } from "../../types";
+import useStore from "../../store";
 
 const Item = ({
   children,
@@ -85,22 +85,14 @@ const variants = {
   transition: { type: "tween", duration: 0.15 },
 };
 
-interface ContactInfoContentProps {}
+interface ContactInfoContentProps {
+  chat: ChatType;
+}
 
-export function ContactInfoContent(props: ContactInfoContentProps) {
+export function ContactInfoContent({ chat }: ContactInfoContentProps) {
   const isLg = useMediaQuery("(min-width: 1024px");
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
-  const { currentChat } = useCurrentChat();
-  const documentRef = useRef(document);
-  const onKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "Escape") setOpenContactInfo(false);
-  };
-
-  useEventListener("keyup", onKeyUp, documentRef);
-
-  if (!currentChat) return null;
-
-  const { name, phone, picture } = currentChat.contact;
+  const { name, phone, status, picture } = chat.contact;
 
   return (
     <AnimatePresence>
@@ -145,7 +137,7 @@ export function ContactInfoContent(props: ContactInfoContentProps) {
                         <img
                           className="bg-gray-400 w-full h-full rounded-full"
                           src={picture.large}
-                          alt={`Foto de perfil de ${name.fullName}`}
+                          alt={`Foto de perfil de ${name}`}
                         />
                       </div>
                     </div>
@@ -153,7 +145,7 @@ export function ContactInfoContent(props: ContactInfoContentProps) {
                       <h2
                         className={`text-2xl mb-2 dark:text-neutral-50 text-neutral-900`}
                       >
-                        {name.fullName}
+                        {name}
                       </h2>
                       <div className={`text-gray-500`}>{phone}</div>
                     </div>
@@ -165,7 +157,7 @@ export function ContactInfoContent(props: ContactInfoContentProps) {
                     <div
                       className={`text-lg dark:text-neutral-50 text-neutral-900`}
                     >
-                      Hola estoy usando ChatMe!
+                      {status}
                     </div>
                   </div>
                 </Section>
@@ -244,14 +236,14 @@ export function ContactInfoContent(props: ContactInfoContentProps) {
                   <div className="w-full">
                     <Item isDanger>
                       <ItemIcon icon={FaBan} label="Icono de bloquear" />
-                      <ItemText isDanger>Bloquear a {name.fullName}</ItemText>
+                      <ItemText isDanger>Bloquear a {name}</ItemText>
                     </Item>
                     <Item isDanger>
                       <ItemIcon
                         icon={BsHandThumbsDownFill}
                         label="Icono de no me gusta"
                       />
-                      <ItemText isDanger>Reportar a {name.fullName}</ItemText>
+                      <ItemText isDanger>Reportar a {name}</ItemText>
                     </Item>
                     <Item isDanger>
                       <ItemIcon icon={BsTrashFill} label="Icono de basura" />
