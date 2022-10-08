@@ -1,4 +1,8 @@
-import { BsChevronDown, BsPinAngleFill } from "react-icons/bs";
+import {
+  BsChevronDown,
+  BsPinAngleFill,
+  BsVolumeMuteFill,
+} from "react-icons/bs";
 import cx from "classnames";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,12 +18,48 @@ const buttonVariants = {
   show: { opacity: 1, x: "0%", transition: { duration: 0.05 } },
 };
 
+const PinedChat = () => (
+  <motion.div
+    initial={{ display: "none", scale: 0 }}
+    animate={{ display: "block", scale: 1 }}
+    exit={{ display: "none", scale: 0 }}
+    className="mr-1"
+  >
+    <CustomIcon
+      label="Chat fijado"
+      Icon={BsPinAngleFill}
+      className="w-4 h-4 inline-block dark:text-gray-400 text-gray-500"
+    />
+  </motion.div>
+);
+
+const MutedChat = () => (
+  <motion.div
+    initial={{ display: "none", scale: 0 }}
+    animate={{ display: "block", scale: 1 }}
+    exit={{ display: "none", scale: 0 }}
+    className="mr-1"
+  >
+    <CustomIcon
+      label="Chat fijado"
+      Icon={BsVolumeMuteFill}
+      className="w-5 h-5 inline-block dark:text-gray-400 text-gray-500"
+    />
+  </motion.div>
+);
+
 interface ChatItemProps {
   chat: ChatType;
 }
 
 export function ChatItem({ chat }: ChatItemProps) {
   const setCurrentChatId = useStore((state) => state.setCurrentChatId);
+  const { deleteChat, muteChat, pinChat, closeChat } = useStore((state) => ({
+    deleteChat: state.deleteChat,
+    muteChat: state.muteChat,
+    pinChat: state.pinChat,
+    closeChat: state.closeChat,
+  }));
   const { name, picture } = chat.contact;
   const { messages } = chat;
   const lastMessage = messages[messages.length - 1];
@@ -74,8 +114,11 @@ export function ChatItem({ chat }: ChatItemProps) {
           <div className="flex items-center mt-1 text-sm dark:text-gray-400 text-gray-500">
             <LastMessage lastMessage={lastMessage} />
 
-            <div>
+            <div className="flex items-center">
               <AnimatePresence>
+                {chat.isPinned && <PinedChat />}
+                {chat.isMuted && <MutedChat />}
+
                 {showButton && (
                   <motion.div
                     variants={buttonVariants}
@@ -85,7 +128,7 @@ export function ChatItem({ chat }: ChatItemProps) {
                     className="flex items-center"
                   >
                     <MenuTrigger
-                      className={cx("w-4 h-4 ml-2 text-gray-400", "z-10")}
+                      className={cx("w-4 h-4 text-gray-400", "z-10")}
                       onClick={(e) => {
                         e.stopPropagation();
                       }}
@@ -100,24 +143,40 @@ export function ChatItem({ chat }: ChatItemProps) {
                 )}
               </AnimatePresence>
             </div>
-
-            {/* 
-            TODO: Mostrar cuando la opción "pinear" este disponible en las opciones del chat
-                <CustomIcon
-                  label="Chat fijado"
-                  Icon={BsPinAngleFill}
-                  className="w-4 h-4 ml-2 dark:text-gray-400 text-gray-500"
-                /> */}
           </div>
-          <MenuContent align="start" sideOffset={0} className="w-56">
-            <MenuItem>Archivar chat</MenuItem>
-            <MenuItem>Silenciar notificaciones</MenuItem>
-            <MenuItem>Eliminar chat</MenuItem>
-            <MenuItem>Fijar chat</MenuItem>
-            <MenuItem>Marcar como leído</MenuItem>
-          </MenuContent>
         </div>
       </motion.div>
+      <MenuContent align="start" sideOffset={0} className="w-56">
+        <MenuItem>Archivar chat</MenuItem>
+        <MenuItem
+          onClick={() => {
+            setOpenMenu(false);
+            muteChat(chat.id);
+          }}
+        >
+          {!chat.isMuted
+            ? "Silenciar notificaciones"
+            : "Activar notificaciones"}
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setOpenMenu(false);
+            if (chat.isOpenChat) closeChat();
+            deleteChat(chat.id);
+          }}
+        >
+          Eliminar chat
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setOpenMenu(false);
+            pinChat(chat.id);
+          }}
+        >
+          {!chat.isPinned ? "Fijar chat" : "Desfijar chat"}
+        </MenuItem>
+        <MenuItem>Marcar como leído</MenuItem>
+      </MenuContent>
     </MenuRoot>
   );
 }
