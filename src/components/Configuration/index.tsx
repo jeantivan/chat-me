@@ -51,7 +51,7 @@ export function Configuration() {
         "before:w-full before:h-[112px]"
       )}
     >
-      <AnimatePresence exitBeforeEnter initial={false}>
+      <AnimatePresence mode="wait" initial={false}>
         {renderOption === "OPTIONS" ? (
           <Options
             key="OPTIONS"
