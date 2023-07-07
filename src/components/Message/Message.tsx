@@ -2,7 +2,7 @@ import { MessageContainer } from "./MessageContainer";
 import { MessageText } from "./MessageText";
 import { MessageMultimedia } from "./MessageMultimedia";
 import { MessageType, ReactionListType } from "../../types";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { MenuRoot } from "../Menu";
 import { MessageAudio } from "./MessageAudio";
 
@@ -12,7 +12,7 @@ type MessageProps = MessageType & {
   changeOwnReaction: (id: string, reactionType: ReactionListType) => void;
   deleteOwnReaction: (id: string) => void;
 };
-export function Message(props: MessageProps) {
+export const Message = memo(function MessageRoot(props: MessageProps) {
   const [openMenu, setOpenMenu] = useState(false);
   return (
     <MenuRoot open={openMenu} onOpenChange={setOpenMenu}>
@@ -29,4 +29,4 @@ export function Message(props: MessageProps) {
       </MessageContainer>
     </MenuRoot>
   );
-}
+});

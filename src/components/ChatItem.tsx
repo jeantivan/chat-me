@@ -4,7 +4,7 @@ import {
   BsVolumeMuteFill,
 } from "react-icons/bs";
 import cx from "classnames";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CustomIcon } from "./CustomIcon";
 
@@ -52,7 +52,7 @@ interface ChatItemProps {
   chat: ChatType;
 }
 
-export function ChatItem({ chat }: ChatItemProps) {
+export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
   const setCurrentChatId = useStore((state) => state.setCurrentChatId);
   const { deleteChat, muteChat, pinChat, closeChat } = useStore((state) => ({
     deleteChat: state.deleteChat,
@@ -179,4 +179,4 @@ export function ChatItem({ chat }: ChatItemProps) {
       </MenuContent>
     </MenuRoot>
   );
-}
+});
