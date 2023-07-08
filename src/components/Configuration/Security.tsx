@@ -1,10 +1,12 @@
 import * as Label from "@radix-ui/react-label";
-import { CheckBox } from "../CheckBox";
 import { motion } from "framer-motion";
 import { BsLockFill, BsShieldFill } from "react-icons/bs";
+
 import { Header } from "./Header";
 import { AnimateOptionChange } from "./AnimateOptionChange";
-import useStore from "../../store";
+
+import { CheckBox } from "@/components/CheckBox";
+import useStore from "@/lib/store";
 
 interface SecurityProps {
   goBack: () => void;

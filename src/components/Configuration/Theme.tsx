@@ -3,14 +3,14 @@ import * as Label from "@radix-ui/react-label";
 import cx from "classnames";
 import { ReactNode, useState } from "react";
 import { BsMoonStarsFill } from "react-icons/bs";
-import { useDarkMode } from "../DarkMode";
-import { CustomIcon } from "../CustomIcon";
+import { useDarkMode } from "@/components/DarkMode";
+import { CustomIcon } from "@/components/CustomIcon";
 import {
   DialogRoot,
   DialogTrigger,
   DialogTitle,
   DialogContent,
-} from "../Dialog";
+} from "@/components/Dialog";
 
 const Button: React.FC<{
   children: ReactNode;

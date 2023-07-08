@@ -1,6 +1,6 @@
 import { FaUserCircle } from "react-icons/fa";
 import { CustomIcon } from "./CustomIcon";
-import useStore from "../store";
+import useStore from "@/lib/store";
 
 export function UserImage() {
   const picture = useStore((state) => state.profile.picture);

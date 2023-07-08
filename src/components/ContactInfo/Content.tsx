@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+import { IconType } from "react-icons";
 import cx from "classnames";
 import { FaBan } from "react-icons/fa";
 import {
@@ -13,12 +15,10 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "usehooks-ts";
 import { useContactInfo } from "./Context";
-import { Switch } from "../Switch";
-import { CustomIcon } from "../CustomIcon";
-import { ReactNode } from "react";
-import { IconType } from "react-icons";
-import { ChatType } from "../../types";
-import useStore from "../../store";
+import { Switch } from "@/components/Switch";
+import { CustomIcon } from "@/components/CustomIcon";
+import { ChatType } from "@/lib/types";
+import useStore from "@/lib/store";
 
 const Item = ({
   children,

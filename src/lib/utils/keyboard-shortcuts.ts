@@ -1,4 +1,4 @@
-import { ShortCut } from "../../types";
+import { ShortCut } from "../types";
 export const KEYBOARD_SHORTCUTS: ShortCut[] = [
   {
     slug: "mark-as-read",

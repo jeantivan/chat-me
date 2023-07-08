@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { USER_PROFILE_KEY, INITIAL_USER } from "../utils/constants";
-import { changeLocalStorageUserInfo } from "../utils/changeLocalStorageUserInfo";
-import { UserType } from "../types";
+import { USER_PROFILE_KEY, INITIAL_USER } from "@/lib/utils/constants";
+import { changeLocalStorageUserInfo } from "@/lib/utils/changeLocalStorageUserInfo";
+import { UserType } from "@/lib/types";
 
 interface UserInfoInterface {
   user: UserType;

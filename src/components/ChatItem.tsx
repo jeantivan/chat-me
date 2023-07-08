@@ -6,12 +6,12 @@ import {
 import cx from "classnames";
 import { useEffect, useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CustomIcon } from "./CustomIcon";
 
+import { CustomIcon } from "./CustomIcon";
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { LastMessage } from "./LastMessage";
-import useStore from "../store";
-import { ChatType } from "../types";
+import useStore from "@/lib/store";
+import { ChatType } from "@/lib/types";
 
 const buttonVariants = {
   hidden: { opacity: 0, x: "100%", transition: { duration: 0.05 } },

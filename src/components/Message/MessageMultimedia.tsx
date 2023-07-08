@@ -6,11 +6,11 @@ import {
   BsPlayCircleFill,
   BsStarFill,
 } from "react-icons/bs";
-import { MessageType } from "../../types";
-import { secondsToMin } from "../../utils/secondsToMin";
-import { CustomIcon } from "../CustomIcon";
-import { MenuTrigger } from "../Menu";
-import { MessageStatus } from "../MessageStatus";
+import { CustomIcon } from "@/components/CustomIcon";
+import { MenuTrigger } from "@/components/Menu";
+import { MessageStatus } from "@/components/MessageStatus";
+import { MessageType } from "@/lib/types";
+import { secondsToMin } from "@/lib/utils/secondsToMin";
 
 const MessageMenuTrigger = ({ openMenu }: { openMenu: boolean }) => (
   <span

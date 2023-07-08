@@ -3,7 +3,7 @@ import { BsCameraFill } from "react-icons/bs";
 import { UserImage } from "./UserImage";
 import { CustomIcon } from "./CustomIcon";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import useStore from "../store";
+import useStore from "@/lib/store";
 
 const toMB = 1048576;
 

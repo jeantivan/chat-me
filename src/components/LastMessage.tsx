@@ -1,8 +1,8 @@
 import cx from "classnames";
 import { BsCameraFill, BsCameraVideoFill, BsMicFill } from "react-icons/bs";
-import { MessageType } from "../types";
 import { MessageStatus } from "./MessageStatus";
 import { CustomIcon } from "./CustomIcon";
+import { MessageType } from "@/lib/types";
 
 interface LastMessageProps {
   lastMessage: MessageType;

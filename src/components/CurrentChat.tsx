@@ -6,7 +6,7 @@ import {
   useContext,
   useState,
 } from "react";
-import { ChatType } from "../types";
+import { ChatType } from "@/lib/types";
 
 type CurrentChatContextType = {
   currentChat: ChatType | null;

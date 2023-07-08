@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
-import { EditableInput } from "../EditableInput";
-import { ChangeUserImage } from "../ChangeUserImage";
-import { useLeftDrawer } from "../LeftDrawer";
 import { Header } from "./Header";
 import { AnimateOptionChange } from "./AnimateOptionChange";
-import useStore from "../../store";
+
+import { EditableInput } from "@/components/EditableInput";
+import { ChangeUserImage } from "@/components/ChangeUserImage";
+import { useLeftDrawer } from "@/components/LeftDrawer";
+import useStore from "@/lib/store";
 
 interface ProfileProps {
   goBack?: () => void;

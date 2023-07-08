@@ -2,8 +2,8 @@ import { useRef } from "react";
 import { useEventListener } from "usehooks-ts";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLeftDrawer } from "./Context";
-import { Profile } from "../Configuration/Profile";
-import { Configuration } from "../Configuration";
+import { Profile } from "@/components/Configuration/Profile";
+import { Configuration } from "@/components/Configuration";
 
 const drawerVariants = {
   initial: {

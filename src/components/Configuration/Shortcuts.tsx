@@ -1,17 +1,17 @@
 import cx from "classnames";
 import { useState } from "react";
 import { BsKeyboardFill } from "react-icons/bs";
-import { CustomIcon } from "../CustomIcon";
-import { useDarkMode } from "../DarkMode";
+import { CustomIcon } from "@/components/CustomIcon";
+import { useDarkMode } from "@/components/DarkMode";
 import {
   DialogRoot,
   DialogTrigger,
   DialogClose,
   DialogTitle,
   DialogContent,
-} from "../Dialog";
-import { KEYBOARD_SHORTCUTS } from "../../utils/keyboard-shortcuts";
-import { ShortCut } from "../../types";
+} from "@/components/Dialog";
+import { KEYBOARD_SHORTCUTS } from "@/lib/utils/keyboard-shortcuts";
+import { ShortCut } from "@/lib/types";
 
 const Key = ({ text, isDarkMode }: { text: string; isDarkMode: boolean }) => (
   <div

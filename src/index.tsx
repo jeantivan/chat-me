@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { DarkModeProvider } from "./components";
+import { DarkModeProvider } from "@/components";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 

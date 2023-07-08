@@ -1,6 +1,6 @@
 import cx from "classnames";
-import { ReactionType } from "../../types";
-import { Reaction } from "../Reactions";
+import { ReactionType } from "@/lib/types";
+import { Reaction } from "@/components/Reactions";
 
 interface MessageReactionsProps {
   isOwnMsg: boolean;

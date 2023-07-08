@@ -1,5 +1,6 @@
 import cx from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import { Notifications } from "./Notifications";
 import { Profile } from "./Profile";
 import { Privacy } from "./Privacy";
@@ -8,10 +9,10 @@ import { Theme } from "./Theme";
 import { Background } from "./Background";
 import { SolInfo } from "./SolInfo";
 import { Help } from "./Help";
-import { useState } from "react";
-import { useLeftDrawer } from "../LeftDrawer";
-import { ConfigurationOptionsType } from "../../types";
 import { Options } from "./Options";
+
+import { useLeftDrawer } from "@/components/LeftDrawer";
+import { ConfigurationOptionsType } from "@/lib/types";
 
 const renderOptions: { [x: string]: (goBack: () => void) => JSX.Element } = {
   NOTIFICATIONS: (goBack) => (

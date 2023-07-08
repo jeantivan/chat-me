@@ -1,4 +1,4 @@
-import { ContactType, ChatType } from "../../types";
+import { ContactType, ChatType } from "../types";
 import { useQuery } from "react-query";
 import LAST_MESSAGES from "../../assets/mock-data/last-messages.json";
 

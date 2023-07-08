@@ -1,8 +1,9 @@
 import { useRef, useEffect } from "react";
-import useStore from "../store";
 import { Message } from "./Message";
 import { Loader } from "./Loader";
-import { MessageType } from "../types";
+
+import useStore from "@/lib/store";
+import { MessageType } from "@/lib/types";
 
 interface MessagesProps {
   messages: MessageType[];

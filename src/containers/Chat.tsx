@@ -7,8 +7,8 @@ import {
   CreateMessage,
   ContactInfoContent,
   ContactInfoProvider,
-} from "../components";
-import useStore from "../store";
+} from "@/components";
+import useStore from "@/lib/store";
 
 const Container = ({ children }: { children: ReactNode }) => (
   <ContactInfoProvider>

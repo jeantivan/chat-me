@@ -1,7 +1,7 @@
 import { orderBy, sortBy } from "lodash";
-import useStore from "../store";
-import { ChatType } from "../types";
 import { ChatItem } from "./ChatItem";
+import useStore from "@/lib/store";
+import { ChatType } from "@/lib/types";
 
 interface ChatListProps {
   chats?: ChatType[];

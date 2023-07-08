@@ -2,15 +2,15 @@ import * as PrimitivePopover from "@radix-ui/react-popover";
 import cx from "classnames";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { CustomIcon } from "./CustomIcon";
-import { ReactionListType, ReactionType } from "../types";
 
-import thumbsUp from "../assets/reactions-emojis/thumbs-up.svg";
-import heart from "../assets/reactions-emojis/heart.svg";
-import faceWithTearsOfJoy from "../assets/reactions-emojis/face-with-tears-of-joy.svg";
-import faceWithOpenMouth from "../assets/reactions-emojis/face-with-open-mouth.svg";
-import cryingFace from "../assets/reactions-emojis/crying-face.svg";
-import foldedHands from "../assets/reactions-emojis/folded-hands.svg";
-import useStore from "../store";
+import thumbsUp from "@/assets/reactions-emojis/thumbs-up.svg";
+import heart from "@/assets/reactions-emojis/heart.svg";
+import faceWithTearsOfJoy from "@/assets/reactions-emojis/face-with-tears-of-joy.svg";
+import faceWithOpenMouth from "@/assets/reactions-emojis/face-with-open-mouth.svg";
+import cryingFace from "@/assets/reactions-emojis/crying-face.svg";
+import foldedHands from "@/assets/reactions-emojis/folded-hands.svg";
+import useStore from "@/lib/store";
+import { ReactionListType, ReactionType } from "@/lib/types";
 
 const reactionsList = {
   "thumbs-up": thumbsUp,

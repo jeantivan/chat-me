@@ -9,14 +9,15 @@ import {
   BsShieldShaded,
 } from "react-icons/bs";
 import { ImFilePicture } from "react-icons/im";
-import { ConfigurationOptionsType } from "../../types";
-import { CustomIcon } from "../CustomIcon";
-import { UserImage } from "../UserImage";
 import { Header } from "./Header";
 import { Shortcuts } from "./Shortcuts";
 import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Theme } from "./Theme";
-import useStore from "../../store";
+
+import { CustomIcon } from "@/components/CustomIcon";
+import { UserImage } from "@/components/UserImage";
+import useStore from "@/lib/store";
+import { ConfigurationOptionsType } from "@/lib/types";
 
 const User = (props: any) => {
   const { name, status } = useStore((state) => state.profile);

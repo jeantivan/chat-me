@@ -1,12 +1,16 @@
 import cx from "classnames";
 import { ReactNode, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
-import { MenuContent, MenuItem } from "../Menu";
-import { Reactions, ReactionsRoot, ReactionsTrigger } from "../Reactions";
-import { DeleteMessage } from "./DeleteMessage";
-import { MessageType, ReactionListType } from "../../types";
+import { MenuContent, MenuItem } from "@/components/Menu";
 import { MessageReactions } from "./MessageReactions";
-import useStore from "../../store";
+import { DeleteMessage } from "./DeleteMessage";
+import {
+  Reactions,
+  ReactionsRoot,
+  ReactionsTrigger,
+} from "@/components/Reactions";
+import useStore from "@/lib/store";
+import { MessageType, ReactionListType } from "@/lib/types";
 
 const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span

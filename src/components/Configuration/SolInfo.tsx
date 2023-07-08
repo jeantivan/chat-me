@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { BsFileEarmarkTextFill } from "react-icons/bs";
-import { CustomIcon } from "../CustomIcon";
 import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Header } from "./Header";
+import { CustomIcon } from "@/components/CustomIcon";
 
 interface SolInfoProps {
   goBack: () => void;

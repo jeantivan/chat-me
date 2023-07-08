@@ -1,9 +1,9 @@
 import cx from "classnames";
-import { MessageStatus } from "../MessageStatus";
-import { MessageType } from "../../types";
-import { CustomIcon } from "../CustomIcon";
 import { BsChevronDown, BsStarFill } from "react-icons/bs";
-import { MenuTrigger } from "../Menu";
+import { MessageStatus } from "@/components/MessageStatus";
+import { CustomIcon } from "@/components/CustomIcon";
+import { MenuTrigger } from "@/components/Menu";
+import { MessageType } from "@/lib/types";
 
 const MessageMenuTrigger = ({
   isOwnMsg,

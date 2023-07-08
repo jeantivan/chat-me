@@ -1,10 +1,10 @@
 import { MessageContainer } from "./MessageContainer";
 import { MessageText } from "./MessageText";
 import { MessageMultimedia } from "./MessageMultimedia";
-import { MessageType, ReactionListType } from "../../types";
 import { memo, useState } from "react";
-import { MenuRoot } from "../Menu";
 import { MessageAudio } from "./MessageAudio";
+import { MenuRoot } from "@/components/Menu";
+import { MessageType, ReactionListType } from "@/lib/types";
 
 type MessageProps = MessageType & {
   hasTail: boolean;

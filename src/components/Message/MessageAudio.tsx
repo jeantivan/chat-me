@@ -1,12 +1,12 @@
 import cx from "classnames";
 import { BsChevronDown, BsPlayFill, BsStarFill } from "react-icons/bs";
-import { CustomIcon } from "../CustomIcon";
-import { MessageType } from "../../types";
 
-import { MenuTrigger } from "../Menu";
-import { MessageStatus } from "../MessageStatus";
-import { secondsToMin } from "../../utils/secondsToMin";
-import useStore from "../../store";
+import { CustomIcon } from "@/components/CustomIcon";
+import { MenuTrigger } from "@/components/Menu";
+import { MessageStatus } from "@/components/MessageStatus";
+import { secondsToMin } from "@/lib/utils/secondsToMin";
+import useStore from "@/lib/store";
+import { MessageType } from "@/lib/types";
 
 const MessageMenuTrigger = ({
   isOwnMsg,

@@ -9,10 +9,10 @@ import {
   AlertDialogCancel,
   AlertDialogTitle,
   AlertDialogDescription,
-} from "../AlertDialog";
-import { MenuItem } from "../Menu";
-import { useDarkMode } from "../DarkMode";
-import useStore from "../../store";
+} from "@/components/AlertDialog";
+import { MenuItem } from "@/components/Menu";
+import { useDarkMode } from "@/components/DarkMode";
+import useStore from "@/lib/store";
 
 const Button: React.FC<{
   children: ReactNode;

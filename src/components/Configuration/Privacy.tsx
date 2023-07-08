@@ -1,12 +1,12 @@
 import * as Separator from "@radix-ui/react-separator";
 import * as Label from "@radix-ui/react-label";
 import { FiChevronRight } from "react-icons/fi";
-import { CustomIcon } from "../CustomIcon";
-import { CheckBox } from "../CheckBox";
-import { Header } from "./Header";
 
+import { Header } from "./Header";
 import { AnimateOptionChange } from "./AnimateOptionChange";
 
+import { CustomIcon } from "@/components/CustomIcon";
+import { CheckBox } from "@/components/CheckBox";
 interface PrivacyProps {
   goBack: () => void;
 }

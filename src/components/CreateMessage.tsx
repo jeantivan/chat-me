@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { IoSend } from "react-icons/io5";
 import { v4 as uuid } from "uuid";
-import useStore from "../store";
-import { MessageType } from "../types";
 import { CustomIcon } from "./CustomIcon";
+import useStore from "@/lib/store";
+import { MessageType } from "@/lib/types";
 
 const getMessageHour = () => {
   const date = new Date();

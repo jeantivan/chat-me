@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { CustomIcon } from "../CustomIcon";
 import { BsArrowLeft } from "react-icons/bs";
+import { CustomIcon } from "@/components/CustomIcon";
 
 const headerVariants = {
   transition: { type: "tween", delay: 0.15 },

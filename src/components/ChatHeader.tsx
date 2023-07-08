@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
 import { ContactMenu } from "./ContactMenu";
 import { useContactInfo } from "./ContactInfo";
-import { ChatType } from "../types";
+import { ChatType } from "@/lib/types";
 
 export function ChatHeader({ chat }: { chat: ChatType }) {
   const { setOpenContactInfo } = useContactInfo();

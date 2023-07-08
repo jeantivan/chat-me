@@ -4,7 +4,7 @@ import {
   BsFileEarmarkTextFill,
   BsPeopleFill,
 } from "react-icons/bs";
-import { CustomIcon } from "../CustomIcon";
+import { CustomIcon } from "@/components/CustomIcon";
 import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Header } from "./Header";
 

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { CheckBox } from "../CheckBox";
 import { Header } from "./Header";
 import { AnimateOptionChange } from "./AnimateOptionChange";
-import useStore from "../../store";
+import useStore from "@/lib/store";
 
 interface NotificationProps {
   goBack: () => void;

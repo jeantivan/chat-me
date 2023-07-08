@@ -4,8 +4,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { MenuRoot, MenuTrigger, MenuItem, MenuContent } from "./Menu";
 import { CustomIcon } from "./CustomIcon";
 import { useContactInfo } from "./ContactInfo";
-import useStore from "../store";
-import { ChatType } from "../types";
+import useStore from "@/lib/store";
+import { ChatType } from "@/lib/types";
 
 export function ContactMenu({ chat }: { chat: ChatType }) {
   const { openContactInfo, setOpenContactInfo } = useContactInfo();
