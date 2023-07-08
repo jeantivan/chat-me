@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
-import { getContacts } from "../../lib/utils/getContacts";
 import { ContactsSlice, StoreSlice } from "./interfaces";
+import { getContacts } from "@/lib/utils/getContacts";
 
 export const createContactsSlice: StateCreator<
   StoreSlice,

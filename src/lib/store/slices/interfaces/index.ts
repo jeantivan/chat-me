@@ -4,7 +4,7 @@ import {
   ChatType,
   MessageType,
   ReactionListType,
-} from "./../../../types";
+} from "@/lib/types";
 
 // Interface para todos los Contactos
 export interface ContactsSlice {

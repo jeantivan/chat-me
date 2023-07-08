@@ -1,6 +1,6 @@
-import { UserType } from "./../../types";
 import { StateCreator } from "zustand";
 import { ProfileSlice, StoreSlice } from "./interfaces";
+import { UserType } from "@/lib/types";
 
 const initialProfile: UserType = {
   id: "348441f8-c083-4cd1-9af3-59ca8cab0917",

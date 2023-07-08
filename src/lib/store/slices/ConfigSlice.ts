@@ -1,6 +1,6 @@
-import { ConfigType } from "./../../types";
 import { StateCreator } from "zustand";
 import { ConfigSlice, StoreSlice } from "./interfaces";
+import { ConfigType } from "@/lib/types";
 
 const initialConfig: ConfigType = {
   notifications: {

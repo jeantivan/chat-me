@@ -1,6 +1,6 @@
-import { ReactionType } from "./../../types";
 import { StateCreator } from "zustand";
 import { MessageSlice, StoreSlice } from "./interfaces";
+import { ReactionType } from "@/lib/types";
 
 export const createMessageSlice: StateCreator<
   StoreSlice,
