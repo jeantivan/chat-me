@@ -1,4 +1,4 @@
-import { getChats } from "./../../utils/getChats";
+import { getChats } from "../../lib/utils/getChats";
 import { StateCreator } from "zustand";
 import { ChatsSlice, StoreSlice } from "./interfaces";
 

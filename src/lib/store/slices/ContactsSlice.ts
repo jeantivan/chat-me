@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { getContacts } from "../../utils/getContacts";
+import { getContacts } from "../../lib/utils/getContacts";
 import { ContactsSlice, StoreSlice } from "./interfaces";
 
 export const createContactsSlice: StateCreator<

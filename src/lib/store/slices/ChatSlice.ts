@@ -1,4 +1,4 @@
-import { getRestMsg } from "./../../utils/getRestMsg";
+import { getRestMsg } from "../../lib/utils/getRestMsg";
 import { StateCreator } from "zustand";
 import { ChatSlice, StoreSlice } from "./interfaces";
 
