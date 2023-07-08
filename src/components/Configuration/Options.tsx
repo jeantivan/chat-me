@@ -59,7 +59,7 @@ const Item = ({
   >
     <span className="w-14 flex items-center justify-center">
       <span className="w-5 h-5 text-slate-400">
-        <CustomIcon Icon={icon} label={label} />
+        <CustomIcon icon={icon} label={label} />
       </span>
     </span>
 

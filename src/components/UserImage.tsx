@@ -8,7 +8,7 @@ export function UserImage() {
   return !picture.medium ? (
     <CustomIcon
       label="Avatar"
-      Icon={FaUserCircle}
+      icon={FaUserCircle}
       className="w-full h-full text-gray-400"
     />
   ) : (

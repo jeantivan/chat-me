@@ -60,7 +60,7 @@ export function Fab({ label, icon, bgColor, beforeBgColor }: FabInterface) {
           bgColor
         )}
       >
-        <CustomIcon className="w-5 h-5" label={label} Icon={icon} />
+        <CustomIcon className="w-5 h-5" label={label} icon={icon} />
       </button>
       <AnimatePresence>
         {showTooltip && (

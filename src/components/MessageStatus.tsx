@@ -23,7 +23,7 @@ export function MessageStatus({ status, className }: MessageStatusProps) {
 
   return (
     <CustomIcon
-      Icon={icon}
+      icon={icon}
       label={`Mensaje ${label}`}
       className={cx(className, "ml-1 inline-block", {
         "w-4 p-[1px]": status === "idle",

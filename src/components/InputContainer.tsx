@@ -8,7 +8,7 @@ export function InputContainer({ children }: { children: ReactNode }) {
     <div className="input-container bg-slate-100 dark:bg-slate-700 h-full py-2 px-6 flex">
       <div className="flex items-center w-full">
         <div className="w-10 h-10 p-2 rounded-full dark:text-slate-400 text-slate-600">
-          <CustomIcon Icon={BsEmojiSmile} label="Mostrar emojis" />
+          <CustomIcon icon={BsEmojiSmile} label="Mostrar emojis" />
         </div>
         <div className="ml-2 flex items-center">
           <AttachFilesMenu />

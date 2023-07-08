@@ -34,7 +34,7 @@ export function LastMessage({ lastMessage }: LastMessageProps) {
       <div className={cx("flex grow items-center min-w-[0]")}>
         {messageIcon && (
           <CustomIcon
-            Icon={messageIcon}
+            icon={messageIcon}
             label="Tipo de mensaje"
             className="w-4 h-4 mr-1.5 inline-block shrink-0"
           />

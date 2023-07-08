@@ -20,7 +20,7 @@ export function UserMenu() {
           { "dark:bg-gray-600 bg-gray-200": open }
         )}
       >
-        <CustomIcon Icon={BsThreeDotsVertical} label="Abrir menu" />
+        <CustomIcon icon={BsThreeDotsVertical} label="Abrir menu" />
       </MenuTrigger>
       <MenuContent align="end" className="w-56">
         <MenuItem>Nuevo grupo</MenuItem>

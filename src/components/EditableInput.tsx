@@ -64,14 +64,14 @@ export function EditableInput({
                   setIsEditing(false);
                 }}
               >
-                <CustomIcon Icon={BsX} label="Cancelar" />
+                <CustomIcon icon={BsX} label="Cancelar" />
               </button>
               <button
                 className="w-6 h-6 inline-flex items-center justify-center rounded-sm text-white border border-emerald-500 bg-emerald-500"
                 title="Guardar cambios"
                 onClick={handleSave}
               >
-                <CustomIcon Icon={BsCheck} label="Guardar cambios" />
+                <CustomIcon icon={BsCheck} label="Guardar cambios" />
               </button>
             </div>
           </>
@@ -87,7 +87,7 @@ export function EditableInput({
                 setIsEditing(true);
               }}
             >
-              <CustomIcon Icon={BsPencilFill} label="Edit Icon" />
+              <CustomIcon icon={BsPencilFill} label="Edit Icon" />
             </button>
           </>
         )}

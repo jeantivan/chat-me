@@ -64,7 +64,7 @@ export const MenuIcon = ({
     )}
     {...rest}
   >
-    <CustomIcon Icon={Icon} label={label} />
+    <CustomIcon icon={Icon} label={label} />
   </span>
 );
 

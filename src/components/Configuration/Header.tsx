@@ -35,7 +35,7 @@ export function Header({ children, goBack }: HeaderProps) {
         className="px-4 flex items-center"
       >
         <button onClick={goBack} className="w-7 h-7 text-neutral-50 mr-4">
-          <CustomIcon Icon={BsArrowLeft} label="Volver atrás" />
+          <CustomIcon icon={BsArrowLeft} label="Volver atrás" />
         </button>
         <h2 id="left-drawer-title" className="text-neutral-50 text-xl">
           {children}

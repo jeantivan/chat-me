@@ -39,7 +39,7 @@ export const ReactionsTrigger = () => (
       "rounded-full p-1.5 w-8 h-8"
     )}
   >
-    <CustomIcon Icon={BsEmojiSmileFill} label="Reaccionar al mensaje" />
+    <CustomIcon icon={BsEmojiSmileFill} label="Reaccionar al mensaje" />
   </PrimitivePopover.Trigger>
 );
 
