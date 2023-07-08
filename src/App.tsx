@@ -1,5 +1,5 @@
 import "./App.css";
-import { Main, HeaderAndChatList, Chat } from "./containers";
+import { Main, HeaderAndChatList, Chat } from "@/containers";
 
 function App() {
   return (

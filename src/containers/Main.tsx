@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import cx from "classnames";
-import { useDarkMode } from "../components";
+import { useDarkMode } from "@/components";
 
 export function Main({ children }: { children: ReactNode }) {
   const { isDarkMode } = useDarkMode();
