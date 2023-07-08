@@ -1,5 +1,5 @@
-import { MessageType } from "./../types";
-import MESSAGES from "../assets/mock-data/messages.json";
+import { MessageType } from "../../types";
+import MESSAGES from "../../assets/mock-data/messages.json";
 import { shuffle } from "lodash";
 let example = {
   id: "cfbeb39d-bae3-47a8-be05-525335de3ce8",

@@ -1,5 +1,5 @@
-import { MessageType } from "../types";
-import LAST_MESSAGES from "../assets/mock-data/last-messages.json";
+import { MessageType } from "../../types";
+import LAST_MESSAGES from "../../assets/mock-data/last-messages.json";
 
 export const getRandomMsg = (): MessageType =>
   LAST_MESSAGES[
