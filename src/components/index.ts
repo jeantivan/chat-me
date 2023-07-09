@@ -25,3 +25,4 @@ export {
 export { CreateMessage } from "./CreateMessage";
 export { Message } from "./Message";
 export { useCurrentChat, CurrentChatProvider } from "./CurrentChat";
+export { MessageInput } from "./MessageInput";
