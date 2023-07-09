@@ -2,9 +2,8 @@ import { ReactNode } from "react";
 import {
   Welcome,
   Messages,
-  InputContainer,
   ChatHeader,
-  CreateMessage,
+  MessageInput,
   ContactInfoContent,
   ContactInfoProvider,
 } from "@/components";
@@ -38,9 +37,7 @@ export function Chat() {
               messages={chat.messages}
               shouldLoadOldMsg={chat.shouldLoadOldMsg}
             />
-            <InputContainer>
-              <CreateMessage chatId={chat.id} />
-            </InputContainer>
+            <MessageInput key={chat.id} />
           </div>
           <ContactInfoContent chat={chat} />
         </>
