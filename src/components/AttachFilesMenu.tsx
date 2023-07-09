@@ -12,6 +12,7 @@ import { useState } from "react";
 import { CustomIcon } from "./CustomIcon";
 import { Fab } from "./Fab";
 import { motion, AnimatePresence } from "framer-motion";
+import { Paperclip } from "lucide-react";
 
 const attachOptions = [
   {
@@ -77,9 +78,9 @@ export function AttachFilesMenu() {
         )}
       >
         <CustomIcon
-          className="block rotate-45"
+          className="block"
           label="Adjuntar archivos"
-          Icon={BsPaperclip}
+          icon={Paperclip}
         />
       </Popover.Trigger>
       <AnimatePresence>
