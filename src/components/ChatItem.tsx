@@ -27,7 +27,7 @@ const PinedChat = () => (
   >
     <CustomIcon
       label="Chat fijado"
-      Icon={BsPinAngleFill}
+      icon={BsPinAngleFill}
       className="w-4 h-4 inline-block dark:text-gray-400 text-gray-500"
     />
   </motion.div>
@@ -42,7 +42,7 @@ const MutedChat = () => (
   >
     <CustomIcon
       label="Chat fijado"
-      Icon={BsVolumeMuteFill}
+      icon={BsVolumeMuteFill}
       className="w-5 h-5 inline-block dark:text-gray-400 text-gray-500"
     />
   </motion.div>
@@ -134,7 +134,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
                       }}
                     >
                       <CustomIcon
-                        Icon={BsChevronDown}
+                        icon={BsChevronDown}
                         label="Abrir menu"
                         iconClassName="stroke-1"
                       />
