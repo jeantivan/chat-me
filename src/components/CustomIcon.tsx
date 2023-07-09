@@ -1,4 +1,5 @@
 import * as AccessibleIcon from "@radix-ui/react-accessible-icon";
+import cx from "classnames";
 import { IconType } from "react-icons";
 import type { LucideIcon } from "lucide-react";
 
@@ -16,11 +17,11 @@ export function CustomIcon({
   className,
   ...rest
 }: CustomIconProps) {
-  const Icon = icon;
+  const Icon = icon || "svg";
   return (
     <span className={className} {...rest}>
       <AccessibleIcon.Root label={`Icono ${label}`}>
-        <Icon className={`w-full h-full text-inherit ${iconClassName}`} />
+        <Icon className={cx("w-full h-full", iconClassName)} />
       </AccessibleIcon.Root>
     </span>
   );
