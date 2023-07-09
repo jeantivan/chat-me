@@ -24,7 +24,7 @@ export function ContactMenu({ chat }: { chat: ChatType }) {
         )}
         title="Abrir menu"
       >
-        <CustomIcon Icon={BsThreeDotsVertical} label="Abrir menu" />
+        <CustomIcon icon={BsThreeDotsVertical} label="Abrir menu" />
       </MenuTrigger>
       <MenuContent align="end" className="w-56">
         <MenuItem
