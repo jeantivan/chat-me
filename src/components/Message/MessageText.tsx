@@ -29,7 +29,7 @@ const MessageMenuTrigger = ({
   >
     <MenuTrigger className={cx("text-lg text-gray-400")}>
       <CustomIcon
-        Icon={BsChevronDown}
+        icon={BsChevronDown}
         label="Mostrar menu"
         className="inline-block w-5"
         iconClassName="stroke-1"
@@ -73,7 +73,7 @@ export function MessageText({
         <span className="text-xs flex items-center">
           {isFavMsg && (
             <CustomIcon
-              Icon={BsStarFill}
+              icon={BsStarFill}
               className="text-gray-400 self-center inline-block"
               label="Fav Msg"
             />

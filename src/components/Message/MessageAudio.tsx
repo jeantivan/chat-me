@@ -32,7 +32,7 @@ const MessageMenuTrigger = ({
   >
     <MenuTrigger className={cx("text-gray-400")}>
       <CustomIcon
-        Icon={BsChevronDown}
+        icon={BsChevronDown}
         label="Mostrar menu"
         className="inline-block w-5"
         iconClassName="stroke-1"
@@ -92,7 +92,7 @@ export function MessageAudio({
         </div>
         <div className="flex-1 flex">
           <button className="outline-none w-10 text-gray-400 my-2">
-            <CustomIcon Icon={BsPlayFill} label="Reproducir audio" />
+            <CustomIcon icon={BsPlayFill} label="Reproducir audio" />
           </button>
           <div className="flex-1 pl-2 flex items-center relative overflow-hidden">
             <span className="w-2.5 h-2.5 rounded-full bg-cyan-500" />
@@ -106,7 +106,7 @@ export function MessageAudio({
                 <span className="ml-auto">
                   {isFavMsg && (
                     <CustomIcon
-                      Icon={BsStarFill}
+                      icon={BsStarFill}
                       className="text-gray-400 self-center inline-block mr-0.5"
                       label="Fav Msg"
                     />

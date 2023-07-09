@@ -26,7 +26,7 @@ const MessageMenuTrigger = ({ openMenu }: { openMenu: boolean }) => (
   >
     <MenuTrigger className={cx("text-lg text-gray-300")}>
       <CustomIcon
-        Icon={BsChevronDown}
+        icon={BsChevronDown}
         label="Mostrar menu"
         className="inline-block w-5"
         iconClassName="stroke-1"
@@ -50,7 +50,7 @@ const VideoDuration = ({ duration }: { duration: number }) => (
   <span className="text-neutral-100 ml-2 mr-auto flex">
     <CustomIcon
       className="inline-block w-3"
-      Icon={BsCameraVideoFill}
+      icon={BsCameraVideoFill}
       label="Video cámara"
     />
     <span className="ml-2">{secondsToMin(duration)}</span>
@@ -91,7 +91,7 @@ export function MessageMultimedia(props: MessageMultimediaProps) {
                 <span className="ml-auto">
                   {isFavMsg && (
                     <CustomIcon
-                      Icon={BsStarFill}
+                      icon={BsStarFill}
                       className="text-neutral-100 self-center inline-block mr-0.5"
                       label="Fav Msg"
                     />

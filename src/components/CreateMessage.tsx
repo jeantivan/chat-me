@@ -59,7 +59,7 @@ export function CreateMessage({ chatId }: { chatId: string }) {
           disabled={!Boolean(content)}
           className="w-7 h-7 dark:disabled:text-slate-500 disabled:text-slate-600 text-emerald-500 p-0.5"
         >
-          <CustomIcon Icon={IoSend} label="Enviar mensaje" />
+          <CustomIcon icon={IoSend} label="Enviar mensaje" />
         </button>
       </div>
     </form>
