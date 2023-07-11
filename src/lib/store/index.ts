@@ -10,6 +10,7 @@ import {
   createCurrentChatIdSlice,
   createChatSlice,
   createMessageSlice,
+  createLeftDrawerSlice,
 } from "./slices";
 
 const useStore = create<StoreSlice>()(
@@ -23,6 +24,7 @@ const useStore = create<StoreSlice>()(
         ...createCurrentChatIdSlice(...a),
         ...createChatSlice(...a),
         ...createMessageSlice(...a),
+        ...createLeftDrawerSlice(...a),
       })),
       {
         name: "zustand-chat-me",
