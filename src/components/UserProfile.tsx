@@ -1,23 +1,18 @@
-// import { useState } from "react";
-// import * as Dialog from "@radix-ui/react-dialog";
 import { BsPlusCircle, BsChatLeftTextFill } from "react-icons/bs";
 import { UserMenu } from "./UserMenu";
 import { UserImage } from "./UserImage";
-// import { useDarkMode } from "./DarkMode";
-// import { Drawer } from "./Drawer";
-// import { Profile } from "./Configuration/Profile";
 import { CustomIcon } from "./CustomIcon";
-import { useLeftDrawer } from "./LeftDrawer";
+import useStore from "@/lib/store";
 
 export function UserProfile() {
-  const { openLeftDrawerAndRenderContent } = useLeftDrawer();
+  const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
 
   return (
     <div className="user-profile bg-slate-100 dark:bg-slate-700 border-solid border-r border-slate-200 dark:border-slate-600 px-3 py-2 flex">
       <div className="flex items-center flex-1">
         <button
           onClick={() => {
-            openLeftDrawerAndRenderContent("USER_PROFILE");
+            leftDrawerGoTo("PROFILE");
           }}
           className="w-10 h-10 overflow-hidden rounded-full mr-3"
         >
