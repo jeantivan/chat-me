@@ -100,7 +100,7 @@ export type ShortCut = {
   keys: string[];
 };
 
-export type ConfigurationOptionsType =
+export type LeftDrawerContentOptions =
   | "PROFILE"
   | "NOTIFICATIONS"
   | "PRIVACY"
@@ -110,4 +110,5 @@ export type ConfigurationOptionsType =
   | "SOL_INFO"
   | "HELP"
   | "OPTIONS"
-  | "SHORTCUTS";
+  | "SHORTCUTS"
+  | "NEW_CHAT";
