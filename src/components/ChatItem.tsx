@@ -115,10 +115,9 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
             <LastMessage lastMessage={lastMessage} />
 
             <div className="flex items-center">
+              {chat.isPinned && <PinedChat />}
+              {chat.isMuted && <MutedChat />}
               <AnimatePresence>
-                {chat.isPinned && <PinedChat />}
-                {chat.isMuted && <MutedChat />}
-
                 {showButton && (
                   <motion.div
                     variants={buttonVariants}
