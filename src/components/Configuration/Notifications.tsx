@@ -1,20 +1,16 @@
 import * as Label from "@radix-ui/react-label";
 import { motion } from "framer-motion";
-import { CheckBox } from "../CheckBox";
 import { Header } from "./Header";
-import { AnimateOptionChange } from "./AnimateOptionChange";
+import { CheckBox } from "@/components/CheckBox";
 import useStore from "@/lib/store";
 
-interface NotificationProps {
-  goBack: () => void;
-}
-
-export function Notifications({ goBack }: NotificationProps) {
+export function Notifications() {
+  const close = useStore((state) => state.close);
   const notifications = useStore((state) => state.config.notifications);
   const toggleNotification = useStore((state) => state.toggleNotifications);
   return (
-    <AnimateOptionChange>
-      <Header goBack={goBack}>Notificaciones</Header>
+    <>
+      <Header goBack={close}>Notificaciones</Header>
       <motion.div
         initial={{ x: 20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -59,7 +55,7 @@ export function Notifications({ goBack }: NotificationProps) {
               id="alerts"
               checked={notifications.alerts}
               onCheckedChange={() => {
-                toggleNotification("ALERTS");
+                //toggleNotification("ALERTS");
               }}
             />
 
@@ -105,6 +101,6 @@ export function Notifications({ goBack }: NotificationProps) {
           </div>
         </div>
       </motion.div>
-    </AnimateOptionChange>
+    </>
   );
 }

@@ -2,7 +2,7 @@ import * as RadioGroup from "@radix-ui/react-radio-group";
 import * as Label from "@radix-ui/react-label";
 import cx from "classnames";
 import { ReactNode, useState } from "react";
-import { BsMoonStarsFill } from "react-icons/bs";
+import { MoonStar } from "lucide-react";
 import { useDarkMode } from "@/components/DarkMode";
 import { CustomIcon } from "@/components/CustomIcon";
 import {
@@ -135,15 +135,15 @@ export function Theme() {
           !isDarkMode ? "hover:bg-slate-50" : "hover:bg-slate-700"
         }`}
       >
-        <span className="w-14 flex items-center justify-center">
+        <span className="w-20 flex items-center justify-center">
           <CustomIcon
             label="Atajos del teclado"
-            Icon={BsMoonStarsFill}
-            className="w-5 h-5 text-slate-400"
+            icon={MoonStar}
+            className="w-6 h-6 text-slate-400"
           />
         </span>
         <span
-          className={`py-5 pl-4 flex-1 border-b text-left text-lg ${
+          className={`py-5 pr-4 flex-1 border-b text-left text-lg font-medium ${
             !isDarkMode
               ? "text-black border-slate-200"
               : "text-slate-50 border-slate-700 "

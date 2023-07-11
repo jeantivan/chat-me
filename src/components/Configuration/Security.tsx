@@ -3,23 +3,19 @@ import { motion } from "framer-motion";
 import { BsLockFill, BsShieldFill } from "react-icons/bs";
 
 import { Header } from "./Header";
-import { AnimateOptionChange } from "./AnimateOptionChange";
 
 import { CheckBox } from "@/components/CheckBox";
 import useStore from "@/lib/store";
 
-interface SecurityProps {
-  goBack: () => void;
-}
-
-export function Security({ goBack }: SecurityProps) {
+export function Security() {
   const { toggleSecurityNoti, showSecurityNoti } = useStore((state) => ({
     showSecurityNoti: state.config.security.showSecurityNoti,
     toggleSecurityNoti: state.toggleSecurityNoti,
   }));
+  const close = useStore((state) => state.close);
   return (
-    <AnimateOptionChange>
-      <Header goBack={goBack}>Seguridad</Header>
+    <>
+      <Header goBack={close}>Seguridad</Header>
       <div className="p-6 flex flex-col">
         <div className="mx-auto flex justify-center mb-8">
           <motion.div
@@ -90,6 +86,6 @@ export function Security({ goBack }: SecurityProps) {
           </div>
         </motion.div>
       </div>
-    </AnimateOptionChange>
+    </>
   );
 }

@@ -1,27 +1,22 @@
-import { Dispatch, SetStateAction } from "react";
 import { IconType } from "react-icons";
 import {
-  BsBellFill,
-  BsFileEarmarkTextFill,
-  BsLockFill,
-  BsMoonStarsFill,
-  BsQuestionCircleFill,
-  BsShieldShaded,
-} from "react-icons/bs";
-import { ImFilePicture } from "react-icons/im";
+  Bell,
+  Lock,
+  ShieldCheck,
+  Paintbrush,
+  FileText,
+  HelpCircle,
+} from "lucide-react";
 import { Header } from "./Header";
 import { Shortcuts } from "./Shortcuts";
-import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Theme } from "./Theme";
 
 import { CustomIcon } from "@/components/CustomIcon";
 import { UserImage } from "@/components/UserImage";
 import useStore from "@/lib/store";
-import { ConfigurationOptionsType } from "@/lib/types";
 
 const User = (props: any) => {
   const { name, status } = useStore((state) => state.profile);
-
   return (
     <div
       {...props}
@@ -57,109 +52,76 @@ const Item = ({
     onClick={onClick}
     className="w-full flex items-center hover:bg-neutral-100 dark:hover:bg-slate-700"
   >
-    <span className="w-14 flex items-center justify-center">
-      <span className="w-5 h-5 text-slate-400">
+    <span className="w-20 flex items-center justify-center">
+      <span className="w-6 h-6 text-slate-400">
         <CustomIcon icon={icon} label={label} />
       </span>
     </span>
 
-    <span className="py-5 pl-4 flex-1 border-b text-left text-lg text-neutral-900 dark:text-neutral-50 border-slate-200 dark:border-slate-700">
+    <span className="py-5 pr-4 flex-1 border-b text-left text-lg font-medium text-neutral-900 dark:text-neutral-200 border-slate-200 dark:border-slate-700">
       {label}
     </span>
   </button>
 );
 
-type ConfigOption = {
-  label: string;
-  route: ConfigurationOptionsType;
-  icon?: IconType;
-};
-
-const CONFIG_OPTIONS: ConfigOption[] = [
-  {
-    label: "Perfil",
-    route: "PROFILE",
-  },
-  {
-    label: "Notificaciones",
-    route: "NOTIFICATIONS",
-    icon: BsBellFill,
-  },
-  {
-    label: "Privacidad",
-    route: "PRIVACY",
-    icon: BsLockFill,
-  },
-  {
-    label: "Seguridad",
-    route: "SECURITY",
-    icon: BsShieldShaded,
-  },
-  {
-    label: "Tema",
-    route: "THEME",
-    icon: BsMoonStarsFill,
-  },
-  {
-    label: "Fondo de pantalla",
-    route: "BACKGROUND",
-    icon: ImFilePicture,
-  },
-  {
-    label: "Solicitar info. de la cuenta",
-    route: "SOL_INFO",
-    icon: BsFileEarmarkTextFill,
-  },
-  {
-    label: "Atajos del teclado",
-    route: "SHORTCUTS",
-  },
-  {
-    label: "Ayuda",
-    route: "HELP",
-    icon: BsQuestionCircleFill,
-  },
-];
-
-interface OptionsProps {
-  goBack: () => void;
-  setRenderOption: Dispatch<SetStateAction<ConfigurationOptionsType>>;
-}
-
-export function Options({ goBack, setRenderOption }: OptionsProps) {
+export function Options() {
+  const close = useStore((state) => state.close);
+  const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
   return (
-    <AnimateOptionChange>
-      <Header goBack={goBack}>Configuración</Header>
+    <>
+      <Header goBack={close}>Configuración</Header>
       <div className="overflow-y-auto flex-1 flex flex-col h-full">
-        {CONFIG_OPTIONS.map((option) => {
-          if (option.route === "PROFILE") {
-            return (
-              <User
-                key={option.route}
-                onClick={() => {
-                  setRenderOption(option.route);
-                }}
-              />
-            );
-          } else if (option.route === "SHORTCUTS") {
-            return <Shortcuts key={option.route} />;
-          } else if (option.route === "THEME") {
-            return <Theme key={option.route} />;
-          } else {
-            return (
-              <Item
-                key={option.route}
-                label={option.label}
-                icon={option.icon!}
-                onClick={() => {
-                  setRenderOption(option.route);
-                }}
-              />
-            );
-          }
-        })}
+        <User
+          onClick={() => {
+            leftDrawerGoTo("PROFILE");
+          }}
+        />
+        <Item
+          label="Notificaciones"
+          icon={Bell}
+          onClick={() => {
+            leftDrawerGoTo("NOTIFICATIONS");
+          }}
+        />
+        <Item
+          label="Privacidad"
+          icon={Lock}
+          onClick={() => {
+            leftDrawerGoTo("PRIVACY");
+          }}
+        />
+        <Item
+          label="Seguridad"
+          icon={ShieldCheck}
+          onClick={() => {
+            leftDrawerGoTo("SECURITY");
+          }}
+        />
+        <Theme key="THEME" />
+        <Item
+          label="Fondo de pantalla"
+          icon={Paintbrush}
+          onClick={() => {
+            leftDrawerGoTo("BACKGROUND");
+          }}
+        />
+        <Item
+          label="Solicitar info. de la cuenta"
+          icon={FileText}
+          onClick={() => {
+            leftDrawerGoTo("SOL_INFO");
+          }}
+        />
+        <Shortcuts key="SHORTCUTS" />
+        <Item
+          label="Ayuda"
+          icon={HelpCircle}
+          onClick={() => {
+            leftDrawerGoTo("HELP");
+          }}
+        />
         <footer className="flex w-full justify-center p-3 mt-5">
-          <p className="text-base  text-neutral-900 dark:text-neutral-50">
+          <p className="text-base text-neutral-900 dark:text-neutral-50">
             Made with{" "}
             <span className="mx-2" aria-label="Cup of coffee">
               ☕
@@ -173,6 +135,6 @@ export function Options({ goBack, setRenderOption }: OptionsProps) {
           </p>
         </footer>
       </div>
-    </AnimateOptionChange>
+    </>
   );
 }

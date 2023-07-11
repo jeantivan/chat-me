@@ -1,14 +1,11 @@
-import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Header } from "./Header";
+import useStore from "@/lib/store";
 
-interface BackgroundProps {
-  goBack: () => void;
-}
-
-export function Background({ goBack }: BackgroundProps) {
+export function Background() {
+  const close = useStore((state) => state.close);
   return (
-    <AnimateOptionChange>
-      <Header goBack={goBack}>Elegir color de fondo</Header>
-    </AnimateOptionChange>
+    <>
+      <Header goBack={close}>Elegir color de fondo</Header>
+    </>
   );
 }

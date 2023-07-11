@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { BsArrowLeft } from "react-icons/bs";
-import { CustomIcon } from "@/components/CustomIcon";
+import { ArrowLeft } from "lucide-react";
+import { IconButton } from "@/components/ui/IconButton";
 
 const headerVariants = {
   transition: { type: "tween", delay: 0.15 },
@@ -34,9 +34,12 @@ export function Header({ children, goBack }: HeaderProps) {
         }}
         className="px-4 flex items-center"
       >
-        <button onClick={goBack} className="w-7 h-7 text-neutral-50 mr-4">
-          <CustomIcon icon={BsArrowLeft} label="Volver atrás" />
-        </button>
+        <IconButton
+          onClick={goBack}
+          className="mr-6"
+          icon={ArrowLeft}
+          label="Volver atrás"
+        />
         <h2 id="left-drawer-title" className="text-neutral-50 text-xl">
           {children}
         </h2>

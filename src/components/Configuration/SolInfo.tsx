@@ -1,17 +1,14 @@
 import { motion } from "framer-motion";
 import { BsFileEarmarkTextFill } from "react-icons/bs";
-import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Header } from "./Header";
 import { CustomIcon } from "@/components/CustomIcon";
+import useStore from "@/lib/store";
 
-interface SolInfoProps {
-  goBack: () => void;
-}
-
-export function SolInfo({ goBack }: SolInfoProps) {
+export function SolInfo() {
+  const close = useStore((state) => state.close);
   return (
-    <AnimateOptionChange>
-      <Header goBack={goBack}>Solicitar info de mi cuenta</Header>
+    <>
+      <Header goBack={close}>Solicitar info de mi cuenta</Header>
       <div className="py-7 overflow-y-auto">
         <div className="mx-auto flex flex-col">
           <motion.div
@@ -23,7 +20,7 @@ export function SolInfo({ goBack }: SolInfoProps) {
           >
             <CustomIcon
               className="w-16 h-20 text-emerald-400"
-              Icon={BsFileEarmarkTextFill}
+              icon={BsFileEarmarkTextFill}
               label="File-icon"
             />
           </motion.div>
@@ -40,7 +37,7 @@ export function SolInfo({ goBack }: SolInfoProps) {
           <div className="flex items-center select-none">
             <CustomIcon
               label="Solicitar reporte"
-              Icon={BsFileEarmarkTextFill}
+              icon={BsFileEarmarkTextFill}
               className="w-6 h-6 text-gray-400 mr-6"
             />
 
@@ -60,6 +57,6 @@ export function SolInfo({ goBack }: SolInfoProps) {
           </p>
         </div>
       </div>
-    </AnimateOptionChange>
+    </>
   );
 }

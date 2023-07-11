@@ -5,8 +5,8 @@ import {
   BsPeopleFill,
 } from "react-icons/bs";
 import { CustomIcon } from "@/components/CustomIcon";
-import { AnimateOptionChange } from "./AnimateOptionChange";
 import { Header } from "./Header";
+import useStore from "@/lib/store";
 
 const Item = ({ icon, label, ...rest }: { icon: IconType; label: string }) => (
   <div
@@ -24,14 +24,12 @@ const Item = ({ icon, label, ...rest }: { icon: IconType; label: string }) => (
     </span>
   </div>
 );
-interface HelpProps {
-  goBack: () => void;
-}
 
-export function Help({ goBack }: HelpProps) {
+export function Help() {
+  const close = useStore((state) => state.close);
   return (
-    <AnimateOptionChange>
-      <Header goBack={goBack}>Ayuda</Header>
+    <>
+      <Header goBack={close}>Ayuda</Header>
       <div className="h-full flex">
         <div className="w-full mt-auto">
           <Item icon={BsQuestionCircleFill} label="Centro de ayuda" />
@@ -42,6 +40,6 @@ export function Help({ goBack }: HelpProps) {
           />
         </div>
       </div>
-    </AnimateOptionChange>
+    </>
   );
 }

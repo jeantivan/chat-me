@@ -3,18 +3,16 @@ import * as Label from "@radix-ui/react-label";
 import { FiChevronRight } from "react-icons/fi";
 
 import { Header } from "./Header";
-import { AnimateOptionChange } from "./AnimateOptionChange";
 
 import { CustomIcon } from "@/components/CustomIcon";
 import { CheckBox } from "@/components/CheckBox";
-interface PrivacyProps {
-  goBack: () => void;
-}
+import useStore from "@/lib/store";
 
-export function Privacy({ goBack }: PrivacyProps) {
+export function Privacy() {
+  const close = useStore((state) => state.close);
   return (
-    <AnimateOptionChange>
-      <Header goBack={goBack}>Privacidad</Header>
+    <>
+      <Header goBack={close}>Privacidad</Header>
       <div className="overflow-y-auto flex-1 bg-neutral-100 dark:bg-slate-900">
         <div className="flex flex-col">
           <div className="py-4 px-6 mb-5 bg-white dark:bg-slate-800">
@@ -29,7 +27,7 @@ export function Privacy({ goBack }: PrivacyProps) {
                 <p className="text-gray-500 dark:text-gray-400">Nadie</p>
               </div>
               <CustomIcon
-                Icon={FiChevronRight}
+                icon={FiChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -45,7 +43,7 @@ export function Privacy({ goBack }: PrivacyProps) {
                 </p>
               </div>
               <CustomIcon
-                Icon={FiChevronRight}
+                icon={FiChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -59,7 +57,7 @@ export function Privacy({ goBack }: PrivacyProps) {
                 </p>
               </div>
               <CustomIcon
-                Icon={FiChevronRight}
+                icon={FiChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -89,7 +87,7 @@ export function Privacy({ goBack }: PrivacyProps) {
                 <p className="text-gray-500 dark:text-gray-400">Desactivados</p>
               </div>
               <CustomIcon
-                Icon={FiChevronRight}
+                icon={FiChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -106,7 +104,7 @@ export function Privacy({ goBack }: PrivacyProps) {
                 </p>
               </div>
               <CustomIcon
-                Icon={FiChevronRight}
+                icon={FiChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -119,7 +117,7 @@ export function Privacy({ goBack }: PrivacyProps) {
                 <p className="text-gray-500 dark:text-gray-400">15</p>
               </div>
               <CustomIcon
-                Icon={FiChevronRight}
+                icon={FiChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-gray-400"
               />
@@ -127,6 +125,6 @@ export function Privacy({ goBack }: PrivacyProps) {
           </div>
         </div>
       </div>
-    </AnimateOptionChange>
+    </>
   );
 }

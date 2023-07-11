@@ -1,19 +1,11 @@
 import { motion } from "framer-motion";
 import { Header } from "./Header";
-import { AnimateOptionChange } from "./AnimateOptionChange";
-
 import { EditableInput } from "@/components/EditableInput";
 import { ChangeUserImage } from "@/components/ChangeUserImage";
-import { useLeftDrawer } from "@/components/LeftDrawer";
 import useStore from "@/lib/store";
 
-interface ProfileProps {
-  goBack?: () => void;
-  isNotAnimated?: boolean;
-}
-
-export function Profile({ goBack, isNotAnimated }: ProfileProps) {
-  const { closeLeftDrawer } = useLeftDrawer();
+export function Profile() {
+  const close = useStore((state) => state.close);
 
   const { name, status } = useStore((state) => state.profile);
   const { changeName, changeStatus } = useStore((state) => ({
@@ -30,8 +22,8 @@ export function Profile({ goBack, isNotAnimated }: ProfileProps) {
   };
 
   return (
-    <AnimateOptionChange isNotAnimated={isNotAnimated}>
-      <Header goBack={goBack ? goBack : closeLeftDrawer}>Perfil</Header>
+    <>
+      <Header goBack={close}>Perfil</Header>
       <div className="py-6 overflow-y-auto">
         <div className="w-full flex justify-center mb-5">
           <motion.div
@@ -64,6 +56,6 @@ export function Profile({ goBack, isNotAnimated }: ProfileProps) {
           </div>
         </div>
       </div>
-    </AnimateOptionChange>
+    </>
   );
 }
