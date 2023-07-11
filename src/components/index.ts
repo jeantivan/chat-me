@@ -17,11 +17,8 @@ export {
   useContactInfo,
   ContactInfoContent,
 } from "./ContactInfo";
-export {
-  LeftDrawerProvider,
-  LeftDrawerContent,
-  useLeftDrawer,
-} from "./LeftDrawer";
+export { LeftDrawer, LeftDrawerElement } from "./LeftDrawer";
+
 export { CreateMessage } from "./CreateMessage";
 export { Message } from "./Message";
 export { useCurrentChat, CurrentChatProvider } from "./CurrentChat";
