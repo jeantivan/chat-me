@@ -19,7 +19,7 @@ export function CustomIcon({
 }: CustomIconProps) {
   const Icon = icon || "svg";
   return (
-    <span className={className} {...rest}>
+    <span className={cx("inline-block", className)} {...rest}>
       <AccessibleIcon.Root label={`Icono ${label}`}>
         <Icon className={cx("w-full h-full", iconClassName)} />
       </AccessibleIcon.Root>
