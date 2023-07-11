@@ -1,7 +1,7 @@
-import { BsPlusCircle, BsChatLeftTextFill } from "react-icons/bs";
+import { MessageSquarePlus } from "lucide-react";
 import { UserMenu } from "./UserMenu";
 import { UserImage } from "./UserImage";
-import { CustomIcon } from "./CustomIcon";
+import { IconButton } from "./ui/IconButton";
 import useStore from "@/lib/store";
 
 export function UserProfile() {
@@ -20,24 +20,9 @@ export function UserProfile() {
         </button>
       </div>
 
-      <div className="flex items-center">
-        <div className="h-8 w-8 ml-2 rounded-full p-1 hover:bg-slate-200 dark:hover:bg-slate-600 cursor-pointer">
-          <CustomIcon
-            icon={BsPlusCircle}
-            label="Historias"
-            className="dark:text-gray-400 text-gray-500 "
-          />
-        </div>
-        <div className="h-8 w-8 ml-2 rounded-full p-2 hover:bg-slate-200 dark:hover:bg-slate-600 cursor-pointer">
-          <CustomIcon
-            icon={BsChatLeftTextFill}
-            label="Nuevo chat"
-            className="dark:text-gray-400 text-gray-500 "
-          />
-        </div>
-        <div className="ml-2">
-          <UserMenu />
-        </div>
+      <div className="flex items-center gap-2">
+        <IconButton icon={MessageSquarePlus} label="Nuevo chat" />
+        <UserMenu />
       </div>
     </div>
   );
