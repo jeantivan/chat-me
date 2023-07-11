@@ -1,6 +1,6 @@
 import { MessageSquarePlus } from "lucide-react";
-import { UserMenu } from "./UserMenu";
 import { UserImage } from "./UserImage";
+import { ShowMoreMenu } from "./ShowMoreMenu";
 import { IconButton } from "./ui/IconButton";
 import useStore from "@/lib/store";
 
@@ -14,7 +14,7 @@ export function UserProfile() {
           onClick={() => {
             leftDrawerGoTo("PROFILE");
           }}
-          className="w-10 h-10 overflow-hidden rounded-full mr-3"
+          className="w-10 h-10 overflow-hidden rounded-full"
         >
           <UserImage />
         </button>
@@ -22,7 +22,7 @@ export function UserProfile() {
 
       <div className="flex items-center gap-2">
         <IconButton icon={MessageSquarePlus} label="Nuevo chat" />
-        <UserMenu />
+        <ShowMoreMenu />
       </div>
     </div>
   );
