@@ -1,10 +1,10 @@
 import "./App.css";
-import { Main, HeaderAndChatList, Chat } from "@/containers";
+import { Main, LeftColumn, Chat } from "@/containers";
 
 function App() {
   return (
     <Main>
-      <HeaderAndChatList />
+      <LeftColumn />
       <Chat />
     </Main>
   );
