@@ -9,6 +9,7 @@ import { Security } from "@/components/Configuration/Security";
 import { SolInfo } from "@/components/Configuration/SolInfo";
 import { Help } from "@/components/Configuration/Help";
 import { Background } from "@/components/Configuration/Background";
+import { NewChat } from "@/components/NewChat";
 
 export function LeftColumn() {
   return (
@@ -25,6 +26,7 @@ export function LeftColumn() {
         <LeftDrawerElement option="SOL_INFO" Component={SolInfo} />
         <LeftDrawerElement option="HELP" Component={Help} />
         <LeftDrawerElement option="BACKGROUND" Component={Background} />
+        <LeftDrawerElement option="NEW_CHAT" Component={NewChat} />
       </LeftDrawer>
     </section>
   );
