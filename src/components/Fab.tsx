@@ -18,16 +18,15 @@ const itemVariants = {
 };
 
 const tooltipVariants = {
-  transition: { type: "tween", duration: 0.02 },
   hidden: {
     opacity: 0,
     x: "-50%",
-    transition: { ease: "easeOut" },
+    transition: { ease: "easeOut", type: "tween", duration: 0.1 },
   },
   show: {
     opacity: 1,
     x: "0%",
-    transition: { ease: "easeIn" },
+    transition: { ease: "easeIn", type: "tween", duration: 0.1 },
   },
 };
 
