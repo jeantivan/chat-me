@@ -57,17 +57,19 @@ export const MenuContent = ({
   align = "end",
   ...rest
 }: DropdownMenu.MenuContentProps) => (
-  <DropdownMenu.Content
-    sideOffset={sideOffset}
-    align={align}
-    className={cx(
-      "rounded p-1 shadow-md flex flex-col gap-1",
-      "bg-slate-50 dark:bg-slate-800",
-      "z-50 select-none",
-      className
-    )}
-    {...rest}
-  >
-    {children}
-  </DropdownMenu.Content>
+  <DropdownMenu.Portal>
+    <DropdownMenu.Content
+      sideOffset={sideOffset}
+      align={align}
+      className={cx(
+        "rounded p-1 shadow-md flex flex-col gap-1",
+        "bg-slate-50 dark:bg-slate-800",
+        "z-50 select-none",
+        className
+      )}
+      {...rest}
+    >
+      {children}
+    </DropdownMenu.Content>
+  </DropdownMenu.Portal>
 );
