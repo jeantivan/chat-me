@@ -7,6 +7,7 @@ import { CustomIcon } from "@/components/CustomIcon";
 import useStore from "@/lib/store";
 import { SAVE_EDITOR } from "@/plugins/SaveEditorPlugin";
 import { MessageType } from "@/lib/types";
+import mc from "@/lib/utils/mergeClassnames";
 
 const createMessage = (content: string): MessageType => {
   return {
@@ -39,14 +40,19 @@ export function SendMessage() {
   };
   return (
     <button
-      className="w-10 h-10 p-1.5 rounded-full text-emerald-600 disabled:text-neutral-500"
+      className={mc(
+        "w-12 h-11 p-2 rounded-md inline-flex items-center justify-center",
+        "bg-emerald-600 text-slate-50",
+        "disabled:bg-emerald-600/50 disabled:text-slate-400"
+      )}
       onClick={handleSubmit}
       disabled={isEditorEmpty}
     >
       <CustomIcon
         icon={SendIcon}
-        iconClassName="rotate-45"
         label="Enviar mensaje"
+        className="-ml-2"
+        iconClassName="rotate-45"
       />
     </button>
   );
