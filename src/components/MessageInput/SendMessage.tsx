@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { v4 as uuid } from "uuid";
 import { SendIcon } from "lucide-react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -22,7 +21,6 @@ const createMessage = (content: string): MessageType => {
 };
 
 export function SendMessage() {
-  const [messageContent, setMessageContent] = useState("");
   const [editor] = useLexicalComposerContext();
   const isEditorEmpty = useLexicalIsTextContentEmpty(editor, true);
 
@@ -33,10 +31,11 @@ export function SendMessage() {
     if (!currentChatId) return;
 
     editor.dispatchCommand(SAVE_EDITOR, {
-      onSave: setMessageContent,
+      onSave: (content: string) =>
+        addMessage(createMessage(content), currentChatId),
     });
 
-    addMessage(createMessage(messageContent), currentChatId);
+    //addMessage(createMessage(messageContent), currentChatId);
   };
   return (
     <button
