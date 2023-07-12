@@ -24,14 +24,14 @@ export function LastMessage({ lastMessage }: LastMessageProps) {
   }
 
   return (
-    <>
+    <div className="flex-1 flex gap-1">
       {isOwnMsg && (
         <MessageStatus
           status={status}
-          className="w-6 h-6 mr-1 inline-block shrink-0"
+          className="w-6 h-6 inline-block shrink-0"
         />
       )}
-      <div className={cx("flex grow items-center min-w-[0]")}>
+      <div className={cx("flex-1 flex items-center")}>
         {messageIcon && (
           <CustomIcon
             icon={messageIcon}
@@ -40,14 +40,8 @@ export function LastMessage({ lastMessage }: LastMessageProps) {
           />
         )}
 
-        <div
-          className={cx("grow truncate", {
-            "text-base": message.type !== "text",
-          })}
-        >
-          {content}
-        </div>
+        <span className="line-clamp-1">{content}</span>
       </div>
-    </>
+    </div>
   );
 }
