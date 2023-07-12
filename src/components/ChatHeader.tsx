@@ -14,7 +14,7 @@ export function ChatHeader({ chat }: { chat: ChatType }) {
   }, [chat.isOpenChat]);
 
   return (
-    <header className="chat-header bg-slate-100 dark:bg-slate-700 shadow-lg">
+    <header className="chat-header bg-white dark:bg-slate-700 shadow-lg">
       <div className="flex items-center px-5 py-2">
         <button
           onClick={() => {
