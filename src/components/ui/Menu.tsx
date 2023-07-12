@@ -3,6 +3,7 @@ import cx from "classnames";
 import { IconButton } from "./IconButton";
 import { LucideIcon } from "lucide-react";
 import { CustomIcon } from "../CustomIcon";
+import mc from "@/lib/utils/mergeClassnames";
 
 export const MenuRoot = DropdownMenu.Root;
 
@@ -30,7 +31,7 @@ export const MenuItem = ({
   children,
   ...rest
 }: DropdownMenu.MenuItemProps & { icon?: LucideIcon }) => {
-  const componentClassName = cx(
+  const componentClassName = mc(
     "w-full px-4 py-2 rounded flex items-center gap-3",
     "outline-none cursor-pointer data-[disabled]:cursor-not-allowed",
     "dark:text-white text-slate-900 hover:bg-slate-200 dark:hover:bg-slate-600",
@@ -57,19 +58,17 @@ export const MenuContent = ({
   align = "end",
   ...rest
 }: DropdownMenu.MenuContentProps) => (
-  <DropdownMenu.Portal>
-    <DropdownMenu.Content
-      sideOffset={sideOffset}
-      align={align}
-      className={cx(
-        "rounded p-1 shadow-md flex flex-col gap-1",
-        "bg-slate-50 dark:bg-slate-800",
-        "z-50 select-none",
-        className
-      )}
-      {...rest}
-    >
-      {children}
-    </DropdownMenu.Content>
-  </DropdownMenu.Portal>
+  <DropdownMenu.Content
+    sideOffset={sideOffset}
+    align={align}
+    className={mc(
+      "rounded p-1 shadow-md flex flex-col gap-1",
+      "bg-slate-50 dark:bg-slate-800",
+      "z-50 select-none",
+      className
+    )}
+    {...rest}
+  >
+    {children}
+  </DropdownMenu.Content>
 );
