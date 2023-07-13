@@ -1,37 +1,34 @@
-import { ReactNode } from "react";
 import {
-  Welcome,
   Messages,
   ChatHeader,
   MessageInput,
-  ContactInfoContent,
-  ContactInfoProvider,
+  RightDrawer,
+  RightDrawerElement,
 } from "@/components";
 import useStore from "@/lib/store";
+import { ContactInfo } from "@/components/ContactInfo";
+import { AnimatePresence, LayoutGroup } from "framer-motion";
 
-const Container = ({ children }: { children: ReactNode }) => (
-  <ContactInfoProvider>
-    <section className="flex-1 w-full flex">{children}</section>
-  </ContactInfoProvider>
-);
+// TODO: Animación de salida del left drawer
 
-export function Chat() {
+export function Chat({ chatId }: { chatId: string }) {
   const chat = useStore((state) =>
-    state.chats.find((chat) => chat.id === state.currentChatId)
+    state.chats.find((chat) => chat.id === chatId)
   );
 
   const getAllMessages = useStore((state) => state.getAllMessages);
 
-  if (chat?.shouldLoadOldMsg) {
+  if (!chat) return null;
+
+  if (chat.shouldLoadOldMsg) {
     getAllMessages();
   }
 
   return (
-    <Container>
-      {!chat && <Welcome />}
-      {chat && (
-        <>
-          <div className="chat-container flex-1">
+    <div className="relative w-full h-full flex">
+      <AnimatePresence mode="wait">
+        <LayoutGroup>
+          <div className="chat-container flex-1  min-h-screen">
             <ChatHeader chat={chat} />
             <Messages
               messages={chat.messages}
@@ -39,9 +36,15 @@ export function Chat() {
             />
             <MessageInput key={chat.id} />
           </div>
-          <ContactInfoContent chat={chat} />
-        </>
-      )}
-    </Container>
+          <RightDrawer>
+            <RightDrawerElement
+              key="right-drawer"
+              option="CONTACT_INFO"
+              Component={ContactInfo}
+            />
+          </RightDrawer>
+        </LayoutGroup>
+      </AnimatePresence>
+    </div>
   );
 }
