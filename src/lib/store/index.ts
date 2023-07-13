@@ -11,6 +11,7 @@ import {
   createChatSlice,
   createMessageSlice,
   createLeftDrawerSlice,
+  createRightDrawerSlice,
 } from "./slices";
 
 const useStore = create<StoreSlice>()(
@@ -25,6 +26,7 @@ const useStore = create<StoreSlice>()(
         ...createChatSlice(...a),
         ...createMessageSlice(...a),
         ...createLeftDrawerSlice(...a),
+        ...createRightDrawerSlice(...a),
       })),
       {
         name: "zustand-chat-me",

@@ -5,6 +5,7 @@ import {
   MessageType,
   ReactionListType,
   LeftDrawerContentOptions,
+  RightDrawerContentOptions,
 } from "@/lib/types";
 
 // Interface para todos los Contactos
@@ -74,7 +75,11 @@ export interface LeftDrawerSlice {
   leftDrawerGoTo: (to: LeftDrawerContentOptions) => void;
   close: () => void;
 }
-
+export interface RightDrawerSlice {
+  rightDrawer: RightDrawerContentOptions | null;
+  rightDrawerGoTo: (to: RightDrawerContentOptions) => void;
+  closeRightDrawer: () => void;
+}
 export interface StoreSlice
   extends ContactsSlice,
     ChatsSlice,
@@ -83,4 +88,5 @@ export interface StoreSlice
     CurrentChatIdSlice,
     ChatSlice,
     MessageSlice,
-    LeftDrawerSlice {}
+    LeftDrawerSlice,
+    RightDrawerSlice {}
