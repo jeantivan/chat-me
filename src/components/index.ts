@@ -10,15 +10,9 @@ export {
   useUserInfo,
   UserInfoContext,
 } from "./UserInfoProvider";
-export {
-  ContactInfoContext,
-  ContactInfoProvider,
-  useContactInfo,
-  ContactInfoContent,
-} from "./ContactInfo";
-export { LeftDrawer, LeftDrawerElement } from "./LeftDrawer";
 
+export { LeftDrawer, LeftDrawerElement } from "./LeftDrawer";
+export { RightDrawer, RightDrawerElement } from "./RightDrawer";
 export { CreateMessage } from "./CreateMessage";
 export { Message } from "./Message";
-export { useCurrentChat, CurrentChatProvider } from "./CurrentChat";
 export { MessageInput } from "./MessageInput";
