@@ -55,7 +55,6 @@ export type ChatType = {
   isPinned: boolean;
   isMuted: boolean;
   isArchived: boolean;
-  isOpenChat: boolean;
   hasUnreadMsg: boolean;
   shouldLoadOldMsg: boolean;
   messages: MessageType[];
@@ -112,3 +111,8 @@ export type LeftDrawerContentOptions =
   | "OPTIONS"
   | "SHORTCUTS"
   | "NEW_CHAT";
+
+export type RightDrawerContentOptions =
+  | "CONTACT_INFO"
+  | "CHAT_SHARE_CONTENT"
+  | "FAV_MESSAGES";
