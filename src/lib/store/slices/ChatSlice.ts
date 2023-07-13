@@ -48,14 +48,8 @@ export const createChatSlice: StateCreator<
   },
   closeChat: () => {
     set((state) => {
-      const indexOfChat = state.chats.findIndex(
-        (chat) => chat.id === state.currentChatId
-      );
-
-      if (indexOfChat >= 0) {
-        state.chats[indexOfChat].isOpenChat = false;
-        state.currentChatId = undefined;
-      }
+      state.rightDrawer = null;
+      state.currentChatId = undefined;
     });
   },
   deleteChat: (chatId: string) => {
@@ -63,6 +57,7 @@ export const createChatSlice: StateCreator<
 
     if (chatIndex !== undefined) {
       set((state) => {
+        state.rightDrawer = null;
         state.chats.splice(chatIndex, 1);
       });
     }
