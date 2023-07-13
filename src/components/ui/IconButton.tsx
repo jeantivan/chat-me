@@ -1,7 +1,7 @@
-import cx from "classnames";
 import { LucideIcon } from "lucide-react";
 import { forwardRef } from "react";
 import { CustomIcon } from "../CustomIcon";
+import mc from "@/lib/utils/mergeClassnames";
 
 type IconButtonProps = {
   label: string;
@@ -14,7 +14,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       <button
         ref={ref}
         {...props}
-        className={cx(
+        className={mc(
           "inline-flex rounded-md p-1.5 cursor-pointer",
           "dark:text-gray-400 text-gray-500",
           "hover:bg-slate-200 dark:hover:bg-slate-600",
