@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { IconButton } from "./IconButton";
 import { LucideIcon } from "lucide-react";
@@ -12,11 +13,16 @@ export const Arrow = () => (
   <DropdownMenu.Arrow className="fill-slate-50 dark:fill-slate-800" />
 );
 
-type MenuTriggerProps = DropdownMenu.DropdownMenuTriggerProps & {
+type MenuTriggerProps = React.ComponentPropsWithRef<
+  typeof DropdownMenu.Trigger
+> & {
   icon: LucideIcon;
   label: string;
 };
-export const MenuTrigger = ({ className, ...rest }: MenuTriggerProps) => {
+export const MenuTrigger = forwardRef<
+  React.ElementRef<typeof DropdownMenu.Trigger>,
+  MenuTriggerProps
+>(function MenuTriggerBase({ className, ...rest }) {
   return (
     <DropdownMenu.Trigger asChild>
       <IconButton
@@ -29,14 +35,16 @@ export const MenuTrigger = ({ className, ...rest }: MenuTriggerProps) => {
       />
     </DropdownMenu.Trigger>
   );
-};
+});
 
-export const MenuItem = ({
-  className,
-  icon,
-  children,
-  ...rest
-}: DropdownMenu.MenuItemProps & { icon?: LucideIcon }) => {
+type MenuItemProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenu.Item
+> & { icon?: LucideIcon };
+
+export const MenuItem = forwardRef<
+  React.ElementRef<typeof DropdownMenu.Item>,
+  MenuItemProps
+>(function MenuItemBase({ className, icon, children, ...rest }, ref) {
   const componentClassName = mc(
     "w-full px-4 py-2 rounded flex items-center gap-3",
     "outline-none cursor-pointer data-[disabled]:cursor-not-allowed",
@@ -48,14 +56,14 @@ export const MenuItem = ({
   );
 
   return (
-    <DropdownMenu.DropdownMenuItem className={componentClassName} {...rest}>
+    <DropdownMenu.Item ref={ref} className={componentClassName} {...rest}>
       {icon && (
         <CustomIcon className="w-5 h-5" icon={icon} label="Menu item icon" />
       )}
       {children}
-    </DropdownMenu.DropdownMenuItem>
+    </DropdownMenu.Item>
   );
-};
+});
 
 export const MenuContent = ({
   children,
