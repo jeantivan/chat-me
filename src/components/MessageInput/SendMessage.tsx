@@ -40,7 +40,7 @@ export function SendMessage() {
   return (
     <button
       className={mc(
-        "w-12 h-11 p-2 rounded-md inline-flex items-center justify-center",
+        "w-11 h-11 p-2 rounded-md inline-flex items-center justify-center",
         "bg-emerald-600 text-slate-50",
         "disabled:bg-emerald-600/50 disabled:text-slate-400"
       )}
@@ -50,7 +50,7 @@ export function SendMessage() {
       <CustomIcon
         icon={SendIcon}
         label="Enviar mensaje"
-        className="-ml-2"
+        className="-ml-1.5"
         iconClassName="rotate-45"
       />
     </button>
