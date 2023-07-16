@@ -1,11 +1,16 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import cx from "classnames";
 import { IconButton } from "./IconButton";
 import { LucideIcon } from "lucide-react";
 import { CustomIcon } from "../CustomIcon";
 import mc from "@/lib/utils/mergeClassnames";
 
 export const MenuRoot = DropdownMenu.Root;
+export const RadioGroup = DropdownMenu.RadioGroup;
+export const RadioItem = DropdownMenu.RadioItem;
+export const TriggerBase = DropdownMenu.Trigger;
+export const Arrow = () => (
+  <DropdownMenu.Arrow className="fill-slate-50 dark:fill-slate-800" />
+);
 
 type MenuTriggerProps = DropdownMenu.DropdownMenuTriggerProps & {
   icon: LucideIcon;
@@ -15,9 +20,10 @@ export const MenuTrigger = ({ className, ...rest }: MenuTriggerProps) => {
   return (
     <DropdownMenu.Trigger asChild>
       <IconButton
-        className={cx(
-          className,
-          "data-[state=open]:bg-gray-200 dark:data-[state=open]:bg-gray-600"
+        className={mc(
+          "text-slate-800",
+          "data-[state=open]:bg-slate-500/20 dark:data-[state=open]:bg-slate-600/50",
+          className
         )}
         {...rest}
       />
