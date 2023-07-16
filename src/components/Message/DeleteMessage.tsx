@@ -1,86 +1,44 @@
-import cx from "classnames";
-import { ReactNode, useState } from "react";
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { Button } from "@/components/ui/Button";
 import {
   AlertDialogRoot,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogTitle,
-  AlertDialogDescription,
-} from "@/components/AlertDialog";
-import { MenuItem } from "@/components/Menu";
-import { useDarkMode } from "@/components/DarkMode";
+} from "@/components/ui/AlertDialog";
 import useStore from "@/lib/store";
 
-const Button: React.FC<{
-  children: ReactNode;
-  type?: "filled" | "outlined";
-  [x: string]: any;
-}> = ({ children, type = "filled", ...rest }) => (
-  <button
-    {...rest}
-    className={cx(
-      "mr-2 py-2 px-6 min-w-[64px] rounded inline-flex justify-center uppercase font-medium border-solid border",
-      {
-        "border-emerald-400/40 hover:bg-white/5 text-emerald-400":
-          type === "outlined",
-      },
-      {
-        "bg-emerald-500 hover:bg-emerald-400 border-emerald-500 hover:border-emerald-400 text-white":
-          type === "filled",
-      }
-    )}
-  >
-    {children}
-  </button>
-);
-
 interface DeleteMessageProps {
+  open: boolean;
+  openChange: (open: boolean) => void;
   msgId: string;
 }
 
-export function DeleteMessage({ msgId }: DeleteMessageProps) {
-  const { isDarkMode } = useDarkMode();
-  const [openModal, setOpenModal] = useState(false);
+export function DeleteMessage({ msgId, open, openChange }: DeleteMessageProps) {
   const deleteMessage = useStore((state) => state.deleteMessage);
   const currentChatId = useStore((state) => state.currentChatId);
 
   return (
-    <AlertDialogRoot open={openModal} onOpenChange={setOpenModal}>
-      <AlertDialogTrigger asChild>
-        <MenuItem>Eliminar Mensaje</MenuItem>
-      </AlertDialogTrigger>
-      <AlertDialogContent
-        open={openModal}
-        className="w-[60%] md:w-[50%] lg:w-[40%]"
-      >
+    <AlertDialogRoot open={open} onOpenChange={openChange}>
+      <AlertDialogContent open={open}>
         <div className="p-6">
-          <VisuallyHidden.Root>
-            <AlertDialogTitle>Eliminar mensaje</AlertDialogTitle>
-          </VisuallyHidden.Root>
-          <div className="mb-6">
-            <AlertDialogDescription
-              className={cx("text-xl font-light", {
-                "text-neutral-900": !isDarkMode,
-                "text-neutral-50": isDarkMode,
-              })}
-            >
+          <div className="mb-10">
+            <AlertDialogTitle className="text-xl font-light">
               ¿Deseas eliminar este mensaje?
-            </AlertDialogDescription>
+            </AlertDialogTitle>
           </div>
-          <div className="w-full flex justify-end mt-8">
+          <div className="w-full flex gap-4 justify-end mt-8">
             <AlertDialogCancel asChild>
-              <Button type="outlined">Cancelar</Button>
+              <Button variant="outlined" className="outline-none">
+                Cancelar
+              </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button
-                type="filled"
+                variant="filled"
                 onClick={() => {
                   deleteMessage(msgId, currentChatId!);
                 }}
-                className="py-2 px-4 rounded-md inline-flex justify-center uppercase"
               >
                 Eliminar mensaje
               </Button>
