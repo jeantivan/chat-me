@@ -48,7 +48,7 @@ export function AlertDialogContent({
         <AlertDialogPortal forceMount>
           <AlertDialogPrimitive.Overlay
             className={mc(
-              "fixed inset-0 w-screen h-screen bg-white/80 grid place-items-center",
+              "fixed inset-0 w-screen h-screen bg-slate-50/80 grid place-items-center",
               isDarkMode && "bg-slate-900/80"
             )}
           >
@@ -56,7 +56,7 @@ export function AlertDialogContent({
               asChild
               style={{ zIndex: 1001 }}
               className={mc(
-                "w-[60%] md:w-[50%] lg:w-[40%] shadow-xl bg-slate-50 text-neutral-900",
+                "w-[60%] md:w-[50%] lg:w-[40%] shadow-xl bg-white text-neutral-900",
                 isDarkMode && "bg-slate-800 text-neutral-50"
               )}
             >
