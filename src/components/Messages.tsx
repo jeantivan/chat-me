@@ -26,14 +26,10 @@ export function Messages({ messages, shouldLoadOldMsg }: MessagesProps) {
     >
       <div className="py-5">
         {shouldLoadOldMsg && <Loader />}
-
         {messages.map((message, i, array) => (
           <Message
             key={message.id}
             hasTail={i === 0 || message.isOwnMsg !== array[i - 1].isOwnMsg}
-            addOwnReaction={(id: string) => {}}
-            deleteOwnReaction={(id: string) => {}}
-            changeOwnReaction={(id: string) => {}}
             {...message}
           />
         ))}
