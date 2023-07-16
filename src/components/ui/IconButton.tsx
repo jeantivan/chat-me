@@ -16,12 +16,12 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         {...props}
         className={mc(
           "inline-flex rounded-md p-1.5 cursor-pointer",
-          "dark:text-gray-400 text-gray-500",
-          "hover:bg-slate-200 dark:hover:bg-slate-600",
+          "dark:text-gray-300 text-gray-600",
+          "hover:bg-slate-200/50 dark:hover:bg-slate-600/50",
           className
         )}
       >
-        <CustomIcon className="w-6 h-6" icon={icon} label={label} />
+        <CustomIcon className="w-full h-full" icon={icon} label={label} />
       </button>
     );
   }
