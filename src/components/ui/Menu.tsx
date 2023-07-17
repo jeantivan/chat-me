@@ -22,7 +22,7 @@ type MenuTriggerProps = React.ComponentPropsWithRef<
 export const MenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenu.Trigger>,
   MenuTriggerProps
->(function MenuTriggerBase({ className, ...rest }) {
+>(function MenuTriggerBase({ className, ...rest }, ref) {
   return (
     <DropdownMenu.Trigger asChild>
       <IconButton
@@ -31,6 +31,7 @@ export const MenuTrigger = forwardRef<
           "data-[state=open]:bg-slate-500/20 dark:data-[state=open]:bg-slate-600/50",
           className
         )}
+        ref={ref}
         {...rest}
       />
     </DropdownMenu.Trigger>
