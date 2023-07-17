@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { DeleteMessage } from "./DeleteMessage";
 import {
