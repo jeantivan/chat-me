@@ -1,5 +1,5 @@
 import { ChangeEvent, useRef } from "react";
-import { BsCameraFill } from "react-icons/bs";
+import { Camera } from "lucide-react";
 import { UserImage } from "./UserImage";
 import { CustomIcon } from "./CustomIcon";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
@@ -55,7 +55,7 @@ export function ChangeUserImage() {
         >
           <CustomIcon
             label="Cámara"
-            Icon={BsCameraFill}
+            icon={Camera}
             className="w-6 h-6 mb-1 text-neutral-50"
           />
           <span className="uppercase text-center text-sm text-neutral-50 w-4/5">
