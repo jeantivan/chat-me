@@ -2,12 +2,12 @@ import { Search } from "lucide-react";
 
 import { IconButton } from "./ui/IconButton";
 import { ChatHeaderMenu } from "./ChatHeaderMenu";
-import { ChatType } from "@/lib/types";
+import { TChat } from "@/lib/types";
 import useStore from "@/lib/store";
 
-export function ChatHeader({ chat }: { chat: ChatType }) {
+export function ChatHeader({ chat }: { chat: TChat }) {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
-  const { name, picture } = chat.contact;
+  const { name, picture } = chat.participants[0];
 
   return (
     <header className="chat-header bg-white dark:bg-slate-700 shadow-lg">
@@ -21,7 +21,7 @@ export function ChatHeader({ chat }: { chat: ChatType }) {
           <span className="text-gray-400 w-10 h-10 rounded-full mr-3">
             <img
               className="bg-gray-400 w-full h-full rounded-full"
-              src={picture.thumbnail}
+              src={picture}
               alt={`Foto de perfil de ${name}`}
             />
           </span>
