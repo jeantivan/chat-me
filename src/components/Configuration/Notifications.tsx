@@ -6,7 +6,7 @@ import useStore from "@/lib/store";
 
 export function Notifications() {
   const close = useStore((state) => state.close);
-  const notifications = useStore((state) => state.config.notifications);
+  const notifications = useStore((state) => state.notifications);
   const toggleNotification = useStore((state) => state.toggleNotifications);
   return (
     <>
@@ -21,9 +21,9 @@ export function Notifications() {
           <div className="flex items-center w-full mb-5">
             <CheckBox
               id="allNoti"
-              checked={notifications.allNoti}
+              checked={notifications.all}
               onCheckedChange={() => {
-                toggleNotification("ALL");
+                toggleNotification();
               }}
             />
 
@@ -39,7 +39,7 @@ export function Notifications() {
               id="sound"
               checked={notifications.sound}
               onCheckedChange={() => {
-                toggleNotification("SOUND");
+                toggleNotification();
               }}
             />
 
@@ -50,28 +50,13 @@ export function Notifications() {
               Sonidos
             </Label.Root>
           </div>
-          <div className="flex items-center w-full mb-5">
-            <CheckBox
-              id="alerts"
-              checked={notifications.alerts}
-              onCheckedChange={() => {
-                //toggleNotification("ALERTS");
-              }}
-            />
 
-            <Label.Root
-              htmlFor="alerts"
-              className="ml-3 select-none text-sm text-gray-900 dark:text-gray-100"
-            >
-              Alertas
-            </Label.Root>
-          </div>
           <div className="flex w-full mb-5">
             <CheckBox
               id="preview"
-              checked={notifications.previewMsg}
+              checked={notifications.preview}
               onCheckedChange={() => {
-                toggleNotification("PREV_MSG");
+                toggleNotification();
               }}
             />
             <Label.Root
@@ -87,9 +72,9 @@ export function Notifications() {
           <div className="flex items-center w-full mb-5">
             <CheckBox
               id="reactions"
-              checked={notifications.reactionsNoti}
+              checked={notifications.reactions}
               onCheckedChange={() => {
-                toggleNotification("REACTIONS");
+                toggleNotification();
               }}
             />
             <Label.Root
