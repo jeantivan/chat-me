@@ -2,8 +2,8 @@ import { TMedia } from "@/lib/types";
 import mc from "@/lib/utils/mergeClassnames";
 
 const dimensions: Record<"square" | "landscape" | "portrait", string> = {
-  square: "w-[240px] h-[240px]",
-  landscape: "w-[330px] h-[186px]",
+  square: "w-[300px] h-[300px]",
+  landscape: "w-[370px] h-[208px]",
   portrait: "w-[300px] h-[375px]",
 };
 
