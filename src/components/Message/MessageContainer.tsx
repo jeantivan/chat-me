@@ -9,6 +9,7 @@ import { Status } from "./Status";
 import mc from "@/lib/utils/mergeClassnames";
 import { REACTIONS } from "@/lib/utils/constants";
 import { TMessage } from "@/lib/types";
+import useStore from "@/lib/store";
 
 const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
@@ -53,6 +54,7 @@ export function MessageContainer({
 }: ContainerProps) {
   const [showMenus, setShowMenus] = useState(false);
   const [openMenus, setOpenMenus] = useState(false);
+  const userId = useStore((state) => state.user.id);
 
   const stateChange = (open: boolean) => {
     setOpenMenus(open);
@@ -91,7 +93,7 @@ export function MessageContainer({
           />
           <ReactionMenu
             onOpenChange={stateChange}
-            ownReaction={undefined}
+            ownReaction={reactions?.filter((r) => r.owner === userId)[0].type}
             msgId={id}
           />
         </motion.div>
