@@ -58,7 +58,13 @@ export function ContactInfo() {
   const chat = useStore((state) =>
     state.chats.find((chat) => chat.id === state.currentChatId)
   );
-  const { name, phone, status, picture } = chat!.contact;
+
+  const {
+    id,
+    muted,
+    participants: [_, contact],
+  } = chat!;
+  const { name, phone, bio, picture } = contact;
 
   return (
     <div className="bg-slate-200 dark:bg-slate-900 h-full">
@@ -84,7 +90,7 @@ export function ContactInfo() {
               <div className="w-40 h-40 rounded-full text-gray-500">
                 <img
                   className="bg-gray-400 w-full h-full rounded-full"
-                  src={picture.large}
+                  src={picture}
                   alt={`Foto de perfil de ${name}`}
                 />
               </div>
@@ -103,7 +109,7 @@ export function ContactInfo() {
           <div className="px-5">
             <div className="text-sm text-emerald-600">Info.</div>
             <div className={`text-lg dark:text-neutral-50 text-neutral-900`}>
-              {status}
+              {bio}
             </div>
           </div>
         </section>
@@ -135,9 +141,9 @@ export function ContactInfo() {
             icon={Bell}
             action={
               <Switch
-                checked={chat!.isMuted}
+                checked={muted}
                 onCheckedChange={() => {
-                  muteChat(chat!.id);
+                  muteChat(id);
                 }}
               />
             }
@@ -151,24 +157,6 @@ export function ContactInfo() {
           >
             Estadísticas
           </Item>
-
-          {/* <div className="w-full">
-            <Item isDanger>
-              <ItemIcon icon={FaBan} label="Icono de bloquear" />
-              <ItemText isDanger>Bloquear a {name}</ItemText>
-            </Item>
-            <Item isDanger>
-              <ItemIcon
-                icon={BsHandThumbsDownFill}
-                label="Icono de no me gusta"
-              />
-              <ItemText isDanger>Reportar a {name}</ItemText>
-            </Item>
-            <Item isDanger>
-              <ItemIcon icon={BsTrashFill} label="Icono de basura" />
-              <ItemText isDanger>Eliminar chat</ItemText>
-            </Item>
-          </div> */}
         </section>
         <section className="mb-32 shadow bg-white dark:bg-slate-800">
           <Item icon={Archive} danger>
