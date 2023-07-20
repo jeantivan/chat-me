@@ -1,17 +1,38 @@
 import { StateCreator } from "zustand";
 import { ProfileSlice, StoreSlice } from "./interfaces";
-import { UserType } from "@/lib/types";
+import { TProfile } from "@/lib/types";
 
-const initialProfile: UserType = {
-  id: "348441f8-c083-4cd1-9af3-59ca8cab0917",
-  name: "Jane Doe",
-  status: "Hola estoy usando ChatMe!",
-  phone: "000 000 0000",
-  picture: {
-    thumbnail: "",
-    medium: "",
-    large: "",
+const initialProfileState: TProfile = {
+  // TUser values
+  user: {
+    id: "348441f8-c083-4cd1-9af3-59ca8cab0917",
+    name: "Jane Doe",
+    bio: "Hola estoy usando ChatMe!",
+    phone: "000 000 0000",
+    picture: "",
   },
+  // TNotifications
+  notifications: {
+    all: true,
+    sound: true,
+    preview: true,
+    reactions: true,
+  },
+  // TPrivacy
+  privacy: {
+    lastTimeOnline: "all",
+    picture: "all",
+    bio: "all",
+    groups: "contacts",
+    readConfirmation: true,
+  },
+  // TTheme
+  theme: {
+    options: "dark",
+    mode: "dark",
+    color: "emerald",
+  },
+  contacts: [],
 };
 
 export const createProfileSlice: StateCreator<
@@ -24,21 +45,18 @@ export const createProfileSlice: StateCreator<
   [],
   ProfileSlice
 > = (set) => ({
-  profile: initialProfile,
-  changeName: (name: string) =>
+  ...initialProfileState,
+  changeName: (name) =>
     set((state) => {
-      state.profile.name = name;
+      state.user.name = name;
     }),
-  changeStatus: (status: string) =>
+  changeBio: (bio) =>
     set((state) => {
-      state.profile.status = status;
+      state.user.bio = bio;
     }),
-  changePicture: (picture: string) =>
+  changePicture: (picture) =>
     set((state) => {
-      state.profile.picture = {
-        large: picture,
-        medium: picture,
-        thumbnail: picture,
-      };
+      state.user.picture = picture;
     }),
+  toggleNotifications() {},
 });
