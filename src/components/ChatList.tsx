@@ -6,7 +6,7 @@ import { SearchChats } from "./SearchChats";
 export function ChatList() {
   const chats = useStore((state) => state.chats);
 
-  const orderedChat = orderBy(chats, ["isPinned"], ["desc"]);
+  const orderedChat = orderBy(chats, ["pinned"], ["desc"]);
 
   return (
     <>
