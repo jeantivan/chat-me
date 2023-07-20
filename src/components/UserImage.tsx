@@ -3,9 +3,9 @@ import { CustomIcon } from "./CustomIcon";
 import useStore from "@/lib/store";
 
 export function UserImage() {
-  const picture = useStore((state) => state.profile.picture);
+  const picture = useStore((state) => state.user.picture);
 
-  return !picture.medium ? (
+  return !picture ? (
     <CustomIcon
       label="Avatar"
       icon={FaUserCircle}
@@ -14,7 +14,7 @@ export function UserImage() {
   ) : (
     <img
       alt="Tu foto de perfil."
-      src={picture.medium}
+      src={picture}
       className="w-full h-full bg-gray-400"
     />
   );
