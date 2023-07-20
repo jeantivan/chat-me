@@ -7,18 +7,18 @@ import useStore from "@/lib/store";
 export function Profile() {
   const close = useStore((state) => state.close);
 
-  const { name, status } = useStore((state) => state.profile);
-  const { changeName, changeStatus } = useStore((state) => ({
+  const { name, bio } = useStore((state) => state.user);
+  const { changeName, changeBio } = useStore((state) => ({
     changeName: state.changeName,
-    changeStatus: state.changeStatus,
+    changeBio: state.changeBio,
   }));
 
   const handleSaveUserName = (newName: string) => {
     changeName(newName);
   };
 
-  const handleSaveUserStatus = (newStatus: string) => {
-    changeStatus(newStatus);
+  const handleSaveUserStatus = (newBio: string) => {
+    changeBio(newBio);
   };
 
   return (
@@ -50,7 +50,7 @@ export function Profile() {
           <div className="mb-5">
             <EditableInput
               label="Estado"
-              value={status}
+              value={bio}
               onSave={handleSaveUserStatus}
             />
           </div>
