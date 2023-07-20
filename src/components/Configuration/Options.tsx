@@ -1,12 +1,5 @@
 import { IconType } from "react-icons";
-import {
-  Bell,
-  Lock,
-  ShieldCheck,
-  Paintbrush,
-  FileText,
-  HelpCircle,
-} from "lucide-react";
+import { Bell, Lock, Paintbrush, FileText, HelpCircle } from "lucide-react";
 import { Header } from "./Header";
 import { Shortcuts } from "./Shortcuts";
 import { Theme } from "./Theme";
@@ -16,7 +9,7 @@ import { UserImage } from "@/components/UserImage";
 import useStore from "@/lib/store";
 
 const User = (props: any) => {
-  const { name, status } = useStore((state) => state.profile);
+  const { name, bio } = useStore((state) => state.user);
   return (
     <div
       {...props}
@@ -31,7 +24,7 @@ const User = (props: any) => {
         <h2 className="font-medium text-xl text-neutral-900 dark:text-neutral-50">
           {name}
         </h2>
-        <p className="leading-none line-clamp-2 text-neutral-400">{status}</p>
+        <p className="leading-none line-clamp-2 text-neutral-400">{bio}</p>
       </div>
     </div>
   );
@@ -90,13 +83,7 @@ export function Options() {
             leftDrawerGoTo("PRIVACY");
           }}
         />
-        <Item
-          label="Seguridad"
-          icon={ShieldCheck}
-          onClick={() => {
-            leftDrawerGoTo("SECURITY");
-          }}
-        />
+
         <Theme key="THEME" />
         <Item
           label="Fondo de pantalla"
