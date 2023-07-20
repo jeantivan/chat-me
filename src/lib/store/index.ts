@@ -4,7 +4,6 @@ import { immer } from "zustand/middleware/immer";
 import { StoreSlice } from "./slices/interfaces";
 import {
   createChatsSlice,
-  createConfigSlice,
   createContactsSlice,
   createProfileSlice,
   createCurrentChatIdSlice,
@@ -18,7 +17,6 @@ const useStore = create<StoreSlice>()(
   devtools(
     persist(
       immer((...a) => ({
-        ...createConfigSlice(...a),
         ...createProfileSlice(...a),
         ...createContactsSlice(...a),
         ...createChatsSlice(...a),
@@ -31,8 +29,10 @@ const useStore = create<StoreSlice>()(
       {
         name: "zustand-chat-me",
         partialize: (state) => ({
-          config: state.config,
-          profile: state.profile,
+          user: state.user,
+          theme: state.theme,
+          notifications: state.notifications,
+          privacy: state.privacy,
         }),
       }
     )
