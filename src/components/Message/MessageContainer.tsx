@@ -1,161 +1,147 @@
-import cx from "classnames";
 import { ReactNode, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
-import { MenuContent, MenuItem } from "@/components/Menu";
-import { MessageReactions } from "./MessageReactions";
-import { DeleteMessage } from "./DeleteMessage";
-import {
-  Reactions,
-  ReactionsRoot,
-  ReactionsTrigger,
-} from "@/components/Reactions";
-import useStore from "@/lib/store";
-import { MessageType, ReactionListType } from "@/lib/types";
+import { motion } from "framer-motion";
+import { Star } from "lucide-react";
+import dayjs from "dayjs";
+import { Menu } from "./Menu";
+import { ReactionMenu } from "./ReactionMenu";
+import { Status } from "./Status";
+
+import mc from "@/lib/utils/mergeClassnames";
+import { REACTIONS } from "@/lib/utils/constants";
+import { TMessage } from "@/lib/types";
 
 const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
     aria-hidden={true}
-    className={cx(
-      "w-3 h-3 absolute top-0",
-      {
-        "dark:bg-emerald-700 bg-green-200": isOwnMsg,
-        "dark:bg-slate-700 bg-white": !isOwnMsg,
-      },
-      { "left-full": isOwnMsg, "left-0": !isOwnMsg }
+    className={mc(
+      "w-3 h-3 absolute top-0 dark:text-emerald-700 text-green-200 left-full z-10",
+      !isOwnMsg && "dark:text-slate-700 text-white left-0 -translate-x-full"
     )}
-    style={{
-      //zIndex: "-1",
-      transform: isOwnMsg
-        ? "translate3d(-2%, 0, 10px)"
-        : "translate3d(-98%, 0, 10px)",
-      borderRadius: isOwnMsg
-        ? "95% 5% 100% 0% / 0% 5% 95% 100%"
-        : "5% 95% 0% 100% / 5% 0% 100% 95%",
-    }}
-  />
+    style={{ transform: isOwnMsg ? "rotateY(180deg)" : undefined }}
+  >
+    <svg
+      width="12"
+      height="12"
+      fill="currentColor"
+      viewBox="0 0 12 12"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0.334232 1.70711C-0.379758 1.07714 0.125918 0 1.13565 0H12V12L0.334232 1.70711Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
 );
 
-const buttonVariants = {
-  hidden: { opacity: 0, transition: { duration: 0.05 } },
-  show: { opacity: 1, transition: { duration: 0.05 } },
-};
-
-interface MessageContainerProps extends MessageType {
+type ContainerProps = {
   children: ReactNode;
   hasTail: boolean;
-}
+  isOwnMsg: boolean;
+} & TMessage;
 
 export function MessageContainer({
   children,
   isOwnMsg,
-  isFavMsg,
+  starred,
   hasTail,
-  reactions,
   id,
-  message,
-}: MessageContainerProps) {
-  const [openReactions, setOpenReactions] = useState(false);
-  const controls = useAnimation();
+  status,
+  time,
+  reactions,
+  hasMedia,
+}: ContainerProps) {
+  const [showMenus, setShowMenus] = useState(false);
+  const [openMenus, setOpenMenus] = useState(false);
 
-  const toggleFavMessage = useStore((state) => state.toggleFavMessage);
-  const currentChatId = useStore((state) => state.currentChatId);
+  const stateChange = (open: boolean) => {
+    setOpenMenus(open);
+  };
 
-  const ownReaction = reactions.find(
-    ({ reaction }) => reaction.isOwnReaction === true
-  );
+  const formatTime = dayjs(time).format("HH:MM");
 
   return (
-    <motion.div
-      onHoverStart={() => {
-        controls.start("show");
-      }}
-      onHoverEnd={() => {
-        if (openReactions) return;
-
-        controls.start("hidden");
-      }}
-      className={cx("px-5 md:px-[5%] lg:px-[9%]", {
-        "mt-4": hasTail,
-        "mt-1.5": !hasTail,
-      })}
+    <div
+      className={mc("px-5 md:px-[5%] lg:px-[76px] mt-1.5", hasTail && "mt-4")}
     >
-      <div className="w-full flex">
+      <div
+        onMouseEnter={() => {
+          setShowMenus(true);
+        }}
+        onMouseLeave={() => {
+          if (openMenus) return;
+          setShowMenus(false);
+        }}
+        className={mc(
+          "relative w-full flex items-center justify-end gap-1 ",
+          !isOwnMsg && "justify-start"
+        )}
+      >
+        <motion.div
+          className={mc(
+            "gap-1 hidden",
+            !isOwnMsg && "order-2",
+            showMenus && "flex"
+          )}
+        >
+          <Menu
+            id={id}
+            onOpenChange={stateChange}
+            align={isOwnMsg ? "end" : "start"}
+          />
+          <ReactionMenu
+            onOpenChange={stateChange}
+            ownReaction={undefined}
+            msgId={id}
+          />
+        </motion.div>
         <div
-          className={cx(
-            "relative drop-shadow",
-            "max-w-9/10 md:max-w-8/10 lg:max-w-7/10",
-            {
-              "justify-start": !isOwnMsg,
-              "justify-end": isOwnMsg,
-            },
-            {
-              "w-[350px]":
-                message.orientation === "squarish" || message.type === "audio",
-              "w-[390px]": message.orientation === "landscape",
-              "w-[273px]": message.orientation === "portrait",
-            }
+          className={mc(
+            "relative drop-shadow max-w-min",
+            !hasMedia && "max-w-9/10 md:max-w-8/10 lg:max-w-7/10"
           )}
         >
           {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
           <div
-            className={cx("rounded-md overflow-hidden group", {
-              "rounded-tl-none": hasTail && !isOwnMsg,
-              "rounded-tr-none": hasTail && isOwnMsg,
-            })}
+            className={mc(
+              "py-1 rounded-md overflow-hidden dark:bg-emerald-700 bg-green-200",
+              !isOwnMsg && "dark:bg-slate-700 bg-white",
+              hasTail
+                ? isOwnMsg
+                  ? "rounded-tr-none"
+                  : "rounded-tl-none"
+                : undefined
+            )}
           >
             {children}
+            <footer className="px-2 flex justify-end items-end gap-1 dark:text-slate-400 text-slate-500 text-sm">
+              {reactions && (
+                <div className="mt-1 mr-auto rounded-full p-0.5 flex gap-0.5 bg-white">
+                  {reactions.map(({ owner, type }) => (
+                    <div key={owner} className="w-5 h-5">
+                      <img
+                        alt={REACTIONS[type].emoji}
+                        src={REACTIONS[type].img}
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex items-center gap-1 leading-none">
+                {starred && (
+                  <span className="w-4 h-4 inline-block">
+                    <Star className="text-yellow-500 fill-yellow-500 w-full h-full" />
+                  </span>
+                )}
+                {formatTime}
+                {isOwnMsg && <Status status={status} />}
+              </div>
+            </footer>
           </div>
-          {reactions.length > 0 && (
-            <MessageReactions isOwnMsg={isOwnMsg} reactions={reactions} />
-          )}
         </div>
-
-        <ReactionsRoot open={openReactions} onOpenChange={setOpenReactions}>
-          <div
-            className={cx("mx-4 flex items-center flex-1", {
-              "order-first": isOwnMsg,
-              "justify-end": isOwnMsg,
-            })}
-          >
-            <motion.div
-              initial="hidden"
-              variants={buttonVariants}
-              animate={controls}
-              className={cx({ "-mt-[30px]": reactions.length > 0 })}
-            >
-              <ReactionsTrigger />
-            </motion.div>
-
-            <Reactions
-              closeMenu={() => {
-                setOpenReactions(false);
-              }}
-              ownReaction={ownReaction}
-              msgId={id}
-            />
-          </div>
-        </ReactionsRoot>
       </div>
-      <MenuContent align={isOwnMsg ? "end" : "start"} className="w-48">
-        {isOwnMsg && <MenuItem>Info. del mensaje</MenuItem>}
-        <MenuItem>Responder</MenuItem>
-        <MenuItem
-          onClick={() => {
-            setOpenReactions(true);
-          }}
-        >
-          Reaccionar al Mensaje
-        </MenuItem>
-        <MenuItem>Reenviar mensaje</MenuItem>
-        <MenuItem
-          onClick={() => {
-            toggleFavMessage(id, currentChatId!);
-          }}
-        >
-          {!isFavMsg ? "Destacar mensaje" : "No destacar mensaje"}
-        </MenuItem>
-        <DeleteMessage msgId={id} />
-      </MenuContent>
-    </motion.div>
+    </div>
   );
 }
