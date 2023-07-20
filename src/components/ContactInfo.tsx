@@ -59,11 +59,14 @@ export function ContactInfo() {
     state.chats.find((chat) => chat.id === state.currentChatId)
   );
 
+  // TEMP
+  if (!chat) return null;
+
   const {
     id,
     muted,
-    participants: [_, contact],
-  } = chat!;
+    participants: [contact],
+  } = chat;
   const { name, phone, bio, picture } = contact;
 
   return (
