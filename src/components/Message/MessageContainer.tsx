@@ -53,10 +53,7 @@ export function MessageContainer({
   const [openMenus, setOpenMenus] = useState(false);
   const userId = useStore((state) => state.user.id);
 
-  const formatTime =
-    typeof time === "string"
-      ? dayjs(time).format("HH:mm")
-      : dayjs.unix(time).format("HH:mm");
+  const formatTime = dayjs(time).format("HH:mm");
   const ownReaction = reactions?.find((r) => r.owner === userId);
 
   const stateChange = (open: boolean) => {

@@ -54,7 +54,7 @@ export type TMessage = {
   owner: string; // Referencia a un id de usuario
   starred: boolean;
   forwarded: boolean;
-  time: string | number;
+  time: string;
   status: "idle" | "send" | "received" | "read";
   body: string;
   reactions: TReaction[];

@@ -13,7 +13,7 @@ export const mapMessages = (
     .map((message, i) => {
       const newTime = dayjs()
         .subtract(5 * (qty - i), "minutes")
-        .unix();
+        .toISOString();
 
       const owner = message.owner === null ? contact.id : message.owner;
 
