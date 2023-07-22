@@ -16,13 +16,7 @@ export function Chat({ chatId }: { chatId: string }) {
     state.chats.find((chat) => chat.id === chatId)
   );
 
-  const getAllMessages = useStore((state) => state.getAllMessages);
-
   if (!chat) return null;
-
-  if (chat.shouldLoadOldMsg) {
-    getAllMessages();
-  }
 
   return (
     <div className="relative w-full h-full flex">
@@ -30,15 +24,12 @@ export function Chat({ chatId }: { chatId: string }) {
         <LayoutGroup>
           <div className="chat-container flex-1  min-h-screen">
             <ChatHeader chat={chat} />
-            <Messages
-              messages={chat.messages}
-              shouldLoadOldMsg={chat.shouldLoadOldMsg}
-            />
+            <Messages messages={chat.messages} />
             <MessageInput key={chat.id} />
           </div>
           <RightDrawer>
             <RightDrawerElement
-              key="right-drawer"
+              key="CONTACT_INFO"
               option="CONTACT_INFO"
               Component={ContactInfo}
             />
