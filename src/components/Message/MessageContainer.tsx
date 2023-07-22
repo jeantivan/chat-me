@@ -39,33 +39,32 @@ type ContainerProps = {
   children: ReactNode;
   hasTail: boolean;
   isOwnMsg: boolean;
-} & TMessage;
+  message: TMessage;
+};
 
 export function MessageContainer({
   children,
   isOwnMsg,
-  starred,
   hasTail,
-  id,
-  status,
-  time,
-  reactions,
-  hasMedia,
+  message,
 }: ContainerProps) {
+  const { starred, id, status, time, reactions, hasMedia } = message;
   const [showMenus, setShowMenus] = useState(false);
   const [openMenus, setOpenMenus] = useState(false);
   const userId = useStore((state) => state.user.id);
+
+  const formatTime =
+    typeof time === "string"
+      ? dayjs(time).format("hh:mm")
+      : dayjs.unix(time).format("hh:mm");
+  const ownReaction = reactions?.find((r) => r.owner === userId);
 
   const stateChange = (open: boolean) => {
     setOpenMenus(open);
   };
 
-  const formatTime = dayjs(time).format("HH:MM");
-
   return (
-    <div
-      className={mc("px-5 md:px-[5%] lg:px-[76px] mt-1.5", hasTail && "mt-4")}
-    >
+    <div className={mc("ml-[76px] mr-[71px] mt-1.5", hasTail && "mt-4")}>
       <div
         onMouseEnter={() => {
           setShowMenus(true);
@@ -75,72 +74,74 @@ export function MessageContainer({
           setShowMenus(false);
         }}
         className={mc(
-          "relative w-full flex items-center justify-end gap-1 ",
+          "flex items-center gap-1 justify-end",
           !isOwnMsg && "justify-start"
         )}
       >
         <motion.div
           className={mc(
-            "gap-1 hidden",
+            "gap-1 hidden shrink-0",
             !isOwnMsg && "order-2",
             showMenus && "flex"
           )}
         >
           <Menu
-            id={id}
+            message={message}
             onOpenChange={stateChange}
             align={isOwnMsg ? "end" : "start"}
           />
           <ReactionMenu
             onOpenChange={stateChange}
-            ownReaction={reactions?.filter((r) => r.owner === userId)[0].type}
-            msgId={id}
+            ownReaction={ownReaction}
+            message={message}
           />
         </motion.div>
         <div
           className={mc(
-            "relative drop-shadow max-w-min",
-            !hasMedia && "max-w-9/10 md:max-w-8/10 lg:max-w-7/10"
+            "drop-shadow",
+            hasMedia ? "max-w-min" : "max-w-9/10 md:max-w-8/10 lg:max-w-7/10"
           )}
         >
-          {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
-          <div
-            className={mc(
-              "py-1 rounded-md overflow-hidden dark:bg-emerald-700 bg-green-200",
-              !isOwnMsg && "dark:bg-slate-700 bg-white",
-              hasTail
-                ? isOwnMsg
-                  ? "rounded-tr-none"
-                  : "rounded-tl-none"
-                : undefined
-            )}
-          >
-            {children}
-            <footer className="px-2 flex justify-end items-end gap-1 dark:text-slate-400 text-slate-500 text-sm">
-              {reactions && (
-                <div className="mt-1 mr-auto rounded-full p-0.5 flex gap-0.5 bg-white">
-                  {reactions.map(({ owner, type }) => (
-                    <div key={owner} className="w-5 h-5">
-                      <img
-                        alt={REACTIONS[type].emoji}
-                        src={REACTIONS[type].img}
-                        loading="lazy"
-                      />
-                    </div>
-                  ))}
-                </div>
+          <div className={mc("relative")}>
+            {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
+            <div
+              className={mc(
+                "py-1 rounded-md dark:bg-emerald-700 bg-green-200",
+                !isOwnMsg && "dark:bg-slate-700 bg-white",
+                hasTail
+                  ? isOwnMsg
+                    ? "rounded-tr-none"
+                    : "rounded-tl-none"
+                  : undefined
               )}
-
-              <div className="flex items-center gap-1 leading-none">
-                {starred && (
-                  <span className="w-4 h-4 inline-block">
-                    <Star className="text-yellow-500 fill-yellow-500 w-full h-full" />
-                  </span>
+            >
+              {children}
+              <footer className="px-2 flex justify-end items-end gap-1 dark:text-slate-400 text-slate-500 text-sm">
+                {reactions && reactions.length > 0 && (
+                  <div className="mt-1 mr-auto rounded-full p-0.5 flex gap-0.5 bg-white">
+                    {reactions.map(({ owner, type }) => (
+                      <div key={owner} className="w-5 h-5">
+                        <img
+                          alt={REACTIONS[type].emoji}
+                          src={REACTIONS[type].img}
+                          loading="lazy"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 )}
-                {formatTime}
-                {isOwnMsg && <Status status={status} />}
-              </div>
-            </footer>
+
+                <div className="flex items-center gap-1 leading-none">
+                  {starred && (
+                    <span className="w-4 h-4 inline-block">
+                      <Star className="text-yellow-500 fill-yellow-500 w-full h-full" />
+                    </span>
+                  )}
+                  {formatTime}
+                  {isOwnMsg && <Status status={status} />}
+                </div>
+              </footer>
+            </div>
           </div>
         </div>
       </div>
