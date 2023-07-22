@@ -1,8 +1,9 @@
 import { Chat } from "./Chat";
 import { Welcome } from "@/components";
-import useStore from "@/lib/store";
+import { useCurrentChatId } from "@/lib/hooks";
+
 export function RightColumn() {
-  const currentChatId = useStore((state) => state.currentChatId);
+  const { currentChatId } = useCurrentChatId();
 
   return (
     <section className="flex-1 w-full flex">
