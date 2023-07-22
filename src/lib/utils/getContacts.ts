@@ -1,6 +1,7 @@
-import CONTACTS from "../../assets/mock-data/contacts.json";
-import { UserType } from "../types";
+import { TUser } from "../types";
 
-export const getContacts = (): UserType[] => {
-  return CONTACTS.contacts;
+export const getContacts = async (): Promise<TUser[]> => {
+  return await import("../../assets/mock-data/contacts.json").then(
+    (res) => res.default
+  );
 };
