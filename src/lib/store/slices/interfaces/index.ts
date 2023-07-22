@@ -1,38 +1,28 @@
 import {
-  ConfigType,
-  UserType,
-  ChatType,
-  MessageType,
-  ReactionListType,
+  TChat,
+  TMessage,
+  TProfile,
+  TReaction,
   LeftDrawerContentOptions,
   RightDrawerContentOptions,
 } from "@/lib/types";
 
-// Interface para todos los Contactos
-export interface ContactsSlice {
-  contacts: UserType[];
-}
-
 // Interface para todos los Chats
 export interface ChatsSlice {
-  chats: ChatType[];
+  chats: TChat[];
 }
 
 // Interface de perfil
-export interface ProfileSlice {
-  profile: UserType;
+export interface ProfileSlice extends TProfile, ConfigSlice {
   changeName: (name: string) => void;
-  changeStatus: (status: string) => void;
+  changeBio: (bio: string) => void;
   changePicture: (picture: string) => void;
 }
 
 // Interface para la configuración
 export interface ConfigSlice {
-  config: ConfigType;
-  toggleNotifications: (
-    type: "ALL" | "SOUND" | "PREV_MSG" | "REACTIONS"
-  ) => void;
-  toggleSecurityNoti: () => void;
+  // TODO: Crear acciones para cambiar valor de notificaciones, privacidad y tema
+  toggleNotifications: () => void;
 }
 
 // Interface del Id del Chat actual
@@ -48,26 +38,16 @@ export interface ChatSlice {
   muteChat: (chatId: string) => void;
   deleteChat: (chatId: string) => void;
   archiveChat: (chatId: string) => void;
-  getAllMessages: () => void;
 }
 
 // Interface para las acciones de los mensajes
 export interface MessageSlice {
-  addMessage: (message: MessageType, chatId: string) => void;
-  deleteMessage: (messageId: string, chatId: string) => void;
-  toggleFavMessage: (messageId: string, chatId: string) => void;
-  updateMessageStatus: (messageId: string, chatId: string) => void;
-  addReaction: (
-    messageId: string,
-    reaction: ReactionListType,
-    chatId: string
-  ) => void;
-  deleteReaction: (messageId: string, chatId: string) => void;
-  changeReaction: (
-    messageId: string,
-    reaction: ReactionListType,
-    chatId: string
-  ) => void;
+  addMessage: (message: TMessage) => void;
+  deleteMessage: (message: TMessage) => void;
+  starMessage: (message: TMessage) => void;
+  addReaction: (message: TMessage, reaction: TReaction) => void;
+  changeReaction: (message: TMessage, reaction: TReaction) => void;
+  deleteReaction: (message: TMessage) => void;
 }
 
 export interface LeftDrawerSlice {
@@ -80,13 +60,17 @@ export interface RightDrawerSlice {
   rightDrawerGoTo: (to: RightDrawerContentOptions) => void;
   closeRightDrawer: () => void;
 }
+
+export interface LoadingSlice {
+  loading: "idle" | "contacts" | "chats" | "messages" | "ready";
+  prepareApp: Awaited<() => void>;
+}
 export interface StoreSlice
-  extends ContactsSlice,
-    ChatsSlice,
-    ConfigSlice,
+  extends ChatsSlice,
     ProfileSlice,
     CurrentChatIdSlice,
     ChatSlice,
     MessageSlice,
     LeftDrawerSlice,
-    RightDrawerSlice {}
+    RightDrawerSlice,
+    LoadingSlice {}
