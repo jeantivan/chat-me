@@ -1,7 +1,7 @@
+import dayjs from "dayjs";
 import { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-import dayjs from "dayjs";
 import { Menu } from "./Menu";
 import { ReactionMenu } from "./ReactionMenu";
 import { Status } from "./Status";
@@ -48,15 +48,15 @@ export function MessageContainer({
   hasTail,
   message,
 }: ContainerProps) {
-  const { starred, id, status, time, reactions, hasMedia } = message;
+  const { starred, status, time, reactions, hasMedia } = message;
   const [showMenus, setShowMenus] = useState(false);
   const [openMenus, setOpenMenus] = useState(false);
   const userId = useStore((state) => state.user.id);
 
   const formatTime =
     typeof time === "string"
-      ? dayjs(time).format("hh:mm")
-      : dayjs.unix(time).format("hh:mm");
+      ? dayjs(time).format("HH:mm")
+      : dayjs.unix(time).format("HH:mm");
   const ownReaction = reactions?.find((r) => r.owner === userId);
 
   const stateChange = (open: boolean) => {
@@ -64,7 +64,7 @@ export function MessageContainer({
   };
 
   return (
-    <div className={mc("ml-[76px] mr-[71px] mt-1.5", hasTail && "mt-4")}>
+    <div className={mc("ml-[76px] mr-[70px] mt-1.5", hasTail && "mt-4")}>
       <div
         onMouseEnter={() => {
           setShowMenus(true);
@@ -99,7 +99,7 @@ export function MessageContainer({
         <div
           className={mc(
             "drop-shadow",
-            hasMedia ? "max-w-min" : "max-w-9/10 md:max-w-8/10 lg:max-w-7/10"
+            hasMedia ? "max-w-min" : "max-w-8/10 lg:max-w-7/10"
           )}
         >
           <div className={mc("relative")}>
@@ -117,20 +117,18 @@ export function MessageContainer({
             >
               {children}
               <footer className="px-2 flex justify-end items-end gap-1 dark:text-slate-400 text-slate-500 text-sm">
-                {reactions && reactions.length > 0 && (
-                  <div className="mt-1 mr-auto rounded-full p-0.5 flex gap-0.5 bg-white">
+                {reactions.length > 0 && (
+                  <div className="select-none mr-auto flex gap-0.5">
                     {reactions.map(({ owner, type }) => (
-                      <div key={owner} className="w-5 h-5">
-                        <img
-                          alt={REACTIONS[type].emoji}
-                          src={REACTIONS[type].img}
-                          loading="lazy"
-                        />
+                      <div
+                        key={owner}
+                        className="p-1 rounded-full bg-neutral-500/70 text-[18px] leading-none text-center"
+                      >
+                        {REACTIONS[type].emoji}
                       </div>
                     ))}
                   </div>
                 )}
-
                 <div className="flex items-center gap-1 leading-none">
                   {starred && (
                     <span className="w-4 h-4 inline-block">
