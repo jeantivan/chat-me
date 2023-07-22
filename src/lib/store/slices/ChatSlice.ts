@@ -1,6 +1,5 @@
 import { StateCreator } from "zustand";
 import { ChatSlice, StoreSlice } from "./interfaces";
-import { getRestMsg } from "@/lib/utils/getRestMsg";
 
 export const createChatSlice: StateCreator<
   StoreSlice,
@@ -12,65 +11,45 @@ export const createChatSlice: StateCreator<
   [],
   ChatSlice
 > = (set, get) => ({
-  getAllMessages: () => {
-    const indexOfCurrentChat = get().chats.findIndex(
-      (chat) => chat.id === get().currentChatId
-    );
-    setTimeout(() => {
-      set((state) => {
-        if (state.chats[indexOfCurrentChat].shouldLoadOldMsg) {
-          const restMessages = getRestMsg();
-          state.chats[indexOfCurrentChat].messages.unshift(...restMessages);
-          state.chats[indexOfCurrentChat].shouldLoadOldMsg = false;
-        }
-      });
-    }, 1000);
-  },
   pinChat: (chatId) => {
     // Encuentra el index del chat en el array de chats
-    const indexOfChat = get().chats.findIndex((chat) => chat.id === chatId);
+    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
 
-    if (indexOfChat !== undefined) {
-      set((state) => {
-        state.chats[indexOfChat].isPinned = !state.chats[indexOfChat].isPinned;
-      });
-    }
+    if (chatIndex < 0) return;
+
+    set((state) => {
+      state.chats[chatIndex].pinned = !state.chats[chatIndex].pinned;
+    });
   },
   muteChat: (chatId) => {
     // Encuentra el index del chat en el array de chats
-    const indexOfChat = get().chats.findIndex((chat) => chat.id === chatId);
+    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
 
-    if (indexOfChat !== undefined) {
-      set((state) => {
-        state.chats[indexOfChat].isMuted = !state.chats[indexOfChat].isMuted;
-      });
-    }
-  },
-  closeChat: () => {
+    if (chatIndex < 0) return;
+
     set((state) => {
-      state.rightDrawer = null;
-      state.currentChatId = undefined;
+      state.chats[chatIndex].muted = !state.chats[chatIndex].muted;
     });
   },
+
   deleteChat: (chatId: string) => {
     const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
 
-    if (chatIndex !== undefined) {
-      set((state) => {
-        state.rightDrawer = null;
-        state.chats.splice(chatIndex, 1);
-      });
-    }
+    if (chatIndex < 0) return;
+
+    set((state) => {
+      state.rightDrawer = null;
+      state.chats.splice(chatIndex, 1);
+    });
   },
   archiveChat: (chatId: string) => {
     // Encuentra el index del chat en el array de chats
-    const indexOfChat = get().chats.findIndex((chat) => chat.id === chatId);
+    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
 
-    if (indexOfChat !== undefined) {
-      set((state) => {
-        state.chats[indexOfChat].isArchived =
-          !state.chats[indexOfChat].isArchived;
-      });
-    }
+    if (chatIndex < 0) return;
+
+    set((state) => {
+      state.chats[chatIndex].archived = !state.chats[chatIndex].archived;
+    });
   },
 });
