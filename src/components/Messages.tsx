@@ -1,39 +1,41 @@
 import { useRef, useEffect } from "react";
 import { Message } from "./Message";
-import { Loader } from "./Loader";
 
-import useStore from "@/lib/store";
-import { MessageType } from "@/lib/types";
+import { TMessage } from "@/lib/types";
+import { useUserId } from "@/lib/hooks";
 
-interface MessagesProps {
-  messages: MessageType[];
-  shouldLoadOldMsg: boolean;
-}
+type MessagesProps = {
+  messages: TMessage[];
+};
 
-export function Messages({ messages, shouldLoadOldMsg }: MessagesProps) {
+export function Messages({ messages }: MessagesProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const userId = useUserId();
 
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
     }
-  }, [messages]);
+  }, [messages, containerRef.current]);
 
   return (
     <div
-      className="messages overflow-y-auto bg-neutral-200 dark:bg-slate-900"
+      className="messages overflow-x-hidden overflow-y-scroll bg-slate-200 dark:bg-slate-900 py-5 grid items-end"
       ref={containerRef}
     >
-      <div className="py-5">
-        {shouldLoadOldMsg && <Loader />}
-        {messages.map((message, i, array) => (
+      {messages.map((message, i, array) => {
+        const isOwnMsg = userId === message.owner;
+        const hasTail = i === 0 || isOwnMsg !== (userId === array[i - 1].owner);
+
+        return (
           <Message
             key={message.id}
-            hasTail={i === 0 || message.isOwnMsg !== array[i - 1].isOwnMsg}
-            {...message}
+            isOwnMsg={isOwnMsg}
+            hasTail={hasTail}
+            message={message}
           />
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
