@@ -15,7 +15,7 @@ const initialProfileState: TProfile = {
   notifications: {
     all: true,
     sound: true,
-    preview: true,
+    preview: false,
     reactions: true,
   },
   // TPrivacy
