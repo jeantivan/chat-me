@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import relativeTime from "dayjs/plugin/relativeTime";
 import calendar from "dayjs/plugin/calendar";
+import useStore from "@/lib/store";
+import { Loading } from "./components/Loading";
 
 dayjs.extend(updateLocale);
 dayjs.extend(relativeTime);
@@ -30,11 +32,19 @@ dayjs.updateLocale("en", {
 });
 
 function App() {
+  const loading = useStore((state) => state.loading);
+
   return (
     <Main>
-      <LeftColumn />
+      {loading !== "ready" ? (
+        <Loading />
+      ) : (
+        <>
+          <LeftColumn />
 
-      <RightColumn />
+          <RightColumn />
+        </>
+      )}
     </Main>
   );
 }
