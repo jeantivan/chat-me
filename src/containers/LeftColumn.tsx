@@ -18,15 +18,35 @@ export function LeftColumn() {
 
       <ChatList />
       <LeftDrawer>
-        <LeftDrawerElement option="PROFILE" Component={Profile} />
-        <LeftDrawerElement option="OPTIONS" Component={Options} />
-        <LeftDrawerElement option="NOTIFICATIONS" Component={Notifications} />
-        <LeftDrawerElement option="PRIVACY" Component={Privacy} />
-        <LeftDrawerElement option="SECURITY" Component={Security} />
-        <LeftDrawerElement option="SOL_INFO" Component={SolInfo} />
-        <LeftDrawerElement option="HELP" Component={Help} />
-        <LeftDrawerElement option="BACKGROUND" Component={Background} />
-        <LeftDrawerElement option="NEW_CHAT" Component={NewChat} />
+        <LeftDrawerElement key="PROFILE" option="PROFILE" Component={Profile} />
+        <LeftDrawerElement key="OPTIONS" option="OPTIONS" Component={Options} />
+        <LeftDrawerElement
+          key="NOTIFICATIONS"
+          option="NOTIFICATIONS"
+          Component={Notifications}
+        />
+        <LeftDrawerElement key="PRIVACY" option="PRIVACY" Component={Privacy} />
+        <LeftDrawerElement
+          key="SECURITY"
+          option="SECURITY"
+          Component={Security}
+        />
+        <LeftDrawerElement
+          key="SOL_INFO"
+          option="SOL_INFO"
+          Component={SolInfo}
+        />
+        <LeftDrawerElement key="HELP" option="HELP" Component={Help} />
+        <LeftDrawerElement
+          key="BACKGROUND"
+          option="BACKGROUND"
+          Component={Background}
+        />
+        <LeftDrawerElement
+          key="NEW_CHAT"
+          option="NEW_CHAT"
+          Component={NewChat}
+        />
       </LeftDrawer>
     </section>
   );
