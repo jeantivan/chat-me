@@ -1,6 +1,5 @@
 import { StateCreator } from "zustand";
 import { MessageSlice, StoreSlice } from "./interfaces";
-import { ReactionType } from "@/lib/types";
 
 export const createMessageSlice: StateCreator<
   StoreSlice,
@@ -12,136 +11,119 @@ export const createMessageSlice: StateCreator<
   [],
   MessageSlice
 > = (set, get) => ({
-  addMessage: (message, chatId) => {
-    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+  addMessage: (message) => {
+    const chatIndex = get().chats.findIndex(
+      (chat) => chat.id === message.chatId
+    );
 
-    if (chatIndex !== undefined) {
-      set((state) => {
-        state.chats[chatIndex].messages.push(message);
-      });
-    }
+    if (chatIndex < 0) return;
+
+    set((state) => {
+      state.chats[chatIndex].messages.push(message);
+    });
   },
-  updateMessageStatus: (messageId, chatId) => {
-    // Investigar una buena manera de implementar la acción
-    // const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
-    // if (chatIndex !== undefined) {
-    //   set((state) => {
-    //     let messageIndex = state.chats[chatIndex].messages.findIndex(
-    //       (msg) => msg.id === messageId
-    //     );
-    //     switch (state.chats[chatIndex].messages[messageIndex].status) {
-    //       case "idle":
-    //         state.chats[chatIndex].messages[messageIndex].status = "send";
-    //         break;
-    //       case "send":
-    //         state.chats[chatIndex].messages[messageIndex].status = "received";
-    //         break;
-    //       case "received":
-    //         state.chats[chatIndex].messages[messageIndex].status = "read";
-    //         break;
-    //       default:
-    //         break;
-    //     }
-    //     state.chats[chatIndex].messages[messageIndex].status = "send";
-    //   });
-    // }
+
+  deleteMessage: (message) => {
+    const chatIndex = get().chats.findIndex(
+      (chat) => chat.id === message.chatId
+    );
+
+    if (chatIndex < 0) return;
+
+    set((state) => {
+      // Encuentra el index del Mensaje con id = messageId
+      let messageIndex = state.chats[chatIndex].messages.findIndex(
+        (m) => m.id === message.id
+      );
+
+      if (messageIndex < 0) return;
+
+      state.chats[chatIndex].messages.splice(messageIndex, 1);
+    });
   },
-  deleteMessage: (messageId, chatId) => {
-    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+  starMessage: (message) => {
+    const chatIndex = get().chats.findIndex(
+      (chat) => chat.id === message.chatId
+    );
 
-    if (chatIndex !== undefined) {
-      set((state) => {
-        // Encuentra el index del Mensaje con id = messageId
-        let indexOfMessage = state.chats[chatIndex].messages.findIndex(
-          (message) => message.id === messageId
-        );
-        if (indexOfMessage !== undefined) {
-          state.chats[chatIndex].messages.splice(indexOfMessage, 1);
-        }
-      });
-    }
+    if (chatIndex < 0) return;
+
+    set((state) => {
+      // Encuentra el index del Mensaje con id = messageId
+      let messageIndex = state.chats[chatIndex].messages.findIndex(
+        (m) => m.id === message.id
+      );
+
+      if (messageIndex) {
+        state.chats[chatIndex].messages[messageIndex].starred =
+          !state.chats[chatIndex].messages[messageIndex].starred;
+      }
+    });
   },
-  toggleFavMessage: (messageId, chatId) => {
-    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+  addReaction: (message, reaction) => {
+    const chatIndex = get().chats.findIndex(
+      (chat) => chat.id === message.chatId
+    );
 
-    if (chatIndex !== undefined) {
-      set((state) => {
-        // Encuentra el index del Mensaje con id = messageId
-        let indexOfMessage = state.chats[chatIndex].messages.findIndex(
-          (message) => message.id === messageId
-        );
+    if (chatIndex < 0) return;
 
-        if (indexOfMessage) {
-          state.chats[chatIndex].messages[indexOfMessage].isFavMsg =
-            !state.chats[chatIndex].messages[indexOfMessage].isFavMsg;
-        }
-      });
-    }
+    set((state) => {
+      // Encuentra la posición del mensaje
+      let messageIndex = state.chats[chatIndex].messages.findIndex(
+        (m) => m.id === message.id
+      );
+
+      if (messageIndex < 0) return;
+
+      state.chats[chatIndex].messages[messageIndex].reactions.push(reaction);
+    });
   },
-  addReaction: (messageId, reactionType, chatId) => {
-    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+  changeReaction: (message, reaction) => {
+    const userId = get().user.id;
+    const chatIndex = get().chats.findIndex(
+      (chat) => chat.id === message.chatId
+    );
 
-    if (chatIndex !== undefined) {
-      set((state) => {
-        // Encuentra el index del Mensaje con id = messageId
-        let indexOfMessage = state.chats[chatIndex].messages.findIndex(
-          (message) => message.id === messageId
-        );
+    if (chatIndex < 0) return;
 
-        if (indexOfMessage) {
-          let reaction: ReactionType = {
-            reaction: {
-              isOwnReaction: true,
-              type: reactionType,
-            },
-          };
+    set((state) => {
+      // Encuentra la posición del mensaje
+      let messageIndex = state.chats[chatIndex].messages.findIndex(
+        (m) => m.id === message.id
+      );
 
-          state.chats[chatIndex].messages[indexOfMessage].reactions.push(
-            reaction as never
-          );
-        }
-      });
-    }
+      if (messageIndex < 0) return;
+
+      const { reactions } = state.chats[chatIndex].messages[messageIndex];
+
+      state.chats[chatIndex].messages[messageIndex].reactions = [
+        ...reactions.filter((r) => r.owner !== userId),
+        reaction,
+      ];
+    });
   },
-  deleteReaction: (messageId, chatId) => {
-    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
 
-    if (chatIndex !== undefined) {
-      set((state) => {
-        // Encuentra el index del Mensaje con id = messageId
-        let indexOfMessage = state.chats[chatIndex].messages.findIndex(
-          (message) => message.id === messageId
-        );
+  deleteReaction: (message) => {
+    const userId = get().user.id;
+    const chatIndex = get().chats.findIndex(
+      (chat) => chat.id === message.chatId
+    );
 
-        if (indexOfMessage) {
-          state.chats[chatIndex].messages[indexOfMessage].reactions =
-            state.chats[chatIndex].messages[indexOfMessage].reactions.filter(
-              ({ reaction }) => !reaction.isOwnReaction
-            );
-        }
-      });
-    }
-  },
-  changeReaction: (messageId, reactionType, chatId) => {
-    const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
+    if (chatIndex < 0) return;
 
-    if (chatIndex !== undefined) {
-      set((state) => {
-        // Encuentra el index del Mensaje con id = messageId
-        let indexOfMessage = state.chats[chatIndex].messages.findIndex(
-          (message) => message.id === messageId
-        );
+    set((state) => {
+      // Encuentra la posición del mensaje
+      let messageIndex = state.chats[chatIndex].messages.findIndex(
+        (m) => m.id === message.id
+      );
 
-        if (indexOfMessage) {
-          state.chats[chatIndex].messages[indexOfMessage].reactions =
-            state.chats[chatIndex].messages[indexOfMessage].reactions.map(
-              ({ reaction }) =>
-                !reaction.isOwnReaction
-                  ? { reaction }
-                  : { reaction: { ...reaction, type: reactionType } }
-            );
-        }
-      });
-    }
+      if (messageIndex < 0) return;
+
+      const { reactions } = state.chats[chatIndex].messages[messageIndex];
+
+      state.chats[chatIndex].messages[messageIndex].reactions = [
+        ...reactions.filter((r) => r.owner !== userId),
+      ];
+    });
   },
 });
