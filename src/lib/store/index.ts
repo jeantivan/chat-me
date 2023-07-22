@@ -4,21 +4,21 @@ import { immer } from "zustand/middleware/immer";
 import { StoreSlice } from "./slices/interfaces";
 import {
   createChatsSlice,
-  createContactsSlice,
   createProfileSlice,
   createCurrentChatIdSlice,
   createChatSlice,
   createMessageSlice,
   createLeftDrawerSlice,
   createRightDrawerSlice,
+  createLoadingSlice,
 } from "./slices";
 
 const useStore = create<StoreSlice>()(
   devtools(
     persist(
       immer((...a) => ({
+        ...createLoadingSlice(...a),
         ...createProfileSlice(...a),
-        ...createContactsSlice(...a),
         ...createChatsSlice(...a),
         ...createCurrentChatIdSlice(...a),
         ...createChatSlice(...a),
