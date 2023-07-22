@@ -22,9 +22,10 @@ export const createCurrentChatIdSlice: StateCreator<
 
       state.currentChatId = chatId;
     }),
-  closeChat: () =>
+  closeChat: () => {
     set((state) => {
-      state.chats = state.chats.map((chat) => ({ ...chat, isOpenChat: false }));
+      state.rightDrawer = null;
       state.currentChatId = undefined;
-    }),
+    });
+  },
 });
