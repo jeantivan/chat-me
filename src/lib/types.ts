@@ -1,99 +1,84 @@
-import { Dispatch, SetStateAction } from "react";
-
-export type UserType = {
+export type TUser = {
   id: string;
   name: string;
-  status: string;
+  bio: string;
   phone: string;
-  picture: {
-    large: string;
-    medium: string;
-    thumbnail: string;
-  };
+  picture: string;
 };
 
-type NotificationsConfig = {
-  allNoti: boolean;
+export type TProfile = {
+  user: TUser;
+  contacts: TUser[];
+} & TConfig;
+
+export type TConfig = {
+  notifications: TNotifications;
+  privacy: TPrivacy;
+  theme: TTheme;
+};
+
+export type TNotifications = {
+  all: boolean;
   sound: boolean;
-  alerts: boolean;
-  previewMsg: boolean;
-  reactionsNoti: boolean;
+  preview: boolean;
+  reactions: boolean;
 };
 
-type PrivacyConfig = {
+export type TTheme = {
+  options: "dark" | "light" | "system";
+  mode: "dark" | "light";
+  color: "emerald" | "sky";
+};
+
+export type TPrivacy = {
   lastTimeOnline: "all" | "contacts" | "none";
-  profilePicture: "all" | "contacts" | "none";
-  info: "all" | "contacts" | "none";
+  picture: "all" | "contacts" | "none";
+  bio: "all" | "contacts" | "none";
+  groups: "all" | "contacts" | "none";
   readConfirmation: boolean;
-  tempMsg: "deactivated" | "24h" | "7d" | "90d";
-  groups: "all" | "contacts";
 };
 
-type SecurityConfig = {
-  showSecurityNoti: boolean;
-};
-
-export type ConfigType = {
-  notifications: NotificationsConfig;
-  privacy: PrivacyConfig;
-  security: SecurityConfig;
-};
-
-export type ContactType = {
-  name: { title: string; first: string; last: string; fullName: string };
-  phone: string;
-  picture: {
-    large: string;
-    medium: string;
-    thumbnail: string;
-  };
-};
-
-export type ChatType = {
+export type TChat = {
   id: string;
-  contact: UserType;
-  isPinned: boolean;
-  isMuted: boolean;
-  isArchived: boolean;
-  hasUnreadMsg: boolean;
-  shouldLoadOldMsg: boolean;
-  messages: MessageType[];
+  participants: TUser[]; // Uno o multiples usuarios pertenecientes al chat
+  pinned: boolean;
+  muted: boolean;
+  archived: boolean;
+  hasUnreadMsg: number;
+  messages: TMessage[];
 };
 
-export type MessageType = {
+export type TMessage = {
   id: string;
-  isOwnMsg: boolean;
-  isFavMsg: boolean;
+  chatId?: string; // Referencia a un chat id, solo visual
+  owner: string; // Referencia a un id de usuario
+  starred: boolean;
+  forwarded: boolean;
+  time: string | number;
   status: "idle" | "send" | "received" | "read";
-  message: {
-    type: "audio" | "video" | "image" | "text";
-    content: string | number;
-    orientation?: "squarish" | "landscape" | "portrait";
-  };
-  time: string;
-  reactions: ReactionType[] | [];
+  body: string;
+  reactions: TReaction[];
+  hasMedia: TMedia | null;
 };
 
-export type ReactionType = {
-  reaction: {
-    isOwnReaction: boolean;
-    type: ReactionListType;
-  };
-};
-export type ReactionListType =
-  | "thumbs-up"
-  | "heart"
-  | "face-with-tears-of-joy"
-  | "face-with-open-mouth"
-  | "crying-face"
-  | "folded-hands";
+export type TReaction = { owner: string; type: ReactionKeys };
 
-export type SelectedChatState = {
-  selectedChat: ContactType | null;
-  setSelectedChat: Dispatch<SetStateAction<ContactType | null>>;
+export type TMedia = {
+  type: "image" | "video";
+  src: string;
+  orientation: "square" | "landscape" | "portrait";
+  duration: number | null;
 };
 
-export type ShortCut = {
+export type ReactionKeys =
+  | ":clapping_hands:"
+  | ":sparkling_heart:"
+  | ":rolling_on_the_floor_laughing:"
+  | ":hushed_face:"
+  | ":loudly_crying_face:"
+  | ":thinking_face:";
+
+export type TShortCut = {
   slug: string;
   title: string;
   keys: string[];
