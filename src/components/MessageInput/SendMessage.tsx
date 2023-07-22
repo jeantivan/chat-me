@@ -5,37 +5,40 @@ import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextCon
 import { CustomIcon } from "@/components/CustomIcon";
 import useStore from "@/lib/store";
 import { SAVE_EDITOR } from "@/plugins/SaveEditorPlugin";
-import { MessageType } from "@/lib/types";
+import { TMessage } from "@/lib/types";
 import mc from "@/lib/utils/mergeClassnames";
-
-const createMessage = (content: string): MessageType => {
-  return {
-    id: uuid(),
-    message: { type: "text", content },
-    status: "read",
-    isOwnMsg: true,
-    isFavMsg: false,
-    reactions: [],
-    time: Date.now().toString(),
-  };
-};
+import { useCurrentChatId, useUserId } from "@/lib/hooks";
+import dayjs from "dayjs";
 
 export function SendMessage() {
   const [editor] = useLexicalComposerContext();
   const isEditorEmpty = useLexicalIsTextContentEmpty(editor, true);
-
-  const currentChatId = useStore((state) => state.currentChatId);
+  const { currentChatId } = useCurrentChatId();
+  const userId = useUserId();
   const addMessage = useStore((state) => state.addMessage);
+
+  const createMessage = (body: string): TMessage => {
+    return {
+      id: uuid(),
+      chatId: currentChatId,
+      owner: userId,
+      starred: false,
+      forwarded: false,
+      hasMedia: null,
+      status: "read",
+      reactions: [],
+      time: dayjs().toISOString(),
+      body,
+    };
+  };
 
   const handleSubmit = () => {
     if (!currentChatId) return;
 
     editor.dispatchCommand(SAVE_EDITOR, {
-      onSave: (content: string) =>
-        addMessage(createMessage(content), currentChatId),
+      onSave: (body: string) => addMessage(createMessage(body)),
+      asHtml: true,
     });
-
-    //addMessage(createMessage(messageContent), currentChatId);
   };
   return (
     <button
