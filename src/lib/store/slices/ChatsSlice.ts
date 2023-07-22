@@ -1,6 +1,5 @@
 import { StateCreator } from "zustand";
 import { ChatsSlice, StoreSlice } from "./interfaces";
-import { getChats } from "@/lib/utils/getChats";
 
 export const createChatsSlice: StateCreator<
   StoreSlice,
@@ -12,5 +11,5 @@ export const createChatsSlice: StateCreator<
   [],
   ChatsSlice
 > = () => ({
-  chats: getChats(),
+  chats: [],
 });
