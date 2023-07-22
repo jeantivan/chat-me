@@ -1,25 +1,29 @@
-import { getRandomMsg } from "./getRandomMsg";
-import { getContacts } from "./getContacts";
 import { shuffle } from "lodash";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
+import { TChat, TUser } from "@/lib/types";
+import { mapMessages } from "./mapMessages";
 
-export const getChats = () => {
-  // Choose 20 random contacts from the original array
-  const contacts = shuffle(getContacts()).slice(0, 20);
+const allMessages = await import("../../assets/mock-data/messages.json").then(
+  (res) => res.default
+);
 
-  const randomPinnedChat = Math.floor(Math.random() * 20);
+export const getChats = (contacts: TUser[]) => {
+  const randomChats = shuffle(contacts).slice(0, 10);
 
-  const chats = contacts.map((contact, index) => ({
-    id: uuidv4(),
-    contact,
-    isPinned: randomPinnedChat === index,
-    isMuted: false,
-    isArchived: false,
-    isOpenChat: false,
-    hasUnreadMsg: false,
-    shouldLoadOldMsg: true,
-    messages: [getRandomMsg()],
-  }));
+  const randomPinnedChat = Math.floor(Math.random() * randomChats.length);
+
+  const chats: TChat[] = randomChats.map((contact, index) => {
+    const id = uuid();
+    return {
+      id,
+      participants: [contact],
+      pinned: randomPinnedChat === index,
+      muted: false,
+      archived: false,
+      hasUnreadMsg: 0,
+      messages: mapMessages(allMessages, contact, id),
+    };
+  });
 
   return chats;
 };
