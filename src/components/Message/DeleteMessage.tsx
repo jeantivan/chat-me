@@ -7,16 +7,20 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/AlertDialog";
 import useStore from "@/lib/store";
+import { TMessage } from "@/lib/types";
 
-interface DeleteMessageProps {
+type DeleteMessageProps = {
   open: boolean;
   openChange: (open: boolean) => void;
-  msgId: string;
-}
+  message: TMessage;
+};
 
-export function DeleteMessage({ msgId, open, openChange }: DeleteMessageProps) {
+export function DeleteMessage({
+  message,
+  open,
+  openChange,
+}: DeleteMessageProps) {
   const deleteMessage = useStore((state) => state.deleteMessage);
-  const currentChatId = useStore((state) => state.currentChatId);
 
   return (
     <AlertDialogRoot open={open} onOpenChange={openChange}>
@@ -37,7 +41,7 @@ export function DeleteMessage({ msgId, open, openChange }: DeleteMessageProps) {
               <Button
                 variant="filled"
                 onClick={() => {
-                  deleteMessage(msgId, currentChatId!);
+                  deleteMessage(message);
                 }}
               >
                 Eliminar mensaje
