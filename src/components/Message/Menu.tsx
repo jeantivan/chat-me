@@ -9,23 +9,21 @@ import {
 } from "@/components/ui/Menu";
 import useStore from "@/lib/store";
 import mc from "@/lib/utils/mergeClassnames";
+import { TMessage } from "@/lib/types";
 
 export function Menu({
-  id,
-  isFavMsg,
+  message,
   onOpenChange,
   align = "end",
 }: {
-  id: string;
-  isFavMsg?: boolean;
+  message: TMessage;
   align?: "start" | "end";
   onOpenChange?: (open: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  const currentChatId = useStore((state) => state.currentChatId);
-  const toggleFavMessage = useStore((state) => state.toggleFavMessage);
+  const starMessage = useStore((state) => state.starMessage);
 
   return (
     <MenuRoot
@@ -48,10 +46,10 @@ export function Menu({
           <MenuItem disabled>Reenviar</MenuItem>
           <MenuItem
             onClick={() => {
-              toggleFavMessage(id, currentChatId!);
+              starMessage(message);
             }}
           >
-            {isFavMsg ? "No destacar" : "Destacar"}
+            {message.starred ? "No destacar" : "Destacar"}
           </MenuItem>
           <MenuItem
             onClick={(e) => {
@@ -64,7 +62,7 @@ export function Menu({
         </MenuContent>
       )}
       <DeleteMessage
-        msgId={id}
+        message={message}
         open={openDeleteModal}
         openChange={setOpenDeleteModal}
       />
