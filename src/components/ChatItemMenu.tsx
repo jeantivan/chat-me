@@ -6,28 +6,32 @@ import mc from "@/lib/utils/mergeClassnames";
 import useStore from "@/lib/store";
 
 type ChatItemMenuProps = {
-  isMuted: boolean;
-  isPinned: boolean;
-  isOpenChat: boolean;
+  isMuted?: boolean;
+  isPinned?: boolean;
+  isArchived?: boolean;
+  isOpenChat?: boolean;
   chatId: string;
 };
 export function ChatItemMenu({
   chatId,
   isMuted,
   isPinned,
+  isArchived,
   isOpenChat,
 }: ChatItemMenuProps) {
-  const { deleteChat, muteChat, pinChat, closeChat } = useStore(
-    ({ deleteChat, muteChat, pinChat, closeChat }) => ({
+  const { archiveChat, deleteChat, closeChat, muteChat, pinChat } = useStore(
+    ({ archiveChat, closeChat, deleteChat, muteChat, pinChat }) => ({
+      archiveChat,
+      closeChat,
       deleteChat,
       muteChat,
       pinChat,
-      closeChat,
     })
   );
   return (
     <MenuRoot>
       <MenuTrigger
+        onClick={(e) => e.stopPropagation()}
         className={mc(
           "p-0.5 outline-none inline-flex rounded-lg",
           "text-slate-800 dark:text-slate-100",
@@ -41,15 +45,24 @@ export function ChatItemMenu({
         />
       </MenuTrigger>
       <MenuContent align="start">
-        <MenuItem disabled>Archivar chat</MenuItem>
         <MenuItem
           onClick={(e) => {
             e.stopPropagation();
-            muteChat(chatId);
+            archiveChat(chatId);
           }}
         >
-          {isMuted ? "Activar notificaciones" : "Silenciar notificaciones"}
+          {isArchived ? "Desarchivar chat" : "Archivar chat"}
         </MenuItem>
+        {!isArchived && (
+          <MenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              muteChat(chatId);
+            }}
+          >
+            {isMuted ? "Activar notificaciones" : "Silenciar notificaciones"}
+          </MenuItem>
+        )}
         <MenuItem
           onClick={(e) => {
             e.stopPropagation();
@@ -59,14 +72,16 @@ export function ChatItemMenu({
         >
           Eliminar chat
         </MenuItem>
-        <MenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            pinChat(chatId);
-          }}
-        >
-          {isPinned ? "Desfijar chat" : "Fijar chat"}
-        </MenuItem>
+        {!isArchived && (
+          <MenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              pinChat(chatId);
+            }}
+          >
+            {isPinned ? "Desfijar chat" : "Fijar chat"}
+          </MenuItem>
+        )}
       </MenuContent>
     </MenuRoot>
   );
