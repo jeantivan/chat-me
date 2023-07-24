@@ -5,11 +5,11 @@ import { Profile } from "@/components/Configuration/Profile";
 import { Options } from "@/components/Configuration/Options";
 import { Notifications } from "@/components/Configuration/Notifications";
 import { Privacy } from "@/components/Configuration/Privacy";
-import { Security } from "@/components/Configuration/Security";
 import { SolInfo } from "@/components/Configuration/SolInfo";
 import { Help } from "@/components/Configuration/Help";
 import { Background } from "@/components/Configuration/Background";
 import { NewChat } from "@/components/NewChat";
+import { ArchivedChats } from "@/components/ArchivedChats";
 
 export function LeftColumn() {
   return (
@@ -26,11 +26,7 @@ export function LeftColumn() {
           Component={Notifications}
         />
         <LeftDrawerElement key="PRIVACY" option="PRIVACY" Component={Privacy} />
-        <LeftDrawerElement
-          key="SECURITY"
-          option="SECURITY"
-          Component={Security}
-        />
+
         <LeftDrawerElement
           key="SOL_INFO"
           option="SOL_INFO"
@@ -46,6 +42,11 @@ export function LeftColumn() {
           key="NEW_CHAT"
           option="NEW_CHAT"
           Component={NewChat}
+        />
+        <LeftDrawerElement
+          key="ARCHIVED_CHATS"
+          option="ARCHIVED_CHATS"
+          Component={ArchivedChats}
         />
       </LeftDrawer>
     </section>

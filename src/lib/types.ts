@@ -88,14 +88,14 @@ export type LeftDrawerContentOptions =
   | "PROFILE"
   | "NOTIFICATIONS"
   | "PRIVACY"
-  | "SECURITY"
   | "THEME"
   | "BACKGROUND"
   | "SOL_INFO"
   | "HELP"
   | "OPTIONS"
   | "SHORTCUTS"
-  | "NEW_CHAT";
+  | "NEW_CHAT"
+  | "ARCHIVED_CHATS";
 
 export type RightDrawerContentOptions =
   | "CONTACT_INFO"
