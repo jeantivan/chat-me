@@ -32,7 +32,6 @@ const AnimateIcon = forwardRef<HTMLSpanElement, HTMLMotionProps<"span">>(
 interface ChatItemProps {
   chat: TChat;
 }
-
 export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
   const userId = useStore((state) => state.user.id);
   const { currentChatId, setCurrentChatId } = useCurrentChatId();
@@ -41,21 +40,16 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
   const { name, picture } = chat.participants[0];
   const { time, body, owner, status } = chat.messages[chat.messages.length - 1];
 
-  const formatTime =
-    typeof time === "string"
-      ? dayjs(time).fromNow(true)
-      : dayjs.unix(time).fromNow(true);
+  const formatTime = dayjs(time).fromNow(true);
 
   const isOpenChat = currentChatId === chat.id;
   const isOwnMsg = owner === userId;
 
   return (
-    <motion.div
+    <div
       onClick={() => {
         setCurrentChatId(chat.id);
       }}
-      animate="initial"
-      initial="initial"
       className={mc(
         "flex select-none cursor-pointer p-2 gap-4 rounded-xl",
         isOpenChat && "dark:bg-emerald-800/70 bg-emerald-200/70",
@@ -69,6 +63,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
             className="bg-gray-400 w-full h-full overflow-hidden rounded-full"
             src={picture}
             alt={`Foto de perfil de ${name}`}
+            loading="lazy"
           />
         </div>
       </div>
@@ -95,6 +90,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
             chatId={chat.id}
             isMuted={chat.muted}
             isPinned={chat.pinned}
+            isArchived={chat.archived}
             isOpenChat={isOpenChat}
           />
         </div>
@@ -110,10 +106,10 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
               <Status status={status} />{" "}
             </span>
           )}
-          <p className="truncate">{body}</p>
+          <p className="flex-1 truncate">{body}</p>
           <span className="shrink-0 mr-1.5">{formatTime}</span>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 });
