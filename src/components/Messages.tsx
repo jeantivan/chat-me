@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { Message } from "./Message";
 
 import { TMessage } from "@/lib/types";
-import { useUserId } from "@/lib/hooks";
+import { useCurrentChatId, useUserId } from "@/lib/hooks";
 
 type MessagesProps = {
   messages: TMessage[];
@@ -11,12 +11,13 @@ type MessagesProps = {
 export function Messages({ messages }: MessagesProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const userId = useUserId();
+  const { currentChatId } = useCurrentChatId();
 
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
     }
-  }, [messages, containerRef.current]);
+  }, [containerRef.current, currentChatId]);
 
   return (
     <div
