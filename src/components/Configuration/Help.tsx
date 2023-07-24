@@ -26,10 +26,10 @@ const Item = ({ icon, label, ...rest }: { icon: IconType; label: string }) => (
 );
 
 export function Help() {
-  const close = useStore((state) => state.close);
+  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   return (
     <>
-      <Header goBack={close}>Ayuda</Header>
+      <Header goBack={closeLeftDrawer}>Ayuda</Header>
       <div className="h-full flex">
         <div className="w-full mt-auto">
           <Item icon={BsQuestionCircleFill} label="Centro de ayuda" />

@@ -5,10 +5,10 @@ import { CustomIcon } from "@/components/CustomIcon";
 import useStore from "@/lib/store";
 
 export function SolInfo() {
-  const close = useStore((state) => state.close);
+  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   return (
     <>
-      <Header goBack={close}>Solicitar info de mi cuenta</Header>
+      <Header goBack={closeLeftDrawer}>Solicitar info de mi cuenta</Header>
       <div className="py-7 overflow-y-auto">
         <div className="mx-auto flex flex-col">
           <motion.div

@@ -53,7 +53,7 @@ export interface MessageSlice {
 export interface LeftDrawerSlice {
   leftDrawer: LeftDrawerContentOptions | null;
   leftDrawerGoTo: (to: LeftDrawerContentOptions) => void;
-  close: () => void;
+  closeLeftDrawer: () => void;
 }
 export interface RightDrawerSlice {
   rightDrawer: RightDrawerContentOptions | null;

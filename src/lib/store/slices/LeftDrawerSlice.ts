@@ -18,7 +18,7 @@ export const createLeftDrawerSlice: StateCreator<
       state.leftDrawer = to;
     });
   },
-  close: () =>
+  closeLeftDrawer: () =>
     set((state) => {
       state.leftDrawer = null;
     }),

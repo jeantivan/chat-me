@@ -9,10 +9,10 @@ import { CheckBox } from "@/components/CheckBox";
 import useStore from "@/lib/store";
 
 export function Privacy() {
-  const close = useStore((state) => state.close);
+  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   return (
     <>
-      <Header goBack={close}>Privacidad</Header>
+      <Header goBack={closeLeftDrawer}>Privacidad</Header>
       <div className="overflow-y-auto flex-1 bg-neutral-100 dark:bg-slate-900">
         <div className="flex flex-col">
           <div className="py-4 px-6 mb-5 bg-white dark:bg-slate-800">

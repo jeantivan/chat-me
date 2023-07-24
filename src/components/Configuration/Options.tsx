@@ -58,11 +58,11 @@ const Item = ({
 );
 
 export function Options() {
-  const close = useStore((state) => state.close);
+  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
   return (
     <>
-      <Header goBack={close}>Configuración</Header>
+      <Header goBack={closeLeftDrawer}>Configuración</Header>
       <div className="overflow-y-auto flex-1 flex flex-col h-full">
         <User
           onClick={() => {

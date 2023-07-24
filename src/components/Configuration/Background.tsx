@@ -2,10 +2,10 @@ import { Header } from "./Header";
 import useStore from "@/lib/store";
 
 export function Background() {
-  const close = useStore((state) => state.close);
+  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   return (
     <>
-      <Header goBack={close}>Elegir color de fondo</Header>
+      <Header goBack={closeLeftDrawer}>Elegir color de fondo</Header>
     </>
   );
 }

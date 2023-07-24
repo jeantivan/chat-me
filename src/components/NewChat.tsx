@@ -4,7 +4,7 @@ import { IconButton } from "./ui/IconButton";
 import { ArrowLeft } from "lucide-react";
 
 export function NewChat() {
-  const close = useStore((state) => state.close);
+  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   return (
     <>
       <header className="pt-16 bg-emerald-700 dark:bg-slate-700 pb-5">
@@ -21,7 +21,7 @@ export function NewChat() {
           className="px-4 flex items-center"
         >
           <IconButton
-            onClick={close}
+            onClick={closeLeftDrawer}
             className="mr-6"
             icon={ArrowLeft}
             label="Volver atrás"

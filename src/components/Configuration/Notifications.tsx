@@ -5,12 +5,12 @@ import { CheckBox } from "@/components/CheckBox";
 import useStore from "@/lib/store";
 
 export function Notifications() {
-  const close = useStore((state) => state.close);
+  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   const notifications = useStore((state) => state.notifications);
   const toggleNotification = useStore((state) => state.toggleNotifications);
   return (
     <>
-      <Header goBack={close}>Notificaciones</Header>
+      <Header goBack={closeLeftDrawer}>Notificaciones</Header>
       <motion.div
         initial={{ x: 20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}

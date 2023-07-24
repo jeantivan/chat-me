@@ -5,7 +5,7 @@ import { ChangeUserImage } from "@/components/ChangeUserImage";
 import useStore from "@/lib/store";
 
 export function Profile() {
-  const close = useStore((state) => state.close);
+  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
 
   const { name, bio } = useStore((state) => state.user);
   const { changeName, changeBio } = useStore((state) => ({
@@ -23,7 +23,7 @@ export function Profile() {
 
   return (
     <>
-      <Header goBack={close}>Perfil</Header>
+      <Header goBack={closeLeftDrawer}>Perfil</Header>
       <div className="py-6 overflow-y-auto">
         <div className="w-full flex justify-center mb-5">
           <motion.div
