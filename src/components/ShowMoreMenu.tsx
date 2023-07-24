@@ -15,7 +15,12 @@ export function ShowMoreMenu() {
     <MenuRoot>
       <MenuTrigger icon={MoreVertical} label="Mostrar más" />
       <MenuContent align="end" className="w-60">
-        <MenuItem disabled icon={Archive}>
+        <MenuItem
+          icon={Archive}
+          onClick={() => {
+            leftDrawerGoTo("ARCHIVED_CHATS");
+          }}
+        >
           Chats Archivados
         </MenuItem>
         <MenuItem disabled icon={Bookmark}>
