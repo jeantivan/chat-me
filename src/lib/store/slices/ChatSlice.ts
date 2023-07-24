@@ -49,6 +49,10 @@ export const createChatSlice: StateCreator<
     if (chatIndex < 0) return;
 
     set((state) => {
+      if (chatId === state.currentChatId) {
+        state.currentChatId = undefined;
+      }
+      state.chats[chatIndex].pinned = false;
       state.chats[chatIndex].archived = !state.chats[chatIndex].archived;
     });
   },
