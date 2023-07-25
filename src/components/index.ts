@@ -8,6 +8,5 @@ export { SearchChats } from "./SearchChats";
 
 export { LeftDrawer, LeftDrawerElement } from "./LeftDrawer";
 export { RightDrawer, RightDrawerElement } from "./RightDrawer";
-export { CreateMessage } from "./CreateMessage";
 export { Message } from "./Message";
 export { MessageInput } from "./MessageInput";
