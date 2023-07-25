@@ -1,21 +1,18 @@
 import { useState } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Smile } from "lucide-react";
 import {
   MenuRoot,
   MenuContent,
   MenuTrigger,
-  RadioGroup,
-  RadioItem,
   Arrow,
 } from "@/components/ui/Menu";
 import mc from "@/lib/utils/mergeClassnames";
 import { REACTIONS } from "@/lib/utils/constants";
 import { ReactionKeys, TMessage, TReaction } from "@/lib/types";
 import useStore from "@/lib/store";
-import { useCurrentChatId, useUserId } from "@/lib/hooks";
+import { useUserId } from "@/lib/hooks";
 
 const itemVariants = {
   initial: {
@@ -33,7 +30,7 @@ const ReactionItem = ({
     <ToggleGroup.Item
       {...rest}
       className={mc(
-        "w-11 h-11 p-2 rounded-full",
+        "w-auto h-11 p-2 rounded-full",
         "inline-grid place-items-center",
         "focus-none outline-none cursor-pointer",
         "data-[state=on]:bg-slate-200/80 dark:data-[state=on]:bg-slate-700/80",
@@ -132,12 +129,12 @@ export function ReactionMenu({
                     key={REACTIONS[reaction].shortcode}
                     value={REACTIONS[reaction].shortcode}
                   >
-                    <motion.img
-                      whileHover={{ scale: 1.1 }}
-                      loading="lazy"
-                      alt={REACTIONS[reaction].emoji}
-                      src={REACTIONS[reaction].img}
-                    />
+                    <motion.div
+                      whileHover={{ scale: 1.15, rotate: "10deg" }}
+                      className="text-[26px] leading-none"
+                    >
+                      {REACTIONS[reaction].emoji}
+                    </motion.div>
                   </ReactionItem>
                 ))}
               </ToggleGroup.Root>
