@@ -8,11 +8,6 @@ import {
   TNotifications,
 } from "@/lib/types";
 
-// Interface para todos los Chats
-export interface ChatsSlice {
-  chats: TChat[];
-}
-
 // Interface de perfil
 export interface ProfileSlice extends TProfile, ConfigSlice {
   changeName: (name: string) => void;
@@ -34,6 +29,7 @@ export interface CurrentChatIdSlice {
 
 // Interface para el Chat
 export interface ChatSlice {
+  chats: TChat[];
   pinChat: (chatId: string) => void;
   muteChat: (chatId: string) => void;
   deleteChat: (chatId: string) => void;
@@ -66,8 +62,7 @@ export interface LoadingSlice {
   prepareApp: Awaited<() => void>;
 }
 export interface StoreSlice
-  extends ChatsSlice,
-    ProfileSlice,
+  extends ProfileSlice,
     CurrentChatIdSlice,
     ChatSlice,
     MessageSlice,
