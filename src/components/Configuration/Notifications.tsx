@@ -1,7 +1,8 @@
-import * as Label from "@radix-ui/react-label";
 import { motion } from "framer-motion";
 import { Header } from "./Header";
 import { Checkbox } from "@/components/ui/Checkbox";
+import { Separator } from "@/components/ui/Separator";
+import { Label } from "@/components/ui/Label";
 import useStore from "@/lib/store";
 
 export function Notifications() {
@@ -17,72 +18,64 @@ export function Notifications() {
         exit={{ x: 20, opacity: 0 }}
         transition={{ type: "tween" }}
       >
-        <div className="py-6 px-12">
-          <div className="flex items-center w-full mb-5">
+        <div className="p-6">
+          <h2 className="text-emerald-600 mb-6">Mensajes</h2>
+          <div className="flex gap-4 items-center w-full mb-2">
+            <Label htmlFor="all">
+              Notificaciones de mensajes
+              <span className="mt-1 text-sm select-none inline-block text-gray-400">
+                Se muestran notificaciones de mensajes nuevos
+              </span>
+            </Label>
             <Checkbox
-              id="allNoti"
+              id="all"
               checked={notifications.all}
               onCheckedChange={() => {
-                toggleNotification();
+                toggleNotification("all");
               }}
             />
-
-            <Label.Root
-              htmlFor="allNoti"
-              className="ml-3 select-none text-sm text-gray-900 dark:text-gray-100"
-            >
-              Silenciar todas las notificaciones
-            </Label.Root>
           </div>
-          <div className="flex items-center w-full mb-5">
+          <Separator />
+          <div className="flex gap-4 items-center w-full mt-5 mb-4">
+            <Label htmlFor="preview" disabled={!notifications.all}>
+              Vista previa de los mensajes
+            </Label>
+            <Checkbox
+              id="preview"
+              disabled={!notifications.all}
+              checked={notifications.preview}
+              onCheckedChange={() => {
+                toggleNotification("preview");
+              }}
+            />
+          </div>
+          <div className="flex gap-4 items-center w-full">
+            <Label htmlFor="reactions" disabled={!notifications.all}>
+              Mostrar notificaciones de reacciones
+            </Label>
+            <Checkbox
+              id="reactions"
+              disabled={!notifications.all}
+              checked={notifications.reactions}
+              onCheckedChange={() => {
+                toggleNotification("reactions");
+              }}
+            />
+          </div>
+          <div className="flex items-center w-full mt-12">
+            <Label htmlFor="sound">
+              Sonido
+              <span className="mt-1 text-sm select-none inline-block text-gray-400">
+                Reproduce un sonido cuando llega un mensaje
+              </span>
+            </Label>
             <Checkbox
               id="sound"
               checked={notifications.sound}
               onCheckedChange={() => {
-                toggleNotification();
+                toggleNotification("sound");
               }}
             />
-
-            <Label.Root
-              htmlFor="sound"
-              className="ml-3 select-none text-sm text-gray-900 dark:text-gray-100"
-            >
-              Sonidos
-            </Label.Root>
-          </div>
-
-          <div className="flex w-full mb-5">
-            <Checkbox
-              id="preview"
-              checked={notifications.preview}
-              onCheckedChange={() => {
-                toggleNotification();
-              }}
-            />
-            <Label.Root
-              htmlFor="preview"
-              className="ml-3 select-none text-sm text-gray-900 dark:text-gray-100"
-            >
-              Vista previa de los mensajes
-              <span className="mt-1 select-none inline-block text-gray-400">
-                Se muestra el texto del mensaje en las alertas del escritorio
-              </span>
-            </Label.Root>
-          </div>
-          <div className="flex items-center w-full mb-5">
-            <Checkbox
-              id="reactions"
-              checked={notifications.reactions}
-              onCheckedChange={() => {
-                toggleNotification();
-              }}
-            />
-            <Label.Root
-              htmlFor="reactions"
-              className="ml-3 select-none text-sm text-gray-900 dark:text-gray-100"
-            >
-              Silenciar notificaciones de las reacciones
-            </Label.Root>
           </div>
         </div>
       </motion.div>
