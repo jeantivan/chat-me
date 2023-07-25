@@ -6,9 +6,8 @@ import { BellOff, Pin } from "lucide-react";
 import { ChatItemMenu } from "./ChatItemMenu";
 import { Status } from "./Message/Status";
 import mc from "@/lib/utils/mergeClassnames";
-import useStore from "@/lib/store";
-import { TChat } from "@/lib/types";
-import { useCurrentChatId } from "@/lib/hooks";
+import { TChat, TMessage } from "@/lib/types";
+import { useCurrentChatId, useUserId } from "@/lib/hooks";
 
 const iconVariants = {
   initial: { scale: 0, opacity: 0, y: -10 },
@@ -29,21 +28,45 @@ const AnimateIcon = forwardRef<HTMLSpanElement, HTMLMotionProps<"span">>(
   )
 );
 
+type LastMessageProps = {
+  message: TMessage;
+  hasUnreadMsg: number | boolean;
+};
+const LastMessage = (props: LastMessageProps) => {
+  const userId = useUserId();
+  const { time, body, status, owner } = props.message;
+  const isOwnMsg = owner === userId;
+  const formatTime = dayjs(time).fromNow(true);
+  return (
+    <div
+      className={mc(
+        "w-full flex items-center gap-1 text-sm",
+        "dark:text-gray-400 text-gray-500",
+        props.hasUnreadMsg && "dark:text-white text-black"
+      )}
+    >
+      {isOwnMsg && (
+        <span className="shrink-0 inline-flex">
+          <Status status={status} />{" "}
+        </span>
+      )}
+      <p className="flex-1 truncate">{body}</p>
+      <span className="shrink-0 mr-1.5">{formatTime}</span>
+    </div>
+  );
+};
+
 interface ChatItemProps {
   chat: TChat;
 }
 export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
-  const userId = useStore((state) => state.user.id);
   const { currentChatId, setCurrentChatId } = useCurrentChatId();
 
   const { hasUnreadMsg } = chat;
   const { name, picture } = chat.participants[0];
-  const { time, body, owner, status } = chat.messages[chat.messages.length - 1];
-
-  const formatTime = dayjs(time).fromNow(true);
+  const lastMessage = chat.messages[chat.messages.length - 1];
 
   const isOpenChat = currentChatId === chat.id;
-  const isOwnMsg = owner === userId;
 
   return (
     <div
@@ -94,21 +117,9 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
             isOpenChat={isOpenChat}
           />
         </div>
-        <div
-          className={mc(
-            "w-full flex items-center gap-1 text-sm",
-            "dark:text-gray-400 text-gray-500",
-            hasUnreadMsg && "dark:text-white text-black"
-          )}
-        >
-          {isOwnMsg && (
-            <span className="shrink-0 inline-flex">
-              <Status status={status} />{" "}
-            </span>
-          )}
-          <p className="flex-1 truncate">{body}</p>
-          <span className="shrink-0 mr-1.5">{formatTime}</span>
-        </div>
+        {lastMessage && (
+          <LastMessage message={lastMessage} hasUnreadMsg={hasUnreadMsg} />
+        )}
       </div>
     </div>
   );
