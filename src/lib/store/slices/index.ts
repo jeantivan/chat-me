@@ -1,4 +1,3 @@
-export { createChatsSlice } from "./ChatsSlice";
 export { createProfileSlice } from "./ProfileSlice";
 export { createCurrentChatIdSlice } from "./CurrentChatIdSlice";
 export { createChatSlice } from "./ChatSlice";

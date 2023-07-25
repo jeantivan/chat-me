@@ -3,7 +3,6 @@ import { persist, devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { StoreSlice } from "./slices/interfaces";
 import {
-  createChatsSlice,
   createProfileSlice,
   createCurrentChatIdSlice,
   createChatSlice,
@@ -19,7 +18,6 @@ const useStore = create<StoreSlice>()(
       immer((...a) => ({
         ...createLoadingSlice(...a),
         ...createProfileSlice(...a),
-        ...createChatsSlice(...a),
         ...createCurrentChatIdSlice(...a),
         ...createChatSlice(...a),
         ...createMessageSlice(...a),
