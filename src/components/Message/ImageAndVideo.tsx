@@ -7,10 +7,12 @@ const dimensions: Record<"square" | "landscape" | "portrait", string> = {
   portrait: "w-[300px] h-[375px]",
 };
 
-export function ImageAndVideo({ orientation }: TMedia) {
+export function ImageAndVideo({ orientation, src }: TMedia) {
   return (
     <div className={mc("relative mx-1", dimensions[orientation])}>
-      <div className="absolute inset-0 rounded bg-neutral-700"></div>
+      <div className="absolute inset-0 rounded bg-neutral-700">
+        <img className="w-full h-full" src={src} loading="lazy" />
+      </div>
     </div>
   );
 }
