@@ -5,10 +5,13 @@ import useStore from "@/lib/store";
 
 export function ChatHeaderMenu() {
   const currentChatId = useStore((state) => state.currentChatId);
-  const { muteChat, closeChat } = useStore(({ muteChat, closeChat }) => ({
-    muteChat,
-    closeChat,
-  }));
+  const { muteChat, closeChat, deleteChat } = useStore(
+    ({ muteChat, closeChat, deleteChat }) => ({
+      muteChat,
+      closeChat,
+      deleteChat,
+    })
+  );
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
   return (
     <MenuRoot>
@@ -23,7 +26,7 @@ export function ChatHeaderMenu() {
         >
           Info de contacto
         </MenuItem>
-        <MenuItem>Archivos</MenuItem>
+        <MenuItem disabled>Archivos</MenuItem>
         {/* TODO: <MenuItem>Estadísticas</MenuItem> */}
 
         <MenuItem
@@ -42,8 +45,15 @@ export function ChatHeaderMenu() {
         >
           Cerrar chat
         </MenuItem>
-        <MenuItem>Vaciar chat</MenuItem>
-        <MenuItem>Eliminar chat</MenuItem>
+
+        <MenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            deleteChat(currentChatId!);
+          }}
+        >
+          Eliminar chat
+        </MenuItem>
       </MenuContent>
     </MenuRoot>
   );
