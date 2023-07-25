@@ -32,11 +32,11 @@ export function Header({ children, goBack }: HeaderProps) {
           x: 0,
           opacity: 1,
         }}
-        className="px-4 flex items-center"
+        className="px-4 flex items-center gap-6"
       >
         <IconButton
+          className="text-white"
           onClick={goBack}
-          className="mr-6"
           icon={ArrowLeft}
           label="Volver atrás"
         />
