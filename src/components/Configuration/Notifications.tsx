@@ -1,7 +1,7 @@
 import * as Label from "@radix-ui/react-label";
 import { motion } from "framer-motion";
 import { Header } from "./Header";
-import { CheckBox } from "@/components/CheckBox";
+import { Checkbox } from "@/components/ui/Checkbox";
 import useStore from "@/lib/store";
 
 export function Notifications() {
@@ -19,7 +19,7 @@ export function Notifications() {
       >
         <div className="py-6 px-12">
           <div className="flex items-center w-full mb-5">
-            <CheckBox
+            <Checkbox
               id="allNoti"
               checked={notifications.all}
               onCheckedChange={() => {
@@ -35,7 +35,7 @@ export function Notifications() {
             </Label.Root>
           </div>
           <div className="flex items-center w-full mb-5">
-            <CheckBox
+            <Checkbox
               id="sound"
               checked={notifications.sound}
               onCheckedChange={() => {
@@ -52,7 +52,7 @@ export function Notifications() {
           </div>
 
           <div className="flex w-full mb-5">
-            <CheckBox
+            <Checkbox
               id="preview"
               checked={notifications.preview}
               onCheckedChange={() => {
@@ -70,7 +70,7 @@ export function Notifications() {
             </Label.Root>
           </div>
           <div className="flex items-center w-full mb-5">
-            <CheckBox
+            <Checkbox
               id="reactions"
               checked={notifications.reactions}
               onCheckedChange={() => {

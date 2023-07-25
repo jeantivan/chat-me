@@ -5,7 +5,7 @@ import { FiChevronRight } from "react-icons/fi";
 import { Header } from "./Header";
 
 import { CustomIcon } from "@/components/CustomIcon";
-import { CheckBox } from "@/components/CheckBox";
+import { Checkbox } from "@/components/ui/Checkbox";
 import useStore from "@/lib/store";
 
 export function Privacy() {
@@ -74,7 +74,7 @@ export function Privacy() {
                   </span>
                 </div>
               </Label.Root>
-              <CheckBox defaultChecked id="preview" />
+              <Checkbox defaultChecked id="preview" />
             </div>
           </div>
           <div className="py-4 px-6 mb-5 bg-white dark:bg-slate-800">
