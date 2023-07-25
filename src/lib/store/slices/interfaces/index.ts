@@ -5,6 +5,7 @@ import {
   TReaction,
   LeftDrawerContentOptions,
   RightDrawerContentOptions,
+  TNotifications,
 } from "@/lib/types";
 
 // Interface para todos los Chats
@@ -21,8 +22,7 @@ export interface ProfileSlice extends TProfile, ConfigSlice {
 
 // Interface para la configuración
 export interface ConfigSlice {
-  // TODO: Crear acciones para cambiar valor de notificaciones, privacidad y tema
-  toggleNotifications: () => void;
+  toggleNotifications: (type: keyof TNotifications) => void;
 }
 
 // Interface del Id del Chat actual

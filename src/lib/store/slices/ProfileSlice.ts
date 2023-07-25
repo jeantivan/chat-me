@@ -58,5 +58,9 @@ export const createProfileSlice: StateCreator<
     set((state) => {
       state.user.picture = picture;
     }),
-  toggleNotifications() {},
+  toggleNotifications(type) {
+    set((state) => {
+      state.notifications[type] = !state.notifications[type];
+    });
+  },
 });
