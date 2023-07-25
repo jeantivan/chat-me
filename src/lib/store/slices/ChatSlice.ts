@@ -11,6 +11,7 @@ export const createChatSlice: StateCreator<
   [],
   ChatSlice
 > = (set, get) => ({
+  chats: [],
   pinChat: (chatId) => {
     // Encuentra el index del chat en el array de chats
     const chatIndex = get().chats.findIndex((chat) => chat.id === chatId);
@@ -38,6 +39,9 @@ export const createChatSlice: StateCreator<
     if (chatIndex < 0) return;
 
     set((state) => {
+      if (chatId === get().currentChatId) {
+        state.currentChatId = undefined;
+      }
       state.rightDrawer = null;
       state.chats.splice(chatIndex, 1);
     });
