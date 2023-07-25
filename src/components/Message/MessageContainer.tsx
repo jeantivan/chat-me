@@ -77,9 +77,9 @@ export function MessageContainer({
       >
         <motion.div
           className={mc(
-            "gap-1 hidden shrink-0",
+            "gap-1 flex invisible shrink-0",
             !isOwnMsg && "order-2",
-            showMenus && "flex"
+            showMenus && "visible"
           )}
         >
           <Menu
