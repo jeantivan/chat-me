@@ -33,20 +33,20 @@ export function EditableInput({
 
   return (
     <div className="mb-5">
-      <div className="text-emerald-600 text-sm mb-2">{label}</div>
+      <div className="text-primary-9 text-sm mb-2">{label}</div>
       <div
         className={`flex items-stretch border-b ${
           error
             ? "border-red-500"
             : isEditing
-            ? "border-emerald-500"
+            ? "border-primary-7"
             : "border-transparent"
         }`}
       >
         {isEditing ? (
           <>
             <input
-              className="p-2 pb-1 flex-1 focus:outline-none bg-transparent text-neutral-900 dark:text-neutral-50"
+              className="p-2 pb-1 flex-1 focus:outline-none bg-transparent text-background-12"
               name={label}
               defaultValue={value}
               onChange={(e) => {
@@ -57,7 +57,7 @@ export function EditableInput({
             />
             <div className="self-center">
               <button
-                className="w-6 h-6 inline-flex items-center justify-center rounded-sm mr-2 border border-emerald-500  text-emerald-500"
+                className="w-6 h-6 inline-flex items-center justify-center rounded-sm mr-2 border border-primary-7  text-primary-9"
                 title="Cancelar"
                 onClick={() => {
                   setError("");
@@ -67,7 +67,7 @@ export function EditableInput({
                 <CustomIcon icon={BsX} label="Cancelar" />
               </button>
               <button
-                className="w-6 h-6 inline-flex items-center justify-center rounded-sm text-white border border-emerald-500 bg-emerald-500"
+                className="w-6 h-6 inline-flex items-center justify-center rounded-sm text-primary-12 border border-primary-7 bg-primary-9"
                 title="Guardar cambios"
                 onClick={handleSave}
               >
@@ -77,11 +77,9 @@ export function EditableInput({
           </>
         ) : (
           <>
-            <div className="flex-1 p-2 pb-1 text-neutral-900 dark:text-neutral-50">
-              {value}
-            </div>
+            <div className="flex-1 p-2 pb-1 text-background-12">{value}</div>
             <button
-              className="w-4 h-4 text-gray-500 self-center"
+              className="w-4 h-4 text-background-9 self-center"
               title={`Editar ${label}.`}
               onClick={() => {
                 setIsEditing(true);
