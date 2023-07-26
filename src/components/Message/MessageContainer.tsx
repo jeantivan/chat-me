@@ -15,8 +15,8 @@ const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
     aria-hidden={true}
     className={mc(
-      "w-3 h-3 absolute top-0 dark:text-emerald-700 text-green-200 left-full z-10",
-      !isOwnMsg && "dark:text-slate-700 text-white left-0 -translate-x-full"
+      "w-3 h-3 absolute top-0 text-primary-9 left-full z-10",
+      !isOwnMsg && "text-background-2 left-0 -translate-x-full"
     )}
     style={{ transform: isOwnMsg ? "rotateY(180deg)" : undefined }}
   >
@@ -103,8 +103,8 @@ export function MessageContainer({
             {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
             <div
               className={mc(
-                "py-1 rounded-md dark:bg-emerald-700 bg-green-200",
-                !isOwnMsg && "dark:bg-slate-700 bg-white",
+                "py-1 rounded-md bg-primary-9 text-primary-1",
+                !isOwnMsg && "bg-background-2 text-background-12",
                 hasTail
                   ? isOwnMsg
                     ? "rounded-tr-none"
@@ -113,7 +113,7 @@ export function MessageContainer({
               )}
             >
               {children}
-              <footer className="px-2 flex justify-end items-end gap-1 dark:text-slate-400 text-slate-500 text-sm">
+              <footer className="px-2 flex justify-end items-end gap-1 text-sm text-neutral-300 dark:text-neutral-400">
                 {reactions.length > 0 && (
                   <div className="select-none mr-auto flex gap-0.5">
                     {reactions.map(({ owner, type }) => (

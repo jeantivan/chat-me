@@ -11,7 +11,7 @@ import { SendMessage } from "./SendMessage";
 import { AttachFiles } from "./AttachFiles";
 
 const Placeholder = () => (
-  <div className="absolute pl-1 pointer-events-none">
+  <div className="absolute pl-1 pointer-events-none text-background-11">
     Escribe un mensaje aquí
   </div>
 );
@@ -20,7 +20,7 @@ export function MessageInput() {
   return (
     <Root>
       <AttachFiles />
-      <div className="flex-1 relative min-h-[44px] flex overflow-y-auto dark:text-gray-400 text-gray-500 dark:bg-slate-600 bg-white rounded-md">
+      <div className="flex-1 relative min-h-[44px] flex overflow-y-auto bg-background-5 rounded-md">
         <div className="flex items-end w-full max-h-[136px] py-2 max-w-full px-3">
           <RichTextPlugin
             contentEditable={
@@ -29,7 +29,7 @@ export function MessageInput() {
             placeholder={<Placeholder />}
             ErrorBoundary={LexicalErrorBoundary}
           />
-          <button className="w-7 h-7 inline-flex rounded-full dark:text-slate-400 text-slate-600">
+          <button className="w-7 h-7 inline-flex rounded-full text-background-10">
             <CustomIcon
               icon={Laugh}
               label="Insertar emojis"

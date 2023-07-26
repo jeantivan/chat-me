@@ -44,8 +44,8 @@ export function SendMessage() {
     <button
       className={mc(
         "w-11 h-11 p-2 rounded-md inline-flex items-center justify-center",
-        "bg-emerald-600 text-slate-50",
-        "disabled:bg-emerald-600/50 disabled:text-slate-400"
+        "bg-primary-9 text-primary-1",
+        "disabled:bg-primary-5 disabled:text-background-10"
       )}
       onClick={handleSubmit}
       disabled={isEditorEmpty}

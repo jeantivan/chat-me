@@ -7,7 +7,7 @@ export function Main({ children }: { children: ReactNode }) {
 
   return (
     <div className={cx({ dark: isDarkMode, light: !isDarkMode })}>
-      <main className="app-container min-w-md w-full dark:bg-slate-900 overflow-hidden flex">
+      <main className="app-container min-w-md w-full bg-background-1 overflow-hidden flex">
         {children}
       </main>
     </div>

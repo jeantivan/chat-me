@@ -21,7 +21,7 @@ export function Messages({ messages }: MessagesProps) {
 
   return (
     <div
-      className="messages overflow-x-hidden overflow-y-scroll bg-slate-200 dark:bg-slate-900 py-5 grid items-end"
+      className="messages overflow-x-hidden overflow-y-scroll bg-background-5 py-5 grid items-end"
       ref={containerRef}
     >
       {messages.map((message, i, array) => {
