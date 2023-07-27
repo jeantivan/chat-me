@@ -14,7 +14,7 @@ export function ArchivedChats() {
 
   return (
     <>
-      <header className="pt-16 bg-emerald-700 dark:bg-slate-700 pb-5">
+      <header className="pt-16 bg-primary-9 dark:bg-background-2 pb-5">
         <motion.div
           transition={{ type: "tween", delay: 0.15 }}
           initial={{
@@ -25,15 +25,18 @@ export function ArchivedChats() {
             x: 0,
             opacity: 1,
           }}
-          className="px-4 flex items-center"
+          className="px-4 flex items-center gap-6"
         >
           <IconButton
             onClick={closeLeftDrawer}
-            className="mr-6"
+            className="text-background-1 dark:text-background-12 hover:bg-background-6/20"
             icon={ArrowLeft}
             label="Volver atrás"
           />
-          <h2 id="left-drawer-title" className="text-neutral-50 text-xl">
+          <h2
+            id="left-drawer-title"
+            className="text-background-1 dark:text-background-12 text-xl"
+          >
             Chats archivados
           </h2>
         </motion.div>

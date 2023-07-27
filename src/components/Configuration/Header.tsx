@@ -21,7 +21,7 @@ interface HeaderProps {
 }
 export function Header({ children, goBack }: HeaderProps) {
   return (
-    <header className="pt-16 bg-emerald-700 dark:bg-slate-700 pb-5">
+    <header className="pt-16 bg-primary-9 dark:bg-background-2 pb-5">
       <motion.div
         transition={{ type: "tween", delay: 0.15 }}
         initial={{
@@ -35,12 +35,15 @@ export function Header({ children, goBack }: HeaderProps) {
         className="px-4 flex items-center gap-6"
       >
         <IconButton
-          className="text-white"
+          className="text-background-1 dark:text-background-12 hover:bg-background-6/20"
           onClick={goBack}
           icon={ArrowLeft}
           label="Volver atrás"
         />
-        <h2 id="left-drawer-title" className="text-neutral-50 text-xl">
+        <h2
+          id="left-drawer-title"
+          className="text-background-1 dark:text-background-12 text-xl"
+        >
           {children}
         </h2>
       </motion.div>

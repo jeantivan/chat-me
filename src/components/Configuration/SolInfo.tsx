@@ -16,15 +16,15 @@ export function SolInfo() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
             transition={{ type: "tween" }}
-            className="w-28 h-28 mx-auto rounded-full flex justify-center items-center bg-emerald-400/30"
+            className="w-28 h-28 mx-auto rounded-full flex justify-center items-center bg-primary-10/30"
           >
             <CustomIcon
-              className="w-16 h-20 text-emerald-400"
+              className="w-16 h-20 text-primary-10"
               icon={BsFileEarmarkTextFill}
               label="File-icon"
             />
           </motion.div>
-          <div className="text-sm p-7 text-gray-500 dark:text-gray-400">
+          <div className="text-sm p-7 text-gray-500 dark:text-background-11">
             Crea un informe de la configuración y la info. de tu cuenta de
             ChatMe. Puedes acceder a la información o transferirla a otra
             aplicación. El informe no incluye tus mensajes.{" "}
@@ -33,12 +33,12 @@ export function SolInfo() {
             </a>
           </div>
         </div>
-        <div className="border-y p-7 hover:bg-neutral-100 hover:dark:bg-slate-700 border-neutral-300 dark:border-slate-600">
+        <div className="border-y p-7 hover:bg-background-5 border-background-7">
           <div className="flex items-center select-none">
             <CustomIcon
               label="Solicitar reporte"
               icon={BsFileEarmarkTextFill}
-              className="w-6 h-6 text-gray-400 mr-6"
+              className="w-6 h-6 text-background-11 mr-6"
             />
 
             <div className="text-lg font-medium text-neutral-900 dark:text-neutral-50">
@@ -46,7 +46,7 @@ export function SolInfo() {
             </div>
           </div>
         </div>
-        <div className="p-7 text-gray-500 dark:text-gray-400">
+        <div className="p-7 text-gray-500 dark:text-background-11">
           <p className="text-sm mb-2">
             El informe estará listo en 3 días aproximadamente. Tendrás algunas
             semanas para descargarlo después de que esté disponible.

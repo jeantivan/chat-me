@@ -23,7 +23,7 @@ export function ChatList() {
   return (
     <>
       <SearchChats />
-      <div className="chats-list h-full p-2 overflow-x-hidden overflow-y-auto bg-slate-50 dark:bg-slate-800/80 border-solid border-r border-slate-200 dark:border-slate-600">
+      <div className="chats-list h-full p-2 overflow-x-hidden overflow-y-auto bg-background-1">
         {pinnedChats.map((chat) => (
           <ChatItem key={chat.id} chat={chat} />
         ))}

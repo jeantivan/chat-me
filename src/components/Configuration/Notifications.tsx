@@ -19,11 +19,11 @@ export function Notifications() {
         transition={{ type: "tween" }}
       >
         <div className="p-6">
-          <h2 className="text-emerald-600 mb-6">Mensajes</h2>
+          <h2 className="text-primary-9 mb-6">Mensajes</h2>
           <div className="flex gap-4 items-center w-full mb-2">
             <Label htmlFor="all">
               Notificaciones de mensajes
-              <span className="mt-1 text-sm select-none inline-block text-gray-400">
+              <span className="mt-1 text-sm select-none inline-block text-background-11">
                 Se muestran notificaciones de mensajes nuevos
               </span>
             </Label>
@@ -65,7 +65,7 @@ export function Notifications() {
           <div className="flex items-center w-full mt-12">
             <Label htmlFor="sound">
               Sonido
-              <span className="mt-1 text-sm select-none inline-block text-gray-400">
+              <span className="mt-1 text-sm select-none inline-block text-background-11">
                 Reproduce un sonido cuando llega un mensaje
               </span>
             </Label>

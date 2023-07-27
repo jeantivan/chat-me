@@ -18,7 +18,7 @@ const initialConfig = {
 export function Root({ children }: { children: ReactNode }) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="input-container bg-background-3 text-background-12 h-full py-2.5 px-6 flex">
+      <div className="input-container bg-background-2 text-background-12 h-full py-2.5 px-6 flex">
         <div className="flex w-full gap-2 items-end">{children}</div>
       </div>
     </LexicalComposer>

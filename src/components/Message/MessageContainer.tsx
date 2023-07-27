@@ -113,7 +113,7 @@ export function MessageContainer({
               )}
             >
               {children}
-              <footer className="px-2 flex justify-end items-end gap-1 text-sm text-neutral-300 dark:text-neutral-400">
+              <footer className="px-2 flex justify-end items-end gap-1">
                 {reactions.length > 0 && (
                   <div className="select-none mr-auto flex gap-0.5">
                     {reactions.map(({ owner, type }) => (
@@ -126,7 +126,12 @@ export function MessageContainer({
                     ))}
                   </div>
                 )}
-                <div className="flex items-center gap-1 leading-none">
+                <div
+                  className={mc(
+                    "flex items-center gap-1 leading-none text-sm text-background-9"
+                    //isOwnMsg && "text-background-7"
+                  )}
+                >
                   {starred && (
                     <span className="w-4 h-4 inline-block">
                       <Star className="text-yellow-500 fill-yellow-500 w-full h-full" />

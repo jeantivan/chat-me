@@ -42,7 +42,7 @@ export function Profile() {
               value={name}
               onSave={handleSaveUserName}
             />
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-sm text-background-11">
               Este no es tu nombre de usuario ni un PIN. Este nombre será
               visible para tus contactos de ChatMe.
             </div>

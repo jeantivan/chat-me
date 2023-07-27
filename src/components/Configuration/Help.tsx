@@ -9,17 +9,14 @@ import { Header } from "./Header";
 import useStore from "@/lib/store";
 
 const Item = ({ icon, label, ...rest }: { icon: IconType; label: string }) => (
-  <div
-    {...rest}
-    className="w-full flex items-center hover:bg-neutral-100 dark:hover:bg-slate-700 select-none"
-  >
-    <span className="w-14 flex items-center justify-center">
-      <span className="w-5 h-5 text-slate-400">
+  <div {...rest} className="w-full flex items-center hover:bg-background-3">
+    <span className="w-20 flex items-center justify-center">
+      <span className="w-6 h-6 text-background-10">
         <CustomIcon icon={icon} label={label} />
       </span>
     </span>
 
-    <span className="py-5 pl-4 flex-1 border-b text-left text-lg text-neutral-900 dark:text-neutral-50 border-slate-200 dark:border-slate-700">
+    <span className="py-5 pr-4 flex-1 border-b text-left text-lg font-medium text-background-12 border-background-7">
       {label}
     </span>
   </div>

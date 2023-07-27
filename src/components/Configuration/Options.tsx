@@ -13,7 +13,7 @@ const User = (props: any) => {
   return (
     <div
       {...props}
-      className="flex items-center cursor-pointer w-full px-4 py-3 hover:bg-neutral-100 dark:hover:bg-slate-700"
+      className="flex items-center cursor-pointer w-full px-4 py-3 hover:bg-background-3"
     >
       <div className="mr-4">
         <div className="w-20 h-20 rounded-full overflow-hidden">
@@ -43,15 +43,15 @@ const Item = ({
   <button
     {...rest}
     onClick={onClick}
-    className="w-full flex items-center hover:bg-neutral-100 dark:hover:bg-slate-700"
+    className="w-full flex items-center hover:bg-background-3"
   >
     <span className="w-20 flex items-center justify-center">
-      <span className="w-6 h-6 text-slate-400">
+      <span className="w-6 h-6 text-background-10">
         <CustomIcon icon={icon} label={label} />
       </span>
     </span>
 
-    <span className="py-5 pr-4 flex-1 border-b text-left text-lg font-medium text-neutral-900 dark:text-neutral-200 border-slate-200 dark:border-slate-700">
+    <span className="py-5 pr-4 flex-1 border-b text-left text-lg font-medium text-background-12 border-background-7">
       {label}
     </span>
   </button>
@@ -108,13 +108,13 @@ export function Options() {
           }}
         />
         <footer className="flex w-full justify-center p-3 mt-5">
-          <p className="text-base text-neutral-900 dark:text-neutral-50">
+          <p className="text-base text-background-12">
             Made with{" "}
             <span className="mx-2" aria-label="Cup of coffee">
               ☕
             </span>
             <a
-              className="text-emerald-500 hover:underline uppercase"
+              className="text-primary-9 hover:underline uppercase"
               href="https://github.com/jeantivan"
             >
               Jean Tivan

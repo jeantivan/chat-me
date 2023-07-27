@@ -37,7 +37,7 @@ const Item = ({ children, danger, textHelper, icon, action }: ItemProps) => {
       <div
         className={mc(
           "flex-1",
-          "dark:text-neutral-50 text-neutral-900",
+          "text-background-12",
           danger && "text-inherit dark:text-inherit"
         )}
       >
@@ -70,8 +70,8 @@ export function ContactInfo() {
   const { name, phone, bio, picture } = contact;
 
   return (
-    <div className="bg-slate-200 dark:bg-slate-900 h-full">
-      <header className="p-2.5 flex items-center sticky gap-4 bg-slate-100 dark:bg-slate-700">
+    <div className="bg-background-5 h-full">
+      <header className="p-2.5 flex items-center sticky gap-4 bg-background-2">
         <IconButton
           label="Cerrar info. del contacto"
           icon={X}
@@ -81,13 +81,13 @@ export function ContactInfo() {
         />
         <h2
           id="contact-info-title "
-          className={`text-lg line-clamp-1 truncate dark:text-neutral-50 text-neutral-900`}
+          className="text-lg line-clamp-1 truncate text-background-12"
         >
           Info. del Contacto
         </h2>
       </header>
       <div className="overflow-y-scroll h-full">
-        <section className="py-4 mb-4 shadow bg-white dark:bg-slate-800">
+        <section className="py-4 mb-4 shadow bg-background-3">
           <div className="flex flex-col px-5">
             <div className="mx-auto mt-16 mb-4">
               <div className="w-40 h-40 rounded-full text-gray-500">
@@ -99,24 +99,18 @@ export function ContactInfo() {
               </div>
             </div>
             <div className="mx-auto text-center">
-              <h2
-                className={`text-2xl mb-2 dark:text-neutral-50 text-neutral-900`}
-              >
-                {name}
-              </h2>
-              <div className={`text-gray-500`}>{phone}</div>
+              <h2 className="text-2xl mb-2 text-background-12">{name}</h2>
+              <div className="text-gray-500">{phone}</div>
             </div>
           </div>
         </section>
-        <section className="py-4 mb-4 shadow bg-white dark:bg-slate-800">
+        <section className="py-4 mb-4 shadow bg-background-3">
           <div className="px-5">
             <div className="text-sm text-emerald-600">Info.</div>
-            <div className={`text-lg dark:text-neutral-50 text-neutral-900`}>
-              {bio}
-            </div>
+            <div className={`text-lg text-background-12`}>{bio}</div>
           </div>
         </section>
-        <section className="py-4 mb-4 shadow bg-white dark:bg-slate-800">
+        <section className="py-4 mb-4 shadow bg-background-3">
           <div className="flex px-5 mb-4">
             <div className="flex-1 text-sm text-emerald-600">
               Archivos, enlaces y documentos.
@@ -131,12 +125,12 @@ export function ContactInfo() {
             <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
             <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
           </div>
-          <div className={`text-sm dark:text-neutral-50 text-neutral-900 px-5`}>
+          <div className={`text-sm text-background-12 px-5`}>
             Usa WhatsApp en tu teléfono para ver el historial de mensajes
             completo.
           </div>
         </section>
-        <section className="py-4 mb-4 shadow bg-white dark:bg-slate-800">
+        <section className="py-4 mb-4 shadow bg-background-3">
           <Item icon={Star} action={<ChevronRight className="w-6 h-6" />}>
             Mensajes destacados
           </Item>
@@ -161,7 +155,7 @@ export function ContactInfo() {
             Estadísticas
           </Item>
         </section>
-        <section className="mb-32 shadow bg-white dark:bg-slate-800">
+        <section className="mb-24 shadow bg-background-3">
           <Item icon={Archive} danger>
             Archivar chat
           </Item>

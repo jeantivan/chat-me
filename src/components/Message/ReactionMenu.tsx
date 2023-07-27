@@ -33,7 +33,7 @@ const ReactionItem = ({
         "w-auto h-11 p-2 rounded-full",
         "inline-grid place-items-center",
         "focus-none outline-none cursor-pointer",
-        "data-[state=on]:bg-slate-200/80 dark:data-[state=on]:bg-slate-700/80",
+        "data-[state=on]:bg-background-7",
         className
       )}
     />

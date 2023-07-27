@@ -9,15 +9,15 @@ export function Checkbox(props: CheckboxPrimitive.CheckboxProps) {
       {...props}
       className={mc(
         "flex h-5 w-5 min-w-[20px] items-center justify-center rounded border-2 transition",
-        "border-gray-400 bg-transparent",
+        "border-background-9 bg-transparent",
         !props.disabled &&
-          "data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500",
-        "disabled:bg-gray-400/80 dark:disabled:bg-gray-500",
-        "focus:outline-none focus-visible:ring focus-visible:ring-emerald-500 focus-visible:ring-opacity-75"
+          "data-[state=checked]:bg-primary-9 data-[state=checked]:border-primary-9",
+        "disabled:bg-background-5",
+        "focus:outline-none focus-visible:ring focus-visible:ring-primary-10 "
       )}
     >
       <CheckboxPrimitive.Indicator className="transition-all data-[disabled]:hidden">
-        <Check className="h-[18px] w-[18px] self-center text-white" />
+        <Check className="h-[18px] w-[18px] self-center text-background-12" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

@@ -8,7 +8,7 @@ export function UserProfile() {
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
 
   return (
-    <div className="user-profile bg-white dark:bg-slate-700 border-r border-slate-200 dark:border-slate-600 px-3 py-2 flex">
+    <div className="user-profile bg-background-3 px-3 py-2 flex">
       <div className="flex items-center flex-1">
         <button
           onClick={() => {

@@ -41,8 +41,8 @@ const LastMessage = (props: LastMessageProps) => {
     <div
       className={mc(
         "w-full flex items-center gap-1 text-sm",
-        "dark:text-gray-400 text-gray-500",
-        props.hasUnreadMsg && "dark:text-white text-black"
+        "text-background-11",
+        props.hasUnreadMsg && "text-background-12"
       )}
     >
       {isOwnMsg && (
@@ -75,15 +75,15 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
       }}
       className={mc(
         "flex select-none cursor-pointer p-2 gap-4 rounded-xl",
-        isOpenChat && "dark:bg-emerald-800/70 bg-emerald-200/70",
-        !isOpenChat && "dark:hover:bg-slate-700/60 hover:bg-slate-200/60",
+        isOpenChat && "bg-primary-4",
+        !isOpenChat && "hover:bg-background-4",
         hasUnreadMsg && "font-medium"
       )}
     >
       <div className="flex items-center">
         <div className="w-14 h-14">
           <img
-            className="bg-gray-400 w-full h-full overflow-hidden rounded-full"
+            className="bg-background-3 w-full h-full overflow-hidden rounded-full"
             src={picture}
             alt={`Foto de perfil de ${name}`}
             loading="lazy"
@@ -92,19 +92,19 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center mb-2 gap-6">
-          <p className="flex-1 text-lg leading-tight truncate dark:text-white">
+          <p className="flex-1 text-lg leading-tight truncate dark:text-background-12">
             {name}
           </p>
           <div className="flex gap-2">
             <AnimatePresence mode="popLayout" initial={false}>
               {chat.pinned && (
                 <AnimateIcon key="pinned-icon">
-                  <Pin className="w-4 h-4 dark:text-gray-400 text-gray-500" />
+                  <Pin className="w-4 h-4 text-background-10" />
                 </AnimateIcon>
               )}
               {chat.muted && (
                 <AnimateIcon key="muted-icon">
-                  <BellOff className="w-4 h-4 dark:text-gray-400 text-gray-500" />
+                  <BellOff className="w-4 h-4 text-background-10" />
                 </AnimateIcon>
               )}
             </AnimatePresence>

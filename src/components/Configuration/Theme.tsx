@@ -10,7 +10,7 @@ import {
   DialogTrigger,
   DialogTitle,
   DialogContent,
-} from "@/components/Dialog";
+} from "@/components/ui/Dialog";
 
 const Button: React.FC<{
   children: ReactNode;
@@ -130,25 +130,15 @@ export function Theme() {
 
   return (
     <DialogRoot open={openModal} onOpenChange={setOpenModal}>
-      <DialogTrigger
-        className={`w-full flex items-center ${
-          !isDarkMode ? "hover:bg-slate-50" : "hover:bg-slate-700"
-        }`}
-      >
+      <DialogTrigger className="w-full flex items-center hover:bg-background-3">
         <span className="w-20 flex items-center justify-center">
           <CustomIcon
             label="Atajos del teclado"
             icon={MoonStar}
-            className="w-6 h-6 text-slate-400"
+            className="w-6 h-6 text-background-10"
           />
         </span>
-        <span
-          className={`py-5 pr-4 flex-1 border-b text-left text-lg font-medium ${
-            !isDarkMode
-              ? "text-black border-slate-200"
-              : "text-slate-50 border-slate-700 "
-          }`}
-        >
+        <span className="py-5 pr-4 flex-1 border-b text-left text-lg font-medium text-background-12 border-background-7">
           Tema
         </span>
       </DialogTrigger>

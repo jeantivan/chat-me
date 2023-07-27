@@ -34,8 +34,7 @@ export function ChatItemMenu({
         onClick={(e) => e.stopPropagation()}
         className={mc(
           "p-0.5 outline-none inline-flex rounded-lg",
-          "text-slate-800 dark:text-slate-100",
-          "data-[state=open]:bg-slate-200 dark:data-[state=open]:bg-slate-700 "
+          "text-background-12 hover:bg-background-5 data-[state=open]:bg-background-6"
         )}
       >
         <CustomIcon

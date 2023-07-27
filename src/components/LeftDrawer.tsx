@@ -62,7 +62,7 @@ export function LeftDrawer({ children }: { children: ReactNode }) {
             id="left-drawer-dialog"
             aria-labelledby="left-drawer-title"
             tabIndex={-1}
-            className="bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-600 w-full h-full flex flex-col pointer-events-auto"
+            className="bg-background-1 border-r border-background-7 w-full h-full flex flex-col pointer-events-auto"
           >
             <AnimatePresence mode="wait">{children}</AnimatePresence>
           </div>

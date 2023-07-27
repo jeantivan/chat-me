@@ -10,7 +10,7 @@ export function ChatHeader({ chat }: { chat: TChat }) {
   const { name, picture } = chat.participants[0];
 
   return (
-    <header className="chat-header bg-background-3 shadow-lg">
+    <header className="chat-header bg-background-2 shadow-lg">
       <div className="flex items-center px-5 py-2">
         <button
           className="flex-1 flex items-stretch"

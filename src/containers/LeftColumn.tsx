@@ -13,7 +13,10 @@ import { ArchivedChats } from "@/components/ArchivedChats";
 
 export function LeftColumn() {
   return (
-    <section id="left-column" className="user-chats relative">
+    <section
+      id="left-column"
+      className="user-chats relative bg-background-5 border-r border-background-7"
+    >
       <UserProfile />
 
       <ChatList />

@@ -17,7 +17,7 @@ export function Messages({ messages }: MessagesProps) {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
     }
-  }, [containerRef.current, currentChatId]);
+  }, [containerRef.current, currentChatId, messages]);
 
   return (
     <div

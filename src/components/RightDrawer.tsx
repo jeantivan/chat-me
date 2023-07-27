@@ -53,7 +53,7 @@ export function RightDrawer({ children }: { children: ReactNode }) {
           id="right-drawer-dialog"
           aria-labelledby="right-drawer-title"
           tabIndex={-1}
-          className="relative inset-0 h-full bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-600"
+          className="relative inset-0 h-full bg-background-1 border-l border-background-7"
         >
           <AnimatePresence mode="wait">{children}</AnimatePresence>
         </div>

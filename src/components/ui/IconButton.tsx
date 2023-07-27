@@ -16,8 +16,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         {...props}
         className={mc(
           "inline-flex rounded-md p-1.5 cursor-pointer",
-          "dark:text-gray-300 text-gray-600",
-          "hover:bg-slate-200/50 dark:hover:bg-slate-600/50",
+          "text-background-12 hover:bg-background-5",
           className
         )}
       >

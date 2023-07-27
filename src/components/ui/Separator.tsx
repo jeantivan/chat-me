@@ -5,7 +5,7 @@ export function Separator(props: SeparatorPrimitive.SeparatorProps) {
     <SeparatorPrimitive.Root
       {...props}
       decorative
-      className="bg-gray-200 dark:bg-gray-600 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+      className="bg-background-6 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
     />
   );
 }
