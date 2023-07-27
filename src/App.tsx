@@ -1,5 +1,5 @@
-import "./App.css";
-import { Main, LeftColumn, Chat } from "@/containers";
+import "@/styles/App.css";
+import { Main, LeftColumn } from "@/containers";
 import { RightColumn } from "./containers/RightColumn";
 
 import dayjs from "dayjs";
