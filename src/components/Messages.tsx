@@ -17,11 +17,11 @@ export function Messages({ messages }: MessagesProps) {
     if (containerRef.current) {
       containerRef.current.scrollTo(0, containerRef.current.scrollHeight);
     }
-  }, [containerRef.current, currentChatId, messages]);
+  }, [containerRef.current, currentChatId, messages.length]);
 
   return (
     <div
-      className="messages overflow-x-hidden overflow-y-scroll bg-background-5 py-5 grid items-end"
+      className="messages overflow-x-hidden overflow-y-scroll bg-background-5 bg-[url('/images/pattern.svg')] py-5 grid items-end"
       ref={containerRef}
     >
       {messages.map((message, i, array) => {
