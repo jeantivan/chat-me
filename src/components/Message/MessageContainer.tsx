@@ -128,8 +128,8 @@ export function MessageContainer({
                 )}
                 <div
                   className={mc(
-                    "flex items-center gap-1 leading-none text-sm text-background-9"
-                    //isOwnMsg && "text-background-7"
+                    "flex items-center gap-1 leading-none text-sm text-neutral-500 dark:text-neutral-400",
+                    isOwnMsg && "text-neutral-200 dark:text-neutral-300"
                   )}
                 >
                   {starred && (
