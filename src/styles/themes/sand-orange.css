@@ -1,0 +1,57 @@
+/* Theme Sand + Orange */
+
+.sand-orange {
+  --primary-1: 24 70% 99%;
+  --primary-2: 24 83.3% 97.6%;
+  --primary-3: 24 100% 95.3%;
+  --primary-4: 25 100% 92.2%;
+  --primary-5: 25 100% 88.2%;
+  --primary-6: 25 100% 82.8%;
+  --primary-7: 24 100% 75.3%;
+  --primary-8: 24 94.5% 64.3%;
+  --primary-9: 24 94% 50%;
+  --primary-10: 24 100% 46.5%;
+  --primary-11: 24 100% 37%;
+  --primary-12: 15 60% 17%;
+
+  --background-1: 50 20% 99%;
+  --background-2: 60 7.7% 97.5%;
+  --background-3: 59 6.5% 95.1%;
+  --background-4: 58 6.1% 92.9%;
+  --background-5: 57 6% 90.7%;
+  --background-6: 56 5.9% 88.4%;
+  --background-7: 55 5.9% 85.2%;
+  --background-8: 51 6% 77.1%;
+  --background-9: 50 2% 55.7%;
+  --background-10: 55 1.7% 51.9%;
+  --background-11: 50 2% 43.1%;
+  --background-12: 50 6% 10%;
+}
+
+.dark.sand-orange {
+  --primary-1: 30 70% 7.2%;
+  --primary-2: 28 100% 8.4%;
+  --primary-3: 26 91.1% 11.6%;
+  --primary-4: 25 88.3% 14.1%;
+  --primary-5: 24 87.6% 16.6%;
+  --primary-6: 24 88.6% 19.8%;
+  --primary-7: 24 92.4% 24%;
+  --primary-8: 25 100% 29%;
+  --primary-9: 24 94% 50%;
+  --primary-10: 24 100% 58.5%;
+  --primary-11: 24 100% 62.2%;
+  --primary-12: 24 97% 93.2%;
+
+  --background-1: 61 2% 8.3%;
+  --background-2: 60 3.7% 10.6%;
+  --background-3: 58 3.7% 13.1%;
+  --background-4: 57 3.6% 15.3%;
+  --background-5: 56 3.7% 17.4%;
+  --background-6: 55 3.7% 19.9%;
+  --background-7: 53 3.7% 23.6%;
+  --background-8: 50 3.8% 30.6%;
+  --background-9: 50 4% 42.7%;
+  --background-10: 52 3.1% 48.3%;
+  --background-11: 50 4% 61.8%;
+  --background-12: 56 4% 92.8%;
+}

@@ -1,0 +1,57 @@
+/* Theme Slate + Indigo */
+
+.slate-indigo {
+  --background-1: 206 30% 98.8%;
+  --background-2: 210 16.7% 97.6%;
+  --background-3: 209 13.3% 95.3%;
+  --background-4: 209 12.2% 93.2%;
+  --background-5: 208 11.7% 91.1%;
+  --background-6: 208 11.3% 88.9%;
+  --background-7: 207 11.1% 85.9%;
+  --background-8: 205 10.7% 78%;
+  --background-9: 206 6% 56.1%;
+  --background-10: 206 5.8% 52.3%;
+  --background-11: 206 6% 43.5%;
+  --background-12: 206 24% 9%;
+
+  --primary-1: 225 60% 99.4%;
+  --primary-2: 223 100% 98.6%;
+  --primary-3: 223 98.4% 97.1%;
+  --primary-4: 223 92.9% 95%;
+  --primary-5: 224 87.1% 92%;
+  --primary-6: 224 81.9% 87.8%;
+  --primary-7: 225 77.4% 82.1%;
+  --primary-8: 226 75.4% 74.5%;
+  --primary-9: 226 70% 55.5%;
+  --primary-10: 226 58.6% 51.3%;
+  --primary-11: 226 55% 45%;
+  --primary-12: 226 62% 17%;
+}
+
+.dark.slate-indigo {
+  --background-1: 200 7% 8.8%;
+  --background-2: 195 7.1% 11%;
+  --background-3: 197 6.8% 13.6%;
+  --background-4: 198 6.6% 15.8%;
+  --background-5: 199 6.4% 17.9%;
+  --background-6: 201 6.2% 20.5%;
+  --background-7: 203 6% 24.3%;
+  --background-8: 207 5.6% 31.6%;
+  --background-9: 206 6% 43.9%;
+  --background-10: 206 5.2% 49.5%;
+  --background-11: 206 6% 63%;
+  --background-12: 210 6% 93%;
+
+  --primary-1: 229 24% 10%;
+  --primary-3: 228 43.3% 17.5%;
+  --primary-4: 227 47.2% 21%;
+  --primary-5: 227 50% 24.1%;
+  --primary-6: 226 52.9% 28.2%;
+  --primary-7: 226 56% 34.5%;
+  --primary-2: 230 36.4% 12.9%;
+  --primary-8: 226 58.2% 44.1%;
+  --primary-9: 226 70% 55.5%;
+  --primary-10: 227 75.2% 61.6%;
+  --primary-11: 228 100% 75.9%;
+  --primary-12: 226 83% 96.3%;
+}

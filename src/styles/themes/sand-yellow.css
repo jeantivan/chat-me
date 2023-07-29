@@ -1,0 +1,87 @@
+/* Theme Sand + Yellow */
+
+.sand-yellow {
+  --primary-1: 60 54% 98.5%;
+  --primary-2: 52 100% 95.5%;
+  --primary-3: 55 100% 90.9%;
+  --primary-4: 54 100% 86.6%;
+  --primary-5: 52 97.9% 82%;
+  --primary-6: 50 89.4% 76.1%;
+  --primary-7: 47 80.4% 68%;
+  --primary-8: 48 100% 46.1%;
+  --primary-9: 53 92% 50%;
+  --primary-10: 50 100% 48.5%;
+  --primary-11: 42 100% 29%;
+  --primary-12: 40 55% 13.5%;
+
+  --background-1: 50 20% 99%;
+  --background-2: 60 7.7% 97.5%;
+  --background-3: 59 6.5% 95.1%;
+  --background-4: 58 6.1% 92.9%;
+  --background-5: 57 6% 90.7%;
+  --background-6: 56 5.9% 88.4%;
+  --background-7: 55 5.9% 85.2%;
+  --background-8: 51 6% 77.1%;
+  --background-9: 50 2% 55.7%;
+  --background-10: 55 1.7% 51.9%;
+  --background-11: 50 2% 43.1%;
+  --background-12: 50 6% 10%;
+}
+
+.dark.sand-yellow {
+  --primary-1: 45 100% 5.5%;
+  --primary-2: 46 100% 6.7%;
+  --primary-3: 45 100% 8.7%;
+  --primary-4: 45 100% 10.4%;
+  --primary-5: 47 100% 12.1%;
+  --primary-6: 49 100% 14.3%;
+  --primary-7: 49 90.3% 18.4%;
+  --primary-8: 50 100% 22%;
+  --primary-9: 53 92% 50%;
+  --primary-10: 54 100% 68%;
+  --primary-11: 48 100% 47%;
+  --primary-12: 53 100% 91%;
+
+  --background-1: 61 2% 8.3%;
+  --background-2: 60 3.7% 10.6%;
+  --background-3: 58 3.7% 13.1%;
+  --background-4: 57 3.6% 15.3%;
+  --background-5: 56 3.7% 17.4%;
+  --background-6: 55 3.7% 19.9%;
+  --background-7: 53 3.7% 23.6%;
+  --background-8: 50 3.8% 30.6%;
+  --background-9: 50 4% 42.7%;
+  --background-10: 52 3.1% 48.3%;
+  --background-11: 50 4% 61.8%;
+  --background-12: 56 4% 92.8%;
+}
+
+.yellowDark {
+  --yellow-1: hsl(45 100% 5.5% / 1);
+  --yellow-2: hsl(46, 100%, 6.7%);
+  --yellow-3: hsl(45, 100%, 8.7%);
+  --yellow-4: hsl(45, 100%, 10.4%);
+  --yellow-5: hsl(47, 100%, 12.1%);
+  --yellow-6: hsl(49, 100%, 14.3%);
+  --yellow-7: hsl(49, 90.3%, 18.4%);
+  --yellow-8: hsl(50, 100%, 22%);
+  --yellow-9: hsl(53, 92%, 50%);
+  --yellow-10: hsl(54, 100%, 68%);
+  --yellow-11: hsl(48, 100%, 47%);
+  --yellow-12: hsl(53, 100%, 91%);
+}
+
+.yellow {
+  --yellow-1: hsl(60, 54%, 98.5%);
+  --yellow-2: hsl(52, 100%, 95.5%);
+  --yellow-3: hsl(55, 100%, 90.9%);
+  --yellow-4: hsl(54, 100%, 86.6%);
+  --yellow-5: hsl(52, 97.9%, 82%);
+  --yellow-6: hsl(50, 89.4%, 76.1%);
+  --yellow-7: hsl(47, 80.4%, 68%);
+  --yellow-8: hsl(48, 100%, 46.1%);
+  --yellow-9: hsl(53, 92%, 50%);
+  --yellow-10: hsl(50, 100%, 48.5%);
+  --yellow-11: hsl(42, 100%, 29%);
+  --yellow-12: hsl(40, 55%, 13.5%);
+}

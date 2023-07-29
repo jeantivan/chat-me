@@ -1,0 +1,57 @@
+/* Theme Slate + Sky */
+
+.slate-sky {
+  --background-1: 206 30% 98.8%;
+  --background-2: 210 16.7% 97.6%;
+  --background-3: 209 13.3% 95.3%;
+  --background-4: 209 12.2% 93.2%;
+  --background-5: 208 11.7% 91.1%;
+  --background-6: 208 11.3% 88.9%;
+  --background-7: 207 11.1% 85.9%;
+  --background-8: 205 10.7% 78%;
+  --background-9: 206 6% 56.1%;
+  --background-10: 206 5.8% 52.3%;
+  --background-11: 206 6% 43.5%;
+  --background-12: 206 24% 9%;
+
+  --primary-1: 193 100% 98.8%;
+  --primary-2: 193 100% 97.3%;
+  --primary-3: 193 99% 94.7%;
+  --primary-4: 193 91.4% 91.4%;
+  --primary-5: 194 82% 86.6%;
+  --primary-6: 194 74.1% 79.5%;
+  --primary-7: 194 72.3% 69.6%;
+  --primary-8: 193 77.9% 53.9%;
+  --primary-9: 193 98% 70%;
+  --primary-10: 193 87% 66.5%;
+  --primary-11: 195 100% 31.5%;
+  --primary-12: 195 100% 13%;
+}
+
+.dark.slate-sky {
+  --background-1: 200 7% 8.8%;
+  --background-2: 195 7.1% 11%;
+  --background-3: 197 6.8% 13.6%;
+  --background-4: 198 6.6% 15.8%;
+  --background-5: 199 6.4% 17.9%;
+  --background-6: 201 6.2% 20.5%;
+  --background-7: 203 6% 24.3%;
+  --background-8: 207 5.6% 31.6%;
+  --background-9: 206 6% 43.9%;
+  --background-10: 206 5.2% 49.5%;
+  --background-11: 206 6% 63%;
+  --background-12: 210 6% 93%;
+
+  --primary-1: 205 45% 8.6%;
+  --primary-2: 202 71.4% 9.6%;
+  --primary-3: 201 74.6% 12.2%;
+  --primary-4: 201 77.4% 14.4%;
+  --primary-5: 200 80.3% 16.5%;
+  --primary-6: 200 84.1% 18.9%;
+  --primary-7: 199 90.2% 22.1%;
+  --primary-8: 198 100% 26.1%;
+  --primary-9: 193 98% 70%;
+  --primary-10: 192 100% 77%;
+  --primary-11: 192 85% 55.8%;
+  --primary-12: 198 98% 95.8%;
+}

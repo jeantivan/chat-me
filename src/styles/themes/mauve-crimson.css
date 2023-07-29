@@ -1,0 +1,57 @@
+/* Theme Mauve + Crimson */
+
+.mauve-crimson {
+  --primary-1: 332 100% 99.4%;
+  --primary-2: 330 100% 98.4%;
+  --primary-3: 331 85.6% 96.6%;
+  --primary-4: 331 78.1% 94.2%;
+  --primary-5: 332 72.1% 91.1%;
+  --primary-6: 333 67% 86.7%;
+  --primary-7: 335 63.5% 80.4%;
+  --primary-8: 336 62.3% 72.9%;
+  --primary-9: 336 80% 57.8%;
+  --primary-10: 336 73.7% 53.5%;
+  --primary-11: 336 75% 47.2%;
+  --primary-12: 340 65% 14.5%;
+
+  --background-1: 300 20% 99%;
+  --background-2: 300 7.7% 97.5%;
+  --background-3: 294 5.5% 95.3%;
+  --background-4: 289 4.7% 93.3%;
+  --background-5: 283 4.4% 91.3%;
+  --background-6: 278 4.1% 89.1%;
+  --background-7: 271 3.9% 86.3%;
+  --background-8: 255 3.7% 78.8%;
+  --background-9: 252 4% 57.3%;
+  --background-10: 253 3.5% 53.5%;
+  --background-11: 252 4% 44.8%;
+  --background-12: 260 25% 11%;
+}
+
+.dark.mauve-crimson {
+  --primary-1: 335 20% 9.6%;
+  --primary-2: 335 32.2% 11.6%;
+  --primary-3: 335 42.5% 16.5%;
+  --primary-4: 335 47.2% 19.3%;
+  --primary-5: 335 50.9% 21.8%;
+  --primary-6: 335 55.7% 25.3%;
+  --primary-7: 336 62.9% 30.8%;
+  --primary-8: 336 74.9% 39%;
+  --primary-9: 336 80% 57.8%;
+  --primary-10: 339 84.1% 62.6%;
+  --primary-11: 341 90% 67.3%;
+  --primary-12: 332 87% 96%;
+
+  --background-1: 246 6% 9%;
+  --background-2: 240 5.1% 11.6%;
+  --background-3: 241 5% 14.3%;
+  --background-4: 242 4.9% 16.5%;
+  --background-5: 243 4.9% 18.8%;
+  --background-6: 244 4.9% 21.5%;
+  --background-7: 245 4.9% 25.4%;
+  --background-8: 247 4.8% 32.5%;
+  --background-9: 252 4% 45.2%;
+  --background-10: 247 3.4% 50.7%;
+  --background-11: 253 4% 63.7%;
+  --background-12: 256 6% 93.2%;
+}
