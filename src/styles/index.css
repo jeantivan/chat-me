@@ -4,71 +4,33 @@
 
 @layer base {
   :root {
-    /* Slate from @radix-ui/colors */
-    --background-1: 206 30% 98.8%;
-    --background-2: 210 16.7% 97.6%;
-    --background-3: 209 13.3% 95.3%;
-    --background-4: 209 12.2% 93.2%;
-    --background-5: 208 11.7% 91.1%;
-    --background-6: 208 11.3% 88.9%;
-    --background-7: 207 11.1% 85.9%;
-    --background-8: 205 10.7% 78%;
-    --background-9: 206 6% 56.1%;
-    --background-10: 206 5.8% 52.3%;
-    --background-11: 206 6% 43.5%;
-    --background-12: 206 24% 9%;
+    --background-1: ;
+    --background-2: ;
+    --background-3: ;
+    --background-4: ;
+    --background-5: ;
+    --background-6: ;
+    --background-7: ;
+    --background-8: ;
+    --background-9: ;
+    --background-10: ;
+    --background-11: ;
+    --background-12: ;
 
-    /* Green from @radix-ui/colors */
-    --primary-1: 116 50% 98.9%;
-    --primary-2: 120 60% 97.1%;
-    --primary-3: 120 53.6% 94.8%;
-    --primary-4: 121 47.5% 91.4%;
-    --primary-5: 122 42.6% 86.5%;
-    --primary-6: 124 39% 79.7%;
-    --primary-7: 126 37.1% 70.2%;
-    --primary-8: 131 38.1% 56.3%;
-    --primary-9: 131 41% 46.5%;
-    --primary-10: 132 43.1% 42.2%;
-    --primary-11: 133 50% 32.5%;
-    --primary-12: 130 30% 14.9%;
-  }
-
-  .dark {
-    /* Slate dark @radix-ui */
-    --background-1: 200 7% 8.8%;
-    --background-2: 195 7.1% 11%;
-    --background-3: 197 6.8% 13.6%;
-    --background-4: 198 6.6% 15.8%;
-    --background-5: 199 6.4% 17.9%;
-    --background-6: 201 6.2% 20.5%;
-    --background-7: 203 6% 24.3%;
-    --background-8: 207 5.6% 31.6%;
-    --background-9: 206 6% 43.9%;
-    --background-10: 206 5.2% 49.5%;
-    --background-11: 206 6% 63%;
-    --background-12: 210 6% 93%;
-
-    /* Grass dark @radix-ui */
-    --primary-1: 146 30% 7.4%;
-    --primary-2: 136 33.3% 8.8%;
-    --primary-3: 137 36% 11.4%;
-    --primary-4: 137 37.6% 13.7%;
-    --primary-5: 136 38.7% 16%;
-    --primary-6: 135 39.6% 19.1%;
-    --primary-7: 134 40.3% 23.8%;
-    --primary-8: 131 40.1% 30.8%;
-    --primary-9: 131 41% 46.5%;
-    --primary-10: 131 39% 52.1%;
-    --primary-11: 131 43% 57.2%;
-    --primary-12: 137 72% 94%;
+    --primary-1: ;
+    --primary-2: ;
+    --primary-3: ;
+    --primary-4: ;
+    --primary-5: ;
+    --primary-6: ;
+    --primary-7: ;
+    --primary-8: ;
+    --primary-9: ;
+    --primary-10: ;
+    --primary-11: ;
+    --primary-12: ;
   }
 }
-
-/* html,
-body {
-  @apply bg-slate-800;
-} */
-
 ::-webkit-scrollbar {
   width: 6px !important;
   height: 6px !important;
