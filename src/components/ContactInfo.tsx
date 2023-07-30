@@ -29,7 +29,7 @@ const Item = ({ children, danger, textHelper, icon, action }: ItemProps) => {
   return (
     <div
       className={mc(
-        "flex gap-6 py-4 px-6 text-gray-400 text-lg ",
+        "flex gap-6 py-4 px-6 text-background-11 text-lg ",
         danger && "text-red-500"
       )}
     >
@@ -44,7 +44,7 @@ const Item = ({ children, danger, textHelper, icon, action }: ItemProps) => {
         {children}
 
         {textHelper && (
-          <div className="mt-1.5 text-sm text-gray-400">{textHelper}</div>
+          <div className="mt-1.5 text-sm text-background-11">{textHelper}</div>
         )}
       </div>
       {action}
@@ -100,22 +100,22 @@ export function ContactInfo() {
             </div>
             <div className="mx-auto text-center">
               <h2 className="text-2xl mb-2 text-background-12">{name}</h2>
-              <div className="text-gray-500">{phone}</div>
+              <div className="text-background-11">{phone}</div>
             </div>
           </div>
         </section>
         <section className="py-4 mb-4 shadow bg-background-3">
           <div className="px-5">
-            <div className="text-sm text-emerald-600">Info.</div>
+            <div className="text-sm text-primary-9">Info.</div>
             <div className={`text-lg text-background-12`}>{bio}</div>
           </div>
         </section>
         <section className="py-4 mb-4 shadow bg-background-3">
           <div className="flex px-5 mb-4">
-            <div className="flex-1 text-sm text-emerald-600">
+            <div className="flex-1 text-sm text-primary-9">
               Archivos, enlaces y documentos.
             </div>
-            <div className="inline-flex items-center text-gray-500 text-sm">
+            <div className="inline-flex items-center text-background-11 text-sm">
               20
               <CustomIcon icon={ChevronRight} label="Ver más" />
             </div>
