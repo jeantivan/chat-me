@@ -1,0 +1,57 @@
+/* Theme Gold - Lime */
+
+.gold-lime {
+  --primary-1: 85 50% 98.7%;
+  --primary-2: 85 66.7% 96.5%;
+  --primary-3: 85 76% 92.3%;
+  --primary-4: 84 75.3% 87.5%;
+  --primary-5: 84 71.5% 81.9%;
+  --primary-6: 82 65% 74.6%;
+  --primary-7: 79 53.2% 61.8%;
+  --primary-8: 76 61.7% 45.1%;
+  --primary-9: 81 67% 50%;
+  --primary-10: 80 68.3% 46.9%;
+  --primary-11: 75 80% 26%;
+  --primary-12: 78 70% 11.5%;
+
+  --background-1: 50 20% 99.1%;
+  --background-2: 47 52.9% 96.7%;
+  --background-3: 46 38.2% 93.7%;
+  --background-4: 44 32.7% 90.1%;
+  --background-5: 43 29.9% 85.7%;
+  --background-6: 41 28.3% 79.8%;
+  --background-7: 39 27.6% 71.9%;
+  --background-8: 36 27.2% 61.8%;
+  --background-9: 36 20% 49.5%;
+  --background-10: 36 19.8% 45.7%;
+  --background-11: 36 20% 39%;
+  --background-12: 36 16% 20%;
+}
+
+.dark.gold-lime {
+  --primary-1: 75 55% 6%;
+  --primary-2: 74 56.8% 7.3%;
+  --primary-3: 78 50.2% 9.9%;
+  --primary-4: 79 50.3% 12.1%;
+  --primary-5: 79 52.6% 14.2%;
+  --primary-6: 78 55.7% 16.7%;
+  --primary-7: 77 59.7% 20.1%;
+  --primary-8: 75 64.8% 24.5%;
+  --primary-9: 81 67% 50%;
+  --primary-10: 75 85% 60%;
+  --primary-11: 81 70% 43.8%;
+  --primary-12: 84 79% 92.6%;
+
+  --background-1: 44 9% 8.3%;
+  --background-2: 43 14.3% 9.6%;
+  --background-3: 42 15.5% 13%;
+  --background-4: 41 16.4% 15.6%;
+  --background-5: 41 16.9% 17.8%;
+  --background-6: 40 17.6% 20.8%;
+  --background-7: 38 18.5% 26.4%;
+  --background-8: 36 19.6% 35.1%;
+  --background-9: 36 20% 49.5%;
+  --background-10: 36 22.3% 54.5%;
+  --background-11: 35 30% 64%;
+  --background-12: 49 52% 93.8%;
+}
