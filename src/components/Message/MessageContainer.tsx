@@ -133,7 +133,7 @@ export function MessageContainer({
                 >
                   {starred && (
                     <span className="w-4 h-4 inline-block">
-                      <Star className="text-yellow-500 fill-yellow-500 w-full h-full" />
+                      <Star className="text-background-11 fill-background-11 w-full h-full" />
                     </span>
                   )}
                   {formatTime}
