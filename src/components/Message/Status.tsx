@@ -26,7 +26,7 @@ export function Status({
       label={label}
       className={mc(
         "w-4 h-4 text-slate-400",
-        status === "read" && "text-cyan-600 dark:text-cyan-400",
+        status === "read" && "text-[#0600C1] dark:text-[#00FFFB]",
         className
       )}
     />
