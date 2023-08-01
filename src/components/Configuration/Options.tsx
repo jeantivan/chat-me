@@ -7,47 +7,36 @@ import { CustomIcon } from "@/components/CustomIcon";
 import { UserImage } from "@/components/UserImage";
 import useStore from "@/lib/store";
 
-const User = (props: any) => {
+const User = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   const { name, bio } = useStore((state) => state.user);
   return (
-    <div
+    <button
       {...props}
-      className="flex items-center cursor-pointer w-full px-4 py-3 hover:bg-background-3"
+      className="flex gap-6 items-center cursor-pointer w-full p-4 hover:bg-background-3"
     >
-      <div className="mr-4">
-        <div className="w-20 h-20 rounded-full overflow-hidden">
-          <UserImage />
-        </div>
-      </div>
-      <div className="flex-1">
-        <h2 className="font-medium text-xl text-neutral-900 dark:text-neutral-50">
-          {name}
-        </h2>
-        <p className="leading-none line-clamp-2 text-neutral-400">{bio}</p>
-      </div>
-    </div>
+      <UserImage className="w-20 h-20" />
+      <span className="inline-block flex-1 text-xl text-left text-background-12">
+        {name}
+        <span className="text-base leading-tight mt-1 line-clamp-2 text-background-11">
+          {bio}
+        </span>
+      </span>
+    </button>
   );
 };
 
-const Item = ({
-  icon,
-  label,
-  onClick,
-  ...rest
-}: {
+type ItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   icon: IconType;
   label: string;
-  onClick: () => void;
-}) => (
-  <button
-    {...rest}
-    onClick={onClick}
-    className="w-full flex items-center hover:bg-background-3"
-  >
+};
+const Item = ({ icon, label, ...rest }: ItemProps) => (
+  <button {...rest} className="w-full flex items-center hover:bg-background-3">
     <span className="w-20 flex items-center justify-center">
-      <span className="w-6 h-6 text-background-10">
-        <CustomIcon icon={icon} label={label} />
-      </span>
+      <CustomIcon
+        icon={icon}
+        label={label}
+        className="w-6 h-6 text-background-10"
+      />
     </span>
 
     <span className="py-5 pr-4 flex-1 border-b text-left text-lg font-medium text-background-12 border-background-7">
