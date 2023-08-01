@@ -6,6 +6,7 @@ import {
   LeftDrawerContentOptions,
   RightDrawerContentOptions,
   TNotifications,
+  TTheme,
 } from "@/lib/types";
 
 // Interface de perfil
@@ -18,6 +19,8 @@ export interface ProfileSlice extends TProfile, ConfigSlice {
 // Interface para la configuración
 export interface ConfigSlice {
   toggleNotifications: (type: keyof TNotifications) => void;
+  changeThemeMode: (mode: TTheme["mode"]) => void;
+  changeThemeColors: (colors: TTheme["colors"]) => void;
 }
 
 // Interface del Id del Chat actual
