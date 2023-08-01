@@ -25,9 +25,17 @@ export type TNotifications = {
 };
 
 export type TTheme = {
-  options: "dark" | "light" | "system";
   mode: "dark" | "light";
-  color: "emerald" | "sky";
+  colors:
+    | "gold-lime"
+    | "mauve-crimson"
+    | "mauve-violet"
+    | "olive-grass"
+    | "sage-teal"
+    | "sand-orange"
+    | "sand-yellow"
+    | "slate-indigo"
+    | "slate-sky";
 };
 
 export type TPrivacy = {
