@@ -12,12 +12,12 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function ButtonBase(
   return (
     <button
       className={mc(
-        "py-2 px-6 min-w-[64px] rounded",
+        "py-2 px-8 min-w-[64px] rounded-full",
         "inline-flex justify-center items-center",
         "uppercase font-medium border",
-        "bg-emerald-500 hover:bg-emerald-500/90 border-emerald-500 hover:border-emerald-500/90 text-white",
+        "bg-primary-9 hover:bg-primary-10 border-primary-9 hover:border-primary-10 text-neutral-950",
         variant === "outlined" &&
-          "border-emerald-500 bg-transparent hover:bg-emerald-800/10 text-emerald-500",
+          "bg-transparent hover:bg-primary-10/10 text-primary-9",
         className
       )}
       ref={ref}
