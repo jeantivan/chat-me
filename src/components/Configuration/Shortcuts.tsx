@@ -1,7 +1,6 @@
-import cx from "classnames";
 import { useState } from "react";
+import { Keyboard } from "lucide-react";
 import { CustomIcon } from "@/components/CustomIcon";
-import { useDarkMode } from "@/components/DarkMode";
 import {
   DialogRoot,
   DialogTrigger,
@@ -9,42 +8,36 @@ import {
   DialogTitle,
   DialogContent,
 } from "@/components/ui/Dialog";
+import { Button } from "@/components/ui/Button";
 import { KEYBOARD_SHORTCUTS } from "@/lib/utils/keyboard-shortcuts";
-import { ShortCut } from "@/lib/types";
-import { Keyboard } from "lucide-react";
+import { TShortCut } from "@/lib/types";
+import mc from "@/lib/utils/mergeClassnames";
 
-const Key = ({ text, isDarkMode }: { text: string; isDarkMode: boolean }) => (
+const Key = ({ text }: { text: string }) => (
   <div
-    className={cx(
+    className={mc(
       "py-1 px-2 ml-2",
       "text-xs capitalize",
-      "border rounded border-neutral-400 shadow-sm",
-      { "bg-neutral-700": isDarkMode, "bg-neutral-200": !isDarkMode }
+      "border rounded border-background-10 shadow-sm",
+      "bg-background-7"
     )}
   >
     {text}
   </div>
 );
 
-const Shortcut = ({ title, keys }: ShortCut) => {
-  const { isDarkMode } = useDarkMode();
-
+const Shortcut = ({ title, keys }: TShortCut) => {
   return (
     <div
-      className={cx(
-        "w-full md:w-1/2",
-        "flex items-center justify-between",
-        "py-3 lg:px-3",
-        {
-          "text-neutral-50": isDarkMode,
-          "text-neutral-900": !isDarkMode,
-        }
+      className={mc(
+        "w-full md:w-1/2 py-3 lg:px-3",
+        "flex items-center justify-between"
       )}
     >
       <div className={"text-sm mr-2 grow-0 shrink"}>{title}</div>
       <div className="flex flex-1 justify-end">
         {keys.map((key) => (
-          <Key key={key} text={key} isDarkMode={isDarkMode} />
+          <Key key={key} text={key} />
         ))}
       </div>
     </div>
@@ -52,7 +45,6 @@ const Shortcut = ({ title, keys }: ShortCut) => {
 };
 
 export function Shortcuts() {
-  const { isDarkMode } = useDarkMode();
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -69,30 +61,21 @@ export function Shortcuts() {
           Atajos del teclado
         </span>
       </DialogTrigger>
-      <DialogContent
-        open={openModal}
-        className="w-4/5 lg:w-3/5 max-h-[95vh] overflow-y-auto"
-      >
-        <div className="py-4 px-8">
-          <header className="mb-4 auto-rows-min">
-            <DialogTitle
-              className={`text-xl ${
-                !isDarkMode ? "text-neutral-900" : "text-neutral-50"
-              }`}
-            >
-              Atajos del teclado
-            </DialogTitle>
+      <DialogContent open={openModal} className="w-4/5 lg:w-3/5">
+        <div className="p-6">
+          <header className="mb-4">
+            <DialogTitle className="text-xl">Atajos del teclado</DialogTitle>
           </header>
-          <div className="lg:-mx-3 overflow-y-auto">
-            <div className="flex w-full flex-col md:flex-row flex-wrap">
-              {KEYBOARD_SHORTCUTS.map((shortcut) => (
-                <Shortcut key={shortcut.slug} {...shortcut} />
-              ))}
-            </div>
+          {/* <div className="lg:-mx-3"> */}
+          <div className="flex w-full flex-col md:flex-row flex-wrap">
+            {KEYBOARD_SHORTCUTS.map((shortcut) => (
+              <Shortcut key={shortcut.slug} {...shortcut} />
+            ))}
           </div>
+          {/* </div> */}
           <footer className="flex justify-end pt-4">
-            <DialogClose className="py-2 px-6 inline-flex items-center justify-center rounded uppercase font-medium text-white bg-emerald-600">
-              Ok
+            <DialogClose asChild>
+              <Button>Ok</Button>
             </DialogClose>
           </footer>
         </div>
