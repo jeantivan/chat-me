@@ -1,154 +1,97 @@
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import * as Label from "@radix-ui/react-label";
-import cx from "classnames";
-import { ReactNode, useState } from "react";
-import { MoonStar } from "lucide-react";
-import { useDarkMode } from "@/components/DarkMode";
-import { CustomIcon } from "@/components/CustomIcon";
-import {
-  DialogRoot,
-  DialogTrigger,
-  DialogTitle,
-  DialogContent,
-} from "@/components/ui/Dialog";
+import { Moon, Sun } from "lucide-react";
+import { Header } from "./Header";
 
-const Button: React.FC<{
-  children: ReactNode;
-  type?: "filled" | "outlined";
-  [x: string]: any;
-}> = ({ children, type = "filled", ...rest }) => (
-  <button
-    {...rest}
-    className={cx(
-      "mr-2 py-2 px-6 min-w-[64px] rounded inline-flex justify-center uppercase font-medium border-solid border",
-      {
-        "border-emerald-400/40 hover:bg-white/5 text-emerald-400":
-          type === "outlined",
-      },
-      {
-        "bg-emerald-500 hover:bg-emerald-400 border-emerald-500 hover:border-emerald-400 text-white":
-          type === "filled",
-      }
+import mc from "@/lib/utils/mergeClassnames";
+import useStore from "@/lib/store";
+import { useTheme } from "@/lib/hooks";
+import { TTheme } from "@/lib/types";
+
+type Option = { name: string; bg: string };
+const options: Record<TTheme["colors"], Option> = {
+  "slate-indigo": { name: "Indigo", bg: "bg-[#3e63dd]" },
+  "slate-sky": { name: "Sky", bg: "bg-[#68ddfd]" },
+  "sage-teal": { name: "Teal", bg: "bg-[#12a594]" },
+  "olive-grass": { name: "Grass", bg: "bg-[#46a758]" },
+  "gold-lime": { name: "Lime", bg: "bg-[#99D52A]" },
+  "sand-yellow": { name: "Yellow", bg: "bg-[#f5d90a]" },
+  "sand-orange": { name: "Orange", bg: "bg-[#f76808]" },
+  "mauve-crimson": { name: "Crimson", bg: "bg-[#e93d82]" },
+  "mauve-violet": { name: "Violet", bg: "bg-[#6e56cf]" },
+};
+
+type ColorItemProps = RadioGroup.RadioGroupItemProps & { option: Option };
+const ColorItem = (props: ColorItemProps) => (
+  <RadioGroup.Item
+    {...props}
+    className={mc(
+      "shrink-0 grow w-[calc(30%-1rem)] p-1 inline-flex flex-col items-center gap-0.5",
+      "text-sm leading-none text-background-11",
+      "border rounded",
+      "border-background-6 data-[state=checked]:border-primary-7"
     )}
   >
-    {children}
-  </button>
+    <span
+      className={mc("w-full h-10 inline-block rounded-sm", props.option.bg)}
+    />
+    <span>{props.option.name}</span>
+  </RadioGroup.Item>
 );
 
-const RadioItem = ({
-  name,
-  label,
-  isDarkMode,
-}: {
-  name: string;
-  label: string;
-  isDarkMode: boolean;
-}) => (
-  <div className="flex mb-3 items-center select-none">
-    <RadioGroup.Item
-      value={name}
-      id={name}
-      className={cx(
-        "w-5 h-5 bg-white rounded-full mr-5",
-        "inline-flex items-center justify-center",
-        { "border shadow": !isDarkMode }
-      )}
-    >
-      <RadioGroup.Indicator className="bg-emerald-500 w-2.5 h-2.5 rounded-full" />
-    </RadioGroup.Item>
-    <Label.Root
-      htmlFor={name}
-      className={`text-medium ${!isDarkMode ? "text-black" : "text-white"}`}
-    >
-      {label}
-    </Label.Root>
-  </div>
-);
-
-interface ThemeProps {
-  goBack: () => void;
-}
-
-function ThemeContent({ goBack }: ThemeProps) {
-  const { isDarkMode, ternaryDarkMode, setDarkMode } = useDarkMode();
-  const [value, setValue] = useState(ternaryDarkMode);
-
-  const handleOk = () => {
-    if (value !== ternaryDarkMode) {
-      setDarkMode(value);
-    }
-    return goBack();
-  };
-
+const ModeItem = (props: RadioGroup.RadioGroupItemProps) => {
   return (
-    <div className="p-6">
-      <DialogTitle
-        className={cx("text-xl mb-5", {
-          "text-neutral-900": !isDarkMode,
-          "text-neutral-50": isDarkMode,
-        })}
-      >
-        Elegir Tema
-      </DialogTitle>
-      <div className="flex flex-col">
-        <RadioGroup.Root
-          defaultValue={ternaryDarkMode}
-          aria-label="Elegir tema"
-          className="flex flex-col justify-center"
-          value={value}
-          onValueChange={(e) => {
-            setValue(e as typeof ternaryDarkMode);
-          }}
-        >
-          <RadioItem isDarkMode={isDarkMode} name="light" label="Claro" />
-          <RadioItem isDarkMode={isDarkMode} name="dark" label="Oscuro" />
-          <RadioItem
-            isDarkMode={isDarkMode}
-            name="system"
-            label="Predeterminado por el sistema"
-          />
-        </RadioGroup.Root>
-        <div className="w-full flex justify-end mt-8">
-          <Button type="outlined" onClick={() => goBack()}>
-            Cancelar
-          </Button>
-          <Button
-            onClick={handleOk}
-            className="py-2 px-4 rounded-md inline-flex justify-center uppercase "
-          >
-            Ok
-          </Button>
-        </div>
-      </div>
-    </div>
+    <RadioGroup.Item
+      {...props}
+      className={mc(
+        "flex-1 flex items-center justify-center gap-3 py-1.5 px-3 text-background-12",
+        "first:rounded-l last:rounded-r border border-background-7",
+        "data-[state=checked]:text-primary-11 data-[state=checked]:border-primary-8"
+      )}
+    />
   );
-}
+};
 
 export function Theme() {
-  const [openModal, setOpenModal] = useState(false);
-  const { isDarkMode } = useDarkMode();
+  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
+  const { colors, mode, changeThemeColors, changeThemeMode } = useTheme();
 
   return (
-    <DialogRoot open={openModal} onOpenChange={setOpenModal}>
-      <DialogTrigger className="w-full flex items-center hover:bg-background-3">
-        <span className="w-20 flex items-center justify-center">
-          <CustomIcon
-            label="Atajos del teclado"
-            icon={MoonStar}
-            className="w-6 h-6 text-background-10"
-          />
-        </span>
-        <span className="py-5 pr-4 flex-1 border-b text-left text-lg font-medium text-background-12 border-background-7">
-          Tema
-        </span>
-      </DialogTrigger>
-      <DialogContent className="w-[60%] md:w-[50%] lg:w-[40%]" open={openModal}>
-        <ThemeContent
-          goBack={() => {
-            setOpenModal(false);
-          }}
-        />
-      </DialogContent>
-    </DialogRoot>
+    <>
+      <Header goBack={closeLeftDrawer}>Personalizar interfaz</Header>
+      <div className="overflow-y-auto flex-1 bg-background-1 flex flex-col p-4">
+        <div className="mb-5">
+          <p className="text-primary-10 mb-4">Color principal</p>
+          <RadioGroup.Root
+            className="w-full flex flex-wrap justify-between gap-4"
+            value={colors}
+            onValueChange={(newValue) => {
+              changeThemeColors(newValue as typeof colors);
+            }}
+          >
+            {(Object.keys(options) as Array<TTheme["colors"]>).map((option) => (
+              <ColorItem key={option} value={option} option={options[option]} />
+            ))}
+          </RadioGroup.Root>
+        </div>
+        <div className="mb-5">
+          <p className="text-primary-10 mb-4">Modo</p>
+          <RadioGroup.Root
+            value={mode}
+            onValueChange={(newValue) => {
+              changeThemeMode(newValue as typeof mode);
+            }}
+            className="flex"
+          >
+            <ModeItem value="light">
+              <Sun className="w-4 h-4" /> Claro
+            </ModeItem>
+            <ModeItem value="dark">
+              <Moon className="w-4 h-4" />
+              Oscuro
+            </ModeItem>
+          </RadioGroup.Root>
+        </div>
+      </div>
+    </>
   );
 }
