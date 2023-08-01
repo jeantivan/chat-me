@@ -97,7 +97,6 @@ export type LeftDrawerContentOptions =
   | "NOTIFICATIONS"
   | "PRIVACY"
   | "THEME"
-  | "BACKGROUND"
   | "SOL_INFO"
   | "HELP"
   | "OPTIONS"
