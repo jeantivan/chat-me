@@ -7,9 +7,9 @@ import { Notifications } from "@/components/Configuration/Notifications";
 import { Privacy } from "@/components/Configuration/Privacy";
 import { SolInfo } from "@/components/Configuration/SolInfo";
 import { Help } from "@/components/Configuration/Help";
-import { Background } from "@/components/Configuration/Background";
 import { NewChat } from "@/components/NewChat";
 import { ArchivedChats } from "@/components/ArchivedChats";
+import { Theme } from "@/components/Configuration/Theme";
 
 export function LeftColumn() {
   return (
@@ -36,11 +36,7 @@ export function LeftColumn() {
           Component={SolInfo}
         />
         <LeftDrawerElement key="HELP" option="HELP" Component={Help} />
-        <LeftDrawerElement
-          key="BACKGROUND"
-          option="BACKGROUND"
-          Component={Background}
-        />
+        <LeftDrawerElement key="THEME" option="THEME" Component={Theme} />
         <LeftDrawerElement
           key="NEW_CHAT"
           option="NEW_CHAT"

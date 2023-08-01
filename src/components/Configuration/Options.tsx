@@ -2,7 +2,6 @@ import { IconType } from "react-icons";
 import { Bell, Lock, Paintbrush, FileText, HelpCircle } from "lucide-react";
 import { Header } from "./Header";
 import { Shortcuts } from "./Shortcuts";
-import { Theme } from "./Theme";
 
 import { CustomIcon } from "@/components/CustomIcon";
 import { UserImage } from "@/components/UserImage";
@@ -83,13 +82,11 @@ export function Options() {
             leftDrawerGoTo("PRIVACY");
           }}
         />
-
-        <Theme key="THEME" />
         <Item
-          label="Fondo de pantalla"
+          label="Tema"
           icon={Paintbrush}
           onClick={() => {
-            leftDrawerGoTo("BACKGROUND");
+            leftDrawerGoTo("THEME");
           }}
         />
         <Item
