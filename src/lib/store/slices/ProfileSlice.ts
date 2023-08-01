@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand";
 import { ProfileSlice, StoreSlice } from "./interfaces";
 import { TProfile } from "@/lib/types";
+import { sysModePref } from "@/lib/utils/sysModePref";
 
 const initialProfileState: TProfile = {
   // TUser values
@@ -28,9 +29,8 @@ const initialProfileState: TProfile = {
   },
   // TTheme
   theme: {
-    options: "dark",
-    mode: "dark",
-    color: "emerald",
+    mode: sysModePref(),
+    colors: "slate-indigo",
   },
   contacts: [],
 };
@@ -58,9 +58,19 @@ export const createProfileSlice: StateCreator<
     set((state) => {
       state.user.picture = picture;
     }),
-  toggleNotifications(type) {
+  toggleNotifications: (type) => {
     set((state) => {
       state.notifications[type] = !state.notifications[type];
+    });
+  },
+  changeThemeColors: (colors) => {
+    set((state) => {
+      state.theme.colors = colors;
+    });
+  },
+  changeThemeMode: (mode) => {
+    set((state) => {
+      state.theme.mode = mode;
     });
   },
 });
