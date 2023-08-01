@@ -66,13 +66,13 @@ export function Shortcuts() {
           <header className="mb-4">
             <DialogTitle className="text-xl">Atajos del teclado</DialogTitle>
           </header>
-          {/* <div className="lg:-mx-3"> */}
-          <div className="flex w-full flex-col md:flex-row flex-wrap">
-            {KEYBOARD_SHORTCUTS.map((shortcut) => (
-              <Shortcut key={shortcut.slug} {...shortcut} />
-            ))}
+          <div className="lg:-mx-3">
+            <div className="flex w-full flex-col md:flex-row flex-wrap">
+              {KEYBOARD_SHORTCUTS.map((shortcut) => (
+                <Shortcut key={shortcut.slug} {...shortcut} />
+              ))}
+            </div>
           </div>
-          {/* </div> */}
           <footer className="flex justify-end pt-4">
             <DialogClose asChild>
               <Button>Ok</Button>
