@@ -10,3 +10,12 @@ export function useCurrentChatId() {
     setCurrentChatId,
   }));
 }
+
+export function useTheme() {
+  return useStore(({ theme, changeThemeMode, changeThemeColors }) => ({
+    changeThemeColors,
+    changeThemeMode,
+    mode: theme.mode,
+    colors: theme.colors,
+  }));
+}
