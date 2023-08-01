@@ -48,7 +48,7 @@ export function DialogContent({
         <DialogPortal forceMount container={container}>
           <DialogPrimitive.Overlay
             style={{ zIndex: 1000 }}
-            className="fixed inset-0 w-screen h-screen backdrop-blur-sm bg-background-1/80 grid place-items-center"
+            className="fixed inset-0 grid place-items-center overflow-y-auto backdrop-blur-sm bg-background-1/80"
           >
             <DialogPrimitive.Content asChild>
               <motion.div
@@ -57,18 +57,12 @@ export function DialogContent({
                 animate="enter"
                 exit="exit"
                 className={mc(
-                  "fixed inset-0 w-screen h-screen",
-                  "flex justify-center items-center"
+                  "min-w-[40%] my-6 rounded-lg",
+                  "bg-background-2 text-background-12 shadow-xl",
+                  className
                 )}
               >
-                <div
-                  className={mc(
-                    "bg-background-2 text-background-12 shadow-xl",
-                    className
-                  )}
-                >
-                  {children}
-                </div>
+                {children}
               </motion.div>
             </DialogPrimitive.Content>
           </DialogPrimitive.Overlay>

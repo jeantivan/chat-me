@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDialogContainer } from "@/components/DialogContainer";
+import mc from "@/lib/utils/mergeClassnames";
 
 export const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 export const AlertDialogPortal = AlertDialogPrimitive.Portal;
@@ -37,6 +38,7 @@ interface AlertDialogContentProps {
 
 export function AlertDialogContent({
   open,
+  className,
   children,
 }: AlertDialogContentProps) {
   const { container } = useDialogContainer();
@@ -47,7 +49,7 @@ export function AlertDialogContent({
         <AlertDialogPortal forceMount container={container}>
           <AlertDialogPrimitive.Overlay
             style={{ zIndex: 1000 }}
-            className="fixed inset-0 w-screen h-screen backdrop-blur-sm bg-background-1/80 grid place-items-center"
+            className="fixed inset-0 grid place-items-center overflow-y-auto backdrop-blur-sm bg-background-1/80"
           >
             <AlertDialogPrimitive.Content asChild>
               <motion.div
@@ -55,7 +57,11 @@ export function AlertDialogContent({
                 initial="exit"
                 animate="enter"
                 exit="exit"
-                className="w-[60%] md:w-[50%] lg:w-[40%] shadow-xl bg-background-2 text-background-12"
+                className={mc(
+                  "min-w-[40%] my-6 rounded-lg",
+                  "bg-background-2 text-background-12 shadow-xl",
+                  className
+                )}
               >
                 {children}
               </motion.div>
