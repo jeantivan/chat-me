@@ -1,8 +1,7 @@
 import { ReactNode } from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDarkMode } from "../DarkMode";
-import mc from "@/lib/utils/mergeClassnames";
+import { useDialogContainer } from "@/components/DialogContainer";
 
 export const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 export const AlertDialogPortal = AlertDialogPrimitive.Portal;
@@ -16,17 +15,17 @@ const contentVariants = {
   enter: {
     scale: 1,
     transition: {
-      duration: 0.1,
+      duration: 0.2,
       type: "tween",
-      ease: "easeIn",
+      ease: "circIn",
     },
   },
   exit: {
     scale: 0,
     transition: {
-      duration: 0.1,
+      duration: 0.2,
       type: "tween",
-      ease: "easeOut",
+      ease: "circOut",
     },
   },
 };
@@ -40,31 +39,23 @@ export function AlertDialogContent({
   open,
   children,
 }: AlertDialogContentProps) {
-  const { isDarkMode } = useDarkMode();
+  const { container } = useDialogContainer();
 
   return (
     <AnimatePresence>
       {open && (
-        <AlertDialogPortal forceMount>
+        <AlertDialogPortal forceMount container={container}>
           <AlertDialogPrimitive.Overlay
-            className={mc(
-              "fixed inset-0 w-screen h-screen bg-slate-50/80 grid place-items-center",
-              isDarkMode && "bg-slate-900/80"
-            )}
+            style={{ zIndex: 1000 }}
+            className="fixed inset-0 w-screen h-screen backdrop-blur-sm bg-background-1/80 grid place-items-center"
           >
-            <AlertDialogPrimitive.Content
-              asChild
-              style={{ zIndex: 1001 }}
-              className={mc(
-                "w-[60%] md:w-[50%] lg:w-[40%] shadow-xl bg-white text-neutral-900",
-                isDarkMode && "bg-slate-800 text-neutral-50"
-              )}
-            >
+            <AlertDialogPrimitive.Content asChild>
               <motion.div
                 variants={contentVariants}
                 initial="exit"
                 animate="enter"
                 exit="exit"
+                className="w-[60%] md:w-[50%] lg:w-[40%] shadow-xl bg-background-2 text-background-12"
               >
                 {children}
               </motion.div>

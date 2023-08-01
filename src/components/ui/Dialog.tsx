@@ -1,46 +1,24 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { ReactNode } from "react";
-import { useDarkMode } from "../DarkMode";
 import mc from "@/lib/utils/mergeClassnames";
+import { useDialogContainer } from "@/components/DialogContainer";
 
 const contentVariants = {
   enter: {
     scale: 1,
     transition: {
-      duration: 0.1,
+      duration: 0.2,
       type: "tween",
-      ease: "easeIn",
+      ease: "circIn",
     },
   },
   exit: {
     scale: 0,
     transition: {
-      duration: 0.1,
+      duration: 0.2,
       type: "tween",
-      ease: "easeIn",
-    },
-  },
-};
-
-const overlayVariants = {
-  enter: {
-    opacity: 1,
-    transition: {
-      duration: 0.05,
-      when: "beforeChildren",
-      type: "tween",
-      ease: "easeIn",
-    },
-  },
-  exit: {
-    opacity: 0,
-    transition: {
-      duration: 0.05,
-      when: "afterChildren",
-      type: "tween",
-      ease: "easeIn",
+      ease: "circOut",
     },
   },
 };
@@ -50,9 +28,6 @@ export const DialogClose = DialogPrimitive.Close;
 export const DialogPortal = DialogPrimitive.Portal;
 export const DialogTitle = DialogPrimitive.Title;
 export const DialogRoot = DialogPrimitive.Root;
-
-const AnimateContent = motion(DialogPrimitive.Content);
-const AnimateOverlay = motion(DialogPrimitive.Overlay);
 
 interface DialogContentProps {
   open: boolean;
@@ -65,44 +40,38 @@ export function DialogContent({
   children,
   className,
 }: DialogContentProps) {
-  const { isDarkMode } = useDarkMode();
+  const { container } = useDialogContainer();
 
   return (
     <AnimatePresence>
       {open && (
-        <DialogPortal forceMount>
-          <AnimateOverlay
-            variants={overlayVariants}
-            initial="exit"
-            animate="enter"
-            exit="exit"
+        <DialogPortal forceMount container={container}>
+          <DialogPrimitive.Overlay
             style={{ zIndex: 1000 }}
-            className={mc(
-              "fixed inset-0 w-screen h-screen backdrop-blur-sm bg-neutral-50/80",
-              isDarkMode && "bg-neutral-900/80"
-            )}
-          />
-          <AnimateContent
-            variants={contentVariants}
-            initial="exit"
-            animate="enter"
-            exit="exit"
-            style={{ zIndex: 1001 }}
-            className={mc(
-              "fixed inset-0 w-screen h-screen",
-              "flex justify-center items-center"
-            )}
+            className="fixed inset-0 w-screen h-screen backdrop-blur-sm bg-background-1/80 grid place-items-center"
           >
-            <div
-              className={mc(
-                "bg-white shadow-xl",
-                isDarkMode && "bg-[#26292B]",
-                className
-              )}
-            >
-              {children}
-            </div>
-          </AnimateContent>
+            <DialogPrimitive.Content asChild>
+              <motion.div
+                variants={contentVariants}
+                initial="exit"
+                animate="enter"
+                exit="exit"
+                className={mc(
+                  "fixed inset-0 w-screen h-screen",
+                  "flex justify-center items-center"
+                )}
+              >
+                <div
+                  className={mc(
+                    "bg-background-2 text-background-12 shadow-xl",
+                    className
+                  )}
+                >
+                  {children}
+                </div>
+              </motion.div>
+            </DialogPrimitive.Content>
+          </DialogPrimitive.Overlay>
         </DialogPortal>
       )}
     </AnimatePresence>
