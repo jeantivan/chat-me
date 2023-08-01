@@ -56,11 +56,7 @@ export function SaveEditorPlugin() {
             }
           }
 
-          const editorContent = payload.asHtml
-            ? $generateHtmlFromNodes(editor, null)
-            : JSON.stringify(editor.getEditorState().toJSON());
-
-          payload.onSave(editorContent);
+          payload.onSave($getRoot().getTextContent().trim());
 
           editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
         });
