@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
 import cx from "classnames";
-import { useDarkMode } from "@/components";
+import { useTheme } from "@/lib/hooks";
 
 export function Main({ children }: { children: ReactNode }) {
-  const { isDarkMode } = useDarkMode();
+  const { mode, colors } = useTheme();
 
   return (
-    <div className={cx({ dark: isDarkMode, light: !isDarkMode })}>
+    <div className={cx(mode, colors)}>
       <main className="app-container min-w-md w-full bg-background-1 overflow-hidden flex">
         {children}
       </main>
