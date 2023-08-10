@@ -1,4 +1,3 @@
-export { DarkModeProvider, useDarkMode, DarkModeContext } from "./DarkMode";
 export { ChatList } from "./ChatList";
 export { ChatHeader } from "./ChatHeader";
 export { Messages } from "./Messages";
