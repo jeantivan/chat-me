@@ -3,6 +3,7 @@ import { MessageContainer } from "./MessageContainer";
 import { MessageText } from "./MessageText";
 import { ImageAndVideo } from "./ImageAndVideo";
 import { TMessage } from "@/lib/types";
+import useStore from "@/lib/store";
 
 type MessageProps = {
   isOwnMsg: boolean;
@@ -11,10 +12,18 @@ type MessageProps = {
 };
 export const Message = memo(function MessageRoot(props: MessageProps) {
   const { body, hasMedia } = props.message;
+  const openMediaMessage = useStore((state) => state.openMediaMessage);
 
   return (
     <MessageContainer {...props}>
-      {hasMedia && <ImageAndVideo {...hasMedia} />}
+      {hasMedia && (
+        <ImageAndVideo
+          {...hasMedia}
+          onClick={() => {
+            openMediaMessage(props.message);
+          }}
+        />
+      )}
       {body && <MessageText content={body} />}
     </MessageContainer>
   );
