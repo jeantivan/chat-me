@@ -1,22 +1,27 @@
+import dayjs from "dayjs";
+import { useElementSize } from "usehooks-ts";
+import { X, Smile } from "lucide-react";
+
+import { ReactionMenu } from "./Message/ReactionMenu";
+import { Reactions } from "./Message/Reactions";
+
+import { DialogRoot, DialogClose, DialogContent } from "@/components/ui/Dialog";
+import { IconButton } from "@/components/ui/IconButton";
 import mc from "@/lib/utils/mergeClassnames";
 import useStore from "@/lib/store";
-import { DialogRoot, DialogClose, DialogContent } from "@/components/ui/Dialog";
-import dayjs from "dayjs";
-import { IconButton } from "./ui/IconButton";
-import { X } from "lucide-react";
 import { TMessage } from "@/lib/types";
-import { useElementSize } from "usehooks-ts";
-import { ReactionMenu } from "./Message/ReactionMenu";
-import { Smile } from "lucide-react";
-import { REACTIONS } from "@/lib/utils/constants";
-import { Reactions } from "./Message/Reactions";
+
 const dimensions: Record<"square" | "landscape" | "portrait", string> = {
   square: "aspect-[1]",
   landscape: "aspect-video",
   portrait: "aspect-[0.75]",
 };
 
-export function MediaMessage({ mediaMessage }: { mediaMessage: TMessage }) {
+export function MediaMessageDialog({
+  mediaMessage,
+}: {
+  mediaMessage: TMessage;
+}) {
   const [containerRef, { width, height }] = useElementSize();
   const closeMediaMessage = useStore((state) => state.closeMediaMessage);
   const message = useStore((state) => {

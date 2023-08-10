@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import cx from "classnames";
 import { DialogContainer } from "@/components/DialogContainer";
-import { MediaMessage } from "@/components/MediaMessage";
+import { MediaMessageDialog } from "@/components/MediaMessageDialog";
 import { useTheme } from "@/lib/hooks";
 import useStore from "@/lib/store";
 
@@ -15,7 +15,7 @@ export function Main({ children }: { children: ReactNode }) {
         <main className="app-container min-w-md w-full bg-background-1 overflow-hidden flex">
           {children}
         </main>
-        {mediaMessage && <MediaMessage mediaMessage={mediaMessage} />}
+        {mediaMessage && <MediaMessageDialog mediaMessage={mediaMessage} />}
       </DialogContainer>
     </div>
   );
