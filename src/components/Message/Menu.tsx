@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { MoreVertical } from "lucide-react";
+import { ReactNode, useState } from "react";
 import { DeleteMessage } from "./DeleteMessage";
-import { IconButton } from "@/components/ui/IconButton";
 import {
   MenuRoot,
   MenuContent,
@@ -12,10 +10,12 @@ import useStore from "@/lib/store";
 import { TMessage } from "@/lib/types";
 
 export function Menu({
+  children,
   message,
   onOpenChange,
   align = "end",
 }: {
+  children: ReactNode;
   message: TMessage;
   align?: "start" | "end";
   onOpenChange?: (open: boolean) => void;
@@ -35,9 +35,7 @@ export function Menu({
         }
       }}
     >
-      <MenuTrigger asChild>
-        <IconButton className="w-7 h-7 p-1" icon={MoreVertical} label="Menu" />
-      </MenuTrigger>
+      <MenuTrigger asChild>{children}</MenuTrigger>
 
       {open && (
         <MenuContent align={align} forceMount>
