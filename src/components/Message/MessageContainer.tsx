@@ -1,11 +1,12 @@
 import dayjs from "dayjs";
 import { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { MoreVertical, Smile, Star } from "lucide-react";
 import { Menu } from "./Menu";
 import { ReactionMenu } from "./ReactionMenu";
 import { Status } from "./Status";
 
+import { IconButton } from "@/components/ui/IconButton";
 import mc from "@/lib/utils/mergeClassnames";
 import { REACTIONS } from "@/lib/utils/constants";
 import { TMessage } from "@/lib/types";
@@ -86,12 +87,24 @@ export function MessageContainer({
             message={message}
             onOpenChange={stateChange}
             align={isOwnMsg ? "end" : "start"}
-          />
+          >
+            <IconButton
+              className="w-7 h-7 p-1"
+              icon={MoreVertical}
+              label="Abrir menu"
+            />
+          </Menu>
           <ReactionMenu
             onOpenChange={stateChange}
             ownReaction={ownReaction}
             message={message}
-          />
+          >
+            <IconButton
+              label="Reaccionar a este mensaje"
+              icon={Smile}
+              className="w-7 h-7 p-1"
+            />
+          </ReactionMenu>
         </motion.div>
         <div
           className={mc(
