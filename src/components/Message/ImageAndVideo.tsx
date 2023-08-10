@@ -7,9 +7,17 @@ const dimensions: Record<"square" | "landscape" | "portrait", string> = {
   portrait: "w-[300px] h-[375px]",
 };
 
-export function ImageAndVideo({ orientation, src }: TMedia) {
+type ImageAndVideoProps = React.HTMLAttributes<HTMLDivElement> & TMedia;
+export function ImageAndVideo({
+  orientation,
+  src,
+  ...rest
+}: ImageAndVideoProps) {
   return (
-    <div className={mc("relative mx-1", dimensions[orientation])}>
+    <div
+      {...rest}
+      className={mc("relative mx-1 cursor-pointer", dimensions[orientation])}
+    >
       <div className="absolute inset-0 rounded bg-neutral-700">
         <img className="w-full h-full" src={src} loading="lazy" />
       </div>
