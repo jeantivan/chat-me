@@ -2,8 +2,10 @@ import dayjs from "dayjs";
 import { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
 import { MoreVertical, Smile, Star } from "lucide-react";
+
 import { Menu } from "./Menu";
 import { ReactionMenu } from "./ReactionMenu";
+import { Reactions } from "./Reactions";
 import { Status } from "./Status";
 
 import { IconButton } from "@/components/ui/IconButton";
@@ -127,18 +129,7 @@ export function MessageContainer({
             >
               {children}
               <footer className="px-2 flex justify-end items-end gap-1">
-                {reactions.length > 0 && (
-                  <div className="select-none mr-auto flex gap-0.5">
-                    {reactions.map(({ owner, type }) => (
-                      <div
-                        key={owner}
-                        className="p-1 rounded-full bg-neutral-500/70 text-[18px] leading-none text-center"
-                      >
-                        {REACTIONS[type].emoji}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <Reactions reactions={reactions} />
                 <div
                   className={mc(
                     "flex items-center gap-1 leading-none text-sm text-neutral-600 dark:text-neutral-400"

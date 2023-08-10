@@ -9,6 +9,7 @@ import { useElementSize } from "usehooks-ts";
 import { ReactionMenu } from "./Message/ReactionMenu";
 import { Smile } from "lucide-react";
 import { REACTIONS } from "@/lib/utils/constants";
+import { Reactions } from "./Message/Reactions";
 const dimensions: Record<"square" | "landscape" | "portrait", string> = {
   square: "aspect-[1]",
   landscape: "aspect-video",
@@ -91,18 +92,10 @@ export function MediaMessage({ mediaMessage }: { mediaMessage: TMessage }) {
                 alt={`Foto enviada por ${owner?.name}`}
                 style={{ width, height }}
               />
-              {message.reactions.length > 0 && (
-                <div className="select-none mr-auto flex gap-0.5 absolute right-5 -translate-y-1/2">
-                  {message.reactions.map(({ owner, type }) => (
-                    <div
-                      key={owner}
-                      className="p-1 rounded-full bg-background-10 text-[18px] leading-none text-center"
-                    >
-                      {REACTIONS[type].emoji}
-                    </div>
-                  ))}
-                </div>
-              )}
+              <Reactions
+                reactions={message.reactions}
+                className="absolute right-5 -translate-y-1/2"
+              />
             </div>
           </section>
           <div className="mx-auto max-w-[80%]">
