@@ -60,6 +60,12 @@ export interface RightDrawerSlice {
   closeRightDrawer: () => void;
 }
 
+export interface MediaMessageSlice {
+  mediaMessage: TMessage | null;
+  openMediaMessage: (message: TMessage) => void;
+  closeMediaMessage: () => void;
+}
+
 export interface LoadingSlice {
   loading: "idle" | "contacts" | "chats" | "messages" | "ready";
   prepareApp: Awaited<() => void>;
@@ -69,6 +75,7 @@ export interface StoreSlice
     CurrentChatIdSlice,
     ChatSlice,
     MessageSlice,
+    MediaMessageSlice,
     LeftDrawerSlice,
     RightDrawerSlice,
     LoadingSlice {}

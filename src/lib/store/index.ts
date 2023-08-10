@@ -10,6 +10,7 @@ import {
   createLeftDrawerSlice,
   createRightDrawerSlice,
   createLoadingSlice,
+  createMediaMessageSlice,
 } from "./slices";
 
 const useStore = create<StoreSlice>()(
@@ -21,6 +22,7 @@ const useStore = create<StoreSlice>()(
         ...createCurrentChatIdSlice(...a),
         ...createChatSlice(...a),
         ...createMessageSlice(...a),
+        ...createMediaMessageSlice(...a),
         ...createLeftDrawerSlice(...a),
         ...createRightDrawerSlice(...a),
       })),
