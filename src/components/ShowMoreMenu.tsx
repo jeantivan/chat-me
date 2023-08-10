@@ -14,7 +14,7 @@ export function ShowMoreMenu() {
 
   return (
     <MenuRoot>
-      <MenuTrigger>
+      <MenuTrigger asChild>
         <IconButton icon={MoreVertical} label="Mostrar más" />
       </MenuTrigger>
       <MenuContent align="end" className="w-60">
