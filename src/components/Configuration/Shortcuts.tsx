@@ -61,8 +61,13 @@ export function Shortcuts() {
           Atajos del teclado
         </span>
       </DialogTrigger>
-      <DialogContent open={openModal} className="w-4/5 lg:w-3/5">
-        <div className="p-6">
+      <DialogContent open={openModal}>
+        <div
+          className={mc(
+            "min-w-[40%] w-4/5 lg:w-3/5 my-6 rounded-lg p-6",
+            "bg-background-2 text-background-12 shadow-xl"
+          )}
+        >
           <header className="mb-4">
             <DialogTitle className="text-xl">Atajos del teclado</DialogTitle>
           </header>
