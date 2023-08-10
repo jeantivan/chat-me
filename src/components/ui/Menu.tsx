@@ -11,26 +11,7 @@ export const RadioItem = DropdownMenu.RadioItem;
 export const TriggerBase = DropdownMenu.Trigger;
 export const Arrow = () => <DropdownMenu.Arrow className="fill-background-4" />;
 
-type MenuTriggerProps = React.ComponentPropsWithRef<
-  typeof DropdownMenu.Trigger
-> & {
-  icon: LucideIcon;
-  label: string;
-};
-export const MenuTrigger = forwardRef<
-  React.ElementRef<typeof DropdownMenu.Trigger>,
-  MenuTriggerProps
->(function MenuTriggerBase({ className, ...rest }, ref) {
-  return (
-    <DropdownMenu.Trigger asChild>
-      <IconButton
-        className={mc("data-[state=open]:bg-background-6", className)}
-        ref={ref}
-        {...rest}
-      />
-    </DropdownMenu.Trigger>
-  );
-});
+export const MenuTrigger = DropdownMenu.Trigger;
 
 type MenuItemProps = React.ComponentPropsWithoutRef<
   typeof DropdownMenu.Item
