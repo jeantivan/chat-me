@@ -1,9 +1,10 @@
-import { MoreVertical } from "lucide-react";
+import { ReactNode } from "react";
+
 import { MenuTrigger, MenuContent, MenuItem, MenuRoot } from "./ui/Menu";
 
 import useStore from "@/lib/store";
 
-export function ChatHeaderMenu() {
+export function ChatHeaderMenu({ children }: { children: ReactNode }) {
   const currentChatId = useStore((state) => state.currentChatId);
   const { muteChat, closeChat, deleteChat } = useStore(
     ({ muteChat, closeChat, deleteChat }) => ({
@@ -15,7 +16,7 @@ export function ChatHeaderMenu() {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
   return (
     <MenuRoot>
-      <MenuTrigger icon={MoreVertical} label="Abrir menu del chat" />
+      <MenuTrigger asChild>{children}</MenuTrigger>
 
       <MenuContent>
         <MenuItem

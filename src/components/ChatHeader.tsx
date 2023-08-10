@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { MoreVerticalIcon, Search } from "lucide-react";
 
 import { IconButton } from "./ui/IconButton";
 import { ChatHeaderMenu } from "./ChatHeaderMenu";
@@ -33,7 +33,9 @@ export function ChatHeader({ chat }: { chat: TChat }) {
         </button>
         <div className="flex items-center gap-2">
           <IconButton icon={Search} label="Buscar" />
-          <ChatHeaderMenu />
+          <ChatHeaderMenu>
+            <IconButton icon={MoreVerticalIcon} label="Abrir menu del chat" />
+          </ChatHeaderMenu>
         </div>
       </div>
     </header>
