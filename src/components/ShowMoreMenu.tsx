@@ -7,13 +7,16 @@ import {
 } from "lucide-react";
 import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from "./ui/Menu";
 import useStore from "@/lib/store";
+import { IconButton } from "./ui/IconButton";
 
 export function ShowMoreMenu() {
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
 
   return (
     <MenuRoot>
-      <MenuTrigger icon={MoreVertical} label="Mostrar más" />
+      <MenuTrigger>
+        <IconButton icon={MoreVertical} label="Mostrar más" />
+      </MenuTrigger>
       <MenuContent align="end" className="w-60">
         <MenuItem
           icon={Archive}
