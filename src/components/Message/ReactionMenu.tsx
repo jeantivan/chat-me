@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
-import { Smile } from "lucide-react";
 import {
   MenuRoot,
   MenuContent,
@@ -10,9 +9,9 @@ import {
 } from "@/components/ui/Menu";
 import mc from "@/lib/utils/mergeClassnames";
 import { REACTIONS } from "@/lib/utils/constants";
-import { ReactionKeys, TMessage, TReaction } from "@/lib/types";
 import useStore from "@/lib/store";
 import { useUserId } from "@/lib/hooks";
+import { ReactionKeys, TMessage, TReaction } from "@/lib/types";
 
 const itemVariants = {
   initial: {
@@ -58,12 +57,14 @@ const contentVariants: Variants = {
 
 type ReactionMenuProps = {
   message: TMessage;
+  children: ReactNode;
   ownReaction?: TReaction;
   onOpenChange?: (open: boolean) => void;
 };
 export function ReactionMenu({
-  ownReaction,
   message,
+  children,
+  ownReaction,
   onOpenChange,
 }: ReactionMenuProps) {
   const [open, setOpen] = useState(false);
@@ -86,7 +87,7 @@ export function ReactionMenu({
         }
       }}
     >
-      <MenuTrigger icon={Smile} label="Reaccionar" className="w-7 h-7 p-1" />
+      <MenuTrigger asChild>{children}</MenuTrigger>
 
       <AnimatePresence mode="wait">
         {open && (
