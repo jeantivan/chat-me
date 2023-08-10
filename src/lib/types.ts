@@ -58,7 +58,7 @@ export type TChat = {
 
 export type TMessage = {
   id: string;
-  chatId?: string; // Referencia a un chat id, solo visual
+  chatId: string; // Referencia a un chat id, solo visual
   owner: string; // Referencia a un id de usuario
   starred: boolean;
   forwarded: boolean;
