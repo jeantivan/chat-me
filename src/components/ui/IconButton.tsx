@@ -9,7 +9,7 @@ type IconButtonProps = {
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-  function ({ icon, label, className, ...props }, ref) {
+  function ButtonBase({ icon, label, className, ...props }, ref) {
     return (
       <button
         ref={ref}
