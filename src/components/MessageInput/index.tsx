@@ -6,7 +6,7 @@ import { Laugh } from "lucide-react";
 
 import { Root } from "./Root";
 import { Plugins } from "./Plugins";
-import { CustomIcon } from "@/components/CustomIcon";
+import { Icon } from "@/components/ui/Icon";
 import { SendMessage } from "./SendMessage";
 import { AttachFiles } from "./AttachFiles";
 
@@ -30,7 +30,7 @@ export function MessageInput() {
             ErrorBoundary={LexicalErrorBoundary}
           />
           <button className="w-7 h-7 inline-flex rounded-full text-background-10">
-            <CustomIcon
+            <Icon
               icon={Laugh}
               label="Insertar emojis"
               className="w-full h-full"

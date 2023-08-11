@@ -1,7 +1,7 @@
-import { MenuRoot, MenuContent, MenuItem } from "./ui/Menu";
 import { Trigger as MenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { CustomIcon } from "./CustomIcon";
+import { MenuRoot, MenuContent, MenuItem } from "./ui/Menu";
+import { Icon } from "./ui/Icon";
 import mc from "@/lib/utils/mergeClassnames";
 import useStore from "@/lib/store";
 
@@ -37,11 +37,7 @@ export function ChatItemMenu({
           "text-background-12 hover:bg-background-5 data-[state=open]:bg-background-6"
         )}
       >
-        <CustomIcon
-          icon={MoreHorizontal}
-          label="Menu del chat"
-          className="w-5 h-5"
-        />
+        <Icon icon={MoreHorizontal} label="Menu del chat" className="w-5 h-5" />
       </MenuTrigger>
       <MenuContent align="start">
         <MenuItem

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Keyboard } from "lucide-react";
-import { CustomIcon } from "@/components/CustomIcon";
+import { Icon } from "@/components/ui/Icon";
 import {
   DialogRoot,
   DialogTrigger,
@@ -51,7 +51,7 @@ export function Shortcuts() {
     <DialogRoot open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger className="w-full flex items-center hover:bg-background-3">
         <span className="w-20 flex items-center justify-center">
-          <CustomIcon
+          <Icon
             label="Atajos del teclado"
             icon={Keyboard}
             className="w-6 h-6 text-background-10"

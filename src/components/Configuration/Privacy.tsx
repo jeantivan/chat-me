@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 
 import { Header } from "./Header";
 
-import { CustomIcon } from "@/components/CustomIcon";
+import { Icon } from "@/components/ui/Icon";
 import { Checkbox } from "@/components/ui/Checkbox";
 import useStore from "@/lib/store";
 
@@ -24,7 +24,7 @@ export function Privacy() {
                 <h3 className="text-background-12">Última vez en linea.</h3>
                 <p className="text-background-11">Nadie</p>
               </div>
-              <CustomIcon
+              <Icon
                 icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
@@ -36,7 +36,7 @@ export function Privacy() {
                 <h3 className="text-background-12">Foto de perfil.</h3>
                 <p className="text-background-11">Mis contactos</p>
               </div>
-              <CustomIcon
+              <Icon
                 icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
@@ -48,7 +48,7 @@ export function Privacy() {
                 <h3 className="text-background-12">Info.</h3>
                 <p className="text-background-11">Mis contactos</p>
               </div>
-              <CustomIcon
+              <Icon
                 icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
@@ -78,7 +78,7 @@ export function Privacy() {
                 </h3>
                 <p className="text-background-11">Desactivados</p>
               </div>
-              <CustomIcon
+              <Icon
                 icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
@@ -91,7 +91,7 @@ export function Privacy() {
                 <h3 className="text-background-12">Grupos</h3>
                 <p className="text-background-11">Mis contactos</p>
               </div>
-              <CustomIcon
+              <Icon
                 icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
@@ -102,7 +102,7 @@ export function Privacy() {
                 <h3 className="text-background-12">Contactos bloqueados</h3>
                 <p className="text-background-11">15</p>
               </div>
-              <CustomIcon
+              <Icon
                 icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"

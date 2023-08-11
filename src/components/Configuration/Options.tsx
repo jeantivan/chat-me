@@ -1,9 +1,15 @@
-import { IconType } from "react-icons";
-import { Bell, Lock, Paintbrush, FileText, HelpCircle } from "lucide-react";
+import {
+  LucideIcon,
+  Bell,
+  Lock,
+  Paintbrush,
+  FileText,
+  HelpCircle,
+} from "lucide-react";
 import { Header } from "./Header";
 import { Shortcuts } from "./Shortcuts";
 
-import { CustomIcon } from "@/components/CustomIcon";
+import { Icon } from "@/components/ui/Icon";
 import { UserImage } from "@/components/UserImage";
 import useStore from "@/lib/store";
 
@@ -26,17 +32,13 @@ const User = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
 };
 
 type ItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  icon: IconType;
+  icon: LucideIcon;
   label: string;
 };
 const Item = ({ icon, label, ...rest }: ItemProps) => (
   <button {...rest} className="w-full flex items-center hover:bg-background-3">
     <span className="w-20 flex items-center justify-center">
-      <CustomIcon
-        icon={icon}
-        label={label}
-        className="w-6 h-6 text-background-10"
-      />
+      <Icon icon={icon} label={label} className="w-6 h-6 text-background-10" />
     </span>
 
     <span className="py-5 pr-4 flex-1 border-b text-left text-lg font-medium text-background-12 border-background-7">

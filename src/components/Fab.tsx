@@ -1,8 +1,8 @@
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { IconType } from "react-icons";
-import { CustomIcon } from "./CustomIcon";
+import { LucideIcon } from "lucide-react";
+import { Icon } from "./ui/Icon";
 
 const itemVariants = {
   enter: {
@@ -32,7 +32,7 @@ const tooltipVariants = {
 
 interface FabInterface {
   label: string;
-  icon: IconType;
+  icon: LucideIcon;
   bgColor: string;
   beforeBgColor?: string;
 }
@@ -59,7 +59,7 @@ export function Fab({ label, icon, bgColor, beforeBgColor }: FabInterface) {
           bgColor
         )}
       >
-        <CustomIcon className="w-5 h-5" label={label} icon={icon} />
+        <Icon className="w-5 h-5" label={label} icon={icon} />
       </button>
       <AnimatePresence>
         {showTooltip && (

@@ -1,5 +1,5 @@
 import { Clock, Check, CheckCheck, LucideIcon } from "lucide-react";
-import { CustomIcon } from "../CustomIcon";
+import { Icon } from "@/components/ui/Icon";
 import { TMessage } from "@/lib/types";
 import mc from "@/lib/utils/mergeClassnames";
 
@@ -21,7 +21,7 @@ export function Status({
   const { icon, label } = STATUS[status];
 
   return (
-    <CustomIcon
+    <Icon
       icon={icon}
       label={label}
       className={mc(

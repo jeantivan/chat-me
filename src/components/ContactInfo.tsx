@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { IconButton } from "./ui/IconButton";
 import { Switch } from "./ui/Switch";
-import { CustomIcon } from "./CustomIcon";
+import { Icon } from "./ui/Icon";
 import useStore from "@/lib/store";
 import mc from "@/lib/utils/mergeClassnames";
 
@@ -117,7 +117,7 @@ export function ContactInfo() {
             </div>
             <div className="inline-flex items-center text-background-11 text-sm">
               20
-              <CustomIcon icon={ChevronRight} label="Ver más" />
+              <Icon icon={ChevronRight} label="Ver más" />
             </div>
           </div>
           <div className="px-5 flex flex-row w-full mb-4">

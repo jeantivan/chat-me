@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 import { SendIcon } from "lucide-react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
-import { CustomIcon } from "@/components/CustomIcon";
+import { Icon } from "@/components/ui/Icon";
 import useStore from "@/lib/store";
 import { SAVE_EDITOR } from "@/plugins/SaveEditorPlugin";
 import { TMessage } from "@/lib/types";
@@ -50,7 +50,7 @@ export function SendMessage() {
       onClick={handleSubmit}
       disabled={isEditorEmpty}
     >
-      <CustomIcon
+      <Icon
         icon={SendIcon}
         label="Enviar mensaje"
         className="-ml-1.5"

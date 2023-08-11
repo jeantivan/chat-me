@@ -1,5 +1,5 @@
 import { LucideIcon, HelpCircle, FileText, Users } from "lucide-react";
-import { CustomIcon } from "@/components/CustomIcon";
+import { Icon } from "@/components/ui/Icon";
 import { Header } from "./Header";
 import useStore from "@/lib/store";
 
@@ -14,7 +14,7 @@ const Item = ({
   <div {...rest} className="w-full flex items-center hover:bg-background-3">
     <span className="w-20 flex items-center justify-center">
       <span className="w-6 h-6 text-background-10">
-        <CustomIcon icon={icon} label={label} />
+        <Icon icon={icon} label={label} />
       </span>
     </span>
 

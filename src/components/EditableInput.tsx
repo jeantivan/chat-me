@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { X, Check, Pencil } from "lucide-react";
-import { CustomIcon } from "./CustomIcon";
+import { Icon } from "./ui/Icon";
 
 interface EditableInputProps {
   label: string;
@@ -64,14 +64,14 @@ export function EditableInput({
                   setIsEditing(false);
                 }}
               >
-                <CustomIcon icon={X} label="Cancelar" />
+                <Icon icon={X} label="Cancelar" />
               </button>
               <button
                 className="w-6 h-6 inline-flex items-center justify-center rounded-sm text-primary-12 border border-primary-7 bg-primary-9"
                 title="Guardar cambios"
                 onClick={handleSave}
               >
-                <CustomIcon icon={Check} label="Guardar cambios" />
+                <Icon icon={Check} label="Guardar cambios" />
               </button>
             </div>
           </>
@@ -85,7 +85,7 @@ export function EditableInput({
                 setIsEditing(true);
               }}
             >
-              <CustomIcon icon={Pencil} label="Edit Icon" />
+              <Icon icon={Pencil} label="Edit Icon" />
             </button>
           </>
         )}

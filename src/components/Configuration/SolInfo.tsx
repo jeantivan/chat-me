@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { FileText } from "lucide-react";
 import { Header } from "./Header";
-import { CustomIcon } from "@/components/CustomIcon";
+import { Icon } from "@/components/ui/Icon";
 import useStore from "@/lib/store";
 
 export function SolInfo() {
@@ -18,7 +18,7 @@ export function SolInfo() {
             transition={{ type: "tween" }}
             className="w-28 h-28 mx-auto rounded-full flex justify-center items-center bg-primary-10/30"
           >
-            <CustomIcon
+            <Icon
               className="w-16 h-20 text-primary-10"
               icon={FileText}
               label="File-icon"
@@ -35,7 +35,7 @@ export function SolInfo() {
         </div>
         <div className="border-y p-7 hover:bg-background-5 border-background-7">
           <div className="flex items-center select-none">
-            <CustomIcon
+            <Icon
               label="Solicitar reporte"
               icon={FileText}
               className="w-6 h-6 text-background-11 mr-6"

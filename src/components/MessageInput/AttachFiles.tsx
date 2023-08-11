@@ -2,7 +2,7 @@ import * as Popover from "@radix-ui/react-popover";
 import cx from "classnames";
 import { Contact, FileText, Camera, Image } from "lucide-react";
 import { useState } from "react";
-import { CustomIcon } from "@/components/CustomIcon";
+import { Icon } from "@/components/ui/Icon";
 import { Fab } from "@/components/Fab";
 import { motion, AnimatePresence } from "framer-motion";
 import { Paperclip } from "lucide-react";
@@ -65,7 +65,7 @@ export function AttachFiles() {
           { "dark:bg-gray-600 bg-gray-200": open }
         )}
       >
-        <CustomIcon
+        <Icon
           label="Adjuntar archivos"
           icon={Paperclip}
           className="w-full h-full"

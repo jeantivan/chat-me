@@ -1,8 +1,7 @@
 import { forwardRef } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { IconButton } from "./IconButton";
 import { LucideIcon } from "lucide-react";
-import { CustomIcon } from "../CustomIcon";
+import { Icon } from "./Icon";
 import mc from "@/lib/utils/mergeClassnames";
 
 export const MenuRoot = DropdownMenu.Root;
@@ -32,9 +31,7 @@ export const MenuItem = forwardRef<
 
   return (
     <DropdownMenu.Item ref={ref} className={componentClassName} {...rest}>
-      {icon && (
-        <CustomIcon className="w-5 h-5" icon={icon} label="Menu item icon" />
-      )}
+      {icon && <Icon className="w-5 h-5" icon={icon} label="Menu item icon" />}
       {children}
     </DropdownMenu.Item>
   );

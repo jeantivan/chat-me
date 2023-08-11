@@ -1,8 +1,8 @@
 import { ChangeEvent, useRef } from "react";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { Camera } from "lucide-react";
 import { UserImage } from "./UserImage";
-import { CustomIcon } from "./CustomIcon";
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { Icon } from "./ui/Icon";
 import useStore from "@/lib/store";
 
 const toMB = 1048576;
@@ -53,7 +53,7 @@ export function ChangeUserImage() {
           }}
           className="w-3/4 flex flex-col items-center justify-center mt-5"
         >
-          <CustomIcon
+          <Icon
             label="Cámara"
             icon={Camera}
             className="w-6 h-6 mb-1 text-neutral-50"
