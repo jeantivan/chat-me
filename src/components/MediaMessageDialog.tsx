@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { useElementSize } from "usehooks-ts";
-import { X, Smile } from "lucide-react";
+import { X, Smile, Star, Forward } from "lucide-react";
 
 import { ReactionMenu } from "./Message/ReactionMenu";
 import { Reactions } from "./Message/Reactions";
@@ -24,6 +24,7 @@ export function MediaMessageDialog({
 }) {
   const [containerRef, { width, height }] = useElementSize();
   const closeMediaMessage = useStore((state) => state.closeMediaMessage);
+  const starMessage = useStore((state) => state.starMessage);
   const message = useStore((state) => {
     const chatIndex = state.chats.findIndex(
       (chat) => chat.id === mediaMessage.chatId
@@ -72,6 +73,17 @@ export function MediaMessageDialog({
               </div>
             </div>
             <div className="flex items items-center gap-3">
+              <IconButton label="Reenviar mensaje" icon={Forward} disabled />
+              <IconButton
+                label="Destacar mensaje"
+                icon={Star}
+                iconClassName={
+                  message.starred ? "fill-background-12" : undefined
+                }
+                onClick={() => {
+                  starMessage(message);
+                }}
+              />
               <ReactionMenu ownReaction={ownReaction} message={message}>
                 <IconButton label="Reaccionar a este mensaje" icon={Smile} />
               </ReactionMenu>
