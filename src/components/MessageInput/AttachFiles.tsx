@@ -1,13 +1,6 @@
 import * as Popover from "@radix-ui/react-popover";
 import cx from "classnames";
-import {
-  BsPaperclip,
-  BsPersonFill,
-  BsFileEarmarkFill,
-  BsCameraFill,
-  BsImageFill,
-  BsStickyFill,
-} from "react-icons/bs";
+import { Contact, FileText, Camera, Image } from "lucide-react";
 import { useState } from "react";
 import { CustomIcon } from "@/components/CustomIcon";
 import { Fab } from "@/components/Fab";
@@ -17,31 +10,26 @@ import { Paperclip } from "lucide-react";
 const attachOptions = [
   {
     label: "Contacto",
-    icon: BsPersonFill,
+    icon: Contact,
     bgColor: "bg-cyan-500",
     beforeBgColor: "before:bg-cyan-600",
   },
   {
     label: "Archivo",
-    icon: BsFileEarmarkFill,
+    icon: FileText,
     bgColor: "bg-violet-500",
     beforeBgColor: "before:bg-violet-600",
   },
   {
     label: "Cámara",
-    icon: BsCameraFill,
+    icon: Camera,
     bgColor: "bg-rose-500",
     beforeBgColor: "before:bg-rose-600",
   },
-  {
-    label: "Sticker",
-    icon: BsStickyFill,
-    bgColor: "bg-blue-500",
-    beforeBgColor: "before:bg-blue-700",
-  },
+
   {
     label: "Fotos y videos",
-    icon: BsImageFill,
+    icon: Image,
     bgColor: "bg-fuchsia-500",
     beforeBgColor: "before:bg-fuchsia-600",
   },

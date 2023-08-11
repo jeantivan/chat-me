@@ -1,6 +1,6 @@
 import * as Separator from "@radix-ui/react-separator";
 import * as Label from "@radix-ui/react-label";
-import { FiChevronRight } from "react-icons/fi";
+import { ChevronRight } from "lucide-react";
 
 import { Header } from "./Header";
 
@@ -25,7 +25,7 @@ export function Privacy() {
                 <p className="text-background-11">Nadie</p>
               </div>
               <CustomIcon
-                icon={FiChevronRight}
+                icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
               />
@@ -37,7 +37,7 @@ export function Privacy() {
                 <p className="text-background-11">Mis contactos</p>
               </div>
               <CustomIcon
-                icon={FiChevronRight}
+                icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
               />
@@ -49,7 +49,7 @@ export function Privacy() {
                 <p className="text-background-11">Mis contactos</p>
               </div>
               <CustomIcon
-                icon={FiChevronRight}
+                icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
               />
@@ -79,7 +79,7 @@ export function Privacy() {
                 <p className="text-background-11">Desactivados</p>
               </div>
               <CustomIcon
-                icon={FiChevronRight}
+                icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
               />
@@ -92,7 +92,7 @@ export function Privacy() {
                 <p className="text-background-11">Mis contactos</p>
               </div>
               <CustomIcon
-                icon={FiChevronRight}
+                icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
               />
@@ -103,7 +103,7 @@ export function Privacy() {
                 <p className="text-background-11">15</p>
               </div>
               <CustomIcon
-                icon={FiChevronRight}
+                icon={ChevronRight}
                 label="chevron-right-icon"
                 className="w-6 h-6 text-background-9"
               />

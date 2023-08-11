@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { BsFileEarmarkTextFill } from "react-icons/bs";
+import { FileText } from "lucide-react";
 import { Header } from "./Header";
 import { CustomIcon } from "@/components/CustomIcon";
 import useStore from "@/lib/store";
@@ -20,7 +20,7 @@ export function SolInfo() {
           >
             <CustomIcon
               className="w-16 h-20 text-primary-10"
-              icon={BsFileEarmarkTextFill}
+              icon={FileText}
               label="File-icon"
             />
           </motion.div>
@@ -37,7 +37,7 @@ export function SolInfo() {
           <div className="flex items-center select-none">
             <CustomIcon
               label="Solicitar reporte"
-              icon={BsFileEarmarkTextFill}
+              icon={FileText}
               className="w-6 h-6 text-background-11 mr-6"
             />
 
