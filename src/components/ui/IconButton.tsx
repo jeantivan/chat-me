@@ -1,15 +1,15 @@
-import { LucideIcon } from "lucide-react";
 import { forwardRef } from "react";
-import { CustomIcon } from "../CustomIcon";
+import { Icon, IconProps } from "./Icon";
 import mc from "@/lib/utils/mergeClassnames";
 
-type IconButtonProps = {
-  label: string;
-  icon: LucideIcon;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+type IconButtonProps = IconProps &
+  React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-  function ButtonBase({ icon, label, className, ...props }, ref) {
+  function ButtonBase(
+    { icon, label, className, iconClassName, ...props },
+    ref
+  ) {
     return (
       <button
         ref={ref}
@@ -17,10 +17,16 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         className={mc(
           "inline-flex rounded-md p-1.5 cursor-pointer",
           "text-background-12 hover:bg-background-5 outline-none",
+          "disabled:text-background-8",
           className
         )}
       >
-        <CustomIcon className="w-full h-full" icon={icon} label={label} />
+        <Icon
+          className="w-full h-full"
+          icon={icon}
+          label={label}
+          iconClassName={iconClassName}
+        />
       </button>
     );
   }
