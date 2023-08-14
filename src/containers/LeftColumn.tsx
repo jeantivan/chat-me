@@ -1,5 +1,9 @@
 import { ChatList, UserProfile } from "@/components";
-import { LeftDrawer, LeftDrawerElement } from "@/components/LeftDrawer";
+import {
+  LeftDrawer,
+  LeftDrawerElement,
+  LeftDrawerElementProps,
+} from "@/components/LeftDrawer";
 
 import { Profile } from "@/components/Configuration/Profile";
 import { Options } from "@/components/Configuration/Options";
@@ -11,6 +15,54 @@ import { NewChat } from "@/components/NewChat";
 import { ArchivedChats } from "@/components/ArchivedChats";
 import { Theme } from "@/components/Configuration/Theme";
 
+const elements: LeftDrawerElementProps[] = [
+  {
+    title: "Configuración",
+    option: "OPTIONS",
+    Component: Options,
+  },
+  {
+    title: "Perfil",
+    option: "PROFILE",
+    Component: Profile,
+  },
+  {
+    title: "Notificaciones",
+    option: "NOTIFICATIONS",
+    Component: Notifications,
+  },
+  {
+    title: "Privacidad",
+    option: "PRIVACY",
+    Component: Privacy,
+  },
+  {
+    title: "Personalizar interfaz",
+    option: "THEME",
+    Component: Theme,
+  },
+  {
+    title: "Solicitar info de mi cuenta",
+    option: "SOL_INFO",
+    Component: SolInfo,
+  },
+  {
+    title: "Ayuda",
+    option: "HELP",
+    Component: Help,
+  },
+  {
+    title: "Chat nuevo",
+    option: "NEW_CHAT",
+    Component: NewChat,
+  },
+  {
+    title: "Chats archivados",
+    option: "ARCHIVED_CHATS",
+    Component: ArchivedChats,
+  },
+];
+
 export function LeftColumn() {
   return (
     <section
@@ -18,35 +70,11 @@ export function LeftColumn() {
       className="user-chats relative bg-background-5 border-r border-background-7"
     >
       <UserProfile />
-
       <ChatList />
       <LeftDrawer>
-        <LeftDrawerElement key="PROFILE" option="PROFILE" Component={Profile} />
-        <LeftDrawerElement key="OPTIONS" option="OPTIONS" Component={Options} />
-        <LeftDrawerElement
-          key="NOTIFICATIONS"
-          option="NOTIFICATIONS"
-          Component={Notifications}
-        />
-        <LeftDrawerElement key="PRIVACY" option="PRIVACY" Component={Privacy} />
-
-        <LeftDrawerElement
-          key="SOL_INFO"
-          option="SOL_INFO"
-          Component={SolInfo}
-        />
-        <LeftDrawerElement key="HELP" option="HELP" Component={Help} />
-        <LeftDrawerElement key="THEME" option="THEME" Component={Theme} />
-        <LeftDrawerElement
-          key="NEW_CHAT"
-          option="NEW_CHAT"
-          Component={NewChat}
-        />
-        <LeftDrawerElement
-          key="ARCHIVED_CHATS"
-          option="ARCHIVED_CHATS"
-          Component={ArchivedChats}
-        />
+        {elements.map((el) => (
+          <LeftDrawerElement key={el.option} {...el} />
+        ))}
       </LeftDrawer>
     </section>
   );
