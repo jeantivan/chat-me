@@ -6,9 +6,10 @@ import { Laugh } from "lucide-react";
 
 import { Root } from "./Root";
 import { Plugins } from "./Plugins";
-import { Icon } from "@/components/ui/Icon";
 import { SendMessage } from "./SendMessage";
 import { AttachFiles } from "./AttachFiles";
+
+import { Icon } from "@/components/ui/Icon";
 
 const Placeholder = () => (
   <div className="absolute pl-1 pointer-events-none text-background-11">
@@ -16,7 +17,10 @@ const Placeholder = () => (
   </div>
 );
 
-export function MessageInput() {
+type EditorProps = {
+  chatId: string;
+};
+export function Editor({ chatId }: EditorProps) {
   return (
     <Root>
       <AttachFiles />
