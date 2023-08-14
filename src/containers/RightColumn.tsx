@@ -1,5 +1,4 @@
-import { Chat } from "./Chat";
-import { Welcome } from "@/components";
+import { Welcome, Chat } from "@/components";
 import { useCurrentChatId } from "@/lib/hooks";
 
 export function RightColumn() {
