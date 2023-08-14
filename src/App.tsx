@@ -1,7 +1,6 @@
 import "@/styles/App.css";
 import "@/styles/themes/index.css";
-import { Main, LeftColumn } from "@/containers";
-import { RightColumn } from "./containers/RightColumn";
+import { Main, LeftColumn, RightColumn } from "@/containers";
 
 import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
