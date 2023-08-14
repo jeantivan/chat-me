@@ -53,11 +53,15 @@ export interface LeftDrawerSlice {
   leftDrawer: LeftDrawerContentOptions | null;
   leftDrawerGoTo: (to: LeftDrawerContentOptions) => void;
   closeLeftDrawer: () => void;
+  ldHistory: LeftDrawerContentOptions[]; // Historial del estado
+  ldGoBack: () => void;
 }
 export interface RightDrawerSlice {
   rightDrawer: RightDrawerContentOptions | null;
   rightDrawerGoTo: (to: RightDrawerContentOptions) => void;
   closeRightDrawer: () => void;
+  rdHistory: RightDrawerContentOptions[]; // Historial del estado
+  rdGoBack: () => void;
 }
 
 export interface MediaMessageSlice {
