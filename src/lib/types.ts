@@ -106,5 +106,5 @@ export type LeftDrawerContentOptions =
 
 export type RightDrawerContentOptions =
   | "CONTACT_INFO"
-  | "CHAT_SHARE_CONTENT"
-  | "FAV_MESSAGES";
+  | "SHARED_CONTENT"
+  | "STARRED_MESSAGES";
