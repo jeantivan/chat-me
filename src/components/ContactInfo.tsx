@@ -23,11 +23,19 @@ type ItemProps = {
   icon?: LucideIcon;
   textHelper?: string;
   action?: JSX.Element;
-};
-const Item = ({ children, danger, textHelper, icon, action }: ItemProps) => {
+} & React.HTMLAttributes<HTMLDivElement>;
+const Item = ({
+  children,
+  danger,
+  textHelper,
+  icon,
+  action,
+  ...rest
+}: ItemProps) => {
   const Icon = icon || "svg";
   return (
     <div
+      {...rest}
       className={mc(
         "flex gap-6 py-4 px-6 text-background-11 text-lg ",
         danger && "text-red-500"
@@ -54,6 +62,7 @@ const Item = ({ children, danger, textHelper, icon, action }: ItemProps) => {
 
 export function ContactInfo() {
   const closeRightDrawer = useStore((state) => state.closeRightDrawer);
+  const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
   const muteChat = useStore((state) => state.muteChat);
   const chat = useStore((state) =>
     state.chats.find((chat) => chat.id === state.currentChatId)
@@ -115,10 +124,15 @@ export function ContactInfo() {
             <div className="flex-1 text-sm text-primary-9">
               Archivos, enlaces y documentos.
             </div>
-            <div className="inline-flex items-center text-background-11 text-sm">
+            <button
+              onClick={() => {
+                rightDrawerGoTo("SHARED_CONTENT");
+              }}
+              className="inline-flex items-center text-background-11 text-sm"
+            >
               20
               <Icon icon={ChevronRight} label="Ver más" />
-            </div>
+            </button>
           </div>
           <div className="px-5 flex flex-row w-full mb-4">
             <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
@@ -131,7 +145,13 @@ export function ContactInfo() {
           </div>
         </section>
         <section className="py-4 mb-4 shadow bg-background-3">
-          <Item icon={Star} action={<ChevronRight className="w-6 h-6" />}>
+          <Item
+            onClick={() => {
+              rightDrawerGoTo("STARRED_MESSAGES");
+            }}
+            icon={Star}
+            action={<ChevronRight className="w-6 h-6" />}
+          >
             Mensajes destacados
           </Item>
           <Item
