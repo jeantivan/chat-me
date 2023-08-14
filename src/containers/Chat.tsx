@@ -8,6 +8,8 @@ import {
 import useStore from "@/lib/store";
 import { ContactInfo } from "@/components/ContactInfo";
 import { AnimatePresence, LayoutGroup } from "framer-motion";
+import { ChatStarredMessages } from "@/components/ChatStarredMessages";
+import { ChatSharedContent } from "@/components/ChatSharedContent";
 
 // TODO: Animación de salida del left drawer
 
@@ -32,6 +34,16 @@ export function Chat({ chatId }: { chatId: string }) {
               key="CONTACT_INFO"
               option="CONTACT_INFO"
               Component={ContactInfo}
+            />
+            <RightDrawerElement
+              key="STARRED_MESSAGES"
+              option="STARRED_MESSAGES"
+              Component={ChatStarredMessages}
+            />
+            <RightDrawerElement
+              key="SHARED_CONTENT"
+              option="SHARED_CONTENT"
+              Component={ChatSharedContent}
             />
           </RightDrawer>
         </LayoutGroup>
