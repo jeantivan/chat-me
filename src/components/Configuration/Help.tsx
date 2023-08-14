@@ -1,7 +1,5 @@
 import { LucideIcon, HelpCircle, FileText, Users } from "lucide-react";
 import { Icon } from "@/components/ui/Icon";
-import { Header } from "./Header";
-import useStore from "@/lib/store";
 
 const Item = ({
   icon,
@@ -25,17 +23,13 @@ const Item = ({
 );
 
 export function Help() {
-  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   return (
-    <>
-      <Header goBack={closeLeftDrawer}>Ayuda</Header>
-      <div className="h-full flex">
-        <div className="w-full mt-auto">
-          <Item icon={HelpCircle} label="Centro de ayuda" />
-          <Item icon={Users} label="Contáctanos" />
-          <Item icon={FileText} label="Condiciones y Políticas de privacidad" />
-        </div>
+    <div className="h-full flex">
+      <div className="w-full mt-auto">
+        <Item icon={HelpCircle} label="Centro de ayuda" />
+        <Item icon={Users} label="Contáctanos" />
+        <Item icon={FileText} label="Condiciones y Políticas de privacidad" />
       </div>
-    </>
+    </div>
   );
 }

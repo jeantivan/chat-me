@@ -6,7 +6,6 @@ import {
   FileText,
   HelpCircle,
 } from "lucide-react";
-import { Header } from "./Header";
 import { Shortcuts } from "./Shortcuts";
 
 import { Icon } from "@/components/ui/Icon";
@@ -48,68 +47,65 @@ const Item = ({ icon, label, ...rest }: ItemProps) => (
 );
 
 export function Options() {
-  const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
+
   return (
-    <>
-      <Header goBack={closeLeftDrawer}>Configuración</Header>
-      <div className="overflow-y-auto flex-1 flex flex-col h-full">
-        <User
-          onClick={() => {
-            leftDrawerGoTo("PROFILE");
-          }}
-        />
-        <Item
-          label="Notificaciones"
-          icon={Bell}
-          onClick={() => {
-            leftDrawerGoTo("NOTIFICATIONS");
-          }}
-        />
-        <Item
-          label="Privacidad"
-          icon={Lock}
-          onClick={() => {
-            leftDrawerGoTo("PRIVACY");
-          }}
-        />
-        <Item
-          label="Tema"
-          icon={Paintbrush}
-          onClick={() => {
-            leftDrawerGoTo("THEME");
-          }}
-        />
-        <Item
-          label="Solicitar info. de la cuenta"
-          icon={FileText}
-          onClick={() => {
-            leftDrawerGoTo("SOL_INFO");
-          }}
-        />
-        <Shortcuts key="SHORTCUTS" />
-        <Item
-          label="Ayuda"
-          icon={HelpCircle}
-          onClick={() => {
-            leftDrawerGoTo("HELP");
-          }}
-        />
-        <footer className="flex w-full justify-center p-3 mt-5">
-          <p className="text-base text-background-12">
-            Made with{" "}
-            <span className="mx-2" aria-label="Cup of coffee">
-              ☕
-            </span>
-            <a
-              className="text-primary-9 hover:underline uppercase"
-              href="https://github.com/jeantivan"
-            >
-              Jean Tivan
-            </a>
-          </p>
-        </footer>
-      </div>
-    </>
+    <div className="overflow-y-auto flex-1 flex flex-col h-full">
+      <User
+        onClick={() => {
+          leftDrawerGoTo("PROFILE");
+        }}
+      />
+      <Item
+        label="Notificaciones"
+        icon={Bell}
+        onClick={() => {
+          leftDrawerGoTo("NOTIFICATIONS");
+        }}
+      />
+      <Item
+        label="Privacidad"
+        icon={Lock}
+        onClick={() => {
+          leftDrawerGoTo("PRIVACY");
+        }}
+      />
+      <Item
+        label="Tema"
+        icon={Paintbrush}
+        onClick={() => {
+          leftDrawerGoTo("THEME");
+        }}
+      />
+      <Item
+        label="Solicitar info. de la cuenta"
+        icon={FileText}
+        onClick={() => {
+          leftDrawerGoTo("SOL_INFO");
+        }}
+      />
+      <Shortcuts key="SHORTCUTS" />
+      <Item
+        label="Ayuda"
+        icon={HelpCircle}
+        onClick={() => {
+          leftDrawerGoTo("HELP");
+        }}
+      />
+      <footer className="flex w-full justify-center p-3 mt-5">
+        <p className="text-base text-background-12">
+          Made with{" "}
+          <span className="mx-2" aria-label="Cup of coffee">
+            ☕
+          </span>
+          <a
+            className="text-primary-9 hover:underline uppercase"
+            href="https://github.com/jeantivan"
+          >
+            Jean Tivan
+          </a>
+        </p>
+      </footer>
+    </div>
   );
 }
