@@ -1,8 +1,8 @@
 import { ArrowLeft } from "lucide-react";
-import { IconButton } from "./ui/IconButton";
+import { IconButton } from "@/components/ui/IconButton";
 import useStore from "@/lib/store";
 
-export function ChatSharedContent() {
+export function SharedContent() {
   const rdGoBack = useStore((state) => state.rdGoBack);
   return (
     <div className="bg-background-5 h-full">

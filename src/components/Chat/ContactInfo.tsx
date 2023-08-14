@@ -11,9 +11,9 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { IconButton } from "./ui/IconButton";
-import { Switch } from "./ui/Switch";
-import { Icon } from "./ui/Icon";
+import { IconButton } from "../ui/IconButton";
+import { Switch } from "../ui/Switch";
+import { Icon } from "../ui/Icon";
 import useStore from "@/lib/store";
 import mc from "@/lib/utils/mergeClassnames";
 

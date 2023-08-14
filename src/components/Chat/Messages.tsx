@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { Message } from "./Message";
+import { Message } from "@/components/Message";
 
 import { TMessage } from "@/lib/types";
 import { useCurrentChatId, useUserId } from "@/lib/hooks";
