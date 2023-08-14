@@ -19,3 +19,11 @@ export function useTheme() {
     colors: theme.colors,
   }));
 }
+
+export function useChatActions() {
+  return useStore((state) => ({
+    muteChat: state.muteChat,
+    closeChat: state.closeChat,
+    deleteChat: state.deleteChat,
+  }));
+}
