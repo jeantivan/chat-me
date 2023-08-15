@@ -64,7 +64,7 @@ export function MessageContainer({
   };
 
   return (
-    <div className={mc("ml-[76px] mr-[70px] mt-1.5", hasTail && "mt-4")}>
+    <div className={mc("mt-1.5", hasTail && "mt-4")}>
       <div
         onMouseEnter={() => {
           setShowMenus(true);
