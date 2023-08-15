@@ -1,15 +1,18 @@
 import { useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Message } from "@/components/Message";
 
 import { TMessage } from "@/lib/types";
 import { useCurrentChatId, useUserId } from "@/lib/hooks";
+import useStore from "@/lib/store";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 type MessagesProps = {
   messages: TMessage[];
 };
-
 export function Messages({ messages }: MessagesProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const rightDrawer = useStore((state) => state.rightDrawer);
   const userId = useUserId();
   const { currentChatId } = useCurrentChatId();
 
@@ -20,23 +23,28 @@ export function Messages({ messages }: MessagesProps) {
   }, [containerRef.current, currentChatId, messages.length]);
 
   return (
-    <div
-      className="messages overflow-x-hidden overflow-y-scroll bg-background-5 bg-[url('/images/pattern.svg')] py-5 grid items-end"
+    <ScrollArea
       ref={containerRef}
+      rootClassName="messages bg-background-5 bg-[url('/images/pattern.svg')]"
+      className="w-full py-5"
     >
-      {messages.map((message, i, array) => {
-        const isOwnMsg = userId === message.owner;
-        const hasTail = i === 0 || isOwnMsg !== (userId === array[i - 1].owner);
+      <div className="px-5 grid items-end">
+        {messages.map((message, i, array) => {
+          const isOwnMsg = userId === message.owner;
+          const hasTail =
+            i === 0 || isOwnMsg !== (userId === array[i - 1].owner);
 
-        return (
-          <Message
-            key={message.id}
-            isOwnMsg={isOwnMsg}
-            hasTail={hasTail}
-            message={message}
-          />
-        );
-      })}
-    </div>
+          return (
+            <div key={message.id} className="px-[48px]">
+              <Message
+                isOwnMsg={isOwnMsg}
+                hasTail={hasTail}
+                message={message}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </ScrollArea>
   );
 }
