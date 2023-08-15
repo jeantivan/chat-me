@@ -74,7 +74,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
         setCurrentChatId(chat.id);
       }}
       className={mc(
-        "flex select-none cursor-pointer p-2 gap-4 rounded-xl",
+        "flex min-w-0 select-none cursor-pointer p-2 gap-4 rounded-xl mr-2",
         isOpenChat && "bg-primary-4",
         !isOpenChat && "hover:bg-background-4",
         hasUnreadMsg && "font-medium"
