@@ -9,6 +9,7 @@ import {
 import { Shortcuts } from "./Shortcuts";
 
 import { Icon } from "@/components/ui/Icon";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 import { UserImage } from "@/components/UserImage";
 import useStore from "@/lib/store";
 
@@ -50,7 +51,7 @@ export function Options() {
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
 
   return (
-    <div className="overflow-y-auto flex-1 flex flex-col h-full">
+    <ScrollArea type="auto" className="pr-2.5">
       <User
         onClick={() => {
           leftDrawerGoTo("PROFILE");
@@ -106,6 +107,6 @@ export function Options() {
           </a>
         </p>
       </footer>
-    </div>
+    </ScrollArea>
   );
 }

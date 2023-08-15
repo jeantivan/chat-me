@@ -4,11 +4,12 @@ import { ChevronRight } from "lucide-react";
 
 import { Icon } from "@/components/ui/Icon";
 import { Checkbox } from "@/components/ui/Checkbox";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 export function Privacy() {
   return (
-    <div className="overflow-y-auto flex-1 bg-background-5">
-      <div className="flex flex-col">
+    <ScrollArea type="auto">
+      <div className="grid pr-2.5 bg-background-5">
         <div className="py-4 px-6 mb-5 bg-background-2">
           <h2 className="text-primary-9 mb-4">
             Quién puede ver mi información personal
@@ -104,6 +105,6 @@ export function Privacy() {
           </div>
         </div>
       </div>
-    </div>
+    </ScrollArea>
   );
 }

@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { FileText } from "lucide-react";
 import { Icon } from "@/components/ui/Icon";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 
 export function SolInfo() {
   return (
-    <div className="py-7 overflow-y-auto">
+    <ScrollArea className="py-7">
       <div className="mx-auto flex flex-col">
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
@@ -51,6 +52,6 @@ export function SolInfo() {
           número de teléfono, se cancelará tu solicitud.
         </p>
       </div>
-    </div>
+    </ScrollArea>
   );
 }

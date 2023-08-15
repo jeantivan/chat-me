@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { EditableInput } from "@/components/EditableInput";
 import { ChangeUserImage } from "@/components/ChangeUserImage";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
 
 export function Profile() {
@@ -19,7 +20,7 @@ export function Profile() {
   };
 
   return (
-    <div className="py-6 overflow-y-auto">
+    <ScrollArea type="auto" className="py-6">
       <div className="w-full flex justify-center mb-5">
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
@@ -50,6 +51,6 @@ export function Profile() {
           />
         </div>
       </div>
-    </div>
+    </ScrollArea>
   );
 }

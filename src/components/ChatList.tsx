@@ -2,6 +2,7 @@ import orderBy from "lodash/orderBy";
 import partition from "lodash/partition";
 import { ChatItem } from "./ChatItem";
 import { SearchChats } from "./SearchChats";
+import { ScrollArea } from "./ui/ScrollArea";
 import useStore from "@/lib/store";
 import { TChat } from "@/lib/types";
 
@@ -23,14 +24,16 @@ export function ChatList() {
   return (
     <>
       <SearchChats />
-      <div className="chats-list h-full p-2 overflow-x-hidden overflow-y-auto bg-background-1">
-        {pinnedChats.map((chat) => (
-          <ChatItem key={chat.id} chat={chat} />
-        ))}
-        {restChats.map((chat) => (
-          <ChatItem key={chat.id} chat={chat} />
-        ))}
-      </div>
+      <ScrollArea type="auto" className="chats-list p-2 bg-background-1">
+        <div className="grid gap-1">
+          {pinnedChats.map((chat) => (
+            <ChatItem key={chat.id} chat={chat} />
+          ))}
+          {restChats.map((chat) => (
+            <ChatItem key={chat.id} chat={chat} />
+          ))}
+        </div>
+      </ScrollArea>
     </>
   );
 }
