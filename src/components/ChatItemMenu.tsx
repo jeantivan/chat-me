@@ -3,7 +3,7 @@ import { MoreHorizontal } from "lucide-react";
 import { MenuRoot, MenuContent, MenuItem } from "./ui/Menu";
 import { Icon } from "./ui/Icon";
 import mc from "@/lib/utils/mergeClassnames";
-import useStore from "@/lib/store";
+import { useChatActions } from "@/lib/hooks";
 
 type ChatItemMenuProps = {
   isMuted?: boolean;
@@ -19,15 +19,9 @@ export function ChatItemMenu({
   isArchived,
   isOpenChat,
 }: ChatItemMenuProps) {
-  const { archiveChat, deleteChat, closeChat, muteChat, pinChat } = useStore(
-    ({ archiveChat, closeChat, deleteChat, muteChat, pinChat }) => ({
-      archiveChat,
-      closeChat,
-      deleteChat,
-      muteChat,
-      pinChat,
-    })
-  );
+  const { archiveChat, deleteChat, closeChat, muteChat, pinChat } =
+    useChatActions();
+
   return (
     <MenuRoot>
       <MenuTrigger
