@@ -22,8 +22,10 @@ export function useTheme() {
 
 export function useChatActions() {
   return useStore((state) => ({
+    archiveChat: state.archiveChat,
     muteChat: state.muteChat,
     closeChat: state.closeChat,
     deleteChat: state.deleteChat,
+    pinChat: state.pinChat,
   }));
 }
