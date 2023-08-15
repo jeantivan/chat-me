@@ -25,8 +25,9 @@ export function Messages({ messages }: MessagesProps) {
   return (
     <ScrollArea
       ref={containerRef}
+      type="auto"
       rootClassName="messages bg-background-5 bg-[url('/images/pattern.svg')]"
-      className="w-full py-5"
+      className="w-full py-5 grid items-end"
     >
       <div className="px-5 grid items-end">
         {messages.map((message, i, array) => {
