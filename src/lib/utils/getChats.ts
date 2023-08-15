@@ -8,7 +8,7 @@ const allMessages = await import("../../assets/mock-data/messages.json").then(
 );
 
 export const getChats = (contacts: TUser[]) => {
-  const randomChats = shuffle(contacts).slice(0, 10);
+  const randomChats = shuffle(contacts).slice(0, 20);
 
   const randomPinnedChat = Math.floor(Math.random() * randomChats.length);
 
@@ -19,7 +19,7 @@ export const getChats = (contacts: TUser[]) => {
       participants: [contact],
       pinned: randomPinnedChat === index,
       muted: false,
-      archived: false,
+      archived: 35 % index === 0 || 25 % index === 0,
       hasUnreadMsg: 0,
       messages: mapMessages(allMessages, contact, id),
     };
