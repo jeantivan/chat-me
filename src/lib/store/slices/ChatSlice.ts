@@ -43,7 +43,7 @@ export const createChatSlice: StateCreator<
         state.currentChatId = undefined;
       }
       state.rightDrawer = null;
-      state.chats.splice(chatIndex, 1);
+      state.chats[chatIndex].messages = [];
     });
   },
   archiveChat: (chatId: string) => {
