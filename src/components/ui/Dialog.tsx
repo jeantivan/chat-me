@@ -34,6 +34,7 @@ interface DialogContentProps {
   children: ReactNode;
   className?: string;
   overlayClassName?: string;
+  scroll?: boolean;
 }
 
 export function DialogContent({
@@ -41,6 +42,7 @@ export function DialogContent({
   children,
   className,
   overlayClassName,
+  scroll = true,
 }: DialogContentProps) {
   const { container } = useDialogContainer();
 
@@ -48,25 +50,52 @@ export function DialogContent({
     <AnimatePresence>
       {open && (
         <DialogPortal forceMount container={container}>
-          <DialogPrimitive.Overlay
-            style={{ zIndex: 1000 }}
-            className={mc(
-              "fixed inset-0 overflow-y-auto backdrop-blur-sm bg-background-1/70",
-              overlayClassName
-            )}
-          >
-            <DialogPrimitive.Content asChild>
-              <motion.div
-                variants={contentVariants}
-                initial="exit"
-                animate="enter"
-                exit="exit"
-                className={mc("grid place-items-center", className)}
-              >
-                {children}
-              </motion.div>
-            </DialogPrimitive.Content>
-          </DialogPrimitive.Overlay>
+          {scroll ? (
+            <DialogPrimitive.Overlay
+              style={{ zIndex: 1000 }}
+              className={mc(
+                "fixed inset-0 overflow-y-auto backdrop-blur-sm bg-background-1/70",
+                overlayClassName
+              )}
+            >
+              <DialogPrimitive.Content asChild>
+                <motion.div
+                  variants={contentVariants}
+                  initial="exit"
+                  animate="enter"
+                  exit="exit"
+                  className={mc("grid place-items-center", className)}
+                >
+                  {children}
+                </motion.div>
+              </DialogPrimitive.Content>
+            </DialogPrimitive.Overlay>
+          ) : (
+            <>
+              <DialogPrimitive.Overlay
+                style={{ zIndex: 1000 }}
+                className={mc(
+                  "fixed inset-0 overflow-y-auto backdrop-blur-sm bg-background-1/70",
+                  overlayClassName
+                )}
+              />
+              <DialogPrimitive.Content asChild>
+                <motion.div
+                  variants={contentVariants}
+                  initial="exit"
+                  animate="enter"
+                  exit="exit"
+                  style={{ zIndex: 1001 }}
+                  className={mc(
+                    "fixed inset-0 flex justify-center items-center",
+                    className
+                  )}
+                >
+                  {children}
+                </motion.div>
+              </DialogPrimitive.Content>
+            </>
+          )}
         </DialogPortal>
       )}
     </AnimatePresence>
