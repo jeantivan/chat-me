@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/Menu";
 import useStore from "@/lib/store";
 import { TMessage } from "@/lib/types";
+import { ForwardMessages } from "../ForwardMessages";
 
 export function Menu({
   children,
@@ -21,7 +22,8 @@ export function Menu({
   onOpenChange?: (open: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [forwardMessagesDialog, setForwardMessagesDialog] = useState(false);
 
   const starMessage = useStore((state) => state.starMessage);
 
@@ -39,7 +41,14 @@ export function Menu({
 
       {open && (
         <MenuContent align={align} forceMount>
-          <MenuItem disabled>Reenviar</MenuItem>
+          <MenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              setForwardMessagesDialog(true);
+            }}
+          >
+            Reenviar
+          </MenuItem>
           <MenuItem
             onClick={() => {
               starMessage(message);
@@ -50,7 +59,7 @@ export function Menu({
           <MenuItem
             onClick={(e) => {
               e.stopPropagation();
-              setOpenDeleteModal(true);
+              setDeleteDialog(true);
             }}
           >
             Eliminar
@@ -59,8 +68,13 @@ export function Menu({
       )}
       <DeleteMessage
         message={message}
-        open={openDeleteModal}
-        openChange={setOpenDeleteModal}
+        open={deleteDialog}
+        openChange={setDeleteDialog}
+      />
+      <ForwardMessages
+        messages={[message]}
+        open={forwardMessagesDialog}
+        openChange={setForwardMessagesDialog}
       />
     </MenuRoot>
   );

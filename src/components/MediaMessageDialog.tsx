@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
+import { useState } from "react";
 import { useElementSize } from "usehooks-ts";
 import { X, Smile, Star, Forward } from "lucide-react";
 
+import { ForwardMessages } from "./ForwardMessages";
 import { ReactionMenu } from "./Message/ReactionMenu";
 import { Reactions } from "./Message/Reactions";
 
@@ -23,6 +25,7 @@ export function MediaMessageDialog({
   mediaMessage: TMessage;
 }) {
   const [containerRef, { width, height }] = useElementSize();
+  const [forwardMessagesDialog, setForwardMessagesDialog] = useState(false);
   const closeMediaMessage = useStore((state) => state.closeMediaMessage);
   const starMessage = useStore((state) => state.starMessage);
   const message = useStore((state) => {
@@ -73,7 +76,13 @@ export function MediaMessageDialog({
               </div>
             </div>
             <div className="flex items items-center gap-3">
-              <IconButton label="Reenviar mensaje" icon={Forward} disabled />
+              <IconButton
+                onClick={() => {
+                  setForwardMessagesDialog(true);
+                }}
+                label="Reenviar mensaje"
+                icon={Forward}
+              />
               <IconButton
                 label="Destacar mensaje"
                 icon={Star}
@@ -130,6 +139,11 @@ export function MediaMessageDialog({
             )}
           </div>
         </div>
+        <ForwardMessages
+          messages={[message]}
+          open={forwardMessagesDialog}
+          openChange={setForwardMessagesDialog}
+        />
       </DialogContent>
     </DialogRoot>
   );
