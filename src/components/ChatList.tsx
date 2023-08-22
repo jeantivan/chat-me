@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import orderBy from "lodash/orderBy";
 import partition from "lodash/partition";
 import { ChatItem } from "./ChatItem";
@@ -15,7 +16,9 @@ const getDateOfLastMessage = (c: TChat) => {
 export function ChatList() {
   const chats = useStore((state) => state.chats);
 
-  const orderChats = orderBy(chats, [getDateOfLastMessage], ["desc"]);
+  const noEmptyChats = chats.filter((chat) => chat.messages.length > 0);
+
+  const orderChats = orderBy(noEmptyChats, [getDateOfLastMessage], ["desc"]);
 
   const noArchivedChats = orderChats.filter((chat) => !chat.archived);
 
