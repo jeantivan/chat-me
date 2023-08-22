@@ -1,14 +1,14 @@
 import shuffle from "lodash/shuffle";
 import dayjs from "dayjs";
-import { TUser } from "@/lib/types";
+import { TMessage, TUser } from "@/lib/types";
 
-export const mapMessages = (
-  mockMessages: any,
-  contact: TUser,
-  chatId: string
-) => {
+const allMessages = (await import("../../assets/mock-data/messages.json").then(
+  (res) => res.default
+)) as TMessage[];
+
+export const mapMessages = (contact: TUser, chatId: string): TMessage[] => {
   const qty = Math.floor(Math.random() * 40 + 1);
-  const messages = shuffle(mockMessages)
+  const messages = shuffle(allMessages)
     .slice(0, qty)
     .map((message, i) => {
       const newTime = dayjs()
