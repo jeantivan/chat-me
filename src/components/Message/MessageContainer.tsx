@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
-import { MoreVertical, Smile, Star } from "lucide-react";
+import { Forward, MoreVertical, Smile, Star } from "lucide-react";
 
 import { Menu } from "./Menu";
 import { ReactionMenu } from "./ReactionMenu";
@@ -10,7 +10,6 @@ import { Status } from "./Status";
 
 import { IconButton } from "@/components/ui/IconButton";
 import mc from "@/lib/utils/mergeClassnames";
-import { REACTIONS } from "@/lib/utils/constants";
 import { TMessage } from "@/lib/types";
 import useStore from "@/lib/store";
 
@@ -38,6 +37,19 @@ const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   </span>
 );
 
+const Forwarded = () => (
+  <div className="px-2 text-sm text-background-11 flex items-center gap-1">
+    <Forward className="w-4 h-4" />
+    <span>Reenviado</span>
+  </div>
+);
+
+const Starred = () => (
+  <span className="w-4 h-4 inline-block">
+    <Star className="text-background-11 fill-background-11 w-full h-full" />
+  </span>
+);
+
 type ContainerProps = {
   children: ReactNode;
   hasTail: boolean;
@@ -49,9 +61,9 @@ export function MessageContainer({
   children,
   isOwnMsg,
   hasTail,
-  message,
+  message
 }: ContainerProps) {
-  const { starred, status, time, reactions, hasMedia } = message;
+  const { starred, status, time, reactions, hasMedia, forwarded } = message;
   const [showMenus, setShowMenus] = useState(false);
   const [openMenus, setOpenMenus] = useState(false);
   const userId = useStore((state) => state.user.id);
@@ -114,7 +126,7 @@ export function MessageContainer({
             hasMedia ? "max-w-min" : "max-w-8/10 lg:max-w-7/10"
           )}
         >
-          <div className={mc("relative")}>
+          <div className="relative">
             {hasTail && <MessageTail isOwnMsg={isOwnMsg} />}
             <div
               className={mc(
@@ -127,20 +139,15 @@ export function MessageContainer({
                   : undefined
               )}
             >
+              {forwarded && <Forwarded />}
               {children}
               <footer className="px-2 flex justify-end items-end gap-1">
                 <Reactions reactions={reactions} />
-                <div
-                  className={mc(
-                    "flex items-center gap-1 leading-none text-sm text-neutral-600 dark:text-neutral-400"
-                  )}
-                >
-                  {starred && (
-                    <span className="w-4 h-4 inline-block">
-                      <Star className="text-background-11 fill-background-11 w-full h-full" />
-                    </span>
-                  )}
-                  {formatTime}
+                <div className="flex items-center gap-1">
+                  {starred && <Starred />}
+                  <span className="leading-none text-sm text-neutral-600 dark:text-neutral-400">
+                    {formatTime}
+                  </span>
                   {isOwnMsg && <Status status={status} />}
                 </div>
               </footer>
