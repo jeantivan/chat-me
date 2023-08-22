@@ -1,5 +1,7 @@
+import dayjs from "dayjs";
 import { StateCreator } from "zustand";
 import { MessageSlice, StoreSlice } from "./interfaces";
+import { TMessage } from "@/lib/types";
 
 export const createMessageSlice: StateCreator<
   StoreSlice,
@@ -98,7 +100,7 @@ export const createMessageSlice: StateCreator<
 
       state.chats[chatIndex].messages[messageIndex].reactions = [
         ...reactions.filter((r) => r.owner !== userId),
-        reaction,
+        reaction
       ];
     });
   },
@@ -122,8 +124,35 @@ export const createMessageSlice: StateCreator<
       const { reactions } = state.chats[chatIndex].messages[messageIndex];
 
       state.chats[chatIndex].messages[messageIndex].reactions = [
-        ...reactions.filter((r) => r.owner !== userId),
+        ...reactions.filter((r) => r.owner !== userId)
       ];
     });
   },
+
+  forwardMessages: (messages, contacts) => {
+    for (const contact of contacts) {
+      const chatIndex = get().chats.findIndex(
+        (chat) => chat.participants[0].id === contact.id
+      );
+
+      if (chatIndex < 0) continue;
+      let newMessages: TMessage[] = [];
+
+      for (let message of messages) {
+        let newMessage: TMessage = {
+          ...message,
+          forwarded: true,
+          chatId: get().chats[chatIndex].id,
+          owner: get().user.id,
+          starred: false,
+          time: dayjs().toISOString()
+        };
+        newMessages.push(newMessage);
+      }
+
+      set((state) => {
+        state.chats[chatIndex].messages.push(...newMessages);
+      });
+    }
+  }
 });

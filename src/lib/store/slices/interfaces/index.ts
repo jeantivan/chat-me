@@ -7,6 +7,7 @@ import {
   RightDrawerContentOptions,
   TNotifications,
   TTheme,
+  TUser,
 } from "@/lib/types";
 
 // Interface de perfil
@@ -47,6 +48,7 @@ export interface MessageSlice {
   addReaction: (message: TMessage, reaction: TReaction) => void;
   changeReaction: (message: TMessage, reaction: TReaction) => void;
   deleteReaction: (message: TMessage) => void;
+  forwardMessages: (messages: TMessage[], chatIds: TUser[]) => void;
 }
 
 export interface LeftDrawerSlice {
