@@ -2,15 +2,12 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 
-import { Laugh } from "lucide-react";
-
 import { Root } from "./Root";
-import { Plugins } from "./Plugins";
 import { SendMessage } from "./SendMessage";
 import { AddImage } from "./AddImage";
 
-import { IconButton } from "@/components/ui/IconButton";
 import { ScrollArea } from "@/components/ui/ScrollArea";
+import { EmojiPicker } from "./EmojiPicker";
 
 type EditorProps = {
   chatId: string;
@@ -36,16 +33,11 @@ export function Editor({ chatId }: EditorProps) {
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
-          <IconButton
-            icon={Laugh}
-            label="Insertar emojis"
-            className="w-7 h-7 p-0 text-background-10"
-          />
+          <EmojiPicker />
         </div>
       </ScrollArea>
 
       <SendMessage chatId={chatId} />
-      <Plugins />
     </Root>
   );
 }
