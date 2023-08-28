@@ -115,7 +115,6 @@ export type TEmoji = BaseEmoji & {
   name: string;
   short_name: string;
   short_names: string[];
-  text: string | null;
   skin_variations?: { [key: string]: BaseEmoji };
   category: string;
   sort_order: number;
