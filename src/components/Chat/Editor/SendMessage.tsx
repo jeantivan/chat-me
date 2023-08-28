@@ -14,7 +14,7 @@ import { useUserId } from "@/lib/hooks";
 const createMessage = ({
   chatId,
   owner,
-  body = "",
+  body = ""
 }: {
   chatId: string;
   owner: string;
@@ -29,7 +29,7 @@ const createMessage = ({
   hasMedia: null,
   status: "read",
   reactions: [],
-  time: dayjs().toISOString(),
+  time: dayjs().toISOString()
 });
 
 export function SendMessage({ chatId }: { chatId: string }) {
@@ -44,7 +44,7 @@ export function SendMessage({ chatId }: { chatId: string }) {
     editor.dispatchCommand(SAVE_EDITOR, {
       onSave: (body: string) =>
         addMessage(createMessage({ body, owner: userId, chatId })),
-      asHtml: true,
+      asHtml: true
     });
   };
   return (
