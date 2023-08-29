@@ -25,7 +25,7 @@ export class EmojiNode extends TextNode {
   }
 
   static clone(node: EmojiNode) {
-    return new EmojiNode(node.__native, node.__key);
+    return new EmojiNode(node.__native, node.__image, node.__key);
   }
 
   constructor(native: string, image: string, key?: NodeKey) {
@@ -61,12 +61,14 @@ export class EmojiNode extends TextNode {
     if (inner === null) {
       return true;
     }
+
     super.updateDOM(prevNode, inner as HTMLElement, config);
     return false;
   }
 
   static importJSON(serializedNode: SerializedEmojiNode): EmojiNode {
     const node = $createEmojiNode(serializedNode.native, serializedNode.image);
+
     node.setFormat(serializedNode.format);
     node.setDetail(serializedNode.detail);
     node.setMode(serializedNode.mode);
@@ -78,8 +80,8 @@ export class EmojiNode extends TextNode {
   exportJSON(): SerializedEmojiNode {
     return {
       ...super.exportJSON(),
-      native: this.getNative(),
-      image: this.getImage(),
+      native: this.__native,
+      image: this.__image,
       type: "emoji",
       version: 1
     };
