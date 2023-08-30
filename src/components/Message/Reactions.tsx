@@ -1,5 +1,5 @@
 import { TMessage } from "@/lib/types";
-import { REACTIONS } from "@/lib/utils/constants";
+import { EMOJI_IMAGES_PATH, REACTIONS } from "@/lib/utils/constants";
 import mc from "@/lib/utils/mergeClassnames";
 
 type ReactionsProps = {
@@ -14,11 +14,12 @@ export function Reactions({ reactions, className }: ReactionsProps) {
   return (
     <div className={mc("select-none mr-auto flex gap-0.5", className)}>
       {reactions.map(({ owner, type }) => (
-        <div
-          key={owner}
-          className="p-1 rounded-full bg-background-10 text-[18px] leading-none text-center"
-        >
-          {REACTIONS[type].emoji}
+        <div key={owner} className="py-0.5 px-1 rounded-full bg-background-10">
+          <img
+            className="w-5 h-5"
+            src={`${EMOJI_IMAGES_PATH}/32/${REACTIONS[type].img}`}
+            alt={REACTIONS[type].emoji}
+          />
         </div>
       ))}
     </div>

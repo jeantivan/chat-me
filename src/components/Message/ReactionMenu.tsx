@@ -5,21 +5,21 @@ import {
   MenuRoot,
   MenuContent,
   MenuTrigger,
-  Arrow,
+  Arrow
 } from "@/components/ui/Menu";
 import mc from "@/lib/utils/mergeClassnames";
-import { REACTIONS } from "@/lib/utils/constants";
+import { EMOJI_IMAGES_PATH, REACTIONS } from "@/lib/utils/constants";
 import useStore from "@/lib/store";
 import { useUserId } from "@/lib/hooks";
 import { ReactionKeys, TMessage, TReaction } from "@/lib/types";
 
 const itemVariants = {
   initial: {
-    scale: 0,
+    scale: 0
   },
   show: {
-    scale: 1,
-  },
+    scale: 1
+  }
 };
 const ReactionItem = ({
   className,
@@ -42,7 +42,7 @@ const ReactionItem = ({
 const contentVariants: Variants = {
   initial: {
     scale: 0,
-    y: 30,
+    y: 30
   },
   show: {
     scale: 1,
@@ -50,9 +50,9 @@ const contentVariants: Variants = {
     transition: {
       type: "tween",
       when: "beforeChildren",
-      staggerChildren: 0.05,
-    },
-  },
+      staggerChildren: 0.05
+    }
+  }
 };
 
 type ReactionMenuProps = {
@@ -65,7 +65,7 @@ export function ReactionMenu({
   message,
   children,
   ownReaction,
-  onOpenChange,
+  onOpenChange
 }: ReactionMenuProps) {
   const [open, setOpen] = useState(false);
   const userId = useUserId();
@@ -73,7 +73,7 @@ export function ReactionMenu({
     ({ addReaction, changeReaction, deleteReaction }) => ({
       addReaction,
       changeReaction,
-      deleteReaction,
+      deleteReaction
     })
   );
 
@@ -110,7 +110,7 @@ export function ReactionMenu({
                 onValueChange={(newValue) => {
                   const reaction: TReaction = {
                     owner: userId,
-                    type: newValue as TReaction["type"],
+                    type: newValue as TReaction["type"]
                   };
 
                   if (!ownReaction) {
@@ -130,12 +130,12 @@ export function ReactionMenu({
                     key={REACTIONS[reaction].shortcode}
                     value={REACTIONS[reaction].shortcode}
                   >
-                    <motion.div
+                    <motion.img
                       whileHover={{ scale: 1.15, rotate: "10deg" }}
-                      className="text-[26px] leading-none"
-                    >
-                      {REACTIONS[reaction].emoji}
-                    </motion.div>
+                      className="w-7 h-7 leading-none"
+                      src={`${EMOJI_IMAGES_PATH}/32/${REACTIONS[reaction].img}`}
+                      alt={REACTIONS[reaction].emoji}
+                    />
                   </ReactionItem>
                 ))}
               </ToggleGroup.Root>
