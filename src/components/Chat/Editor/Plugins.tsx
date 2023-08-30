@@ -4,8 +4,8 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 
 import { AutoFocusPlugin } from "@/editor/plugins/AutoFocusPlugin";
 import { AutoLinkPlugin } from "@/editor/plugins/AutoLinkPlugin";
-import { SaveEditorPlugin } from "@/editor/plugins/SaveEditorPlugin";
 import { EmojiPlugin } from "@/editor/plugins/EmojiPlugin";
+import { SanitizeEditorPlugin } from "@/editor/plugins/SanitizeEditorPlugin";
 
 export function Plugins() {
   return (
@@ -15,7 +15,7 @@ export function Plugins() {
       <HistoryPlugin />
       <AutoFocusPlugin />
       <ClearEditorPlugin />
-      <SaveEditorPlugin />
+      <SanitizeEditorPlugin />
       <EmojiPlugin />
     </>
   );
