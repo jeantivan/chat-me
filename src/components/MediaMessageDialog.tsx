@@ -12,15 +12,16 @@ import { IconButton } from "@/components/ui/IconButton";
 import mc from "@/lib/utils/mergeClassnames";
 import useStore from "@/lib/store";
 import { TMessage } from "@/lib/types";
+import { MessageText } from "./Message/MessageText";
 
 const dimensions: Record<"square" | "landscape" | "portrait", string> = {
   square: "aspect-[1]",
   landscape: "aspect-video",
-  portrait: "aspect-[0.75]",
+  portrait: "aspect-[0.75]"
 };
 
 export function MediaMessageDialog({
-  mediaMessage,
+  mediaMessage
 }: {
   mediaMessage: TMessage;
 }) {
@@ -124,17 +125,15 @@ export function MediaMessageDialog({
               />
             </div>
           </section>
-          <div className="mx-auto max-w-[80%]">
+          <div className="mx-auto max-w-[60%]">
             {message?.body && (
               <div
                 className={mc(
-                  "w-auto px-4 py-2 rounded text-neutral-950 dark:text-neutral-50 bg-primary-8",
+                  "w-auto p-2 rounded text-neutral-950 dark:text-neutral-50 bg-primary-8",
                   !isOwnMsg && "bg-background-2"
                 )}
               >
-                <div className="whitespace-pre-wrap break-words leading-tight line-clamp-4">
-                  {message.body}
-                </div>
+                <MessageText body={message.body} className="line-clamp-4" />
               </div>
             )}
           </div>
