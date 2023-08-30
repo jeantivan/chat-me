@@ -1,17 +1,17 @@
-import dayjs from "dayjs";
 import { forwardRef, memo } from "react";
 import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 import { BellOff, Pin } from "lucide-react";
 
 import { ChatItemMenu } from "./ChatItemMenu";
-import { Status } from "./Message/Status";
+import { LastMessage } from "./Message/LastMessage";
+
 import mc from "@/lib/utils/mergeClassnames";
-import { TChat, TMessage } from "@/lib/types";
-import { useCurrentChatId, useUserId } from "@/lib/hooks";
+import { TChat } from "@/lib/types";
+import { useCurrentChatId } from "@/lib/hooks";
 
 const iconVariants = {
   initial: { scale: 0, opacity: 0, y: -10 },
-  animate: { scale: 1, opacity: 1, y: 0 },
+  animate: { scale: 1, opacity: 1, y: 0 }
 };
 const AnimateIcon = forwardRef<HTMLSpanElement, HTMLMotionProps<"span">>(
   ({ children }, ref) => (
@@ -27,34 +27,6 @@ const AnimateIcon = forwardRef<HTMLSpanElement, HTMLMotionProps<"span">>(
     </motion.span>
   )
 );
-
-type LastMessageProps = {
-  message: TMessage;
-  hasUnreadMsg: number | boolean;
-};
-const LastMessage = (props: LastMessageProps) => {
-  const userId = useUserId();
-  const { time, body, status, owner } = props.message;
-  const isOwnMsg = owner === userId;
-  const formatTime = dayjs(time).fromNow(true);
-  return (
-    <div
-      className={mc(
-        "w-full flex items-center gap-1 text-sm",
-        "text-background-11",
-        props.hasUnreadMsg && "text-background-12"
-      )}
-    >
-      {isOwnMsg && (
-        <span className="shrink-0 inline-flex">
-          <Status status={status} />{" "}
-        </span>
-      )}
-      <p className="flex-1 truncate">{body}</p>
-      <span className="shrink-0 mr-1.5">{formatTime}</span>
-    </div>
-  );
-};
 
 interface ChatItemProps {
   chat: TChat;
@@ -118,7 +90,11 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
           />
         </div>
         {lastMessage && (
-          <LastMessage message={lastMessage} hasUnreadMsg={hasUnreadMsg} />
+          <LastMessage
+            key={lastMessage.id}
+            message={lastMessage}
+            hasUnreadMsg={hasUnreadMsg}
+          />
         )}
       </div>
     </div>
