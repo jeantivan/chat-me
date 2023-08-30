@@ -24,7 +24,7 @@ export const Message = memo(function MessageRoot(props: MessageProps) {
           }}
         />
       )}
-      {body && <MessageText content={body} />}
+      {body && <MessageText body={body} />}
     </MessageContainer>
   );
 });
