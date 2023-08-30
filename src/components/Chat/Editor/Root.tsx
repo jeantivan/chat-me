@@ -1,20 +1,21 @@
 import { ReactNode } from "react";
-import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { LinkNode, AutoLinkNode } from "@lexical/link";
+import {
+  InitialConfigType,
+  LexicalComposer
+} from "@lexical/react/LexicalComposer";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 
-import { theme } from "@/editor/theme";
-import { EmojiNode } from "@/editor/nodes/EmojiNode";
-import { Plugins } from "./Plugins";
+import { baseConfig } from "@/editor/baseConfig";
+import { AutoFocusPlugin } from "@/editor/plugins/AutoFocusPlugin";
+import { AutoLinkPlugin } from "@/editor/plugins/AutoLinkPlugin";
+import { EmojiPlugin } from "@/editor/plugins/EmojiPlugin";
+import { SanitizeEditorPlugin } from "@/editor/plugins/SanitizeEditorPlugin";
 
-function onError(error: Error) {
-  console.error(error);
-}
-
-const initialConfig = {
-  namespace: "MessageInput",
-  nodes: [AutoLinkNode, LinkNode, EmojiNode],
-  theme,
-  onError
+const initialConfig: InitialConfigType = {
+  ...baseConfig,
+  namespace: "MessageInput"
 };
 
 export function Root({ children }: { children: ReactNode }) {
@@ -23,7 +24,13 @@ export function Root({ children }: { children: ReactNode }) {
       <div className="input-container bg-background-2 text-background-12 h-full py-2.5 px-5 flex items-center">
         <div className="flex w-full gap-2 items-end">{children}</div>
       </div>
-      <Plugins />
+      <LinkPlugin />
+      <AutoLinkPlugin />
+      <HistoryPlugin />
+      <AutoFocusPlugin />
+      <ClearEditorPlugin />
+      <SanitizeEditorPlugin />
+      <EmojiPlugin />
     </LexicalComposer>
   );
 }
