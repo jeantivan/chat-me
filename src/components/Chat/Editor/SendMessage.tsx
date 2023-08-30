@@ -1,14 +1,18 @@
 import dayjs from "dayjs";
 import { v4 as uuid } from "uuid";
 import { SendIcon } from "lucide-react";
+
+import { CLEAR_EDITOR_COMMAND } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
 
+import { SANITIZE_EDITOR } from "@/editor/plugins/SanitizeEditorPlugin";
+
 import { IconButton } from "@/components/ui/IconButton";
-import { SAVE_EDITOR } from "@/editor/plugins/SaveEditorPlugin";
-import { TMessage } from "@/lib/types";
+
 import mc from "@/lib/utils/mergeClassnames";
 import useStore from "@/lib/store";
+import { TMessage } from "@/lib/types";
 import { useUserId } from "@/lib/hooks";
 
 const createMessage = ({
@@ -41,11 +45,15 @@ export function SendMessage({ chatId }: { chatId: string }) {
   const handleSubmit = () => {
     if (isEditorEmpty) return;
 
-    editor.dispatchCommand(SAVE_EDITOR, {
-      onSave: (body: string) =>
-        addMessage(createMessage({ body, owner: userId, chatId })),
-      asHtml: true
-    });
+    editor.dispatchCommand(SANITIZE_EDITOR, undefined);
+
+    setTimeout(() => {
+      const body = JSON.stringify(editor.getEditorState().toJSON());
+
+      addMessage(createMessage({ body, owner: userId, chatId }));
+
+      editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
+    }, 0);
   };
   return (
     <IconButton
