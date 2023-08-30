@@ -11,7 +11,7 @@ import {
 import { mergeRegister } from "@lexical/utils";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
-import { $createEmojiNode, EmojiNode } from "@/lexical/nodes/EmojiNode";
+import { $createEmojiNode, EmojiNode } from "@/editor/nodes/EmojiNode";
 import { TEmoji } from "@/lib/types";
 import { EMOJI_IMAGES_PATH } from "@/lib/utils/constants";
 
