@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { LinkNode, AutoLinkNode } from "@lexical/link";
 
-import { theme } from "./theme";
-import { EmojiNode } from "@/nodes/EmojiNode";
+import { theme } from "@/editor/theme";
+import { EmojiNode } from "@/editor/nodes/EmojiNode";
 import { Plugins } from "./Plugins";
 
 function onError(error: Error) {

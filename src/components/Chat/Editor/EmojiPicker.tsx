@@ -25,7 +25,7 @@ import { useEffect, useMemo, useState } from "react";
 import groupBy from "lodash/groupBy";
 import { EMOJI_IMAGES_PATH } from "@/lib/utils/constants";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { INSERT_EMOJI } from "@/plugins/EmojiPlugin";
+import { INSERT_EMOJI } from "@/lexical/plugins/EmojiPlugin";
 
 const CATEGORY_KEYS: ReadonlyArray<string> = [
   "Smileys & Emotion",

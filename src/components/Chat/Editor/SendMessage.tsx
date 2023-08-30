@@ -5,7 +5,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
 
 import { IconButton } from "@/components/ui/IconButton";
-import { SAVE_EDITOR } from "@/plugins/SaveEditorPlugin";
+import { SAVE_EDITOR } from "@/editor/plugins/SaveEditorPlugin";
 import { TMessage } from "@/lib/types";
 import mc from "@/lib/utils/mergeClassnames";
 import useStore from "@/lib/store";
