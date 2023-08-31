@@ -29,9 +29,7 @@ export function Root({ children, chatId }: RootProps) {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="input-container bg-background-2 text-background-12 h-full py-2.5 px-5 flex items-center">
-        <div className="flex w-full gap-2 items-end">{children}</div>
-      </div>
+      <>{children}</>
       <LinkPlugin />
       <AutoLinkPlugin />
       <HistoryPlugin />
