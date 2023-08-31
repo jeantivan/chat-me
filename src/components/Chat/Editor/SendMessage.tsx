@@ -1,59 +1,21 @@
-import dayjs from "dayjs";
-import { v4 as uuid } from "uuid";
 import { SendIcon } from "lucide-react";
 
-import { CLEAR_EDITOR_COMMAND } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useLexicalIsTextContentEmpty } from "@lexical/react/useLexicalIsTextContentEmpty";
-
-import { SANITIZE_EDITOR } from "@/editor/plugins/SanitizeEditorPlugin";
+import { SAVE_EDITOR_COMMAND } from "@/editor/plugins/SaveEditorPlugin";
 
 import { IconButton } from "@/components/ui/IconButton";
 
 import mc from "@/lib/utils/mergeClassnames";
-import useStore from "@/lib/store";
-import { TMessage } from "@/lib/types";
-import { useUserId } from "@/lib/hooks";
 
-const createMessage = ({
-  chatId,
-  owner,
-  body = ""
-}: {
-  chatId: string;
-  owner: string;
-  body?: string;
-}): TMessage => ({
-  id: uuid(),
-  chatId,
-  owner,
-  body,
-  starred: false,
-  forwarded: false,
-  hasMedia: null,
-  status: "read",
-  reactions: [],
-  time: dayjs().toISOString()
-});
-
-export function SendMessage({ chatId }: { chatId: string }) {
+export function SendMessage() {
   const [editor] = useLexicalComposerContext();
   const isEditorEmpty = useLexicalIsTextContentEmpty(editor, true);
-  const userId = useUserId();
-  const addMessage = useStore((state) => state.addMessage);
 
   const handleSubmit = () => {
     if (isEditorEmpty) return;
 
-    editor.dispatchCommand(SANITIZE_EDITOR, undefined);
-
-    setTimeout(() => {
-      const body = JSON.stringify(editor.getEditorState().toJSON());
-
-      addMessage(createMessage({ body, owner: userId, chatId }));
-
-      editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
-    }, 0);
+    editor.dispatchCommand(SAVE_EDITOR_COMMAND, undefined);
   };
   return (
     <IconButton
