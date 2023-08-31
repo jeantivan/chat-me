@@ -105,9 +105,9 @@ export function EmojiPicker() {
       </PopoverTrigger>
 
       <PopoverContent
-        align="end"
-        alignOffset={-20}
+        align="start"
         side="top"
+        alignOffset={-10}
         sideOffset={10}
         onInteractOutside={(e) => e.preventDefault()}
         className="w-full h-72 overflow-hidden p-0"
@@ -119,7 +119,7 @@ export function EmojiPicker() {
                 key={`${category}-content`}
                 value={category}
                 title={category}
-                className="flex-1 border-b-2 border-b-background-7 data-[state=active]:border-cyan-500 rounded-none"
+                className="flex-1 border-b-2 border-b-background-7 data-[state=active]:border-primary-9 rounded-none"
               >
                 <Icon
                   icon={CATEGORY_ICONS[category]}
