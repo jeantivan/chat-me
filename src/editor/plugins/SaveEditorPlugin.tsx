@@ -1,71 +1,89 @@
 import { useEffect } from "react";
 
 import {
-  $getNodeByKey,
   $getRoot,
-  $isParagraphNode,
-  CLEAR_EDITOR_COMMAND,
-  COMMAND_PRIORITY_HIGH,
   createCommand,
+  CLEAR_EDITOR_COMMAND,
+  KEY_ENTER_COMMAND,
+  COMMAND_PRIORITY_LOW
 } from "lexical";
-import { $generateHtmlFromNodes } from "@lexical/html";
+import { mergeRegister } from "@lexical/utils";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
-export const SAVE_EDITOR = createCommand("SAVE_EDITOR");
+import { TRIM_EDITOR_COMMAND } from "./TrimEditorPlugin";
 
-type Payload = {
-  asHtml?: boolean;
-  onSave: (editorContent: string) => void;
-};
+export const SAVE_EDITOR_COMMAND = createCommand("SAVE_EDITOR_COMMAND");
 
-export function SaveEditorPlugin() {
+export function SaveEditorPlugin({
+  onSave
+}: {
+  onSave: (editorState: string) => void;
+}) {
   const [editor] = useLexicalComposerContext();
 
+  const saveEditor = () => {
+    const editorState = JSON.stringify(editor.getEditorState().toJSON());
+
+    onSave(editorState);
+
+    editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
+  };
+
   useEffect(() => {
-    const removeCommand = editor.registerCommand(
-      SAVE_EDITOR,
-      (payload: Payload) => {
-        editor.update(() => {
-          const root = $getRoot();
-          const firstChild = root.getFirstChild();
-          const lastChild = root.getLastChild();
+    return mergeRegister(
+      editor.registerCommand(
+        SAVE_EDITOR_COMMAND,
+        () => {
+          const editorContentText = $getRoot().getTextContent();
+          const trimmedTextContent = editorContentText.trim();
 
-          // Remove empty paragraph at the beginning of the editor
-          if (firstChild) {
-            let nodeToRemove = $getNodeByKey(firstChild.getKey());
-            let nextNodeToRemove = null;
+          const isEditorEmpty = trimmedTextContent.length <= 0;
 
-            while ($isParagraphNode(nodeToRemove) && nodeToRemove.isEmpty()) {
-              nextNodeToRemove = nodeToRemove.getNextSibling();
-              nodeToRemove.remove(false);
+          // Si el editor está vacío no se hace nada;
+          if (isEditorEmpty) return true;
 
-              nodeToRemove = nextNodeToRemove;
+          // Si el editor tiene saltos de linea al inicio o final se eliminan
+          // y luego se guarda el editor
+          if (editorContentText !== trimmedTextContent) {
+            editor.dispatchCommand(TRIM_EDITOR_COMMAND, {
+              onUpdate: saveEditor
+            });
+          } else {
+            saveEditor();
+          }
+          return true;
+        },
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        KEY_ENTER_COMMAND,
+        (event) => {
+          if (!event?.shiftKey) {
+            event?.preventDefault();
+
+            const editorContentText = $getRoot().getTextContent();
+            const trimmedTextContent = editorContentText.trim();
+
+            const isEditorEmpty = trimmedTextContent.length <= 0;
+
+            // Si el editor está vacío no se hace nada;
+            if (isEditorEmpty) return true;
+
+            // Si el editor tiene saltos de linea al inicio o final se eliminan
+            // y luego se guarda el editor
+            if (editorContentText !== trimmedTextContent) {
+              editor.dispatchCommand(TRIM_EDITOR_COMMAND, {
+                onUpdate: saveEditor
+              });
+            } else {
+              saveEditor();
             }
           }
-
-          // Remove empty paragraph at the end of the editor
-          if (lastChild) {
-            let nodeToRemove = $getNodeByKey(lastChild.getKey());
-            let nextNodeToRemove = null;
-
-            while ($isParagraphNode(nodeToRemove) && nodeToRemove.isEmpty()) {
-              nextNodeToRemove = nodeToRemove.getPreviousSibling();
-              nodeToRemove.remove(false);
-
-              nodeToRemove = nextNodeToRemove;
-            }
-          }
-
-          payload.onSave($getRoot().getTextContent().trim());
-
-          editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
-        });
-        return true;
-      },
-      COMMAND_PRIORITY_HIGH
+          return true;
+        },
+        COMMAND_PRIORITY_LOW
+      )
     );
-
-    return removeCommand;
   }, [editor]);
 
   return null;
