@@ -14,7 +14,7 @@ type EditorProps = {
 };
 export function Editor({ chatId }: EditorProps) {
   return (
-    <Root>
+    <Root chatId={chatId}>
       <AddImage />
       <ScrollArea
         type="auto"
@@ -36,8 +36,7 @@ export function Editor({ chatId }: EditorProps) {
           <EmojiPicker />
         </div>
       </ScrollArea>
-
-      <SendMessage chatId={chatId} />
+      <SendMessage />
     </Root>
   );
 }
