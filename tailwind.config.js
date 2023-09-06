@@ -8,10 +8,10 @@ module.exports = {
       maxWidth: {
         "7/10": "70%",
         "8/10": "80%",
-        "9/10": "90%",
+        "9/10": "90%"
       },
       minWidth: {
-        md: "768px",
+        md: "768px"
       },
       colors: {
         background: {
@@ -26,7 +26,7 @@ module.exports = {
           9: "hsl(var(--background-9) / <alpha-value>)",
           10: "hsl(var(--background-10) / <alpha-value>)",
           11: "hsl(var(--background-11) / <alpha-value>)",
-          12: "hsl(var(--background-12) / <alpha-value>)",
+          12: "hsl(var(--background-12) / <alpha-value>)"
         },
         primary: {
           1: "hsl(var(--primary-1) / <alpha-value>)",
@@ -40,10 +40,10 @@ module.exports = {
           9: "hsl(var(--primary-9) / <alpha-value>)",
           10: "hsl(var(--primary-10) / <alpha-value>)",
           11: "hsl(var(--primary-11) / <alpha-value>)",
-          12: "hsl(var(--primary-12) / <alpha-value>)",
-        },
-      },
-    },
+          12: "hsl(var(--primary-12) / <alpha-value>)"
+        }
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 };
