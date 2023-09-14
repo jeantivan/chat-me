@@ -12,7 +12,7 @@ const Placeholder = () => (
 
 export function Input() {
   return (
-    <div className="h-full relative w-full flex items-center mt-1">
+    <div className="h-full relative w-full flex items-center mt-0.5">
       <RichTextPlugin
         contentEditable={
           <ScrollArea

@@ -11,6 +11,7 @@ import { mergeRegister } from "@lexical/utils";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { TRIM_EDITOR_COMMAND } from "./TrimEditorPlugin";
+import { useFilesToSend } from "@/components/SendFiles";
 
 export const SAVE_EDITOR_COMMAND = createCommand("SAVE_EDITOR_COMMAND");
 
@@ -20,6 +21,7 @@ export function SaveEditorPlugin({
   onSave: (editorState: string) => void;
 }) {
   const [editor] = useLexicalComposerContext();
+  const { files } = useFilesToSend();
 
   const saveEditor = () => {
     const editorState = JSON.stringify(editor.getEditorState().toJSON());
@@ -39,8 +41,8 @@ export function SaveEditorPlugin({
 
           const isEditorEmpty = trimmedTextContent.length <= 0;
 
-          // Si el editor está vacío no se hace nada;
-          if (isEditorEmpty) return true;
+          // // Si el editor está vacío no se hace nada;
+          // if (isEditorEmpty && files.length <= 0) return true;
 
           // Si el editor tiene saltos de linea al inicio o final se eliminan
           // y luego se guarda el editor
@@ -66,8 +68,8 @@ export function SaveEditorPlugin({
 
             const isEditorEmpty = trimmedTextContent.length <= 0;
 
-            // Si el editor está vacío no se hace nada;
-            if (isEditorEmpty) return true;
+            // // Si el editor está vacío no se hace nada;
+            // if (isEditorEmpty || files.length <= 0) return true;
 
             // Si el editor tiene saltos de linea al inicio o final se eliminan
             // y luego se guarda el editor

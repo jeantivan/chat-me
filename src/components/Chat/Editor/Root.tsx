@@ -22,28 +22,22 @@ const initialConfig: InitialConfigType = {
   namespace: "MessageInput"
 };
 
-type RootProps = { children: ReactNode; chatId: string };
-export function Root({ children, chatId }: RootProps) {
+type RootProps = { children: ReactNode; onSave: (editorState: string) => void };
+export function Root({ children, onSave }: RootProps) {
   const userId = useUserId();
   const addMessage = useStore((state) => state.addMessage);
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <>{children}</>
       <LinkPlugin />
       <AutoLinkPlugin />
       <HistoryPlugin />
       <AutoFocusPlugin />
       <ClearEditorPlugin />
       <TrimEditorPlugin />
-      <SaveEditorPlugin
-        onSave={(editorState) => {
-          addMessage(
-            createMessage({ owner: userId, chatId, body: editorState })
-          );
-        }}
-      />
       <EmojiPlugin />
+      <SaveEditorPlugin onSave={onSave} />
+      <>{children}</>
     </LexicalComposer>
   );
 }
