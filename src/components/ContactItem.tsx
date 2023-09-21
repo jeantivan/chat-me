@@ -9,11 +9,13 @@ type ContactItemProps = (
   | {
       selectable: true;
       checked: boolean;
+      disabled?: boolean;
       onCheckedChange: (checked: boolean | "indeterminate") => void;
     }
   | {
       selectable: false | undefined;
       checked?: undefined;
+      disabled?: false;
       onCheckedChange?: undefined;
     }
 ) &
@@ -22,6 +24,7 @@ export const ContactItem = ({
   contact,
   selectable,
   checked,
+  disabled,
   onCheckedChange,
   className,
   ...rest
@@ -32,6 +35,7 @@ export const ContactItem = ({
       className={mc(
         "flex flex-row items-center select-none cursor-pointer p-2 gap-4 rounded-xl",
         "hover:bg-background-4",
+        disabled && "bg-background-1 hover:bg-background-1 opacity-75",
         className
       )}
       {...rest}
@@ -42,6 +46,7 @@ export const ContactItem = ({
           checked={checked}
           onCheckedChange={onCheckedChange}
           id={contact.id}
+          disabled={disabled}
         />
       )}
       <div className="flex items-center">
