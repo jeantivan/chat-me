@@ -18,7 +18,19 @@ _Avoid_: Post, entry, item, comment
 
 **Delivery Status**:
 The progressive lifecycle state of a message representing whether it is pending dispatch (`idle`), acknowledged by the server (`send`), delivered to recipient devices (`received`), or viewed in the recipient's active viewport (`read`).
-_Avoid_: Message status, receipt, ack state
+_Avoid_: Message status, ack state
+
+**Receipt**:
+A record establishing that an individual participant's client has received or read a specific message.
+_Avoid_: Confirmation, delivery tag
+
+**Direct Chat**:
+A private, two-party chat strictly bound to exactly two participants, where only one unique thread can ever exist between that pair.
+_Avoid_: 1-on-1 room, private message, DM
+
+**Read Watermark**:
+A timestamp associated with a participant in a chat marking the latest point in the conversation timeline viewed by that user, used to compute unread counts.
+_Avoid_: Unread counter, read pointer
 
 **Reaction**:
 An emoji glyph affixed to an individual message by a specific user.
