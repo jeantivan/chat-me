@@ -35,3 +35,12 @@ _Avoid_: Unread counter, read pointer
 **Reaction**:
 An emoji glyph affixed to an individual message by a specific user.
 _Avoid_: Like, vote, emoji response
+
+**Media Attachment**:
+A binary asset (image, video, audio note, or document) associated with a message and stored in object storage.
+_Avoid_: File upload, asset, payload blob
+
+**Presigned Upload URL**:
+A cryptographically signed, short-lived S3 URL permitting a client to PUT a binary asset directly to object storage without server mediation.
+_Avoid_: Upload token, upload ticket
+
