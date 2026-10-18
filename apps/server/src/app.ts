@@ -51,9 +51,12 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
 
     try {
       const client = await pgPool.connect();
-      await client.query("SELECT 1");
-      client.release();
-      postgresOk = true;
+      try {
+        await client.query("SELECT 1");
+        postgresOk = true;
+      } finally {
+        client.release();
+      }
     } catch {
       postgresOk = false;
     }

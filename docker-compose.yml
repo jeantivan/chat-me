@@ -45,7 +45,8 @@ services:
     volumes:
       - minio_data:/data
     depends_on:
-      - minio-init
+      minio-init:
+        condition: service_completed_successfully
 
   minio-init:
     image: alpine:latest
