@@ -43,7 +43,7 @@ export const MenuContent = ({
   sideOffset = 4,
   align = "end",
   ...rest
-}: DropdownMenu.MenuContentProps) => (
+}: DropdownMenu.DropdownMenuContentProps) => (
   <DropdownMenu.Content
     sideOffset={sideOffset}
     align={align}
