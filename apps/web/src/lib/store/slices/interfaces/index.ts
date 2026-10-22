@@ -10,11 +10,17 @@ import {
   TUser,
 } from "@/lib/types";
 
+import type { UserSettingsData } from "@chat-me/shared";
+
 // Interface de perfil
 export interface ProfileSlice extends TProfile, ConfigSlice {
   changeName: (name: string) => void;
   changeBio: (bio: string) => void;
   changePicture: (picture: string) => void;
+  setUserProfile: (
+    user: Partial<TUser>,
+    settings?: Partial<UserSettingsData> | null
+  ) => void;
 }
 
 // Interface para la configuración

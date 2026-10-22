@@ -1,12 +1,19 @@
-import fastify, { FastifyInstance } from "fastify";
+import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import cors from "@fastify/cors";
+import cookie from "@fastify/cookie";
+import jwt from "@fastify/jwt";
 import pg from "pg";
 import { Redis } from "ioredis";
 import type { HealthResponse } from "@chat-me/shared";
+import { createDb } from "./db/index.js";
+import { authRoutes } from "./routes/auth.routes.js";
+import { usersRoutes } from "./routes/users.routes.js";
 
 export interface AppOptions {
   databaseUrl?: string;
   redisUrl?: string;
+  jwtSecret?: string;
+  cookieSecret?: string;
 }
 
 export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> {
@@ -17,6 +24,14 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
   await app.register(cors, {
     origin: true,
     credentials: true,
+  });
+
+  await app.register(cookie, {
+    secret: opts.cookieSecret || process.env.COOKIE_SECRET || "chat-me-cookie-secret-key-12345",
+  });
+
+  await app.register(jwt, {
+    secret: opts.jwtSecret || process.env.JWT_SECRET || "chat-me-jwt-secret-key-super-secure-token",
   });
 
   const databaseUrl =
@@ -32,6 +47,21 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
   const pgPool = new pg.Pool({
     connectionString: databaseUrl,
     max: 10,
+  });
+
+  const db = createDb(pgPool);
+  app.decorate("db", db);
+
+  app.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      await request.jwtVerify();
+      const payload = request.user as { sub?: string; type?: string };
+      if (payload.type === "refresh") {
+        return reply.status(401).send({ error: "Invalid token type" });
+      }
+    } catch {
+      reply.status(401).send({ error: "Unauthorized" });
+    }
   });
 
   const redisClient = new Redis(redisUrl, {
@@ -83,6 +113,10 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
       },
     };
   });
+
+  // API v1 routes
+  await app.register(authRoutes, { prefix: "/api/v1/auth" });
+  await app.register(usersRoutes, { prefix: "/api/v1/users" });
 
   return app;
 }

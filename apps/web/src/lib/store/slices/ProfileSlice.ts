@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
-import { ProfileSlice, StoreSlice } from "./interfaces";
-import { TProfile } from "@/lib/types";
-import { sysModePref } from "@/lib/utils/sysModePref";
+import { ProfileSlice, StoreSlice } from "./interfaces/index.js";
+import { TProfile } from "@/lib/types.js";
+import { sysModePref } from "@/lib/utils/sysModePref.js";
 
 const initialProfileState: TProfile = {
   // TUser values
@@ -71,6 +71,50 @@ export const createProfileSlice: StateCreator<
   changeThemeMode: (mode) => {
     set((state) => {
       state.theme.mode = mode;
+    });
+  },
+  setUserProfile: (userData, settingsData) => {
+    set((state) => {
+      if (userData.id) state.user.id = userData.id;
+      if (userData.name) state.user.name = userData.name;
+      if (userData.bio !== undefined) state.user.bio = userData.bio;
+      if (userData.picture !== undefined) state.user.picture = userData.picture;
+      if (userData.phone !== undefined) state.user.phone = userData.phone;
+      if (settingsData) {
+        if (settingsData.themeMode) {
+          state.theme.mode = settingsData.themeMode as TProfile["theme"]["mode"];
+        }
+        if (settingsData.themeColor) {
+          state.theme.colors = settingsData.themeColor as TProfile["theme"]["colors"];
+        }
+        if (settingsData.notifyAll !== undefined) {
+          state.notifications.all = settingsData.notifyAll;
+        }
+        if (settingsData.notifySound !== undefined) {
+          state.notifications.sound = settingsData.notifySound;
+        }
+        if (settingsData.notifyPreview !== undefined) {
+          state.notifications.preview = settingsData.notifyPreview;
+        }
+        if (settingsData.notifyReactions !== undefined) {
+          state.notifications.reactions = settingsData.notifyReactions;
+        }
+        if (settingsData.privacyLastSeen !== undefined) {
+          state.privacy.lastTimeOnline = settingsData.privacyLastSeen;
+        }
+        if (settingsData.privacyPicture !== undefined) {
+          state.privacy.picture = settingsData.privacyPicture;
+        }
+        if (settingsData.privacyBio !== undefined) {
+          state.privacy.bio = settingsData.privacyBio;
+        }
+        if (settingsData.privacyGroups !== undefined) {
+          state.privacy.groups = settingsData.privacyGroups;
+        }
+        if (settingsData.privacyReadConfirmation !== undefined) {
+          state.privacy.readConfirmation = settingsData.privacyReadConfirmation;
+        }
+      }
     });
   },
 });

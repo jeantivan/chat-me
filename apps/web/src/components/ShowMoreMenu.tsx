@@ -7,10 +7,12 @@ import {
 } from "lucide-react";
 import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from "./ui/Menu";
 import useStore from "@/lib/store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { IconButton } from "./ui/IconButton";
 
 export function ShowMoreMenu() {
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
+  const { logout } = useAuth();
 
   return (
     <MenuRoot>
@@ -38,7 +40,12 @@ export function ShowMoreMenu() {
           Configuración
         </MenuItem>
 
-        <MenuItem disabled icon={LogOut}>
+        <MenuItem
+          icon={LogOut}
+          onClick={() => {
+            logout();
+          }}
+        >
           Cerrar sesión
         </MenuItem>
       </MenuContent>
