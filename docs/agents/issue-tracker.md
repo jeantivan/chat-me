@@ -44,3 +44,11 @@ Used by `/wayfinder`. The **map** is a single issue with **child** issues as tic
 - **Frontier query**: list the map's open children (`gh issue list --state open`, scoped to the map's sub-issues / task list), drop any with an open blocker (`issue_dependencies_summary.blocked_by > 0`, or an open issue in the `Blocked by` line) or an assignee; first in map order wins.
 - **Claim**: `gh issue edit <n> --add-assignee @me`, the session's first write.
 - **Resolve**: `gh issue comment <n> --body "<answer>"`, then `gh issue close <n>`, then append a context pointer (gist + link) to the map's Decisions-so-far.
+
+## Ticket completion
+
+When implementing an issue (`/implement <n>` or `/implement-spec`):
+1. **Verify**: Ensure `pnpm test`, `pnpm typecheck`, `pnpm lint`, and `pnpm build` pass cleanly.
+2. **Push**: Push committed changes to remote (`git push origin <branch>`).
+3. **Close**: Close the issue with completion comment (`gh issue close <n> --comment "..."`).
+A ticket is not done until the code is pushed and the issue is closed on GitHub.

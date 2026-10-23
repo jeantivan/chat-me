@@ -26,7 +26,6 @@ const initialProfileState: TProfile = {
     bio: "all",
     groups: "contacts",
     readReceipt: true,
-    readConfirmation: true,
   },
   // TTheme
   theme: {
@@ -114,10 +113,6 @@ export const createProfileSlice: StateCreator<
         }
         if (settingsData.privacyReadReceipt !== undefined) {
           state.privacy.readReceipt = settingsData.privacyReadReceipt;
-          state.privacy.readConfirmation = settingsData.privacyReadReceipt;
-        } else if (settingsData.privacyReadConfirmation !== undefined) {
-          state.privacy.readReceipt = settingsData.privacyReadConfirmation;
-          state.privacy.readConfirmation = settingsData.privacyReadConfirmation;
         }
       }
     });

@@ -44,13 +44,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext ts,tsx --max-warnings 250"
   },
   "browserslist": {
     "production": [

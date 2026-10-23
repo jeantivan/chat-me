@@ -26,7 +26,6 @@ export function Editor(props: EditorProps) {
         createMessage({ chatId: props.chatId, owner: userId, body: body })
       );
     }
-    debugger;
 
     const imageData = await getImageData(files[0]);
 

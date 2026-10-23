@@ -26,7 +26,7 @@ describe("Frontend AuthContext Seam", () => {
     privacyPicture: "all",
     privacyBio: "all",
     privacyGroups: "all",
-    privacyReadConfirmation: true,
+    privacyReadReceipt: true,
   };
 
   beforeEach(() => {

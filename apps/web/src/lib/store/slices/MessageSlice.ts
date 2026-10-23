@@ -34,7 +34,7 @@ export const createMessageSlice: StateCreator<
 
     set((state) => {
       // Encuentra el index del Mensaje con id = messageId
-      let messageIndex = state.chats[chatIndex].messages.findIndex(
+      const messageIndex = state.chats[chatIndex].messages.findIndex(
         (m) => m.id === message.id
       );
 
@@ -52,7 +52,7 @@ export const createMessageSlice: StateCreator<
 
     set((state) => {
       // Encuentra el index del Mensaje con id = messageId
-      let messageIndex = state.chats[chatIndex].messages.findIndex(
+      const messageIndex = state.chats[chatIndex].messages.findIndex(
         (m) => m.id === message.id
       );
 
@@ -71,7 +71,7 @@ export const createMessageSlice: StateCreator<
 
     set((state) => {
       // Encuentra la posición del mensaje
-      let messageIndex = state.chats[chatIndex].messages.findIndex(
+      const messageIndex = state.chats[chatIndex].messages.findIndex(
         (m) => m.id === message.id
       );
 
@@ -90,7 +90,7 @@ export const createMessageSlice: StateCreator<
 
     set((state) => {
       // Encuentra la posición del mensaje
-      let messageIndex = state.chats[chatIndex].messages.findIndex(
+      const messageIndex = state.chats[chatIndex].messages.findIndex(
         (m) => m.id === message.id
       );
 
@@ -115,7 +115,7 @@ export const createMessageSlice: StateCreator<
 
     set((state) => {
       // Encuentra la posición del mensaje
-      let messageIndex = state.chats[chatIndex].messages.findIndex(
+      const messageIndex = state.chats[chatIndex].messages.findIndex(
         (m) => m.id === message.id
       );
 
@@ -136,10 +136,10 @@ export const createMessageSlice: StateCreator<
       );
 
       if (chatIndex < 0) continue;
-      let newMessages: TMessage[] = [];
+      const newMessages: TMessage[] = [];
 
-      for (let message of messages) {
-        let newMessage: TMessage = {
+      for (const message of messages) {
+        const newMessage: TMessage = {
           ...message,
           forwarded: true,
           chatId: get().chats[chatIndex].id,

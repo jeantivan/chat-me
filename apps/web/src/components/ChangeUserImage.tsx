@@ -24,7 +24,7 @@ export function ChangeUserImage() {
         );
         return;
       }
-      let reader = new FileReader();
+      const reader = new FileReader();
 
       reader.onloadend = (e) => {
         if (

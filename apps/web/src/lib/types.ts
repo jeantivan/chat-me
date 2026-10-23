@@ -44,7 +44,6 @@ export type TPrivacy = {
   bio: "all" | "contacts" | "none";
   groups: "all" | "contacts" | "none";
   readReceipt: boolean;
-  readConfirmation: boolean;
 };
 
 export type TChat = {

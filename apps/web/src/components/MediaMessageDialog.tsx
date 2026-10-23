@@ -43,15 +43,15 @@ export function MediaMessageDialog({
     );
   });
 
-  if (!message) return null;
-
-  const formatTime = dayjs(message?.time).format("DD/MM/YYYY [a la(s)] HH:mm");
-
   const user = useStore((state) => state.user);
 
   const owner = useStore((state) => {
-    return state.contacts.find((c) => c.id === message.owner) || state.user;
+    return state.contacts.find((c) => c.id === message?.owner) || state.user;
   });
+
+  if (!message) return null;
+
+  const formatTime = dayjs(message?.time).format("DD/MM/YYYY [a la(s)] HH:mm");
 
   const isOwnMsg = user.id === owner?.id;
   const ownReaction = message.reactions?.find((r) => r.owner === user.id);
