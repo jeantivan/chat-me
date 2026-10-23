@@ -24,7 +24,7 @@ export function TypingPlugin({ chatId }: { chatId: string }) {
       timerRef.current = setTimeout(() => {
         isTypingRef.current = false;
         socket.emit("chat:typing", { chatId, isTyping: false });
-      }, 2000);
+      }, 3000);
     });
   }, [editor, chatId]);
 

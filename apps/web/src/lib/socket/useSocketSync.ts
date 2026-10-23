@@ -43,6 +43,17 @@ export function useSocketSync(
 ) {
   const queryClient = useQueryClient();
 
+  // Reset unreadCount in chat list cache immediately upon viewing active chat
+  useEffect(() => {
+    if (!currentChatId) return;
+    queryClient.setQueryData<ChatSummary[]>(chatKeys.lists(), (oldChats) => {
+      if (!oldChats) return oldChats;
+      return oldChats.map((c) =>
+        c.id === currentChatId ? { ...c, unreadCount: 0 } : c
+      );
+    });
+  }, [currentChatId, queryClient]);
+
   useEffect(() => {
     const socket = getSocket();
 

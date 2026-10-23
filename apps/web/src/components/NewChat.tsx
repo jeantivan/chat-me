@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import map from "lodash/map";
 import groupBy from "lodash/groupBy";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { ScrollArea } from "./ui/ScrollArea";
 import { ContactItem } from "./ContactItem";
@@ -8,18 +9,18 @@ import { ContactItem } from "./ContactItem";
 import useStore from "@/lib/store";
 import { useContacts } from "@/lib/api/chatQueries";
 import { getAuthHeaders } from "@/lib/auth/authClient";
+import { chatKeys } from "@/lib/socket/useSocketSync";
 import { router } from "@/routes/router";
 import { TUser } from "@/lib/types";
 
 export function NewChat() {
-  const allChats = useStore((state) => state.chats);
-  const storeContacts = useStore((state) => state.contacts);
+  const queryClient = useQueryClient();
   const setCurrentChatId = useStore((state) => state.setCurrentChatId);
   const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   const { data: serverContacts } = useContacts();
 
   const allContacts: TUser[] = useMemo(() => {
-    if (serverContacts && serverContacts.length > 0) {
+    if (serverContacts) {
       return serverContacts.map((sc) => ({
         id: sc.contact.id,
         name: sc.nickname || sc.contact.name,
@@ -28,8 +29,8 @@ export function NewChat() {
         picture: sc.contact.pictureUrl,
       }));
     }
-    return storeContacts;
-  }, [serverContacts, storeContacts]);
+    return [];
+  }, [serverContacts]);
 
   const contactGroupByFirstLetter = map(
     groupBy(allContacts, "name[0]"),
@@ -53,21 +54,15 @@ export function NewChat() {
       });
       if (res.ok) {
         const chatSummary = await res.json();
+        queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
         setCurrentChatId(chatSummary.id);
         closeLeftDrawer();
         router.navigate({ to: "/c/$chatId", params: { chatId: chatSummary.id } });
         return;
       }
     } catch {
-      // Fallback to local store search
+      // Failed to create chat via API
     }
-
-    const chat = allChats.find((c) => c.participants[0].id === contactId);
-    if (!chat) return;
-
-    setCurrentChatId(chat.id);
-    closeLeftDrawer();
-    router.navigate({ to: "/c/$chatId", params: { chatId: chat.id } });
   };
 
   return (

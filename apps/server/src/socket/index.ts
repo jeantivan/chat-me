@@ -400,8 +400,20 @@ export function setupSocketServer(
 
         if (membership.length === 0) return;
 
-        // Broadcast to other participants in the chat room
-        socket.to(`chat:${chatId}`).emit("chat:typing_updated", {
+        // Broadcast to other participants in the chat
+        const participants = await app.db
+          .select({ userId: chatParticipants.userId })
+          .from(chatParticipants)
+          .where(eq(chatParticipants.chatId, chatId));
+
+        const targetRooms = [
+          `chat:${chatId}`,
+          ...participants
+            .filter((p) => p.userId !== userId)
+            .map((p) => `user:${p.userId}`),
+        ];
+
+        socket.to(targetRooms).emit("chat:typing_updated", {
           chatId,
           userId,
           isTyping,

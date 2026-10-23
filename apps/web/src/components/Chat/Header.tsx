@@ -11,7 +11,7 @@ import {
 import { IconButton } from "@/components/ui/IconButton";
 import { TChat } from "@/lib/types";
 import useStore from "@/lib/store";
-import { useChatActions } from "@/lib/hooks";
+import { useChatActions, useUserId } from "@/lib/hooks";
 import { usePresenceStore } from "@/lib/store/presenceStore";
 
 dayjs.extend(relativeTime);
@@ -63,7 +63,10 @@ const Content = ({ chatId }: { chatId: string }) => {
 
 export function Header({ chat }: { chat: TChat }) {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
-  const otherParticipant = chat.participants[0];
+  const currentUserId = useUserId();
+  const otherParticipant =
+    chat.participants.find((p) => p.id !== currentUserId) ||
+    chat.participants[0];
   const { name, picture } = otherParticipant || { name: "Chat", picture: "" };
   const otherUserId = otherParticipant?.id;
 
