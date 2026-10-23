@@ -33,7 +33,9 @@ export interface UserSettingsData {
   privacyPicture: PrivacyAudience;
   privacyBio: PrivacyAudience;
   privacyGroups: PrivacyAudience;
-  privacyReadConfirmation: boolean;
+  privacyReadReceipt: boolean;
+  /** @deprecated alias for privacyReadReceipt per GLOSSARY.md */
+  privacyReadConfirmation?: boolean;
 }
 
 export interface AuthResponse {

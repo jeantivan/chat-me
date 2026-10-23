@@ -48,7 +48,8 @@ export function formatUserSettings(settings: UserSettings): UserSettingsData {
     privacyPicture: settings.privacyPicture as "all" | "contacts" | "none",
     privacyBio: settings.privacyBio as "all" | "contacts" | "none",
     privacyGroups: settings.privacyGroups as "all" | "contacts" | "none",
-    privacyReadConfirmation: settings.privacyReadConfirmation,
+    privacyReadReceipt: settings.privacyReadReceipt,
+    privacyReadConfirmation: settings.privacyReadReceipt,
   };
 }
 

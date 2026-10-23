@@ -6,7 +6,6 @@ import {
   hashPassword,
   verifyPassword,
   sendAuthResponse,
-  getUserProfileAndSettings,
 } from "../services/auth.service.js";
 
 const registerSchema = z.object({
@@ -146,17 +145,5 @@ export const authRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
   app.post("/logout", async (_request, reply) => {
     reply.clearCookie("refreshToken", { path: "/" });
     return reply.status(200).send({ success: true });
-  });
-
-  // GET /api/v1/auth/me
-  app.get("/me", { preHandler: [app.authenticate] }, async (request, reply) => {
-    const userId = (request.user as { sub: string }).sub;
-    const profile = await getUserProfileAndSettings(app.db, userId);
-
-    if (!profile) {
-      return reply.status(404).send({ error: "User not found" });
-    }
-
-    return reply.status(200).send(profile);
   });
 };

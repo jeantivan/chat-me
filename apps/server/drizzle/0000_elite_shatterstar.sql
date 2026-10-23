@@ -10,7 +10,7 @@ CREATE TABLE "user_settings" (
 	"privacy_picture" varchar(15) DEFAULT 'all' NOT NULL,
 	"privacy_bio" varchar(15) DEFAULT 'all' NOT NULL,
 	"privacy_groups" varchar(15) DEFAULT 'all' NOT NULL,
-	"privacy_read_confirmation" boolean DEFAULT true NOT NULL,
+	"privacy_read_receipt" boolean DEFAULT true NOT NULL,
 	CONSTRAINT "theme_mode_check" CHECK ("user_settings"."theme_mode" IN ('light', 'dark')),
 	CONSTRAINT "privacy_last_seen_check" CHECK ("user_settings"."privacy_last_seen" IN ('all', 'contacts', 'none')),
 	CONSTRAINT "privacy_picture_check" CHECK ("user_settings"."privacy_picture" IN ('all', 'contacts', 'none')),
@@ -31,5 +31,4 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-ALTER TABLE "user_settings" ADD CONSTRAINT "user_settings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "idx_users_email" ON "users" USING btree ("email");
+ALTER TABLE "user_settings" ADD CONSTRAINT "user_settings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;

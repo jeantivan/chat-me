@@ -5,7 +5,8 @@ import type {
   SessionResponse,
 } from "@chat-me/shared";
 
-const API_BASE = "";
+const API_BASE =
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE_URL) || "";
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {

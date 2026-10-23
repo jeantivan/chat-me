@@ -43,6 +43,7 @@ export type TPrivacy = {
   picture: "all" | "contacts" | "none";
   bio: "all" | "contacts" | "none";
   groups: "all" | "contacts" | "none";
+  readReceipt: boolean;
   readConfirmation: boolean;
 };
 

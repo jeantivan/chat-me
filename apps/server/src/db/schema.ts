@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp, boolean, index, check } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, text, timestamp, boolean, check } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const users = pgTable(
@@ -13,10 +13,7 @@ export const users = pgTable(
     pictureUrl: text("picture_url").notNull().default(""),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => ({
-    emailIdx: index("idx_users_email").on(table.email),
-  })
+  }
 );
 
 export const userSettings = pgTable(
@@ -35,7 +32,7 @@ export const userSettings = pgTable(
     privacyPicture: varchar("privacy_picture", { length: 15 }).notNull().default("all"),
     privacyBio: varchar("privacy_bio", { length: 15 }).notNull().default("all"),
     privacyGroups: varchar("privacy_groups", { length: 15 }).notNull().default("all"),
-    privacyReadConfirmation: boolean("privacy_read_confirmation").notNull().default(true),
+    privacyReadReceipt: boolean("privacy_read_receipt").notNull().default(true),
   },
   (table) => ({
     themeModeCheck: check("theme_mode_check", sql`${table.themeMode} IN ('light', 'dark')`),

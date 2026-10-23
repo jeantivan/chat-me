@@ -25,6 +25,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<string | null>(null);
 
   const setUserProfile = useStore((state) => state.setUserProfile);
+  const resetUserProfile = useStore((state) => state.resetUserProfile);
 
   const applyAuthSuccess = useCallback(
     (authData: AuthResponse) => {
@@ -116,8 +117,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSettings(null);
       setToken(null);
       setError(null);
+      resetUserProfile();
     }
-  }, []);
+  }, [resetUserProfile]);
 
   const value: AuthContextType = {
     user,

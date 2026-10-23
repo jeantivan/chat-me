@@ -84,8 +84,8 @@
           "notNull": true,
           "default": "'all'"
         },
-        "privacy_read_confirmation": {
-          "name": "privacy_read_confirmation",
+        "privacy_read_receipt": {
+          "name": "privacy_read_receipt",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -199,23 +199,7 @@
           "default": "now()"
         }
       },
-      "indexes": {
-        "idx_users_email": {
-          "name": "idx_users_email",
-          "columns": [
-            {
-              "expression": "email",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {

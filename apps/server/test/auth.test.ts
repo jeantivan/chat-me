@@ -155,6 +155,17 @@ describe("Fastify Auth Endpoints Seam", () => {
       },
     });
     expect(forbiddenRes.statusCode).toBe(401);
+
+    // 5. Using token without explicit access type -> 401
+    const untypedToken = app.jwt.sign({ sub: testUser.email });
+    const untypedRes = await app.inject({
+      method: "GET",
+      url: "/api/v1/users/me",
+      headers: {
+        authorization: `Bearer ${untypedToken}`,
+      },
+    });
+    expect(untypedRes.statusCode).toBe(401);
   });
 
   it("POST /api/v1/auth/refresh issues a new access token using refresh cookie", async () => {

@@ -21,6 +21,7 @@ export interface ProfileSlice extends TProfile, ConfigSlice {
     user: Partial<TUser>,
     settings?: Partial<UserSettingsData> | null
   ) => void;
+  resetUserProfile: () => void;
 }
 
 // Interface para la configuración

@@ -56,7 +56,7 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
     try {
       await request.jwtVerify();
       const payload = request.user as { sub?: string; type?: string };
-      if (payload.type === "refresh") {
+      if (!payload || payload.type !== "access") {
         return reply.status(401).send({ error: "Invalid token type" });
       }
     } catch {

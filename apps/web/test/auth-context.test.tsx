@@ -2,6 +2,7 @@ import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { AuthProvider, useAuth } from "../src/lib/auth/AuthContext";
+import useStore from "../src/lib/store";
 
 describe("Frontend AuthContext Seam", () => {
   const mockUser = {
@@ -169,5 +170,6 @@ describe("Frontend AuthContext Seam", () => {
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBeNull();
     expect(result.current.token).toBeNull();
+    expect(useStore.getState().user.id).toBe("348441f8-c083-4cd1-9af3-59ca8cab0917");
   });
 });

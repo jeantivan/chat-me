@@ -25,6 +25,7 @@ const initialProfileState: TProfile = {
     picture: "all",
     bio: "all",
     groups: "contacts",
+    readReceipt: true,
     readConfirmation: true,
   },
   // TTheme
@@ -111,10 +112,23 @@ export const createProfileSlice: StateCreator<
         if (settingsData.privacyGroups !== undefined) {
           state.privacy.groups = settingsData.privacyGroups;
         }
-        if (settingsData.privacyReadConfirmation !== undefined) {
+        if (settingsData.privacyReadReceipt !== undefined) {
+          state.privacy.readReceipt = settingsData.privacyReadReceipt;
+          state.privacy.readConfirmation = settingsData.privacyReadReceipt;
+        } else if (settingsData.privacyReadConfirmation !== undefined) {
+          state.privacy.readReceipt = settingsData.privacyReadConfirmation;
           state.privacy.readConfirmation = settingsData.privacyReadConfirmation;
         }
       }
+    });
+  },
+  resetUserProfile: () => {
+    set((state) => {
+      state.user = { ...initialProfileState.user };
+      state.notifications = { ...initialProfileState.notifications };
+      state.privacy = { ...initialProfileState.privacy };
+      state.theme = { ...initialProfileState.theme };
+      state.contacts = [];
     });
   },
 });
