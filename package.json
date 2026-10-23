@@ -10,6 +10,8 @@
     "lint": "turbo run lint && ./scripts/lint-glossary.sh && ./scripts/lint-network.sh",
     "lint:glossary": "./scripts/lint-glossary.sh",
     "lint:network": "./scripts/lint-network.sh",
+    "db:migrate": "pnpm --filter @chat-me/server db:migrate",
+    "db:seed": "pnpm --filter @chat-me/server db:seed",
     "health": "tsx scripts/check-health.ts"
   },
   "devDependencies": {

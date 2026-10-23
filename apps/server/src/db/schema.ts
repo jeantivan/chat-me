@@ -166,8 +166,8 @@ export const messageReceipts = pgTable(
   })
 );
 
-import { generateDirectPairHash, DirectPairHash } from "@chat-me/shared";
-export { generateDirectPairHash, DirectPairHash };
+import { generateDirectPairHash, type DirectPairHash } from "@chat-me/shared";
+export { generateDirectPairHash, type DirectPairHash };
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
