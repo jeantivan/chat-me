@@ -9,6 +9,7 @@ import { createDb } from "./db/index.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { usersRoutes } from "./routes/users.routes.js";
 import { chatsRoutes } from "./routes/chats.routes.js";
+import { contactsRoutes } from "./routes/contacts.routes.js";
 import { setupSocketServer } from "./socket/index.js";
 
 export interface AppOptions {
@@ -120,6 +121,7 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
   await app.register(authRoutes, { prefix: "/api/v1/auth" });
   await app.register(usersRoutes, { prefix: "/api/v1/users" });
   await app.register(chatsRoutes, { prefix: "/api/v1/chats" });
+  await app.register(contactsRoutes, { prefix: "/api/v1/contacts" });
 
   const io = setupSocketServer(app, redisUrl);
   app.decorate("io", io);

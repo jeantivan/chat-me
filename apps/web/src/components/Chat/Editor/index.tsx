@@ -28,7 +28,7 @@ export function Editor(props: EditorProps) {
   };
 
   return (
-    <Root onSave={onSave}>
+    <Root chatId={props.chatId} onSave={onSave}>
       <div className="h-full flex items-start gap-2.5 pl-2.5 bg-background-5 rounded-md w-full py-1.5">
         <EmojiPicker />
         <Input />

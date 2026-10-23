@@ -58,6 +58,20 @@ export interface LoginInput {
   password: string;
 }
 
+export interface ContactSummary {
+  userId: string;
+  contactUserId: string;
+  nickname: string | null;
+  createdAt: string;
+  contact: UserProfile;
+}
+
+export interface UserPresence {
+  userId: string;
+  status: "online" | "offline";
+  lastSeenAt?: string;
+}
+
 // Chat & Message Domain Interfaces
 
 export type ChatType = "direct" | "group";
@@ -130,6 +144,11 @@ export interface ClientToServerEvents {
     chatId: string;
     lastMessageId: string;
   }) => void;
+  "chat:typing": (payload: {
+    chatId: string;
+    isTyping: boolean;
+  }) => void;
+  "presence:heartbeat": () => void;
 }
 
 declare const DirectPairHashBrand: unique symbol;
@@ -151,4 +170,10 @@ export interface ServerToClientEvents {
   "message:new": (message: MessagePayload) => void;
   "message:status_changed": (payload: ReceiptStatusPayload) => void;
   "receipt:updated": (payload: ReceiptStatusPayload) => void;
+  "chat:typing_updated": (payload: {
+    chatId: string;
+    userId: string;
+    isTyping: boolean;
+  }) => void;
+  "presence:updated": (payload: UserPresence) => void;
 }

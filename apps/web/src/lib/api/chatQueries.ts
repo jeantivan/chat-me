@@ -14,6 +14,7 @@ import type {
   ChatSummary,
   MessagePayload,
   MessagesPageResponse,
+  ContactSummary,
 } from "@chat-me/shared";
 
 export function useChats() {
@@ -27,6 +28,23 @@ export function useChats() {
         credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to fetch chats");
+      return res.json();
+    },
+    enabled: Boolean(isAuthenticated && token),
+  });
+}
+
+export function useContacts() {
+  const { isAuthenticated, token } = useAuth();
+  return useQuery<ContactSummary[]>({
+    queryKey: chatKeys.contacts,
+    queryFn: async () => {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+      const res = await fetch(`${apiBase}/api/v1/contacts`, {
+        headers: getAuthHeaders(),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch contacts");
       return res.json();
     },
     enabled: Boolean(isAuthenticated && token),

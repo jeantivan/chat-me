@@ -68,6 +68,25 @@ export const userSettings = pgTable(
   })
 );
 
+export const contacts = pgTable(
+  "contacts",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    contactUserId: uuid("contact_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    nickname: varchar("nickname", { length: 100 }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.userId, table.contactUserId] }),
+    userIdIdx: index("idx_contacts_user").on(table.userId),
+    noSelfContactCheck: check("chk_no_self_contact", sql`${table.userId} <> ${table.contactUserId}`),
+  })
+);
+
 export const chats = pgTable(
   "chats",
   {
@@ -153,6 +172,8 @@ export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type UserSettings = typeof userSettings.$inferSelect;
 export type NewUserSettings = typeof userSettings.$inferInsert;
+export type Contact = typeof contacts.$inferSelect;
+export type NewContact = typeof contacts.$inferInsert;
 export type Chat = typeof chats.$inferSelect;
 export type NewChat = typeof chats.$inferInsert;
 export type ChatParticipant = typeof chatParticipants.$inferSelect;

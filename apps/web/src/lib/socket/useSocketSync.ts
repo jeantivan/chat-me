@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { useQueryClient, InfiniteData } from "@tanstack/react-query";
 import { getSocket } from "./socketClient";
+import { usePresenceStore } from "../store/presenceStore";
 import type {
   MessagePayload,
   MessagesPageResponse,
   ChatSummary,
   ReceiptStatusPayload,
   DeliveryStatus,
+  UserPresence,
 } from "@chat-me/shared";
 
 export function patchMessageStatusInPages(
@@ -122,14 +124,46 @@ export function useSocketSync(
       );
     };
 
+    const handleTypingUpdated = ({
+      chatId,
+      userId,
+      isTyping,
+    }: {
+      chatId: string;
+      userId: string;
+      isTyping: boolean;
+    }) => {
+      if (userId !== currentUserId) {
+        usePresenceStore.getState().setTyping(chatId, isTyping);
+      }
+    };
+
+    const handlePresenceUpdated = ({
+      userId,
+      status,
+      lastSeenAt,
+    }: UserPresence) => {
+      usePresenceStore.getState().setPresence(userId, { status, lastSeenAt });
+    };
+
     socket.on("message:new", handleNewMessage);
     socket.on("message:status_changed", handleStatusChanged);
     socket.on("receipt:updated", handleStatusChanged);
+    socket.on("chat:typing_updated", handleTypingUpdated);
+    socket.on("presence:updated", handlePresenceUpdated);
+
+    // Heartbeat every 30 seconds
+    const heartbeatTimer = setInterval(() => {
+      socket.emit("presence:heartbeat");
+    }, 30000);
 
     return () => {
+      clearInterval(heartbeatTimer);
       socket.off("message:new", handleNewMessage);
       socket.off("message:status_changed", handleStatusChanged);
       socket.off("receipt:updated", handleStatusChanged);
+      socket.off("chat:typing_updated", handleTypingUpdated);
+      socket.off("presence:updated", handlePresenceUpdated);
     };
   }, [queryClient, currentChatId, currentUserId]);
 }

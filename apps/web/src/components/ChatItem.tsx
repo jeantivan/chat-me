@@ -9,6 +9,7 @@ import mc from "@/lib/utils/mergeClassnames";
 import { TChat } from "@/lib/types";
 import { useCurrentChatId } from "@/lib/hooks";
 import { router } from "@/routes/router";
+import { usePresenceStore } from "@/lib/store/presenceStore";
 
 const iconVariants = {
   initial: { scale: 0, opacity: 0, y: -10 },
@@ -41,6 +42,13 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
 
   const isOpenChat = currentChatId === chat.id;
 
+  const isTyping = usePresenceStore((state) => state.typingByChat[chat.id]);
+  const otherUserId = chat.participants[0]?.id;
+  const presence = usePresenceStore((state) =>
+    otherUserId ? state.presenceByUser[otherUserId] : undefined
+  );
+  const isOnline = presence?.status === "online";
+
   return (
     <div
       data-testid={`chat-item-${chat.id}`}
@@ -55,14 +63,20 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
         hasUnreadMsg && "font-medium"
       )}
     >
-      <div className="flex items-center">
-        <div className="w-14 h-14">
+      <div className="flex items-center relative">
+        <div className="w-14 h-14 relative">
           <img
             className="bg-background-3 w-full h-full overflow-hidden rounded-full"
             src={picture}
             alt={`Foto de perfil de ${name}`}
             loading="lazy"
           />
+          {isOnline && (
+            <span
+              data-testid="online-indicator"
+              className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-background-1"
+            />
+          )}
         </div>
       </div>
       <div className="flex-1 min-w-0">
@@ -92,13 +106,34 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
             isOpenChat={isOpenChat}
           />
         </div>
-        {lastMessage && (
-          <LastMessage
-            key={lastMessage.id}
-            message={lastMessage}
-            hasUnreadMsg={hasUnreadMsg}
-          />
-        )}
+        <div className="flex items-center justify-between gap-2">
+          {isTyping ? (
+            <div
+              data-testid="chat-typing-indicator"
+              className="text-sm text-primary-9 font-medium italic animate-pulse flex-1"
+            >
+              typing...
+            </div>
+          ) : (
+            lastMessage && (
+              <div className="flex-1 min-w-0">
+                <LastMessage
+                  key={lastMessage.id}
+                  message={lastMessage}
+                  hasUnreadMsg={hasUnreadMsg}
+                />
+              </div>
+            )
+          )}
+          {typeof hasUnreadMsg === "number" && hasUnreadMsg > 0 && (
+            <span
+              data-testid="unread-badge"
+              className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full bg-primary-9 text-primary-contrast leading-none shrink-0"
+            >
+              {hasUnreadMsg}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

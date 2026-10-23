@@ -112,6 +112,16 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
         }
       }
 
+      chatList.sort((a, b) => {
+        const timeA = a.lastMessage?.time
+          ? new Date(a.lastMessage.time).getTime()
+          : new Date(a.createdAt).getTime();
+        const timeB = b.lastMessage?.time
+          ? new Date(b.lastMessage.time).getTime()
+          : new Date(b.createdAt).getTime();
+        return timeB - timeA;
+      });
+
       return reply.send(chatList);
     }
   );

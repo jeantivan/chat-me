@@ -13,20 +13,19 @@ import { AutoLinkPlugin } from "@/editor/plugins/AutoLinkPlugin";
 import { EmojiPlugin } from "@/editor/plugins/EmojiPlugin";
 import { TrimEditorPlugin } from "@/editor/plugins/TrimEditorPlugin";
 import { SaveEditorPlugin } from "@/editor/plugins/SaveEditorPlugin";
-import { useUserId } from "@/lib/hooks";
-import useStore from "@/lib/store";
-import { createMessage } from "@/lib/utils/createMessage";
+import { TypingPlugin } from "@/editor/plugins/TypingPlugin";
 
 const initialConfig: InitialConfigType = {
   ...baseConfig,
   namespace: "MessageInput"
 };
 
-type RootProps = { children: ReactNode; onSave: (editorState: string) => void };
-export function Root({ children, onSave }: RootProps) {
-  const userId = useUserId();
-  const addMessage = useStore((state) => state.addMessage);
-
+type RootProps = {
+  children: ReactNode;
+  onSave: (editorState: string) => void;
+  chatId?: string;
+};
+export function Root({ children, onSave, chatId }: RootProps) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <LinkPlugin />
@@ -37,6 +36,7 @@ export function Root({ children, onSave }: RootProps) {
       <TrimEditorPlugin />
       <EmojiPlugin />
       <SaveEditorPlugin onSave={onSave} />
+      {chatId ? <TypingPlugin chatId={chatId} /> : <></>}
       <>{children}</>
     </LexicalComposer>
   );

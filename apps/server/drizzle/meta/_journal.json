@@ -15,6 +15,13 @@
       "when": 1792752414217,
       "tag": "0001_woozy_makkari",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792762471393,
+      "tag": "0002_free_weapon_omega",
+      "breakpoints": true
     }
   ]
 }

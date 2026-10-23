@@ -7,6 +7,7 @@ import {
   chatParticipants,
   messages,
   messageReceipts,
+  users,
 } from "../db/schema.js";
 import type {
   ClientToServerEvents,
@@ -16,6 +17,12 @@ import type {
 
 interface SocketData {
   userId: string;
+}
+
+const userSocketCounts = new Map<string, number>();
+
+export function isUserOnline(userId: string): boolean {
+  return (userSocketCounts.get(userId) || 0) > 0;
 }
 
 function broadcastToChatAndParticipants(
@@ -98,6 +105,16 @@ export function setupSocketServer(
     if (!userId) {
       socket.disconnect(true);
       return;
+    }
+
+    // Track active connection and broadcast online presence
+    const currentCount = userSocketCounts.get(userId) || 0;
+    userSocketCounts.set(userId, currentCount + 1);
+    if (currentCount === 0) {
+      io.emit("presence:updated", {
+        userId,
+        status: "online",
+      });
     }
 
     // Join per-user room
@@ -364,6 +381,63 @@ export function setupSocketServer(
         }
       } catch (err) {
         app.log.error({ err, chatId, lastMessageId }, "Error processing read receipt");
+      }
+    });
+
+    // Ephemeral typing indicator
+    socket.on("chat:typing", async ({ chatId, isTyping }) => {
+      try {
+        const membership = await app.db
+          .select()
+          .from(chatParticipants)
+          .where(
+            and(
+              eq(chatParticipants.chatId, chatId),
+              eq(chatParticipants.userId, userId)
+            )
+          )
+          .limit(1);
+
+        if (membership.length === 0) return;
+
+        // Broadcast to other participants in the chat room
+        socket.to(`chat:${chatId}`).emit("chat:typing_updated", {
+          chatId,
+          userId,
+          isTyping,
+        });
+      } catch (err) {
+        app.log.error({ err, chatId, userId }, "Error handling chat:typing");
+      }
+    });
+
+    // Presence heartbeat
+    socket.on("presence:heartbeat", () => {
+      // Keep-alive heartbeat acknowledgment
+    });
+
+    // Handle socket disconnect
+    socket.on("disconnect", async () => {
+      const remaining = (userSocketCounts.get(userId) || 1) - 1;
+      if (remaining <= 0) {
+        userSocketCounts.delete(userId);
+        const now = new Date();
+        try {
+          await app.db
+            .update(users)
+            .set({ updatedAt: now })
+            .where(eq(users.id, userId));
+        } catch (err) {
+          app.log.error({ err, userId }, "Error updating user last seen on disconnect");
+        }
+
+        io.emit("presence:updated", {
+          userId,
+          status: "offline",
+          lastSeenAt: now.toISOString(),
+        });
+      } else {
+        userSocketCounts.set(userId, remaining);
       }
     });
   });
