@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { useAuth } from "@/lib/auth/AuthContext.js";
+import { useDialogContainer } from "@/components/DialogContainer";
 import mc from "@/lib/utils/mergeClassnames.js";
 
 interface AuthDialogProps {
@@ -14,6 +15,7 @@ function isValidEmail(email: string): boolean {
 
 export function AuthDialog({ open }: AuthDialogProps) {
   const { login, register, error: contextError } = useAuth();
+  const { container } = useDialogContainer();
 
   const [tab, setTab] = useState<"login" | "register">("login");
 
@@ -91,7 +93,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
 
   return (
     <DialogPrimitive.Root open={open}>
-      <DialogPrimitive.Portal>
+      <DialogPrimitive.Portal container={container}>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" />
         <DialogPrimitive.Content
           className={mc(

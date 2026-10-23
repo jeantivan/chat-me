@@ -8,6 +8,7 @@ import calendar from "dayjs/plugin/calendar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import { AuthProvider } from "./lib/auth/AuthContext";
+import { ThemeSync } from "./components/ThemeSync";
 import { router } from "./routes/router";
 
 dayjs.extend(updateLocale);
@@ -44,6 +45,7 @@ const queryClient = new QueryClient({
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeSync />
       <AuthProvider>
         <RouterProvider router={router} />
       </AuthProvider>
