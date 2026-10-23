@@ -22,6 +22,13 @@
       "when": 1792762471393,
       "tag": "0002_free_weapon_omega",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792764414772,
+      "tag": "0003_volatile_tyger_tiger",
+      "breakpoints": true
     }
   ]
 }

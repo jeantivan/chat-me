@@ -38,7 +38,7 @@ export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       const response: UserPresence = {
         userId: targetUserId,
         status: online ? "online" : "offline",
-        lastSeenAt: targetUser[0].updatedAt.toISOString(),
+        lastSeenAt: targetUser[0].lastSeenAt.toISOString(),
       };
 
       return reply.status(200).send(response);

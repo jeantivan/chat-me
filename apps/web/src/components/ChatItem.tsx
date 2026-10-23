@@ -7,9 +7,9 @@ import { LastMessage } from "./Message/LastMessage";
 
 import mc from "@/lib/utils/mergeClassnames";
 import { TChat } from "@/lib/types";
-import { useCurrentChatId, useUserId } from "@/lib/hooks";
+import { useCurrentChatId } from "@/lib/hooks";
+import { useChatCounterpart } from "@/lib/hooks/useChatCounterpart";
 import { router } from "@/routes/router";
-import { usePresenceStore } from "@/lib/store/presenceStore";
 
 const iconVariants = {
   initial: { scale: 0, opacity: 0, y: -10 },
@@ -37,21 +37,10 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
   const { currentChatId, setCurrentChatId } = useCurrentChatId();
 
   const { hasUnreadMsg } = chat;
-  const currentUserId = useUserId();
-  const otherParticipant =
-    chat.participants.find((p) => p.id !== currentUserId) ||
-    chat.participants[0];
-  const { name, picture } = otherParticipant || { name: "Chat", picture: "" };
   const lastMessage = chat.messages[chat.messages.length - 1];
-
   const isOpenChat = currentChatId === chat.id;
 
-  const isTyping = usePresenceStore((state) => state.typingByChat[chat.id]);
-  const otherUserId = otherParticipant?.id;
-  const presence = usePresenceStore((state) =>
-    otherUserId ? state.presenceByUser[otherUserId] : undefined
-  );
-  const isOnline = presence?.status === "online";
+  const { name, picture, isTyping, isOnline } = useChatCounterpart(chat);
 
   return (
     <div

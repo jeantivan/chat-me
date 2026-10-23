@@ -23,6 +23,7 @@ export const users = pgTable(
     pictureUrl: text("picture_url").notNull().default(""),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     emailIdx: index("idx_users_email").on(table.email),

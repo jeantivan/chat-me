@@ -11,8 +11,8 @@ import {
 import { IconButton } from "@/components/ui/IconButton";
 import { TChat } from "@/lib/types";
 import useStore from "@/lib/store";
-import { useChatActions, useUserId } from "@/lib/hooks";
-import { usePresenceStore } from "@/lib/store/presenceStore";
+import { useChatActions } from "@/lib/hooks";
+import { useChatCounterpart } from "@/lib/hooks/useChatCounterpart";
 
 dayjs.extend(relativeTime);
 
@@ -63,17 +63,7 @@ const Content = ({ chatId }: { chatId: string }) => {
 
 export function Header({ chat }: { chat: TChat }) {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
-  const currentUserId = useUserId();
-  const otherParticipant =
-    chat.participants.find((p) => p.id !== currentUserId) ||
-    chat.participants[0];
-  const { name, picture } = otherParticipant || { name: "Chat", picture: "" };
-  const otherUserId = otherParticipant?.id;
-
-  const isTyping = usePresenceStore((state) => state.typingByChat[chat.id]);
-  const presence = usePresenceStore((state) =>
-    otherUserId ? state.presenceByUser[otherUserId] : undefined
-  );
+  const { name, picture, isTyping, presence } = useChatCounterpart(chat);
 
   return (
     <header className="chat-header bg-background-2 shadow-lg">

@@ -117,6 +117,16 @@ export function setupSocketServer(
       });
     }
 
+    // Hydrate currently online users to this newly connected socket
+    for (const [onlineUserId, count] of userSocketCounts.entries()) {
+      if (onlineUserId !== userId && count > 0) {
+        socket.emit("presence:updated", {
+          userId: onlineUserId,
+          status: "online",
+        });
+      }
+    }
+
     // Join per-user room
     socket.join(`user:${userId}`);
 
@@ -387,25 +397,15 @@ export function setupSocketServer(
     // Ephemeral typing indicator
     socket.on("chat:typing", async ({ chatId, isTyping }) => {
       try {
-        const membership = await app.db
-          .select()
-          .from(chatParticipants)
-          .where(
-            and(
-              eq(chatParticipants.chatId, chatId),
-              eq(chatParticipants.userId, userId)
-            )
-          )
-          .limit(1);
-
-        if (membership.length === 0) return;
-
-        // Broadcast to other participants in the chat
         const participants = await app.db
           .select({ userId: chatParticipants.userId })
           .from(chatParticipants)
           .where(eq(chatParticipants.chatId, chatId));
 
+        const isMember = participants.some((p) => p.userId === userId);
+        if (!isMember) return;
+
+        // Broadcast to other participants in the chat
         const targetRooms = [
           `chat:${chatId}`,
           ...participants
@@ -437,7 +437,7 @@ export function setupSocketServer(
         try {
           await app.db
             .update(users)
-            .set({ updatedAt: now })
+            .set({ lastSeenAt: now })
             .where(eq(users.id, userId));
         } catch (err) {
           app.log.error({ err, userId }, "Error updating user last seen on disconnect");

@@ -7,6 +7,7 @@ import {
   messages,
   messageReceipts,
   users,
+  contacts,
   generateDirectPairHash,
 } from "../db/schema.js";
 import type {
@@ -82,6 +83,15 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
           { chatId, userId: currentUserId, role: "member" },
           { chatId, userId: targetUserId, role: "member" },
         ]);
+
+        // Ensure bidirectional contacts
+        await app.db
+          .insert(contacts)
+          .values([
+            { userId: currentUserId, contactUserId: targetUserId },
+            { userId: targetUserId, contactUserId: currentUserId },
+          ])
+          .onConflictDoNothing();
       }
 
       // Fetch full chat summary

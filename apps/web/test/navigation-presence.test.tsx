@@ -1,11 +1,32 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import React from "react";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, renderHook } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ChatItem } from "../src/components/ChatItem";
 import { Header } from "../src/components/Chat/Header";
 import { usePresenceStore } from "../src/lib/store/presenceStore";
+import { useSocketSync, chatKeys } from "../src/lib/socket/useSocketSync";
 import type { TChat } from "../src/lib/types";
+
+const mockSocketListeners: Record<string, Function[]> = {};
+const mockSocket = {
+  on: vi.fn((event: string, cb: Function) => {
+    mockSocketListeners[event] = mockSocketListeners[event] || [];
+    mockSocketListeners[event].push(cb);
+    return mockSocket;
+  }),
+  off: vi.fn((event: string, cb: Function) => {
+    if (mockSocketListeners[event]) {
+      mockSocketListeners[event] = mockSocketListeners[event].filter((fn) => fn !== cb);
+    }
+    return mockSocket;
+  }),
+  emit: vi.fn(),
+};
+
+vi.mock("../src/lib/socket/socketClient", () => ({
+  getSocket: () => mockSocket,
+}));
 
 vi.mock("../src/routes/router", () => ({
   router: {
@@ -184,5 +205,53 @@ describe("Frontend Chat Navigation, Unread Badges & Presence Seam", () => {
 
     const offlineEl = screen.getByTestId("presence-indicator");
     expect(offlineEl.textContent).toContain("last seen");
+  });
+
+  it("decrements/zeroes unread count upon viewing a chat in useSocketSync", () => {
+    // Seed chat list in queryClient
+    queryClient.setQueryData(chatKeys.lists(), [
+      {
+        id: "chat-unread-test",
+        unreadCount: 5,
+        participants: [],
+        pinned: false,
+        muted: false,
+        archived: false,
+      },
+      {
+        id: "chat-other",
+        unreadCount: 3,
+        participants: [],
+        pinned: false,
+        muted: false,
+        archived: false,
+      },
+    ]);
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+
+    // Mount useSocketSync initially not viewing the chat
+    const { rerender } = renderHook(
+      ({ activeChatId }: { activeChatId: string | null }) =>
+        useSocketSync(activeChatId, "current-user-1"),
+      {
+        wrapper,
+        initialProps: { activeChatId: null },
+      }
+    );
+
+    // Before viewing, unreadCount is 5
+    let chats = queryClient.getQueryData<any[]>(chatKeys.lists())!;
+    expect(chats.find((c) => c.id === "chat-unread-test").unreadCount).toBe(5);
+
+    // View "chat-unread-test"
+    rerender({ activeChatId: "chat-unread-test" });
+
+    // After viewing, unreadCount is reset to 0, other chat remains 3
+    chats = queryClient.getQueryData<any[]>(chatKeys.lists())!;
+    expect(chats.find((c) => c.id === "chat-unread-test").unreadCount).toBe(0);
+    expect(chats.find((c) => c.id === "chat-other").unreadCount).toBe(3);
   });
 });
