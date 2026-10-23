@@ -19,7 +19,7 @@ export function Input() {
             rootClassName="w-full outline-none pr-2.5"
             className="max-h-[136px] overflow-y-auto w-full bg-transparent outline-none dark:text-white text-black"
           >
-            <ContentEditable className="focus:outline-none" />
+            <ContentEditable data-testid="message-input" className="focus:outline-none" />
           </ScrollArea>
         }
         placeholder={<Placeholder />}

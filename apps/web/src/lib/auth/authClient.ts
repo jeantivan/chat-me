@@ -24,6 +24,20 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+let currentAccessToken: string | null = null;
+
+export function setAccessToken(token: string | null) {
+  currentAccessToken = token;
+}
+
+export function getAccessToken(): string | null {
+  return currentAccessToken;
+}
+
+export function getAuthHeaders(): Record<string, string> {
+  return currentAccessToken ? { Authorization: `Bearer ${currentAccessToken}` } : {};
+}
+
 export const authClient = {
   async register(input: RegisterInput): Promise<AuthResponse> {
     const res = await fetch(`${API_BASE}/api/v1/auth/register`, {

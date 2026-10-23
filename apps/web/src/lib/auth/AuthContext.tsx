@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import type { AuthResponse, UserProfile, UserSettingsData } from "@chat-me/shared";
-import { authClient } from "./authClient.js";
+import { authClient, setAccessToken } from "./authClient.js";
 import useStore from "@/lib/store/index.js";
 
 export interface AuthContextType {
@@ -29,6 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const applyAuthSuccess = useCallback(
     (authData: AuthResponse) => {
+      setAccessToken(authData.accessToken);
       setUser(authData.user);
       setSettings(authData.settings);
       setToken(authData.accessToken);
@@ -113,6 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {
       // Continue cleanup on client
     } finally {
+      setAccessToken(null);
       setUser(null);
       setSettings(null);
       setToken(null);

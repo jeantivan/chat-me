@@ -23,6 +23,7 @@ export function SendMessage() {
 
   return (
     <IconButton
+      data-testid="send-message-button"
       icon={SendIcon}
       label="Enviar mensaje"
       iconClassName="rotate-45"

@@ -42,8 +42,12 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
 
   return (
     <div
+      data-testid={`chat-item-${chat.id}`}
       onClick={() => {
         setCurrentChatId(chat.id);
+        if (typeof window !== "undefined" && window.location.pathname !== `/c/${chat.id}`) {
+          window.history.pushState({}, "", `/c/${chat.id}`);
+        }
       }}
       className={mc(
         "flex min-w-0 select-none cursor-pointer p-2 gap-4 rounded-xl mr-2",

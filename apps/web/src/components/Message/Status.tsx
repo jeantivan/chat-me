@@ -21,14 +21,16 @@ export function Status({
   const { icon, label } = STATUS[status];
 
   return (
-    <Icon
-      icon={icon}
-      label={label}
-      className={mc(
-        "w-4 h-4 text-slate-400",
-        status === "read" && "text-[#0600C1] dark:text-[#00FFFB]",
-        className
-      )}
-    />
+    <span data-testid={`message-status-${status}`} data-status={status} className="inline-flex">
+      <Icon
+        icon={icon}
+        label={label}
+        className={mc(
+          "w-4 h-4 text-slate-400",
+          status === "read" && "text-[#0600C1] dark:text-[#00FFFB]",
+          className
+        )}
+      />
+    </span>
   );
 }

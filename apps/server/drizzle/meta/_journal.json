@@ -8,6 +8,13 @@
       "when": 1792704135744,
       "tag": "0000_elite_shatterstar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792752414217,
+      "tag": "0001_woozy_makkari",
+      "breakpoints": true
     }
   ]
 }

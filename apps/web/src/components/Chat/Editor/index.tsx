@@ -3,33 +3,28 @@ import { SendMessage } from "./SendMessage";
 
 import { EmojiPicker } from "./EmojiPicker";
 import { Input } from "./Input";
-import { FilesToSendContext, useFilesToSend } from "@/components/SendFiles";
-import { useUserId } from "@/lib/hooks";
-import useStore from "@/lib/store";
-import { createMessage } from "@/lib/utils/createMessage";
-import { getImageData } from "@/lib/utils/getImageData";
+import { FilesToSendContext } from "@/components/SendFiles";
+import { useSendMessage } from "@/lib/api/chatQueries";
 import { useContext } from "react";
 
 type EditorProps = {
   chatId: string;
   onSave?: (editorState: string) => void;
 };
+
 export function Editor(props: EditorProps) {
-  const userId = useUserId();
-  const addMessage = useStore((state) => state.addMessage);
+  const sendMessage = useSendMessage(props.chatId);
   const { files } = useContext(FilesToSendContext);
 
   const onSave = async (body?: string) => {
-    console.log({ files });
-    if (files.length <= 0) {
-      addMessage(
-        createMessage({ chatId: props.chatId, owner: userId, body: body })
-      );
+    if (!body) return;
+    if (props.onSave) {
+      props.onSave(body);
+      return;
     }
-
-    const imageData = await getImageData(files[0]);
-
-    console.log({ imageData });
+    if (files.length <= 0) {
+      sendMessage(body);
+    }
   };
 
   return (

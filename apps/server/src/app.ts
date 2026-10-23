@@ -8,6 +8,8 @@ import type { HealthResponse } from "@chat-me/shared";
 import { createDb } from "./db/index.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { usersRoutes } from "./routes/users.routes.js";
+import { chatsRoutes } from "./routes/chats.routes.js";
+import { setupSocketServer } from "./socket/index.js";
 
 export interface AppOptions {
   databaseUrl?: string;
@@ -117,6 +119,10 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
   // API v1 routes
   await app.register(authRoutes, { prefix: "/api/v1/auth" });
   await app.register(usersRoutes, { prefix: "/api/v1/users" });
+  await app.register(chatsRoutes, { prefix: "/api/v1/chats" });
+
+  const io = setupSocketServer(app, redisUrl);
+  app.decorate("io", io);
 
   return app;
 }

@@ -31,11 +31,36 @@ function Root({ children, initialState }: RootProps) {
   );
 }
 
+function isValidLexicalJson(str: string): boolean {
+  if (!str || typeof str !== "string") return false;
+  try {
+    const parsed = JSON.parse(str);
+    return typeof parsed === "object" && parsed !== null && "root" in parsed;
+  } catch {
+    return false;
+  }
+}
+
 type Props = {
   body: string;
   className?: string;
 };
 export function MessageText({ body, className }: Props) {
+  if (!isValidLexicalJson(body)) {
+    return (
+      <div className="py-1 px-2">
+        <div
+          className={mc(
+            "whitespace-pre-wrap break-words leading-tight",
+            className
+          )}
+        >
+          {body}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Root initialState={body}>
       <div className="py-1 px-2">
