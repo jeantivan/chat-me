@@ -5,7 +5,26 @@ import type {
   MessagePayload,
   MessagesPageResponse,
   ChatSummary,
+  ReceiptStatusPayload,
+  DeliveryStatus,
 } from "@chat-me/shared";
+
+export function patchMessageStatusInPages(
+  oldData: InfiniteData<MessagesPageResponse> | undefined,
+  messageId: string,
+  status: DeliveryStatus
+): InfiniteData<MessagesPageResponse> | undefined {
+  if (!oldData) return oldData;
+  return {
+    ...oldData,
+    pages: oldData.pages.map((page) => ({
+      ...page,
+      messages: page.messages.map((m) =>
+        m.id === messageId ? { ...m, status } : m
+      ),
+    })),
+  };
+}
 
 export const chatKeys = {
   all: ["chats"] as const,
@@ -96,27 +115,10 @@ export function useSocketSync(
       messageId,
       chatId,
       status,
-    }: {
-      messageId: string;
-      chatId: string;
-      status: "received" | "read";
-      userId: string;
-      updatedAt: string;
-    }) => {
+    }: ReceiptStatusPayload) => {
       queryClient.setQueryData<InfiniteData<MessagesPageResponse>>(
         chatKeys.messages(chatId),
-        (oldData) => {
-          if (!oldData) return oldData;
-          return {
-            ...oldData,
-            pages: oldData.pages.map((page) => ({
-              ...page,
-              messages: page.messages.map((m) =>
-                m.id === messageId ? { ...m, status } : m
-              ),
-            })),
-          };
-        }
+        (oldData) => patchMessageStatusInPages(oldData, messageId, status)
       );
     };
 

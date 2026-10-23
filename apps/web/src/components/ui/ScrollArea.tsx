@@ -25,17 +25,19 @@ const ScrollBar = forwardRef<
 ));
 
 export const ScrollArea = forwardRef<
-  React.ElementRef<typeof ScrollAreaPrimitive.Root>,
+  React.ElementRef<typeof ScrollAreaPrimitive.Viewport>,
   React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> & {
     rootClassName?: string;
+    onViewportScroll?: React.UIEventHandler<HTMLDivElement>;
   }
->(({ className, children, rootClassName, ...props }, ref) => (
+>(({ className, children, rootClassName, onScroll, onViewportScroll, ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     className={mc("relative overflow-hidden", rootClassName)}
     {...props}
   >
     <ScrollAreaPrimitive.Viewport
       ref={ref}
+      onScroll={onViewportScroll || onScroll}
       className={mc("h-full w-full rounded-[inherit]", className)}
     >
       {children}

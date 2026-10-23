@@ -6,7 +6,7 @@ import {
   InfiniteData,
 } from "@tanstack/react-query";
 import { getSocket } from "../socket/socketClient";
-import { chatKeys } from "../socket/useSocketSync";
+import { chatKeys, patchMessageStatusInPages } from "../socket/useSocketSync";
 import { useUserId } from "../hooks";
 import { getAuthHeaders } from "../auth/authClient";
 import { useAuth } from "../auth/AuthContext";
@@ -119,18 +119,7 @@ export function useSendMessage(chatId: string) {
             // Update status to 'send' (single tick)
             queryClient.setQueryData<InfiniteData<MessagesPageResponse>>(
               chatKeys.messages(chatId),
-              (oldData) => {
-                if (!oldData) return oldData;
-                return {
-                  ...oldData,
-                  pages: oldData.pages.map((page) => ({
-                    ...page,
-                    messages: page.messages.map((m) =>
-                      m.id === messageId ? { ...m, status: "send" } : m
-                    ),
-                  })),
-                };
-              }
+              (oldData) => patchMessageStatusInPages(oldData, messageId, "send")
             );
           }
         }

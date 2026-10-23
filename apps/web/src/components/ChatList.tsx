@@ -7,7 +7,8 @@ import { ScrollArea } from "./ui/ScrollArea";
 import useStore from "@/lib/store";
 import { useUserId } from "@/lib/hooks";
 import { useChats } from "@/lib/api/chatQueries";
-import { TChat, TMessage } from "@/lib/types";
+import { toUiChat } from "@/lib/utils/chatAdapter";
+import { TChat } from "@/lib/types";
 
 const getDateOfLastMessage = (c: TChat) => {
   if (!c.messages.length) return new Date(0);
@@ -22,49 +23,7 @@ export function ChatList() {
 
   const mergedChats: TChat[] = useMemo(() => {
     if (serverChats && serverChats.length > 0) {
-      return serverChats.map((sc) => {
-        const otherParticipant =
-          sc.participants.find((p) => p.userId !== currentUserId) ||
-          sc.participants[0];
-        const participantSummary = sc.participants.find(
-          (p) => p.userId === currentUserId
-        );
-
-        const lastMsg: TMessage[] = sc.lastMessage
-          ? [
-              {
-                id: sc.lastMessage.id,
-                chatId: sc.id,
-                owner: sc.lastMessage.owner,
-                body: sc.lastMessage.body,
-                forwarded: sc.lastMessage.forwarded,
-                time: sc.lastMessage.time,
-                status: sc.lastMessage.status,
-                starred: sc.lastMessage.starred,
-                hasMedia: sc.lastMessage.hasMedia,
-                reactions: (sc.lastMessage.reactions || []) as any,
-              },
-            ]
-          : [];
-
-        return {
-          id: sc.id,
-          participants: [
-            {
-              id: otherParticipant?.user.id || "",
-              name: otherParticipant?.user.name || sc.title || "Chat",
-              bio: otherParticipant?.user.bio || "",
-              phone: otherParticipant?.user.phone || "",
-              picture: otherParticipant?.user.pictureUrl || "",
-            },
-          ],
-          pinned: participantSummary?.pinned || false,
-          muted: participantSummary?.muted || false,
-          archived: participantSummary?.archived || false,
-          hasUnreadMsg: sc.unreadCount || 0,
-          messages: lastMsg,
-        };
-      });
+      return serverChats.map((sc) => toUiChat(sc, currentUserId));
     }
     return storeChats;
   }, [serverChats, currentUserId, storeChats]);

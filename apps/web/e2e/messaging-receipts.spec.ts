@@ -69,9 +69,10 @@ test.describe("Real-Time Direct Messaging & Status Receipts Progression", () => 
     await pageA.click('[data-testid="send-message-button"]');
 
     // 7. Verify progression in User A's browser:
-    // It should render immediately with status icon
-    const statusOnA = pageA.locator(`[data-testid^="message-status-"]`).last();
-    await expect(statusOnA).toBeVisible();
+    // It should render immediately with optimistic status ('idle' clock or 'send' single tick)
+    await expect(
+      pageA.locator('[data-testid="message-status-send"], [data-testid="message-status-idle"]').last()
+    ).toBeVisible({ timeout: 5000 });
 
     // 8. Bob's client receives message via WebSocket while outside the chat
     // Bob's client emits message:ack_received, updating Alice's status to 'received' (double gray ticks)

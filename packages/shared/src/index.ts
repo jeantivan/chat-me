@@ -132,13 +132,15 @@ export interface ClientToServerEvents {
   }) => void;
 }
 
+export interface ReceiptStatusPayload {
+  messageId: string;
+  chatId: string;
+  status: "received" | "read";
+  userId: string;
+  updatedAt: string;
+}
+
 export interface ServerToClientEvents {
   "message:new": (message: MessagePayload) => void;
-  "message:status_changed": (payload: {
-    messageId: string;
-    chatId: string;
-    status: "received" | "read";
-    userId: string;
-    updatedAt: string;
-  }) => void;
+  "message:status_changed": (payload: ReceiptStatusPayload) => void;
 }

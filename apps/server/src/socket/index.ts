@@ -18,6 +18,17 @@ interface SocketData {
   userId: string;
 }
 
+function broadcastToChatAndParticipants(
+  io: SocketIOServer<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>,
+  chatId: string,
+  participants: Array<{ userId: string }>,
+  event: keyof ServerToClientEvents,
+  payload: any
+) {
+  const rooms = [`chat:${chatId}`, ...participants.map((p) => `user:${p.userId}`)];
+  io.to(rooms).emit(event as any, payload);
+}
+
 export function setupSocketServer(
   app: FastifyInstance,
   redisUrl: string
@@ -171,18 +182,13 @@ export function setupSocketServer(
           reactions: [],
         };
 
-        // Broadcast to chat room
-        io.to(`chat:${chatId}`).emit("message:new", messagePayload);
-
-        // Also broadcast to user rooms of participants who may not be in active chat room
+        // Broadcast to chat room and individual participant rooms (deduplicated)
         const participants = await app.db
           .select({ userId: chatParticipants.userId })
           .from(chatParticipants)
           .where(eq(chatParticipants.chatId, chatId));
 
-        for (const p of participants) {
-          io.to(`user:${p.userId}`).emit("message:new", messagePayload);
-        }
+        broadcastToChatAndParticipants(io, chatId, participants, "message:new", messagePayload);
       } catch (err) {
         app.log.error({ err, id, chatId }, "Error persisting sent message");
         if (callback) {
@@ -241,10 +247,13 @@ export function setupSocketServer(
             updatedAt: now.toISOString(),
           };
 
-          io.to(`chat:${chatId}`).emit("message:status_changed", statusPayload);
-          for (const p of participants) {
-            io.to(`user:${p.userId}`).emit("message:status_changed", statusPayload);
-          }
+          broadcastToChatAndParticipants(
+            io,
+            chatId,
+            participants,
+            "message:status_changed",
+            statusPayload
+          );
         }
       } catch (err) {
         app.log.error({ err, chatId, messageIds }, "Error updating received receipt");
@@ -286,15 +295,23 @@ export function setupSocketServer(
           .from(chatParticipants)
           .where(eq(chatParticipants.chatId, chatId));
 
-        // Find unread messages sent by others in this chat up to targetDate
+        // Find unread messages sent by others in this chat up to targetDate (skipping already-read messages)
         const unreadMsgs = await app.db
           .select({ id: messages.id })
           .from(messages)
+          .leftJoin(
+            messageReceipts,
+            and(
+              eq(messageReceipts.messageId, messages.id),
+              eq(messageReceipts.userId, userId)
+            )
+          )
           .where(
             and(
               eq(messages.chatId, chatId),
               sql`${messages.senderId} <> ${userId}`,
-              sql`${messages.createdAt} <= ${targetDate}`
+              sql`${messages.createdAt} <= ${targetDate}`,
+              sql`(${messageReceipts.status} IS NULL OR ${messageReceipts.status} <> 'read')`
             )
           );
 
@@ -323,10 +340,13 @@ export function setupSocketServer(
             updatedAt: now.toISOString(),
           };
 
-          io.to(`chat:${chatId}`).emit("message:status_changed", statusPayload);
-          for (const p of participants) {
-            io.to(`user:${p.userId}`).emit("message:status_changed", statusPayload);
-          }
+          broadcastToChatAndParticipants(
+            io,
+            chatId,
+            participants,
+            "message:status_changed",
+            statusPayload
+          );
         }
       } catch (err) {
         app.log.error({ err, chatId, lastMessageId }, "Error processing read receipt");

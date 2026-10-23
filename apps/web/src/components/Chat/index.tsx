@@ -17,6 +17,7 @@ import { useUserId } from "@/lib/hooks";
 import mc from "@/lib/utils/mergeClassnames";
 import { useChatMessages, useChats } from "@/lib/api/chatQueries";
 import { getSocket } from "@/lib/socket/socketClient";
+import { toUiChat } from "@/lib/utils/chatAdapter";
 import type { TChat, TMessage } from "@/lib/types";
 
 const Image = ({ image, className }: { image: File; className?: string }) => {
@@ -144,25 +145,9 @@ export function Chat({ chatId }: { chatId: string }) {
   // Construct TChat view adapter for Header
   const activeChat: TChat = useMemo(() => {
     if (currentChatSummary) {
-      const otherParticipants = currentChatSummary.participants.filter(
-        (p) => p.userId !== userId
-      );
-      const displayParticipant = otherParticipants[0] || currentChatSummary.participants[0];
+      const uiChat = toUiChat(currentChatSummary, userId);
       return {
-        id: currentChatSummary.id,
-        participants: [
-          {
-            id: displayParticipant?.user.id || "",
-            name: displayParticipant?.user.name || currentChatSummary.title || "Chat",
-            bio: displayParticipant?.user.bio || "",
-            phone: displayParticipant?.user.phone || "",
-            picture: displayParticipant?.user.pictureUrl || "",
-          },
-        ],
-        pinned: currentChatSummary.participants.find((p) => p.userId === userId)?.pinned ?? false,
-        muted: currentChatSummary.participants.find((p) => p.userId === userId)?.muted ?? false,
-        archived: currentChatSummary.participants.find((p) => p.userId === userId)?.archived ?? false,
-        hasUnreadMsg: currentChatSummary.unreadCount || 0,
+        ...uiChat,
         messages,
       };
     }
