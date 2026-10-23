@@ -124,10 +124,12 @@ export function useSocketSync(
 
     socket.on("message:new", handleNewMessage);
     socket.on("message:status_changed", handleStatusChanged);
+    socket.on("receipt:updated", handleStatusChanged);
 
     return () => {
       socket.off("message:new", handleNewMessage);
       socket.off("message:status_changed", handleStatusChanged);
+      socket.off("receipt:updated", handleStatusChanged);
     };
   }, [queryClient, currentChatId, currentUserId]);
 }

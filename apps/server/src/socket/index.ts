@@ -254,6 +254,13 @@ export function setupSocketServer(
             "message:status_changed",
             statusPayload
           );
+          broadcastToChatAndParticipants(
+            io,
+            chatId,
+            participants,
+            "receipt:updated",
+            statusPayload
+          );
         }
       } catch (err) {
         app.log.error({ err, chatId, messageIds }, "Error updating received receipt");
@@ -345,6 +352,13 @@ export function setupSocketServer(
             chatId,
             participants,
             "message:status_changed",
+            statusPayload
+          );
+          broadcastToChatAndParticipants(
+            io,
+            chatId,
+            participants,
+            "receipt:updated",
             statusPayload
           );
         }

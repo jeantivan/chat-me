@@ -146,9 +146,8 @@ export const messageReceipts = pgTable(
   })
 );
 
-export function generateDirectPairHash(user1Id: string, user2Id: string): string {
-  return user1Id < user2Id ? `${user1Id}:${user2Id}` : `${user2Id}:${user1Id}`;
-}
+import { generateDirectPairHash, DirectPairHash } from "@chat-me/shared";
+export { generateDirectPairHash, DirectPairHash };
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;

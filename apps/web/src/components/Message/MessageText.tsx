@@ -33,6 +33,7 @@ function Root({ children, initialState }: RootProps) {
 
 function isValidLexicalJson(str: string): boolean {
   if (!str || typeof str !== "string") return false;
+  if (!str.startsWith("{") || !str.endsWith("}")) return false;
   try {
     const parsed = JSON.parse(str);
     return typeof parsed === "object" && parsed !== null && "root" in parsed;

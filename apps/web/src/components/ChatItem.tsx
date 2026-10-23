@@ -8,6 +8,7 @@ import { LastMessage } from "./Message/LastMessage";
 import mc from "@/lib/utils/mergeClassnames";
 import { TChat } from "@/lib/types";
 import { useCurrentChatId } from "@/lib/hooks";
+import { router } from "@/routes/router";
 
 const iconVariants = {
   initial: { scale: 0, opacity: 0, y: -10 },
@@ -45,9 +46,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
       data-testid={`chat-item-${chat.id}`}
       onClick={() => {
         setCurrentChatId(chat.id);
-        if (typeof window !== "undefined" && window.location.pathname !== `/c/${chat.id}`) {
-          window.history.pushState({}, "", `/c/${chat.id}`);
-        }
+        router.navigate({ to: "/c/$chatId", params: { chatId: chat.id } });
       }}
       className={mc(
         "flex min-w-0 select-none cursor-pointer p-2 gap-4 rounded-xl mr-2",

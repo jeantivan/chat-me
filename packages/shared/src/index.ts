@@ -132,6 +132,13 @@ export interface ClientToServerEvents {
   }) => void;
 }
 
+declare const DirectPairHashBrand: unique symbol;
+export type DirectPairHash = string & { readonly [DirectPairHashBrand]: true };
+
+export function generateDirectPairHash(user1Id: string, user2Id: string): DirectPairHash {
+  return (user1Id < user2Id ? `${user1Id}:${user2Id}` : `${user2Id}:${user1Id}`) as DirectPairHash;
+}
+
 export interface ReceiptStatusPayload {
   messageId: string;
   chatId: string;
@@ -143,4 +150,5 @@ export interface ReceiptStatusPayload {
 export interface ServerToClientEvents {
   "message:new": (message: MessagePayload) => void;
   "message:status_changed": (payload: ReceiptStatusPayload) => void;
+  "receipt:updated": (payload: ReceiptStatusPayload) => void;
 }
