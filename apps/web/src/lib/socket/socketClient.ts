@@ -12,7 +12,7 @@ export function getSocket(token?: string): Socket<ServerToClientEvents, ClientTo
   if (!socketInstance) {
     const apiBaseUrl =
       import.meta.env.VITE_API_BASE_URL ||
-      (typeof window !== "undefined" ? window.location.origin : "http://localhost:3001");
+      (typeof window !== "undefined" ? window.location.origin : "");
 
     socketInstance = io(apiBaseUrl, {
       auth: { token: activeToken },

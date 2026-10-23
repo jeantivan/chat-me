@@ -207,6 +207,16 @@ export function setupSocketServer(
           .where(eq(chatParticipants.chatId, chatId));
 
         for (const msgId of messageIds) {
+          const msg = await app.db
+            .select({ senderId: messages.senderId })
+            .from(messages)
+            .where(eq(messages.id, msgId))
+            .limit(1);
+
+          if (!msg.length || msg[0].senderId === userId) {
+            continue;
+          }
+
           await app.db
             .insert(messageReceipts)
             .values({
@@ -307,21 +317,6 @@ export function setupSocketServer(
 
           const statusPayload = {
             messageId: msg.id,
-            chatId,
-            status: "read" as const,
-            userId,
-            updatedAt: now.toISOString(),
-          };
-
-          io.to(`chat:${chatId}`).emit("message:status_changed", statusPayload);
-          for (const p of participants) {
-            io.to(`user:${p.userId}`).emit("message:status_changed", statusPayload);
-          }
-        }
-
-        if (lastMessageId) {
-          const statusPayload = {
-            messageId: lastMessageId,
             chatId,
             status: "read" as const,
             userId,

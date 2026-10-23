@@ -69,9 +69,9 @@ export function ChatList() {
     return storeChats;
   }, [serverChats, currentUserId, storeChats]);
 
-  const noEmptyChats = mergedChats.filter((chat) => chat.messages.length > 0);
+  const displayChats = serverChats ? mergedChats : mergedChats.filter((chat) => chat.messages.length > 0);
 
-  const orderChats = orderBy(noEmptyChats, [getDateOfLastMessage], ["desc"]);
+  const orderChats = orderBy(displayChats, [getDateOfLastMessage], ["desc"]);
 
   const noArchivedChats = orderChats.filter((chat) => !chat.archived);
 

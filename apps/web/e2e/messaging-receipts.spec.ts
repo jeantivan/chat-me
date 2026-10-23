@@ -46,12 +46,12 @@ test.describe("Real-Time Direct Messaging & Status Receipts Progression", () => 
     const chatData = await chatRes.json();
     const chatId = chatData.id;
 
-    // 3. User B opens chat route /c/$chatId and logs in
-    await pageB.goto(`http://localhost:5173/c/${chatId}`);
+    // 3. User B opens web app at '/' and logs in
+    await pageB.goto("http://localhost:5173/");
     await pageB.fill("#login-email", userB.email);
     await pageB.fill("#login-password", userB.password);
     await pageB.click('button[type="submit"]');
-    await expect(pageB.locator('[data-testid="message-input"]')).toBeVisible({ timeout: 15000 });
+    await expect(pageB.locator(`[data-testid="chat-item-${chatId}"]`)).toBeVisible({ timeout: 15000 });
 
     // 4. User A opens chat route /c/$chatId and logs in
     await pageA.goto(`http://localhost:5173/c/${chatId}`);
@@ -69,15 +69,20 @@ test.describe("Real-Time Direct Messaging & Status Receipts Progression", () => 
     await pageA.click('[data-testid="send-message-button"]');
 
     // 7. Verify progression in User A's browser:
-    // It should render and reach at least 'send' (single tick)
+    // It should render immediately with status icon
     const statusOnA = pageA.locator(`[data-testid^="message-status-"]`).last();
     await expect(statusOnA).toBeVisible();
 
-    // 8. In User B's browser, message arrives in real-time in the timeline
+    // 8. Bob's client receives message via WebSocket while outside the chat
+    // Bob's client emits message:ack_received, updating Alice's status to 'received' (double gray ticks)
+    await expect(pageA.locator('[data-testid="message-status-received"]').last()).toBeVisible({ timeout: 10000 });
+
+    // 9. Bob now clicks and opens the chat /c/$chatId in active viewport
+    await pageB.click(`[data-testid="chat-item-${chatId}"]`);
     await expect(pageB.locator(".chat-container").getByText(testMessageText)).toBeVisible({ timeout: 10000 });
 
-    // 9. Because User B is active in viewport, Bob confirms read
-    // User A's message status transitions to 'read' (double blue ticks)
+    // 10. Because Bob is viewing the message in active viewport, Bob's client emits message:ack_read
+    // Alice's message status transitions to 'read' (double blue ticks)
     await expect(pageA.locator('[data-testid="message-status-read"]').last()).toBeVisible({ timeout: 10000 });
 
     await contextA.close();

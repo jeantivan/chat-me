@@ -47,7 +47,7 @@ const queryClient = new QueryClient({
 });
 
 function AppContent() {
-  const { isAuthenticated, isLoading, token } = useAuth();
+  const { isAuthenticated, isLoading, token, user } = useAuth();
   const loading = useStore((state) => state.loading);
   const { currentChatId, setCurrentChatId, closeChat } = useStore((state) => ({
     currentChatId: state.currentChatId,
@@ -85,7 +85,7 @@ function AppContent() {
   }, [isAuthenticated, token]);
 
   // Real-time synchronization bridge with TanStack Query
-  useSocketSync(currentChatId);
+  useSocketSync(currentChatId, user?.id);
 
   // When currentChatId changes or socket connects, join chat room
   useEffect(() => {

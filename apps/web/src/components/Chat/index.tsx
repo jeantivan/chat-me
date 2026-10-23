@@ -112,16 +112,34 @@ export function Chat({ chatId }: { chatId: string }) {
   }, [messagesData, legacyChat]);
 
   // Emit message:ack_read when viewing messages in active viewport
-  const lastMessageId = messages.length > 0 ? messages[messages.length - 1].id : null;
+  const lastOtherMessage = useMemo(
+    () => messages.slice().reverse().find((m) => m.owner !== userId),
+    [messages, userId]
+  );
+
   useEffect(() => {
-    if (lastMessageId) {
-      const socket = getSocket();
-      socket.emit("message:ack_read", {
-        chatId,
-        lastMessageId,
-      });
-    }
-  }, [chatId, lastMessageId]);
+    const targetMsgId = lastOtherMessage?.id;
+    if (!targetMsgId) return;
+
+    const emitRead = () => {
+      if (typeof document !== "undefined" && document.visibilityState === "visible") {
+        const socket = getSocket();
+        socket.emit("message:ack_read", {
+          chatId,
+          lastMessageId: targetMsgId,
+        });
+      }
+    };
+
+    emitRead();
+
+    window.addEventListener("focus", emitRead);
+    document.addEventListener("visibilitychange", emitRead);
+    return () => {
+      window.removeEventListener("focus", emitRead);
+      document.removeEventListener("visibilitychange", emitRead);
+    };
+  }, [chatId, lastOtherMessage?.id]);
 
   // Construct TChat view adapter for Header
   const activeChat: TChat = useMemo(() => {

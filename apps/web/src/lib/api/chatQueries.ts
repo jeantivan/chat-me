@@ -9,6 +9,7 @@ import { getSocket } from "../socket/socketClient";
 import { chatKeys } from "../socket/useSocketSync";
 import { useUserId } from "../hooks";
 import { getAuthHeaders } from "../auth/authClient";
+import { useAuth } from "../auth/AuthContext";
 import type {
   ChatSummary,
   MessagePayload,
@@ -16,6 +17,7 @@ import type {
 } from "@chat-me/shared";
 
 export function useChats() {
+  const { isAuthenticated, token } = useAuth();
   return useQuery<ChatSummary[]>({
     queryKey: chatKeys.lists(),
     queryFn: async () => {
@@ -27,10 +29,12 @@ export function useChats() {
       if (!res.ok) throw new Error("Failed to fetch chats");
       return res.json();
     },
+    enabled: Boolean(isAuthenticated && token),
   });
 }
 
 export function useChatMessages(chatId: string) {
+  const { isAuthenticated, token } = useAuth();
   return useInfiniteQuery({
     queryKey: chatKeys.messages(chatId),
     queryFn: async ({ pageParam }) => {
@@ -51,7 +55,7 @@ export function useChatMessages(chatId: string) {
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) =>
       lastPage.hasMore ? lastPage.nextCursor : undefined,
-    enabled: Boolean(chatId),
+    enabled: Boolean(isAuthenticated && token && chatId),
   });
 }
 

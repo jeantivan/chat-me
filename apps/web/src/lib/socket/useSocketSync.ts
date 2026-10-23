@@ -16,7 +16,10 @@ export const chatKeys = {
   user: ["user", "me"] as const,
 };
 
-export function useSocketSync(currentChatId?: string | null) {
+export function useSocketSync(
+  currentChatId?: string | null,
+  currentUserId?: string
+) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -69,17 +72,23 @@ export function useSocketSync(currentChatId?: string | null) {
         }
       );
 
-      // 3. Emit delivery/read receipts
-      if (currentChatId === newMsg.chatId) {
-        socket.emit("message:ack_read", {
-          chatId: newMsg.chatId,
-          lastMessageId: newMsg.id,
-        });
-      } else {
+      // 3. Emit delivery and read receipts if received from another user
+      if (currentUserId && newMsg.owner !== currentUserId) {
         socket.emit("message:ack_received", {
           chatId: newMsg.chatId,
           messageIds: [newMsg.id],
         });
+
+        if (
+          currentChatId === newMsg.chatId &&
+          typeof document !== "undefined" &&
+          document.visibilityState === "visible"
+        ) {
+          socket.emit("message:ack_read", {
+            chatId: newMsg.chatId,
+            lastMessageId: newMsg.id,
+          });
+        }
       }
     };
 
@@ -118,5 +127,5 @@ export function useSocketSync(currentChatId?: string | null) {
       socket.off("message:new", handleNewMessage);
       socket.off("message:status_changed", handleStatusChanged);
     };
-  }, [queryClient, currentChatId]);
+  }, [queryClient, currentChatId, currentUserId]);
 }
