@@ -7,8 +7,9 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint && ./scripts/lint-glossary.sh",
+    "lint": "turbo run lint && ./scripts/lint-glossary.sh && ./scripts/lint-network.sh",
     "lint:glossary": "./scripts/lint-glossary.sh",
+    "lint:network": "./scripts/lint-network.sh",
     "health": "tsx scripts/check-health.ts"
   },
   "devDependencies": {

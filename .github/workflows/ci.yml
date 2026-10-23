@@ -28,10 +28,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright Browsers
+        run: pnpm --filter @chat-me/web exec playwright install --with-deps chromium
+
       - name: Start local infrastructure containers
         run: docker compose up -d --wait
 
-      - name: Lint (ESLint + GLOSSARY.md term check)
+      - name: Lint (ESLint + GLOSSARY.md + Network Seams)
         run: pnpm lint
 
       - name: Typecheck
@@ -42,3 +45,6 @@ jobs:
 
       - name: Build All Monorepo Packages
         run: pnpm build
+
+      - name: Run Playwright E2E Tests
+        run: pnpm --filter @chat-me/web test:e2e
