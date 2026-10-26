@@ -40,3 +40,13 @@ HTMLCanvasElement.prototype.getContext = function (contextId: string) {
   }
   return null;
 } as any;
+
+if (!HTMLMediaElement.prototype.play) {
+  HTMLMediaElement.prototype.play = () => Promise.resolve();
+}
+if (!HTMLMediaElement.prototype.pause) {
+  HTMLMediaElement.prototype.pause = () => {};
+}
+if (!HTMLMediaElement.prototype.load) {
+  HTMLMediaElement.prototype.load = () => {};
+}

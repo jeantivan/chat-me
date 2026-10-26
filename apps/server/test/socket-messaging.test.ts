@@ -12,6 +12,7 @@ import type {
   ServerToClientEvents,
   MessagePayload,
 } from "@chat-me/shared";
+import { waitForSocketEvent } from "./test-helpers.js";
 
 describe("Socket.IO Real-Time Engine & Receipt Lifecycle Seam", () => {
   let app: FastifyInstance;
@@ -139,11 +140,11 @@ describe("Socket.IO Real-Time Engine & Receipt Lifecycle Seam", () => {
     const messageId = crypto.randomUUID();
     const messageText = "Hey Bob, testing status receipts!";
 
-    const messageNewPromise = new Promise<MessagePayload>((resolve) => {
-      clientB.on("message:new", (msg) => {
-        if (msg.id === messageId) resolve(msg);
-      });
-    });
+    const messageNewPromise = waitForSocketEvent<MessagePayload>(
+      clientB,
+      "message:new",
+      (msg) => msg.id === messageId
+    );
 
     const ackPromise = new Promise<{ success: boolean; id: string; createdAt: string }>((resolve) => {
       clientA.emit(
@@ -167,13 +168,11 @@ describe("Socket.IO Real-Time Engine & Receipt Lifecycle Seam", () => {
     expect(newMsg.body).toBe(messageText);
 
     // 4. Client B acknowledges receipt (message:ack_received)
-    const receivedStatusPromise = new Promise<{ messageId: string; status: string }>((resolve) => {
-      clientA.on("message:status_changed", (payload) => {
-        if (payload.messageId === messageId && payload.status === "received") {
-          resolve(payload);
-        }
-      });
-    });
+    const receivedStatusPromise = waitForSocketEvent<{ messageId: string; status: string }>(
+      clientA,
+      "message:status_changed",
+      (payload) => payload.messageId === messageId && payload.status === "received"
+    );
 
     clientB.emit("message:ack_received", {
       chatId,
@@ -185,13 +184,11 @@ describe("Socket.IO Real-Time Engine & Receipt Lifecycle Seam", () => {
     expect(receivedStatus.messageId).toBe(messageId);
 
     // 5. Client B reads the message in viewport (message:ack_read)
-    const readStatusPromise = new Promise<{ messageId: string; status: string }>((resolve) => {
-      clientA.on("message:status_changed", (payload) => {
-        if (payload.messageId === messageId && payload.status === "read") {
-          resolve(payload);
-        }
-      });
-    });
+    const readStatusPromise = waitForSocketEvent<{ messageId: string; status: string }>(
+      clientA,
+      "message:status_changed",
+      (payload) => payload.messageId === messageId && payload.status === "read"
+    );
 
     clientB.emit("message:ack_read", {
       chatId,

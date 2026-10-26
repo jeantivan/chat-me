@@ -75,6 +75,8 @@ export type TMessage = {
   body: string;
   reactions: TReaction[];
   hasMedia: TMedia | null;
+  senderName?: string;
+  senderPicture?: string;
 };
 
 export type TReaction = { owner: string; type: ReactionKeys };

@@ -12,6 +12,7 @@ import type {
   ServerToClientEvents,
   MessagePayload,
 } from "@chat-me/shared";
+import { waitForSocketEvent } from "./test-helpers.js";
 
 describe("Socket.IO Real-Time Media Linking & Serialization Seam", () => {
   let app: FastifyInstance;
@@ -144,13 +145,11 @@ describe("Socket.IO Real-Time Media Linking & Serialization Seam", () => {
     const { mediaId, publicUrl } = JSON.parse(presignRes.payload);
 
     // 2. Client B listens for message:new
-    const messageNewPromise = new Promise<MessagePayload>((resolve) => {
-      clientB.on("message:new", (msg) => {
-        if (msg.hasMedia?.id === mediaId) {
-          resolve(msg);
-        }
-      });
-    });
+    const messageNewPromise = waitForSocketEvent<MessagePayload>(
+      clientB,
+      "message:new",
+      (msg) => msg.hasMedia?.id === mediaId
+    );
 
     // 3. Client A sends message with mediaId
     const messageId = crypto.randomUUID();

@@ -11,6 +11,7 @@ import type {
   ClientToServerEvents,
   ServerToClientEvents,
 } from "@chat-me/shared";
+import { waitForSocketEvent } from "./test-helpers.js";
 
 describe("Socket.IO Ephemeral Typing & Presence Seam", () => {
   let app: FastifyInstance;
@@ -114,13 +115,11 @@ describe("Socket.IO Ephemeral Typing & Presence Seam", () => {
     await new Promise((r) => setTimeout(r, 100));
 
     // Listen on client B for typing update
-    const typingPromise = new Promise<{
-      chatId: string;
-      userId: string;
-      isTyping: boolean;
-    }>((resolve) => {
-      clientB.once("chat:typing_updated", (data) => resolve(data));
-    });
+    const typingPromise = waitForSocketEvent(
+      clientB,
+      "chat:typing_updated",
+      (data) => data.chatId === chatId && data.userId === userAId && data.isTyping === true
+    );
 
     clientA.emit("chat:typing", { chatId, isTyping: true });
 
@@ -130,13 +129,11 @@ describe("Socket.IO Ephemeral Typing & Presence Seam", () => {
     expect(typingData.isTyping).toBe(true);
 
     // Stop typing
-    const stopTypingPromise = new Promise<{
-      chatId: string;
-      userId: string;
-      isTyping: boolean;
-    }>((resolve) => {
-      clientB.once("chat:typing_updated", (data) => resolve(data));
-    });
+    const stopTypingPromise = waitForSocketEvent(
+      clientB,
+      "chat:typing_updated",
+      (data) => data.chatId === chatId && data.userId === userAId && data.isTyping === false
+    );
 
     clientA.emit("chat:typing", { chatId, isTyping: false });
 
@@ -148,19 +145,11 @@ describe("Socket.IO Ephemeral Typing & Presence Seam", () => {
 
   it("broadcasts presence:updated when user connects and disconnects", async () => {
     // When Client B disconnects, Client A should receive presence:updated with offline
-    const offlinePromise = new Promise<{
-      userId: string;
-      status: "online" | "offline";
-      lastSeenAt?: string;
-    }>((resolve) => {
-      const listener = (data: any) => {
-        if (data.userId === userBId) {
-          clientA.off("presence:updated", listener);
-          resolve(data);
-        }
-      };
-      clientA.on("presence:updated", listener);
-    });
+    const offlinePromise = waitForSocketEvent(
+      clientA,
+      "presence:updated",
+      (data) => data.userId === userBId && data.status === "offline"
+    );
 
     clientB.disconnect();
 
@@ -170,18 +159,11 @@ describe("Socket.IO Ephemeral Typing & Presence Seam", () => {
     expect(offlineData.lastSeenAt).toBeDefined();
 
     // When Client B reconnects, Client A should receive presence:updated with online
-    const onlinePromise = new Promise<{
-      userId: string;
-      status: "online" | "offline";
-    }>((resolve) => {
-      const listener = (data: any) => {
-        if (data.userId === userBId && data.status === "online") {
-          clientA.off("presence:updated", listener);
-          resolve(data);
-        }
-      };
-      clientA.on("presence:updated", listener);
-    });
+    const onlinePromise = waitForSocketEvent(
+      clientA,
+      "presence:updated",
+      (data) => data.userId === userBId && data.status === "online"
+    );
 
     clientB = ioc(serverUrl, {
       auth: { token: tokenB },

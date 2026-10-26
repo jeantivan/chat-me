@@ -11,6 +11,7 @@ import { DialogRoot, DialogClose, DialogContent } from "@/components/ui/Dialog";
 import { IconButton } from "@/components/ui/IconButton";
 import mc from "@/lib/utils/mergeClassnames";
 import useStore from "@/lib/store";
+import { useContacts } from "@/lib/api/chatQueries";
 import { TMessage } from "@/lib/types";
 import { MessageText } from "./Message/MessageText";
 
@@ -34,14 +35,22 @@ export function MediaMessageDialog({
 
   const message = mediaMessage;
   const user = useStore((state) => state.user);
-  const contacts = useStore((state) => state.contacts);
+  const { data: contacts = [] } = useContacts();
 
-  const owner = contacts.find((c) => c.id === message.owner) || user;
+  const contactEntry = contacts?.find(
+    (c) => c.contact?.id === message.owner || c.contactUserId === message.owner
+  );
+  const isOwnMsg = user.id === message.owner;
+  const ownerName = isOwnMsg
+    ? user.name
+    : contactEntry?.contact?.name || message.senderName || "Usuario";
+  const ownerPicture = isOwnMsg
+    ? user.picture
+    : contactEntry?.contact?.pictureUrl || message.senderPicture || "";
 
   if (!message) return null;
 
   const formatTime = dayjs(message?.time).format("DD/MM/YYYY [a la(s)] HH:mm");
-  const isOwnMsg = user.id === owner?.id;
   const ownReaction = message.reactions?.find((r) => r.owner === user.id);
 
   const handleZoomIn = () => setZoom((prev) => Math.min(3, +(prev + 0.25).toFixed(2)));
@@ -59,12 +68,12 @@ export function MediaMessageDialog({
             <div className="flex gap-4">
               <img
                 className="w-12 h-12 rounded-full bg-background-10 object-cover"
-                src={owner?.picture}
+                src={ownerPicture}
                 loading="lazy"
-                alt={owner?.name}
+                alt={ownerName}
               />
               <div className="text-background-12">
-                <div>{owner?.name}</div>
+                <div>{ownerName}</div>
                 <div className="text-sm text-background-11">{formatTime}</div>
               </div>
             </div>
@@ -147,7 +156,7 @@ export function MediaMessageDialog({
               ) : (
                 <img
                   src={message?.hasMedia?.src}
-                  alt={`Foto enviada por ${owner?.name}`}
+                  alt={`Foto enviada por ${ownerName}`}
                   style={{
                     width,
                     height,

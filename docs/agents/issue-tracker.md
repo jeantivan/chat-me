@@ -52,3 +52,14 @@ When implementing an issue (`/implement <n>` or `/implement-spec`):
 2. **Push**: Push committed changes to remote (`git push origin <branch>`).
 3. **Close**: Close the issue with completion comment (`gh issue close <n> --comment "..."`).
 A ticket is not done until the code is pushed and the issue is closed on GitHub.
+
+### Sandboxed Push Fallback
+
+When operating in an agent session where `git push` or `gh` commands are denied by user permission prompts, sandbox policies, or missing remote credentials:
+1. Ensure all quality gates have passed cleanly locally and code is committed.
+2. Do not retry `git push` repeatedly or stall the workflow.
+3. Provide the user with the exact copy-paste command to complete the remote operations manually:
+   ```bash
+   git push origin <branch> && gh issue close <n> --comment "Implemented and verified in commit <hash>"
+   ```
+4. Output the ticket completion summary and hand off cleanly.

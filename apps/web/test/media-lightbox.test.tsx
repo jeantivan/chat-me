@@ -5,6 +5,28 @@ import { MediaMessageDialog } from "../src/components/MediaMessageDialog";
 import useStore from "../src/lib/store";
 import type { TMessage } from "../src/lib/types";
 
+vi.mock("../src/lib/api/chatQueries", () => ({
+  useContacts: () => ({
+    data: [
+      {
+        userId: "current-user",
+        contactUserId: "user-789",
+        nickname: null,
+        createdAt: "2026-10-26T00:00:00.000Z",
+        contact: {
+          id: "user-789",
+          email: "jane@example.com",
+          name: "Sender Jane",
+          bio: "Adventurer",
+          phone: "+1234567890",
+          pictureUrl: "https://example.com/jane.png",
+          createdAt: "2026-10-26T00:00:00.000Z",
+        },
+      },
+    ],
+  }),
+}));
+
 describe("Fullscreen Media Lightbox Viewer Seam", () => {
   const dummyMessage: TMessage = {
     id: "msg-123",

@@ -12,6 +12,7 @@ import type {
   ServerToClientEvents,
   MessagePayload,
 } from "@chat-me/shared";
+import { waitForSocketEvent } from "./test-helpers.js";
 
 describe("Multi-User Group Chat & Participant Management Seam", () => {
   let app: FastifyInstance;
@@ -139,17 +140,17 @@ describe("Multi-User Group Chat & Participant Management Seam", () => {
     const messageText = "Hello group members!";
 
     // Both B and C should receive message:new
-    const msgPromiseB = new Promise<MessagePayload>((resolve) => {
-      clientB.on("message:new", (msg) => {
-        if (msg.id === messageId) resolve(msg);
-      });
-    });
+    const msgPromiseB = waitForSocketEvent<MessagePayload>(
+      clientB,
+      "message:new",
+      (msg) => msg.id === messageId
+    );
 
-    const msgPromiseC = new Promise<MessagePayload>((resolve) => {
-      clientC.on("message:new", (msg) => {
-        if (msg.id === messageId) resolve(msg);
-      });
-    });
+    const msgPromiseC = waitForSocketEvent<MessagePayload>(
+      clientC,
+      "message:new",
+      (msg) => msg.id === messageId
+    );
 
     // Send message from A
     await new Promise<{ success: boolean }>((resolve) => {
@@ -207,13 +208,11 @@ describe("Multi-User Group Chat & Participant Management Seam", () => {
     expect(msg2.status).toBe("send");
 
     // Now Charlie acknowledges receipt -> Alice should receive status_changed to "received"
-    const aliceReceivedPromise = new Promise<{ status: string }>((resolve) => {
-      clientA.on("message:status_changed", (payload) => {
-        if (payload.messageId === messageId && payload.status === "received") {
-          resolve(payload);
-        }
-      });
-    });
+    const aliceReceivedPromise = waitForSocketEvent<{ messageId: string; status: string }>(
+      clientA,
+      "message:status_changed",
+      (payload) => payload.messageId === messageId && payload.status === "received"
+    );
 
     clientC.emit("message:ack_received", {
       chatId: groupId,
@@ -263,13 +262,11 @@ describe("Multi-User Group Chat & Participant Management Seam", () => {
     expect(msg4.status).toBe("received");
 
     // Now Charlie reads -> Alice receives status_changed to "read"
-    const aliceReadPromise = new Promise<{ status: string }>((resolve) => {
-      clientA.on("message:status_changed", (payload) => {
-        if (payload.messageId === messageId && payload.status === "read") {
-          resolve(payload);
-        }
-      });
-    });
+    const aliceReadPromise = waitForSocketEvent<{ messageId: string; status: string }>(
+      clientA,
+      "message:status_changed",
+      (payload) => payload.messageId === messageId && payload.status === "read"
+    );
 
     clientC.emit("message:ack_read", {
       chatId: groupId,
