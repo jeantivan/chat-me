@@ -17,6 +17,70 @@ import type {
   MessagesPageResponse,
   DeliveryStatus,
 } from "@chat-me/shared";
+import {
+  computeMessageStatusForViewer,
+  computeStatusFromReceipts,
+} from "../lib/receipts.js";
+
+async function createOrGetDirectChat(
+  app: FastifyInstance,
+  currentUserId: string,
+  targetUserId: string
+): Promise<{ error?: string; status?: number; chat?: ChatSummary | null }> {
+  if (currentUserId === targetUserId) {
+    return { error: "Cannot create chat with self", status: 400 };
+  }
+
+  const targetUsers = await app.db
+    .select()
+    .from(users)
+    .where(eq(users.id, targetUserId))
+    .limit(1);
+
+  if (targetUsers.length === 0) {
+    return { error: "Target user not found", status: 404 };
+  }
+
+  const pairHash = generateDirectPairHash(currentUserId, targetUserId);
+
+  let existingChats = await app.db
+    .select()
+    .from(chats)
+    .where(eq(chats.directPairHash, pairHash))
+    .limit(1);
+
+  let chatId: string;
+
+  if (existingChats.length > 0) {
+    chatId = existingChats[0].id;
+  } else {
+    const [newChat] = await app.db
+      .insert(chats)
+      .values({
+        type: "direct",
+        directPairHash: pairHash,
+      })
+      .returning();
+
+    chatId = newChat.id;
+
+    await app.db.insert(chatParticipants).values([
+      { chatId, userId: currentUserId, role: "member" },
+      { chatId, userId: targetUserId, role: "member" },
+    ]);
+
+    await app.db
+      .insert(contacts)
+      .values([
+        { userId: currentUserId, contactUserId: targetUserId },
+        { userId: targetUserId, contactUserId: currentUserId },
+      ])
+      .onConflictDoNothing();
+  }
+
+  const chat = await getChatSummary(app, chatId, currentUserId);
+  return { chat };
+}
 
 async function requireAdmin(
   app: FastifyInstance,
@@ -51,6 +115,7 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
         z.object({
           type: z.literal("group"),
           title: z.string().min(1).max(150),
+          bio: z.string().max(500).nullable().optional(),
           pictureUrl: z.string().nullable().optional(),
           participantIds: z.array(z.string().uuid()).min(1),
         }),
@@ -94,6 +159,7 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
           .values({
             type: "group",
             title: data.title,
+            bio: data.bio || null,
             pictureUrl: data.pictureUrl || null,
             directPairHash: null,
           })
@@ -113,69 +179,19 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
         const summary = await getChatSummary(app, chatId, currentUserId);
         return reply.status(201).send(summary);
       } else {
-        // Direct chat creation
-        const { targetUserId } = data;
-        if (currentUserId === targetUserId) {
-          return reply.status(400).send({ error: "Cannot create chat with self" });
+        const result = await createOrGetDirectChat(app, currentUserId, data.targetUserId);
+        if (result.error) {
+          return reply.status(result.status || 400).send({ error: result.error });
         }
-
-        const targetUsers = await app.db
-          .select()
-          .from(users)
-          .where(eq(users.id, targetUserId))
-          .limit(1);
-
-        if (targetUsers.length === 0) {
-          return reply.status(404).send({ error: "Target user not found" });
-        }
-
-        const pairHash = generateDirectPairHash(currentUserId, targetUserId);
-
-        let existingChats = await app.db
-          .select()
-          .from(chats)
-          .where(eq(chats.directPairHash, pairHash))
-          .limit(1);
-
-        let chatId: string;
-
-        if (existingChats.length > 0) {
-          chatId = existingChats[0].id;
-        } else {
-          const [newChat] = await app.db
-            .insert(chats)
-            .values({
-              type: "direct",
-              directPairHash: pairHash,
-            })
-            .returning();
-
-          chatId = newChat.id;
-
-          await app.db.insert(chatParticipants).values([
-            { chatId, userId: currentUserId, role: "member" },
-            { chatId, userId: targetUserId, role: "member" },
-          ]);
-
-          await app.db
-            .insert(contacts)
-            .values([
-              { userId: currentUserId, contactUserId: targetUserId },
-              { userId: targetUserId, contactUserId: currentUserId },
-            ])
-            .onConflictDoNothing();
-        }
-
-        const chatSummary = await getChatSummary(app, chatId, currentUserId);
-        return reply.send(chatSummary);
+        return reply.send(result.chat);
       }
     }
   );
 
-  // Update group chat metadata (title, picture)
+  // Update group chat metadata (title, picture, bio)
   app.patch<{
     Params: { chatId: string };
-    Body: { title?: string; pictureUrl?: string | null };
+    Body: { title?: string; bio?: string | null; pictureUrl?: string | null };
   }>(
     "/:chatId",
     {
@@ -187,6 +203,7 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
       const bodySchema = z.object({
         title: z.string().min(1).max(150).optional(),
+        bio: z.string().max(500).nullable().optional(),
         pictureUrl: z.string().nullable().optional(),
       });
 
@@ -204,6 +221,7 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
       const updateData: Partial<{
         title: string;
+        bio: string | null;
         pictureUrl: string | null;
         updatedAt: Date;
       }> = {
@@ -212,6 +230,9 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
       if (parseResult.data.title !== undefined) {
         updateData.title = parseResult.data.title;
+      }
+      if (parseResult.data.bio !== undefined) {
+        updateData.bio = parseResult.data.bio;
       }
       if (parseResult.data.pictureUrl !== undefined) {
         updateData.pictureUrl = parseResult.data.pictureUrl;
@@ -377,65 +398,12 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       const { targetUserId } = parseResult.data;
       const currentUserId = (request.user as { sub: string }).sub;
 
-      if (currentUserId === targetUserId) {
-        return reply.status(400).send({ error: "Cannot create chat with self" });
+      const result = await createOrGetDirectChat(app, currentUserId, targetUserId);
+      if (result.error) {
+        return reply.status(result.status || 400).send({ error: result.error });
       }
 
-      // Check target user exists
-      const targetUsers = await app.db
-        .select()
-        .from(users)
-        .where(eq(users.id, targetUserId))
-        .limit(1);
-
-      if (targetUsers.length === 0) {
-        return reply.status(404).send({ error: "Target user not found" });
-      }
-
-      const pairHash = generateDirectPairHash(currentUserId, targetUserId);
-
-      // Check if chat already exists
-      let existingChats = await app.db
-        .select()
-        .from(chats)
-        .where(eq(chats.directPairHash, pairHash))
-        .limit(1);
-
-      let chatId: string;
-
-      if (existingChats.length > 0) {
-        chatId = existingChats[0].id;
-      } else {
-        // Create new direct chat
-        const [newChat] = await app.db
-          .insert(chats)
-          .values({
-            type: "direct",
-            directPairHash: pairHash,
-          })
-          .returning();
-
-        chatId = newChat.id;
-
-        // Add both participants
-        await app.db.insert(chatParticipants).values([
-          { chatId, userId: currentUserId, role: "member" },
-          { chatId, userId: targetUserId, role: "member" },
-        ]);
-
-        // Ensure bidirectional contacts
-        await app.db
-          .insert(contacts)
-          .values([
-            { userId: currentUserId, contactUserId: targetUserId },
-            { userId: targetUserId, contactUserId: currentUserId },
-          ])
-          .onConflictDoNothing();
-      }
-
-      // Fetch full chat summary
-      const chatSummary = await getChatSummary(app, chatId, currentUserId);
-      return reply.send(chatSummary);
+      return reply.send(result.chat);
     }
   );
 
@@ -549,45 +517,18 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
         .from(chatParticipants)
         .where(eq(chatParticipants.chatId, chatId));
 
+      const otherParticipantIds = allParticipants
+        .filter((p) => p.userId !== currentUserId)
+        .map((p) => p.userId);
+
       const payloadList: MessagePayload[] = pageRows.map((msg) => {
         const rcList = receiptsMap.get(msg.id) || [];
-        let status: DeliveryStatus = "send";
-
-        if (msg.senderId === currentUserId) {
-          const otherParticipants = allParticipants.filter(
-            (p) => p.userId !== currentUserId
-          );
-          const isAllRead =
-            otherParticipants.length > 0 &&
-            otherParticipants.every((p) => {
-              const rc = rcList.find((r) => r.userId === p.userId);
-              return rc?.status === "read";
-            });
-          const isAllReceived =
-            otherParticipants.length > 0 &&
-            otherParticipants.every((p) => {
-              const rc = rcList.find((r) => r.userId === p.userId);
-              return rc?.status === "received" || rc?.status === "read";
-            });
-
-          if (isAllRead) {
-            status = "read";
-          } else if (isAllReceived) {
-            status = "received";
-          } else {
-            status = "send";
-          }
-        } else {
-          // Message sent by another participant
-          const myReceipt = rcList.find((r) => r.userId === currentUserId);
-          if (myReceipt?.status === "read") {
-            status = "read";
-          } else if (myReceipt?.status === "received") {
-            status = "received";
-          } else {
-            status = "send";
-          }
-        }
+        const status = computeStatusFromReceipts(
+          msg.senderId,
+          currentUserId,
+          otherParticipantIds,
+          rcList
+        );
 
         return {
           id: msg.id,
@@ -678,6 +619,14 @@ async function getChatSummary(
   let lastMessage: MessagePayload | null = null;
   if (lastMsgRows.length > 0) {
     const lm = lastMsgRows[0];
+    const status = await computeMessageStatusForViewer(
+      app,
+      chatId,
+      lm.id,
+      lm.senderId,
+      currentUserId
+    );
+
     lastMessage = {
       id: lm.id,
       chatId: lm.chatId,
@@ -685,7 +634,7 @@ async function getChatSummary(
       body: lm.body,
       forwarded: lm.forwarded,
       time: lm.createdAt.toISOString(),
-      status: "send",
+      status,
       starred: false,
       hasMedia: null,
       reactions: [],
@@ -713,6 +662,7 @@ async function getChatSummary(
     id: chat.id,
     type: chat.type as "direct" | "group",
     title: chat.title,
+    bio: chat.bio || null,
     pictureUrl: chat.pictureUrl,
     directPairHash: chat.directPairHash,
     createdAt: chat.createdAt.toISOString(),

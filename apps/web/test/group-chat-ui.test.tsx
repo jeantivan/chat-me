@@ -31,6 +31,7 @@ const mockGroupSummary: ChatSummary = {
   id: "group-chat-1",
   type: "group",
   title: "Frontend Guild",
+  bio: "Frontend engineers guild",
   pictureUrl: "https://example.com/guild.png",
   directPairHash: null,
   createdAt: "2026-10-26T10:00:00.000Z",
@@ -184,6 +185,7 @@ describe("Frontend Group Chat UI & Participant Management Seam", () => {
     );
 
     expect(screen.getByText("Frontend Guild")).toBeInTheDocument();
+    expect(screen.getByTestId("group-bio-text")).toHaveTextContent("Frontend engineers guild");
     expect(screen.getAllByText(/3 participantes/i).length).toBeGreaterThanOrEqual(1);
 
     // Check member names

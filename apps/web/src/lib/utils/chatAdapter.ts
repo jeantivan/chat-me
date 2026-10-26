@@ -51,6 +51,7 @@ export function toUiChat(summary: ChatSummary, currentUserId?: string): TChat {
     id: summary.id,
     type: summary.type,
     title: summary.title,
+    bio: summary.bio || null,
     pictureUrl: summary.pictureUrl,
     participants,
     pinned: participantSummary?.pinned || false,

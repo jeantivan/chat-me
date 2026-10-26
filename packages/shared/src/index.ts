@@ -91,6 +91,7 @@ export interface ChatSummary {
   id: string;
   type: ChatType;
   title: string | null;
+  bio?: string | null;
   pictureUrl: string | null;
   directPairHash: string | null;
   createdAt: string;

@@ -2,7 +2,7 @@ import { useUserId } from "@/lib/hooks";
 import { usePresenceStore } from "@/lib/store/presenceStore";
 import type { TChat } from "@/lib/types";
 
-export function useChatCounterpart(chat: TChat) {
+export function useChatDisplay(chat: TChat) {
   const currentUserId = useUserId();
   const isGroup = chat.type === "group";
 
@@ -22,7 +22,8 @@ export function useChatCounterpart(chat: TChat) {
       otherUserId: undefined,
       name: chat.title || "Group",
       picture: chat.pictureUrl || "",
-      bio: `${chat.participants.length} participants`,
+      bio: chat.bio || `${chat.participants.length} participants`,
+      participantCount: chat.participants.length,
       phone: "",
       isTyping,
       presence: undefined,
@@ -52,6 +53,7 @@ export function useChatCounterpart(chat: TChat) {
     name,
     picture,
     bio,
+    participantCount: chat.participants.length,
     phone,
     isTyping,
     presence,
@@ -59,3 +61,5 @@ export function useChatCounterpart(chat: TChat) {
     isGroup: false,
   };
 }
+
+export const useChatCounterpart = useChatDisplay;

@@ -13,7 +13,7 @@ import type {
   MessagePayload,
 } from "@chat-me/shared";
 
-describe("Multi-User Group Socket.IO Broadcast & Receipt Aggregation Seam", () => {
+describe("Multi-User Group Chat & Participant Management Seam", () => {
   let app: FastifyInstance;
   let serverUrl: string;
   let pool: pg.Pool;
@@ -69,20 +69,6 @@ describe("Multi-User Group Socket.IO Broadcast & Receipt Aggregation Seam", () =
     const uC = await registerUser("Charlie Group WS");
     userCId = uC.id;
     tokenC = uC.token;
-
-    // Create group chat with A (admin), B (member), and C (member)
-    const createRes = await app.inject({
-      method: "POST",
-      url: "/api/v1/chats",
-      headers: { authorization: `Bearer ${tokenA}` },
-      payload: {
-        type: "group",
-        title: "Testing Group Realtime",
-        participantIds: [userBId, userCId],
-      },
-    });
-    const groupData = JSON.parse(createRes.payload);
-    groupId = groupData.id;
   });
 
   afterAll(async () => {
@@ -99,7 +85,40 @@ describe("Multi-User Group Socket.IO Broadcast & Receipt Aggregation Seam", () =
     await pool.end();
   });
 
-  it("broadcasts messages in real time to all connected group participants and aggregates multi-user receipts", async () => {
+  it("verifies group creation, participant addition, and multi-user message receipt aggregation in a unified integration lifecycle", async () => {
+    // 1. Group Creation via REST
+    const createRes = await app.inject({
+      method: "POST",
+      url: "/api/v1/chats",
+      headers: { authorization: `Bearer ${tokenA}` },
+      payload: {
+        type: "group",
+        title: "Testing Group Realtime",
+        bio: "Integration test chat",
+        participantIds: [userBId],
+      },
+    });
+    expect(createRes.statusCode).toBe(201);
+    const groupData = JSON.parse(createRes.payload);
+    groupId = groupData.id;
+    expect(groupData.title).toBe("Testing Group Realtime");
+    expect(groupData.bio).toBe("Integration test chat");
+    expect(groupData.participants.length).toBe(2);
+
+    // 2. Participant Addition via REST (Alice adds Charlie)
+    const addRes = await app.inject({
+      method: "POST",
+      url: `/api/v1/chats/${groupId}/participants`,
+      headers: { authorization: `Bearer ${tokenA}` },
+      payload: {
+        userIds: [userCId],
+      },
+    });
+    expect(addRes.statusCode).toBe(200);
+    const updatedGroupData = JSON.parse(addRes.payload);
+    expect(updatedGroupData.participants.length).toBe(3);
+
+    // 3. Socket.IO connection and receipt aggregation
     clientA = ioc(serverUrl, { auth: { token: tokenA }, transports: ["websocket"] });
     clientB = ioc(serverUrl, { auth: { token: tokenB }, transports: ["websocket"] });
     clientC = ioc(serverUrl, { auth: { token: tokenC }, transports: ["websocket"] });

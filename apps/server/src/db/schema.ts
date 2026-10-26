@@ -94,6 +94,7 @@ export const chats = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     type: varchar("type", { length: 10 }).notNull(),
     title: varchar("title", { length: 150 }),
+    bio: text("bio"),
     pictureUrl: text("picture_url"),
     directPairHash: varchar("direct_pair_hash", { length: 73 }).unique(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

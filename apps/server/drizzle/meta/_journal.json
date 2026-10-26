@@ -29,6 +29,13 @@
       "when": 1792764414772,
       "tag": "0003_volatile_tyger_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792765000000,
+      "tag": "0004_add_chat_bio",
+      "breakpoints": true
     }
   ]
 }

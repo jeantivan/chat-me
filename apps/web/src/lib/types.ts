@@ -4,6 +4,9 @@ export type TUser = {
   bio: string;
   phone: string;
   picture: string;
+};
+
+export type TParticipant = TUser & {
   role?: "admin" | "member";
 };
 
@@ -51,8 +54,9 @@ export type TChat = {
   id: string;
   type?: "direct" | "group";
   title?: string | null;
+  bio?: string | null;
   pictureUrl?: string | null;
-  participants: TUser[]; // Uno o multiples usuarios pertenecientes al chat
+  participants: TParticipant[]; // Uno o multiples usuarios pertenecientes al chat
   pinned: boolean;
   muted: boolean;
   archived: boolean;

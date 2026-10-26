@@ -8,7 +8,7 @@ import { LastMessage } from "./Message/LastMessage";
 import mc from "@/lib/utils/mergeClassnames";
 import { TChat } from "@/lib/types";
 import { useCurrentChatId } from "@/lib/hooks";
-import { useChatCounterpart } from "@/lib/hooks/useChatCounterpart";
+import { useChatDisplay } from "@/lib/hooks/useChatCounterpart";
 import { router } from "@/routes/router";
 
 const iconVariants = {
@@ -40,7 +40,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
   const lastMessage = chat.messages[chat.messages.length - 1];
   const isOpenChat = currentChatId === chat.id;
 
-  const { name, picture, isTyping, isOnline } = useChatCounterpart(chat);
+  const { name, picture, isTyping, isOnline } = useChatDisplay(chat);
 
   return (
     <div

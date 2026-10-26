@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { Message } from "@/components/Message";
 
-import type { TMessage, TUser } from "@/lib/types";
+import type { TMessage, TParticipant } from "@/lib/types";
 import { useCurrentChatId, useUserId } from "@/lib/hooks";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 
@@ -10,7 +10,7 @@ type MessagesProps = {
   onScrollTop?: () => void;
   isLoadingMore?: boolean;
   isGroup?: boolean;
-  participants?: TUser[];
+  participants?: TParticipant[];
 };
 
 export function Messages({

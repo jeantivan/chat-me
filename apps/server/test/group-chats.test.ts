@@ -6,7 +6,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { users } from "../src/db/schema.js";
 import { eq, inArray } from "drizzle-orm";
 
-describe("Multi-User Group Conversations & Participant Management Seam", () => {
+describe("Multi-User Group Chat & Participant Management Seam", () => {
   let app: FastifyInstance;
   let pool: pg.Pool;
   let db: ReturnType<typeof drizzle>;
@@ -130,12 +130,14 @@ describe("Multi-User Group Conversations & Participant Management Seam", () => {
       },
       payload: {
         title: "Platform Guild",
+        bio: "Core platform and infrastructure team",
         pictureUrl: "https://example.com/avatar.png",
       },
     });
     expect(successRes.statusCode).toBe(200);
     const body = JSON.parse(successRes.payload);
     expect(body.title).toBe("Platform Guild");
+    expect(body.bio).toBe("Core platform and infrastructure team");
     expect(body.pictureUrl).toBe("https://example.com/avatar.png");
   });
 

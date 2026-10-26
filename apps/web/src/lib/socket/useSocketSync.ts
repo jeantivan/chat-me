@@ -159,7 +159,6 @@ export function useSocketSync(
 
     socket.on("message:new", handleNewMessage);
     socket.on("message:status_changed", handleStatusChanged);
-    socket.on("receipt:updated", handleStatusChanged);
     socket.on("chat:typing_updated", handleTypingUpdated);
     socket.on("presence:updated", handlePresenceUpdated);
 
@@ -172,7 +171,6 @@ export function useSocketSync(
       clearInterval(heartbeatTimer);
       socket.off("message:new", handleNewMessage);
       socket.off("message:status_changed", handleStatusChanged);
-      socket.off("receipt:updated", handleStatusChanged);
       socket.off("chat:typing_updated", handleTypingUpdated);
       socket.off("presence:updated", handlePresenceUpdated);
     };

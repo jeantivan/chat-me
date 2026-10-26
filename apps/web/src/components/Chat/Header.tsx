@@ -12,7 +12,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { TChat } from "@/lib/types";
 import useStore from "@/lib/store";
 import { useChatActions } from "@/lib/hooks";
-import { useChatCounterpart } from "@/lib/hooks/useChatCounterpart";
+import { useChatDisplay } from "@/lib/hooks/useChatCounterpart";
 
 dayjs.extend(relativeTime);
 
@@ -63,7 +63,7 @@ const Content = ({ chatId }: { chatId: string }) => {
 
 export function Header({ chat }: { chat: TChat }) {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
-  const { name, picture, isTyping, presence, isGroup } = useChatCounterpart(chat);
+  const { name, picture, isTyping, presence, isGroup } = useChatDisplay(chat);
 
   return (
     <header className="chat-header bg-background-2 shadow-lg">
