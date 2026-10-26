@@ -7,12 +7,15 @@ import {
   chatParticipants,
   messages,
   messageReceipts,
+  mediaAttachments,
   users,
 } from "../db/schema.js";
+import { toMediaPayload } from "../lib/media.js";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
   MessagePayload,
+  MediaPayload,
 } from "@chat-me/shared";
 import { processAndBroadcastReceipt } from "../lib/receipts.js";
 
@@ -155,7 +158,7 @@ export function setupSocketServer(
 
     // Send message event
     socket.on("message:send", async (payload, callback) => {
-      const { id, chatId, body } = payload;
+      const { id, chatId, body, mediaId } = payload;
       try {
         const membership = await app.db
           .select()
@@ -180,13 +183,57 @@ export function setupSocketServer(
           return;
         }
 
+        let mediaPayloadData: MediaPayload | null = null;
+        if (mediaId) {
+          const mediaRows = await app.db
+            .select()
+            .from(mediaAttachments)
+            .where(
+              and(
+                eq(mediaAttachments.id, mediaId),
+                eq(mediaAttachments.chatId, chatId),
+                eq(mediaAttachments.uploaderId, userId),
+                eq(mediaAttachments.status, "pending")
+              )
+            )
+            .limit(1);
+
+          if (mediaRows.length === 0) {
+            if (callback) {
+              callback({
+                success: false,
+                id,
+                createdAt: "",
+                error: "Invalid media attachment",
+              });
+            }
+            return;
+          }
+
+          mediaPayloadData = toMediaPayload(mediaRows[0]);
+        }
+
         const now = new Date();
-        await app.db.insert(messages).values({
-          id,
-          chatId,
-          senderId: userId,
-          body,
-          createdAt: now,
+        await app.db.transaction(async (tx) => {
+          await tx.insert(messages).values({
+            id,
+            chatId,
+            senderId: userId,
+            body,
+            mediaId: mediaId || null,
+            createdAt: now,
+          });
+
+          if (mediaId) {
+            await tx
+              .update(mediaAttachments)
+              .set({
+                messageId: id,
+                status: "attached",
+                updatedAt: now,
+              })
+              .where(eq(mediaAttachments.id, mediaId));
+          }
         });
 
         if (callback) {
@@ -206,7 +253,7 @@ export function setupSocketServer(
           time: now.toISOString(),
           status: "send",
           starred: false,
-          hasMedia: null,
+          hasMedia: mediaPayloadData,
           reactions: [],
         };
 

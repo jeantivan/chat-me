@@ -6,14 +6,18 @@ import {
   chatParticipants,
   messages,
   messageReceipts,
+  mediaAttachments,
   users,
   contacts,
   generateDirectPairHash,
 } from "../db/schema.js";
+import { generatePresignedUploadUrl } from "../services/storage.service.js";
+import { toMediaPayload } from "../lib/media.js";
 import type {
   ChatSummary,
   ChatParticipantSummary,
   MessagePayload,
+  MediaPayload,
   MessagesPageResponse,
   DeliveryStatus,
 } from "@chat-me/shared";
@@ -101,7 +105,128 @@ async function requireAdmin(
   return membership.length > 0 && membership[0].role === "admin";
 }
 
+const MIME_LIMITS = {
+  image: {
+    allowed: ["image/jpeg", "image/png", "image/webp", "image/gif"],
+    maxBytes: 15 * 1024 * 1024,
+  },
+  audio: {
+    allowed: ["audio/webm", "audio/ogg", "audio/mp4", "audio/mpeg"],
+    maxBytes: 25 * 1024 * 1024,
+  },
+  video: {
+    allowed: ["video/mp4", "video/webm", "video/quicktime"],
+    maxBytes: 100 * 1024 * 1024,
+  },
+  document: {
+    allowed: [
+      "application/pdf",
+      "application/zip",
+      "text/plain",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ],
+    maxBytes: 50 * 1024 * 1024,
+  },
+} as const;
+
 export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
+  // Presign S3 PUT upload URL for chat media
+  app.post<{
+    Params: { chatId: string };
+  }>(
+    "/:chatId/media/presign",
+    {
+      preHandler: [app.authenticate],
+    },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+      const { chatId } = request.params;
+
+      const bodySchema = z.object({
+        filename: z.string().min(1).max(255),
+        mimeType: z.string().min(1).max(100),
+        sizeBytes: z.number().int().positive(),
+        type: z.enum(["image", "video", "audio", "document"]),
+        orientation: z.enum(["square", "landscape", "portrait"]).optional(),
+        duration: z.number().int().nonnegative().nullable().optional(),
+        width: z.number().int().positive().optional(),
+        height: z.number().int().positive().optional(),
+        blurhash: z.string().max(64).optional(),
+      });
+
+      const parseResult = bodySchema.safeParse(request.body);
+      if (!parseResult.success) {
+        return reply.status(400).send({ error: parseResult.error.flatten() });
+      }
+
+      const data = parseResult.data;
+
+      // Validate MIME whitelist and size limits
+      const categoryLimits = MIME_LIMITS[data.type];
+      if (!(categoryLimits.allowed as readonly string[]).includes(data.mimeType)) {
+        return reply.status(400).send({
+          error: `Invalid MIME type '${data.mimeType}' for category '${data.type}'. Allowed: ${categoryLimits.allowed.join(", ")}`,
+        });
+      }
+
+      if (data.sizeBytes > categoryLimits.maxBytes) {
+        return reply.status(400).send({
+          error: `File size ${data.sizeBytes} exceeds maximum allowed size of ${categoryLimits.maxBytes} bytes for ${data.type}`,
+        });
+      }
+
+      // Check caller is an active participant in this chat
+      const membership = await app.db
+        .select()
+        .from(chatParticipants)
+        .where(
+          and(
+            eq(chatParticipants.chatId, chatId),
+            eq(chatParticipants.userId, currentUserId)
+          )
+        )
+        .limit(1);
+
+      if (membership.length === 0) {
+        return reply.status(403).send({ error: "Forbidden: Not a participant of this chat" });
+      }
+
+      const mediaId = crypto.randomUUID();
+      const sanitizedFilename = data.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const storageKey = `chats/${chatId}/${mediaId}/${sanitizedFilename}`;
+
+      const { uploadUrl, publicUrl, expiresAt } = await generatePresignedUploadUrl({
+        key: storageKey,
+        mimeType: data.mimeType,
+        sizeBytes: data.sizeBytes,
+      });
+
+      await app.db.insert(mediaAttachments).values({
+        id: mediaId,
+        chatId,
+        uploaderId: currentUserId,
+        type: data.type,
+        url: publicUrl,
+        storageKey,
+        blurhash: data.blurhash || null,
+        orientation: data.orientation || null,
+        duration: data.duration ?? null,
+        width: data.width || null,
+        height: data.height || null,
+        sizeBytes: data.sizeBytes,
+        mimeType: data.mimeType,
+        status: "pending",
+      });
+
+      return reply.send({
+        mediaId,
+        uploadUrl,
+        publicUrl,
+        expiresAt: expiresAt.toISOString(),
+      });
+    }
+  );
   // Create chat (direct or group)
   app.post(
     "/",
@@ -511,6 +636,23 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
         }
       }
 
+      // Fetch media attachments for messages
+      const mediaMap = new Map<string, MediaPayload>();
+      const mediaIds = pageRows
+        .map((r) => r.mediaId)
+        .filter((id): id is string => Boolean(id));
+
+      if (mediaIds.length > 0) {
+        const mediaRows = await app.db
+          .select()
+          .from(mediaAttachments)
+          .where(inArray(mediaAttachments.id, mediaIds));
+
+        for (const m of mediaRows) {
+          mediaMap.set(m.id, toMediaPayload(m));
+        }
+      }
+
       // Fetch all participants in this chat to compute aggregated receipt status
       const allParticipants = await app.db
         .select({ userId: chatParticipants.userId })
@@ -530,6 +672,8 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
           rcList
         );
 
+        const hasMedia = msg.mediaId ? mediaMap.get(msg.mediaId) || null : null;
+
         return {
           id: msg.id,
           chatId: msg.chatId,
@@ -539,7 +683,7 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
           time: msg.createdAt.toISOString(),
           status,
           starred: false,
-          hasMedia: null,
+          hasMedia,
           reactions: [],
         };
       });
@@ -627,6 +771,19 @@ async function getChatSummary(
       currentUserId
     );
 
+    let hasMedia: MediaPayload | null = null;
+    if (lm.mediaId) {
+      const mediaRows = await app.db
+        .select()
+        .from(mediaAttachments)
+        .where(eq(mediaAttachments.id, lm.mediaId))
+        .limit(1);
+
+      if (mediaRows.length > 0) {
+        hasMedia = toMediaPayload(mediaRows[0]);
+      }
+    }
+
     lastMessage = {
       id: lm.id,
       chatId: lm.chatId,
@@ -636,7 +793,7 @@ async function getChatSummary(
       time: lm.createdAt.toISOString(),
       status,
       starred: false,
-      hasMedia: null,
+      hasMedia,
       reactions: [],
     };
   }

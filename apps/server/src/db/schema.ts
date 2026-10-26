@@ -8,6 +8,8 @@ import {
   check,
   primaryKey,
   index,
+  integer,
+  bigint,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -138,6 +140,7 @@ export const messages = pgTable(
     senderId: uuid("sender_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+    mediaId: uuid("media_id").references((): any => mediaAttachments.id, { onDelete: "set null" }),
     body: text("body").notNull().default(""),
     forwarded: boolean("forwarded").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -145,6 +148,53 @@ export const messages = pgTable(
   },
   (table) => ({
     chatCreatedIdx: index("idx_messages_chat_created").on(table.chatId, sql`${table.createdAt} DESC`),
+    mediaIdx: index("idx_messages_media").on(table.mediaId),
+  })
+);
+
+export const mediaAttachments = pgTable(
+  "media_attachments",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    messageId: uuid("message_id").references(() => messages.id, { onDelete: "cascade" }),
+    chatId: uuid("chat_id")
+      .notNull()
+      .references(() => chats.id, { onDelete: "cascade" }),
+    uploaderId: uuid("uploader_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: varchar("type", { length: 15 }).notNull(),
+    url: text("url").notNull(),
+    storageKey: text("storage_key").notNull().unique(),
+    blurhash: varchar("blurhash", { length: 64 }),
+    orientation: varchar("orientation", { length: 10 }),
+    duration: integer("duration"),
+    width: integer("width"),
+    height: integer("height"),
+    sizeBytes: bigint("size_bytes", { mode: "number" }).notNull(),
+    mimeType: varchar("mime_type", { length: 100 }).notNull(),
+    status: varchar("status", { length: 20 }).notNull().default("pending"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    typeCheck: check(
+      "media_type_check",
+      sql`${table.type} IN ('image', 'video', 'audio', 'document')`
+    ),
+    orientationCheck: check(
+      "media_orientation_check",
+      sql`${table.orientation} IS NULL OR ${table.orientation} IN ('square', 'landscape', 'portrait')`
+    ),
+    statusCheck: check(
+      "media_status_check",
+      sql`${table.status} IN ('pending', 'uploaded', 'attached', 'expired')`
+    ),
+    messageIdIdx: index("idx_media_message").on(table.messageId),
+    chatIdIdx: index("idx_media_chat").on(table.chatId),
+    pendingIdx: index("idx_media_pending")
+      .on(table.status, table.createdAt)
+      .where(sql`${table.status} = 'pending'`),
   })
 );
 
@@ -182,5 +232,7 @@ export type ChatParticipant = typeof chatParticipants.$inferSelect;
 export type NewChatParticipant = typeof chatParticipants.$inferInsert;
 export type Message = typeof messages.$inferSelect;
 export type NewMessage = typeof messages.$inferInsert;
+export type MediaAttachment = typeof mediaAttachments.$inferSelect;
+export type NewMediaAttachment = typeof mediaAttachments.$inferInsert;
 export type MessageReceipt = typeof messageReceipts.$inferSelect;
 export type NewMessageReceipt = typeof messageReceipts.$inferInsert;

@@ -80,10 +80,15 @@ export type TMessage = {
 export type TReaction = { owner: string; type: ReactionKeys };
 
 export type TMedia = {
-  type: "image" | "video";
+  id?: string;
+  type: "image" | "video" | "audio" | "document";
   src: string;
   orientation: "square" | "landscape" | "portrait";
   duration: number | null;
+  width?: number | null;
+  height?: number | null;
+  blurhash?: string | null;
+  uploadProgress?: number; // 0-100% while uploading
 };
 
 export type ReactionKeys =

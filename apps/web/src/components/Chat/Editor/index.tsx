@@ -5,6 +5,7 @@ import { EmojiPicker } from "./EmojiPicker";
 import { Input } from "./Input";
 import { FilesToSendContext } from "@/components/SendFiles";
 import { useSendMessage } from "@/lib/api/chatQueries";
+import { useSendMediaMessage } from "@/lib/api/mediaUpload";
 import { useContext } from "react";
 
 type EditorProps = {
@@ -14,15 +15,21 @@ type EditorProps = {
 
 export function Editor(props: EditorProps) {
   const sendMessage = useSendMessage(props.chatId);
-  const { files } = useContext(FilesToSendContext);
+  const sendMediaMessage = useSendMediaMessage(props.chatId);
+  const { files, clearFiles } = useContext(FilesToSendContext);
 
   const onSave = async (body?: string) => {
-    if (!body) return;
-    if (props.onSave) {
+    if (!body && files.length === 0) return;
+    if (props.onSave && body) {
       props.onSave(body);
       return;
     }
-    if (files.length <= 0) {
+    if (files.length > 0) {
+      for (const file of files) {
+        sendMediaMessage(file, body);
+      }
+      clearFiles();
+    } else if (body) {
       sendMessage(body);
     }
   };

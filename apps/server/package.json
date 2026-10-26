@@ -16,6 +16,8 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1156.0",
+    "@aws-sdk/s3-request-presigner": "^3.1156.0",
     "@chat-me/shared": "workspace:*",
     "@fastify/cookie": "^9.4.0",
     "@fastify/cors": "^9.0.1",

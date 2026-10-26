@@ -19,3 +19,24 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => false,
   }),
 });
+
+if (!window.URL.createObjectURL) {
+  window.URL.createObjectURL = (blob: any) => `blob:http://localhost/mock-${Math.random().toString(36).slice(2)}`;
+}
+if (!window.URL.revokeObjectURL) {
+  window.URL.revokeObjectURL = () => {};
+}
+
+HTMLCanvasElement.prototype.getContext = function (contextId: string) {
+  if (contextId === "2d") {
+    return {
+      drawImage: () => {},
+      getImageData: (x: number, y: number, w: number, h: number) => ({
+        data: new Uint8ClampedArray(w * h * 4).fill(128),
+        width: w,
+        height: h,
+      }),
+    } as any;
+  }
+  return null;
+} as any;

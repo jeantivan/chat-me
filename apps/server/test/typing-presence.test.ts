@@ -174,7 +174,13 @@ describe("Socket.IO Ephemeral Typing & Presence Seam", () => {
       userId: string;
       status: "online" | "offline";
     }>((resolve) => {
-      clientA.once("presence:updated", (data) => resolve(data));
+      const listener = (data: any) => {
+        if (data.userId === userBId && data.status === "online") {
+          clientA.off("presence:updated", listener);
+          resolve(data);
+        }
+      };
+      clientA.on("presence:updated", listener);
     });
 
     clientB = ioc(serverUrl, {

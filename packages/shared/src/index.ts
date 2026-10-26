@@ -77,6 +77,39 @@ export interface UserPresence {
 export type ChatType = "direct" | "group";
 export type DeliveryStatus = "idle" | "send" | "received" | "read";
 
+export type MediaType = "image" | "video" | "audio" | "document";
+export type MediaOrientation = "square" | "landscape" | "portrait";
+
+export interface MediaPayload {
+  id: string;
+  type: MediaType;
+  src: string;
+  orientation: MediaOrientation;
+  duration: number | null;
+  width?: number | null;
+  height?: number | null;
+  blurhash?: string | null;
+}
+
+export interface PresignMediaRequest {
+  filename: string;
+  mimeType: string;
+  sizeBytes: number;
+  type: MediaType;
+  orientation?: MediaOrientation;
+  duration?: number | null;
+  width?: number;
+  height?: number;
+  blurhash?: string;
+}
+
+export interface PresignMediaResponse {
+  mediaId: string;
+  uploadUrl: string;
+  publicUrl: string;
+  expiresAt: string;
+}
+
 export interface ChatParticipantSummary {
   userId: string;
   role: "admin" | "member";
@@ -110,7 +143,7 @@ export interface MessagePayload {
   time: string; // ISO string
   status: DeliveryStatus;
   starred: boolean;
-  hasMedia: any | null;
+  hasMedia: MediaPayload | null;
   reactions: Array<{ owner: string; type: string }>;
 }
 
@@ -129,6 +162,7 @@ export interface ClientToServerEvents {
       id: string;
       chatId: string;
       body: string;
+      mediaId?: string;
     },
     callback: (ack: {
       success: boolean;

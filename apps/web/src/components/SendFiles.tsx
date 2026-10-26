@@ -3,7 +3,6 @@ import {
   ReactNode,
   createContext,
   useContext,
-  useEffect,
   useState
 } from "react";
 import { useDropzone } from "react-dropzone";
@@ -18,6 +17,7 @@ type TFilesToSend = {
   open: () => void;
   files: File[];
   deleteFile: (file: File) => void;
+  clearFiles: () => void;
 };
 
 export const FilesToSendContext = createContext<TFilesToSend>(
@@ -37,28 +37,29 @@ export function FilesToSend({
     setFilesToSend(newFiles);
   };
 
+  const clearFiles = () => {
+    setFilesToSend([]);
+  };
+
   const { getInputProps, getRootProps, isDragActive, open } = useDropzone({
     maxFiles: 5,
     noClick: true,
     noKeyboard: true,
     accept: {
-      "image/*": []
+      "image/*": [],
+      "video/*": [],
     },
     onDrop(acceptedFiles) {
-      console.log({ acceptedFiles });
-
       setFilesToSend([...filesToSend, ...acceptedFiles]);
     }
   });
 
-  useEffect(() => {
-    console.log({ filesToSend });
-  }, [filesToSend]);
   return (
     <FilesToSendContext.Provider
       value={{
         open,
         deleteFile,
+        clearFiles,
         files: filesToSend
       }}
     >

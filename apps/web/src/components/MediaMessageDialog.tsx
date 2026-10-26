@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useElementSize } from "usehooks-ts";
-import { X, Smile, Star, Forward } from "lucide-react";
+import { X, Smile, Star, Forward, ZoomIn, ZoomOut } from "lucide-react";
 
 import { ForwardMessages } from "./ForwardMessages";
 import { ReactionMenu } from "./Message/ReactionMenu";
@@ -27,34 +27,26 @@ export function MediaMessageDialog({
 }) {
   const [containerRef, { width, height }] = useElementSize();
   const [forwardMessagesDialog, setForwardMessagesDialog] = useState(false);
+  const [zoom, setZoom] = useState(1);
+
   const closeMediaMessage = useStore((state) => state.closeMediaMessage);
   const starMessage = useStore((state) => state.starMessage);
-  const message = useStore((state) => {
-    const chatIndex = state.chats.findIndex(
-      (chat) => chat.id === mediaMessage.chatId
-    );
 
-    if (chatIndex < 0) return null;
-
-    return (
-      state.chats[chatIndex].messages.find(
-        (msg) => msg.id === mediaMessage.id
-      ) || null
-    );
-  });
-
+  const message = mediaMessage;
   const user = useStore((state) => state.user);
+  const contacts = useStore((state) => state.contacts);
 
-  const owner = useStore((state) => {
-    return state.contacts.find((c) => c.id === message?.owner) || state.user;
-  });
+  const owner = contacts.find((c) => c.id === message.owner) || user;
 
   if (!message) return null;
 
   const formatTime = dayjs(message?.time).format("DD/MM/YYYY [a la(s)] HH:mm");
-
   const isOwnMsg = user.id === owner?.id;
   const ownReaction = message.reactions?.find((r) => r.owner === user.id);
+
+  const handleZoomIn = () => setZoom((prev) => Math.min(3, +(prev + 0.25).toFixed(2)));
+  const handleZoomOut = () => setZoom((prev) => Math.max(0.5, +(prev - 0.25).toFixed(2)));
+  const handleResetZoom = () => setZoom(1);
 
   return (
     <DialogRoot>
@@ -66,7 +58,7 @@ export function MediaMessageDialog({
           <header className="w-full flex justify-between px-6">
             <div className="flex gap-4">
               <img
-                className="w-12 h-12 rounded-full bg-background-10"
+                className="w-12 h-12 rounded-full bg-background-10 object-cover"
                 src={owner?.picture}
                 loading="lazy"
                 alt={owner?.name}
@@ -76,7 +68,31 @@ export function MediaMessageDialog({
                 <div className="text-sm text-background-11">{formatTime}</div>
               </div>
             </div>
-            <div className="flex items items-center gap-3">
+
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 bg-background-5/50 rounded-lg px-2 py-1">
+                <IconButton
+                  onClick={handleZoomOut}
+                  label="Alejar (Zoom Out)"
+                  icon={ZoomOut}
+                  disabled={zoom <= 0.5}
+                />
+                <button
+                  type="button"
+                  onClick={handleResetZoom}
+                  className="text-xs text-background-12 font-medium px-1.5 py-0.5 rounded hover:bg-background-6 transition-colors select-none"
+                  title="Restablecer zoom"
+                >
+                  {Math.round(zoom * 100)}%
+                </button>
+                <IconButton
+                  onClick={handleZoomIn}
+                  label="Acercar (Zoom In)"
+                  icon={ZoomIn}
+                  disabled={zoom >= 3}
+                />
+              </div>
+
               <IconButton
                 onClick={() => {
                   setForwardMessagesDialog(true);
@@ -106,25 +122,48 @@ export function MediaMessageDialog({
               </DialogClose>
             </div>
           </header>
-          <section className="w-full h-full max-h-full flex justify-center px-6 select-none">
+
+          <section className="w-full h-full max-h-full flex justify-center px-6 select-none overflow-hidden">
             <div
               ref={containerRef}
               className={mc(
-                "bg-neutral-500 h-full max-w-[80%] relative",
+                "bg-neutral-500 h-full max-w-[80%] relative overflow-hidden flex items-center justify-center",
                 message?.hasMedia && dimensions[message.hasMedia.orientation]
               )}
             >
-              <img
-                src={message?.hasMedia?.src}
-                alt={`Foto enviada por ${owner?.name}`}
-                style={{ width, height }}
-              />
+              {message?.hasMedia?.type === "video" ? (
+                <video
+                  src={message.hasMedia.src}
+                  controls
+                  autoPlay
+                  style={{
+                    width,
+                    height,
+                    transform: `scale(${zoom})`,
+                    transition: "transform 150ms ease-out",
+                  }}
+                  className="object-contain"
+                />
+              ) : (
+                <img
+                  src={message?.hasMedia?.src}
+                  alt={`Foto enviada por ${owner?.name}`}
+                  style={{
+                    width,
+                    height,
+                    transform: `scale(${zoom})`,
+                    transition: "transform 150ms ease-out",
+                  }}
+                  className="object-contain"
+                />
+              )}
               <Reactions
                 reactions={message.reactions}
                 className="absolute right-5 -translate-y-1/2"
               />
             </div>
           </section>
+
           <div className="mx-auto max-w-[60%]">
             {message?.body && (
               <div
@@ -138,6 +177,7 @@ export function MediaMessageDialog({
             )}
           </div>
         </div>
+
         <ForwardMessages
           messages={[message]}
           open={forwardMessagesDialog}
