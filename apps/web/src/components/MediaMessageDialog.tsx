@@ -11,7 +11,7 @@ import { DialogRoot, DialogClose, DialogContent } from "@/components/ui/Dialog";
 import { IconButton } from "@/components/ui/IconButton";
 import mc from "@/lib/utils/mergeClassnames";
 import useStore from "@/lib/store";
-import { useContacts } from "@/lib/api/chatQueries";
+import { useContacts, useToggleStarMessage } from "@/lib/api/chatQueries";
 import { TMessage } from "@/lib/types";
 import { MessageText } from "./Message/MessageText";
 
@@ -29,9 +29,10 @@ export function MediaMessageDialog({
   const [containerRef, { width, height }] = useElementSize();
   const [forwardMessagesDialog, setForwardMessagesDialog] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [isStarred, setIsStarred] = useState(Boolean(mediaMessage?.starred));
 
   const closeMediaMessage = useStore((state) => state.closeMediaMessage);
-  const starMessage = useStore((state) => state.starMessage);
+  const toggleStarServer = useToggleStarMessage();
 
   const message = mediaMessage;
   const user = useStore((state) => state.user);
@@ -113,10 +114,11 @@ export function MediaMessageDialog({
                 label="Destacar mensaje"
                 icon={Star}
                 iconClassName={
-                  message.starred ? "fill-background-12" : undefined
+                  isStarred ? "fill-background-12" : undefined
                 }
                 onClick={() => {
-                  starMessage(message);
+                  setIsStarred((prev) => !prev);
+                  toggleStarServer(message.id, message.chatId);
                 }}
               />
               <ReactionMenu ownReaction={ownReaction} message={message}>

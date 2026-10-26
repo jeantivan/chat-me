@@ -13,9 +13,8 @@ echo "🔍 Checking client codebase for forbidden Zustand access to server colle
 # - apps/web/src/components/ArchivedChats.tsx
 # - apps/web/src/components/Chat/index.tsx
 # - apps/web/src/components/ChatList.tsx
-# - apps/web/src/components/ForwardMessages.tsx
 
-LEGACY_EXCLUDES=':(exclude)apps/web/src/components/ArchivedChats.tsx :(exclude)apps/web/src/components/Chat/index.tsx :(exclude)apps/web/src/components/ChatList.tsx :(exclude)apps/web/src/components/ForwardMessages.tsx'
+LEGACY_EXCLUDES=':(exclude)apps/web/src/components/ArchivedChats.tsx :(exclude)apps/web/src/components/Chat/index.tsx :(exclude)apps/web/src/components/ChatList.tsx'
 
 matches=$(git grep -inE 'useStore\([^)]*state\.(chats|contacts|messages)' -- 'apps/web/src/components/**' $LEGACY_EXCLUDES || true)
 

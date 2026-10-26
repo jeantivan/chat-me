@@ -37,7 +37,12 @@ export function ShowMoreMenu() {
         >
           Chats Archivados
         </MenuItem>
-        <MenuItem disabled icon={Bookmark}>
+        <MenuItem
+          icon={Bookmark}
+          onClick={() => {
+            leftDrawerGoTo("STARRED_MESSAGES");
+          }}
+        >
           Mensajes destacados
         </MenuItem>
         <MenuItem

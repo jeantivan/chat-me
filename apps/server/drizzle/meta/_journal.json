@@ -43,6 +43,13 @@
       "when": 1792770000000,
       "tag": "0005_media_attachments",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792775000000,
+      "tag": "0006_message_reactions_and_stars",
+      "breakpoints": true
     }
   ]
 }

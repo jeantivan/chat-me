@@ -217,6 +217,39 @@ export const messageReceipts = pgTable(
   })
 );
 
+export const messageReactions = pgTable(
+  "message_reactions",
+  {
+    messageId: uuid("message_id")
+      .notNull()
+      .references(() => messages.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    emoji: varchar("emoji", { length: 64 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.messageId, table.userId] }),
+  })
+);
+
+export const messageStars = pgTable(
+  "message_stars",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    messageId: uuid("message_id")
+      .notNull()
+      .references(() => messages.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.userId, table.messageId] }),
+  })
+);
+
 import { generateDirectPairHash, type DirectPairHash } from "@chat-me/shared";
 export { generateDirectPairHash, type DirectPairHash };
 
@@ -236,3 +269,7 @@ export type MediaAttachment = typeof mediaAttachments.$inferSelect;
 export type NewMediaAttachment = typeof mediaAttachments.$inferInsert;
 export type MessageReceipt = typeof messageReceipts.$inferSelect;
 export type NewMessageReceipt = typeof messageReceipts.$inferInsert;
+export type MessageReaction = typeof messageReactions.$inferSelect;
+export type NewMessageReaction = typeof messageReactions.$inferInsert;
+export type MessageStar = typeof messageStars.$inferSelect;
+export type NewMessageStar = typeof messageStars.$inferInsert;

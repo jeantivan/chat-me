@@ -6,6 +6,8 @@ import {
   chatParticipants,
   messages,
   messageReceipts,
+  messageReactions,
+  messageStars,
   mediaAttachments,
   users,
   contacts,
@@ -13,18 +15,106 @@ import {
 } from "../db/schema.js";
 import { generatePresignedUploadUrl } from "../services/storage.service.js";
 import { toMediaPayload } from "../lib/media.js";
-import type {
-  ChatSummary,
-  ChatParticipantSummary,
-  MessagePayload,
-  MediaPayload,
-  MessagesPageResponse,
-  DeliveryStatus,
+import {
+  DELETED_MESSAGE_TOMBSTONE,
+  type ChatSummary,
+  type ChatParticipantSummary,
+  type MessagePayload,
+  type MediaPayload,
+  type MessagesPageResponse,
+  type DeliveryStatus,
 } from "@chat-me/shared";
 import {
   computeMessageStatusForViewer,
   computeStatusFromReceipts,
 } from "../lib/receipts.js";
+
+async function hydrateMessagesMetadata(
+  app: FastifyInstance,
+  msgRows: Array<typeof messages.$inferSelect>,
+  currentUserId: string
+): Promise<{
+  reactionsMap: Map<string, Array<{ owner: string; type: string }>>;
+  starsSet: Set<string>;
+  mediaMap: Map<string, MediaPayload>;
+}> {
+  const messageIds = msgRows.map((m) => m.id);
+  const reactionsMap = new Map<string, Array<{ owner: string; type: string }>>();
+  const starsSet = new Set<string>();
+  const mediaMap = new Map<string, MediaPayload>();
+
+  if (messageIds.length === 0) {
+    return { reactionsMap, starsSet, mediaMap };
+  }
+
+  const reactionRows = await app.db
+    .select()
+    .from(messageReactions)
+    .where(inArray(messageReactions.messageId, messageIds));
+
+  for (const rx of reactionRows) {
+    const list = reactionsMap.get(rx.messageId) || [];
+    list.push({ owner: rx.userId, type: rx.emoji });
+    reactionsMap.set(rx.messageId, list);
+  }
+
+  const starRows = await app.db
+    .select()
+    .from(messageStars)
+    .where(
+      and(
+        eq(messageStars.userId, currentUserId),
+        inArray(messageStars.messageId, messageIds)
+      )
+    );
+
+  for (const st of starRows) {
+    starsSet.add(st.messageId);
+  }
+
+  const mediaIds = msgRows
+    .map((m) => m.mediaId)
+    .filter((id): id is string => Boolean(id));
+
+  if (mediaIds.length > 0) {
+    const mediaRows = await app.db
+      .select()
+      .from(mediaAttachments)
+      .where(inArray(mediaAttachments.id, mediaIds));
+
+    for (const m of mediaRows) {
+      mediaMap.set(m.id, toMediaPayload(m));
+    }
+  }
+
+  return { reactionsMap, starsSet, mediaMap };
+}
+
+function formatMessagePayload(
+  msg: typeof messages.$inferSelect,
+  status: DeliveryStatus,
+  starred: boolean,
+  mediaMap: Map<string, MediaPayload>,
+  reactionsMap: Map<string, Array<{ owner: string; type: string }>>
+): MessagePayload {
+  const isDeleted = Boolean(msg.deletedAt);
+  const hasMedia =
+    !isDeleted && msg.mediaId ? mediaMap.get(msg.mediaId) || null : null;
+
+  return {
+    id: msg.id,
+    chatId: msg.chatId,
+    owner: msg.senderId,
+    body: isDeleted ? DELETED_MESSAGE_TOMBSTONE : msg.body,
+    forwarded: msg.forwarded,
+    time: msg.createdAt.toISOString(),
+    status,
+    starred,
+    deleted: isDeleted,
+    hasMedia,
+    reactions: reactionsMap.get(msg.id) || [],
+  };
+}
 
 async function createOrGetDirectChat(
   app: FastifyInstance,
@@ -583,8 +673,8 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       const limit = Math.min(Math.max(Number(request.query.limit) || 40, 1), 100);
       const cursor = request.query.cursor ? new Date(request.query.cursor) : null;
 
-      // Check participant membership
-      const membership = await app.db
+      // Check participant access
+      const participantRows = await app.db
         .select()
         .from(chatParticipants)
         .where(
@@ -595,7 +685,7 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
         )
         .limit(1);
 
-      if (membership.length === 0) {
+      if (participantRows.length === 0) {
         return reply.status(403).send({ error: "Forbidden: Not a participant of this chat" });
       }
 
@@ -619,7 +709,7 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
           ? pageRows[pageRows.length - 1].createdAt.toISOString()
           : null;
 
-      // Fetch receipts for these messages to compute delivery status
+      // Fetch receipts, reactions, stars, and media for these messages
       const messageIds = pageRows.map((r) => r.id);
       const receiptsMap = new Map<string, Array<{ userId: string; status: string }>>();
 
@@ -636,22 +726,11 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
         }
       }
 
-      // Fetch media attachments for messages
-      const mediaMap = new Map<string, MediaPayload>();
-      const mediaIds = pageRows
-        .map((r) => r.mediaId)
-        .filter((id): id is string => Boolean(id));
-
-      if (mediaIds.length > 0) {
-        const mediaRows = await app.db
-          .select()
-          .from(mediaAttachments)
-          .where(inArray(mediaAttachments.id, mediaIds));
-
-        for (const m of mediaRows) {
-          mediaMap.set(m.id, toMediaPayload(m));
-        }
-      }
+      const { reactionsMap, starsSet, mediaMap } = await hydrateMessagesMetadata(
+        app,
+        pageRows,
+        currentUserId
+      );
 
       // Fetch all participants in this chat to compute aggregated receipt status
       const allParticipants = await app.db
@@ -672,20 +751,13 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
           rcList
         );
 
-        const hasMedia = msg.mediaId ? mediaMap.get(msg.mediaId) || null : null;
-
-        return {
-          id: msg.id,
-          chatId: msg.chatId,
-          owner: msg.senderId,
-          body: msg.body,
-          forwarded: msg.forwarded,
-          time: msg.createdAt.toISOString(),
+        return formatMessagePayload(
+          msg,
           status,
-          starred: false,
-          hasMedia,
-          reactions: [],
-        };
+          starsSet.has(msg.id),
+          mediaMap,
+          reactionsMap
+        );
       });
 
       // Reverse so messages are returned in chronological ascending order
@@ -698,6 +770,309 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       };
 
       return reply.send(response);
+    }
+  );
+
+  // Toggle star on a message
+  app.post<{
+    Params: { chatId: string; messageId: string };
+  }>(
+    "/:chatId/messages/:messageId/star",
+    {
+      preHandler: [app.authenticate],
+    },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+      const { chatId, messageId } = request.params;
+
+      const participantRows = await app.db
+        .select()
+        .from(chatParticipants)
+        .where(
+          and(
+            eq(chatParticipants.chatId, chatId),
+            eq(chatParticipants.userId, currentUserId)
+          )
+        )
+        .limit(1);
+
+      if (participantRows.length === 0) {
+        return reply.status(403).send({ error: "Forbidden: Not a participant of this chat" });
+      }
+
+      const msgRows = await app.db
+        .select({ id: messages.id })
+        .from(messages)
+        .where(and(eq(messages.id, messageId), eq(messages.chatId, chatId)))
+        .limit(1);
+
+      if (msgRows.length === 0) {
+        return reply.status(404).send({ error: "Message not found" });
+      }
+
+      const existingStar = await app.db
+        .select()
+        .from(messageStars)
+        .where(
+          and(
+            eq(messageStars.userId, currentUserId),
+            eq(messageStars.messageId, messageId)
+          )
+        )
+        .limit(1);
+
+      let starred: boolean;
+      if (existingStar.length > 0) {
+        await app.db
+          .delete(messageStars)
+          .where(
+            and(
+              eq(messageStars.userId, currentUserId),
+              eq(messageStars.messageId, messageId)
+            )
+          );
+        starred = false;
+      } else {
+        await app.db.insert(messageStars).values({
+          userId: currentUserId,
+          messageId,
+          createdAt: new Date(),
+        });
+        starred = true;
+      }
+
+      return reply.send({ messageId, chatId, starred });
+    }
+  );
+
+  // Get starred messages for current user (optionally filtered by chatId)
+  app.get<{
+    Querystring: { chatId?: string };
+  }>(
+    "/starred",
+    {
+      preHandler: [app.authenticate],
+    },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+      const { chatId } = request.query;
+
+      const conditions = [eq(messageStars.userId, currentUserId)];
+      if (chatId) {
+        conditions.push(eq(messages.chatId, chatId));
+      }
+
+      const starredRows = await app.db
+        .select({
+          msg: messages,
+          starredAt: messageStars.createdAt,
+        })
+        .from(messageStars)
+        .innerJoin(messages, eq(messageStars.messageId, messages.id))
+        .where(and(...conditions))
+        .orderBy(desc(messageStars.createdAt));
+
+      const msgRows = starredRows.map((r) => r.msg);
+      const { reactionsMap, mediaMap } = await hydrateMessagesMetadata(
+        app,
+        msgRows,
+        currentUserId
+      );
+
+      const result: MessagePayload[] = [];
+      for (const msg of msgRows) {
+        const status = await computeMessageStatusForViewer(
+          app,
+          msg.chatId,
+          msg.id,
+          msg.senderId,
+          currentUserId
+        );
+
+        result.push(
+          formatMessagePayload(msg, status, true, mediaMap, reactionsMap)
+        );
+      }
+
+      return reply.send(result);
+    }
+  );
+
+  // Forward messages to direct or group chats
+  app.post(
+    "/forward",
+    {
+      preHandler: [app.authenticate],
+    },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+
+      const bodySchema = z.object({
+        messageIds: z.array(z.string().uuid()).min(1),
+        targetChatIds: z.array(z.string().uuid()).optional(),
+        targetUserIds: z.array(z.string().uuid()).optional(),
+      });
+
+      const parseResult = bodySchema.safeParse(request.body);
+      if (!parseResult.success) {
+        return reply.status(400).send({ error: parseResult.error.flatten() });
+      }
+
+      const { messageIds, targetChatIds = [], targetUserIds = [] } = parseResult.data;
+
+      if (targetChatIds.length === 0 && targetUserIds.length === 0) {
+        return reply
+          .status(400)
+          .send({ error: "At least one targetChatId or targetUserId is required" });
+      }
+
+      // Fetch source messages and verify caller is a participant of each source chat
+      const sourceMsgs = await app.db
+        .select()
+        .from(messages)
+        .where(inArray(messages.id, messageIds));
+
+      if (sourceMsgs.length === 0) {
+        return reply.status(404).send({ error: "No source messages found" });
+      }
+
+      const sourceChatIds = Array.from(new Set(sourceMsgs.map((m) => m.chatId)));
+      const sourceParticipants = await app.db
+        .select({ chatId: chatParticipants.chatId })
+        .from(chatParticipants)
+        .where(
+          and(
+            inArray(chatParticipants.chatId, sourceChatIds),
+            eq(chatParticipants.userId, currentUserId)
+          )
+        );
+
+      const allowedSourceChats = new Set(sourceParticipants.map((p) => p.chatId));
+      const validSourceMsgs = sourceMsgs.filter(
+        (m) => allowedSourceChats.has(m.chatId) && !m.deletedAt
+      );
+
+      if (validSourceMsgs.length === 0) {
+        return reply.status(403).send({ error: "Forbidden or deleted source messages" });
+      }
+
+      // Resolve all destination chat IDs
+      const destinationChatIds = new Set<string>();
+
+      for (const tChatId of targetChatIds) {
+        const participantCheck = await app.db
+          .select()
+          .from(chatParticipants)
+          .where(
+            and(
+              eq(chatParticipants.chatId, tChatId),
+              eq(chatParticipants.userId, currentUserId)
+            )
+          )
+          .limit(1);
+        if (participantCheck.length > 0) {
+          destinationChatIds.add(tChatId);
+        }
+      }
+
+      for (const targetUid of targetUserIds) {
+        const directRes = await createOrGetDirectChat(app, currentUserId, targetUid);
+        if (directRes.chat) {
+          destinationChatIds.add(directRes.chat.id);
+        }
+      }
+
+      const createdPayloads: MessagePayload[] = [];
+      const io = (app as any).io;
+
+      for (const destChatId of destinationChatIds) {
+        const participants = await app.db
+          .select({ userId: chatParticipants.userId })
+          .from(chatParticipants)
+          .where(eq(chatParticipants.chatId, destChatId));
+
+        for (const srcMsg of validSourceMsgs) {
+          const newMsgId = crypto.randomUUID();
+          const now = new Date();
+          let clonedMediaId: string | null = null;
+          let mediaPayloadData: MediaPayload | null = null;
+
+          if (srcMsg.mediaId) {
+            const mediaRows = await app.db
+              .select()
+              .from(mediaAttachments)
+              .where(eq(mediaAttachments.id, srcMsg.mediaId))
+              .limit(1);
+
+            if (mediaRows.length > 0) {
+              const origMedia = mediaRows[0];
+              clonedMediaId = crypto.randomUUID();
+              const [insertedMedia] = await app.db
+                .insert(mediaAttachments)
+                .values({
+                  id: clonedMediaId,
+                  chatId: destChatId,
+                  uploaderId: currentUserId,
+                  type: origMedia.type,
+                  url: origMedia.url,
+                  storageKey: `chats/${destChatId}/${clonedMediaId}/forwarded_${Date.now()}`,
+                  blurhash: origMedia.blurhash,
+                  orientation: origMedia.orientation,
+                  duration: origMedia.duration,
+                  width: origMedia.width,
+                  height: origMedia.height,
+                  sizeBytes: origMedia.sizeBytes,
+                  mimeType: origMedia.mimeType,
+                  status: "attached",
+                })
+                .returning();
+              mediaPayloadData = toMediaPayload(insertedMedia);
+            }
+          }
+
+          await app.db.insert(messages).values({
+            id: newMsgId,
+            chatId: destChatId,
+            senderId: currentUserId,
+            body: srcMsg.body,
+            mediaId: clonedMediaId,
+            forwarded: true,
+            createdAt: now,
+          });
+
+          if (clonedMediaId) {
+            await app.db
+              .update(mediaAttachments)
+              .set({ messageId: newMsgId })
+              .where(eq(mediaAttachments.id, clonedMediaId));
+          }
+
+          const msgPayload: MessagePayload = {
+            id: newMsgId,
+            chatId: destChatId,
+            owner: currentUserId,
+            body: srcMsg.body,
+            forwarded: true,
+            time: now.toISOString(),
+            status: "send",
+            starred: false,
+            hasMedia: mediaPayloadData,
+            reactions: [],
+          };
+
+          createdPayloads.push(msgPayload);
+
+          if (io) {
+            const rooms = [
+              `chat:${destChatId}`,
+              ...participants.map((p) => `user:${p.userId}`),
+            ];
+            io.to(rooms).emit("message:new", msgPayload);
+          }
+        }
+      }
+
+      return reply.send({ messages: createdPayloads });
     }
   );
 };
@@ -771,31 +1146,19 @@ async function getChatSummary(
       currentUserId
     );
 
-    let hasMedia: MediaPayload | null = null;
-    if (lm.mediaId) {
-      const mediaRows = await app.db
-        .select()
-        .from(mediaAttachments)
-        .where(eq(mediaAttachments.id, lm.mediaId))
-        .limit(1);
+    const { reactionsMap, starsSet, mediaMap } = await hydrateMessagesMetadata(
+      app,
+      [lm],
+      currentUserId
+    );
 
-      if (mediaRows.length > 0) {
-        hasMedia = toMediaPayload(mediaRows[0]);
-      }
-    }
-
-    lastMessage = {
-      id: lm.id,
-      chatId: lm.chatId,
-      owner: lm.senderId,
-      body: lm.body,
-      forwarded: lm.forwarded,
-      time: lm.createdAt.toISOString(),
+    lastMessage = formatMessagePayload(
+      lm,
       status,
-      starred: false,
-      hasMedia,
-      reactions: [],
-    };
+      starsSet.has(lm.id),
+      mediaMap,
+      reactionsMap
+    );
   }
 
   // Compute unread count for current user

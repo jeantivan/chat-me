@@ -6,19 +6,32 @@ import {
   InfiniteData,
 } from "@tanstack/react-query";
 import { getSocket } from "../socket/socketClient";
-import { chatKeys, patchMessageStatusInPages } from "../socket/useSocketSync";
+import {
+  chatKeys,
+  patchMessageInPages,
+  patchMessageStatusInPages,
+} from "../socket/useSocketSync";
 import { useUserId } from "../hooks";
 import { getAuthHeaders } from "../auth/authClient";
 import { useAuth } from "../auth/AuthContext";
-import type {
-  ChatSummary,
-  MessagePayload,
-  MessagesPageResponse,
-  ContactSummary,
+import {
+  DELETED_MESSAGE_TOMBSTONE,
+  type ChatSummary,
+  type MessagePayload,
+  type MessagesPageResponse,
+  type ContactSummary,
 } from "@chat-me/shared";
 
+function useSafeAuth(): { isAuthenticated: boolean; token: string | null } {
+  try {
+    return useAuth();
+  } catch {
+    return { isAuthenticated: false, token: null };
+  }
+}
+
 export function useChats() {
-  const { isAuthenticated, token } = useAuth();
+  const { isAuthenticated, token } = useSafeAuth();
   return useQuery<ChatSummary[]>({
     queryKey: chatKeys.lists(),
     queryFn: async () => {
@@ -35,7 +48,7 @@ export function useChats() {
 }
 
 export function useContacts() {
-  const { isAuthenticated, token } = useAuth();
+  const { isAuthenticated, token } = useSafeAuth();
   return useQuery<ContactSummary[]>({
     queryKey: chatKeys.contacts,
     queryFn: async () => {
@@ -52,7 +65,7 @@ export function useContacts() {
 }
 
 export function useChatMessages(chatId: string) {
-  const { isAuthenticated, token } = useAuth();
+  const { isAuthenticated, token } = useSafeAuth();
   return useInfiniteQuery({
     queryKey: chatKeys.messages(chatId),
     queryFn: async ({ pageParam }) => {
@@ -144,5 +157,145 @@ export function useSendMessage(chatId: string) {
       );
     },
     [chatId, queryClient, userId]
+  );
+}
+
+export function useStarredMessages(chatId?: string | null) {
+  const { isAuthenticated, token } = useSafeAuth();
+  return useQuery<MessagePayload[]>({
+    queryKey: chatKeys.starred(chatId),
+    queryFn: async () => {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+      const url = chatId
+        ? `${apiBase}/api/v1/chats/starred?chatId=${encodeURIComponent(chatId)}`
+        : `${apiBase}/api/v1/chats/starred`;
+      const res = await fetch(url, {
+        headers: getAuthHeaders(),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch starred messages");
+      return res.json();
+    },
+    enabled: Boolean(isAuthenticated && token),
+  });
+}
+
+export function useReactToMessage() {
+  const queryClient = useQueryClient();
+  const userId = useUserId();
+
+  return useCallback(
+    (messageId: string, chatId: string, emoji: string | null) => {
+      // Optimistic update in TanStack Query cache
+      queryClient.setQueryData<InfiniteData<MessagesPageResponse>>(
+        chatKeys.messages(chatId),
+        (oldData) =>
+          patchMessageInPages(oldData, messageId, (m) => {
+            const filtered = (m.reactions || []).filter(
+              (r) => r.owner !== userId
+            );
+            return {
+              ...m,
+              reactions: emoji
+                ? [...filtered, { owner: userId, type: emoji }]
+                : filtered,
+            };
+          })
+      );
+
+      const socket = getSocket();
+      socket.emit("message:reaction", { messageId, chatId, emoji });
+    },
+    [queryClient, userId]
+  );
+}
+
+export function useDeleteMessage() {
+  const queryClient = useQueryClient();
+
+  return useCallback(
+    (messageId: string, chatId: string) => {
+      // Optimistic tombstone in TanStack Query cache
+      queryClient.setQueryData<InfiniteData<MessagesPageResponse>>(
+        chatKeys.messages(chatId),
+        (oldData) =>
+          patchMessageInPages(oldData, messageId, (m) => ({
+            ...m,
+            body: DELETED_MESSAGE_TOMBSTONE,
+            deleted: true,
+            hasMedia: null,
+          }))
+      );
+
+      const socket = getSocket();
+      socket.emit("message:delete", { messageId, chatId });
+    },
+    [queryClient]
+  );
+}
+
+export function useToggleStarMessage() {
+  const queryClient = useQueryClient();
+
+  return useCallback(
+    async (messageId: string, chatId: string) => {
+      // Optimistically toggle starred flag in messages cache
+      queryClient.setQueryData<InfiniteData<MessagesPageResponse>>(
+        chatKeys.messages(chatId),
+        (oldData) =>
+          patchMessageInPages(oldData, messageId, (m) => ({
+            ...m,
+            starred: !m.starred,
+          }))
+      );
+
+      try {
+        const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+        const res = await fetch(
+          `${apiBase}/api/v1/chats/${chatId}/messages/${messageId}/star`,
+          {
+            method: "POST",
+            headers: getAuthHeaders(),
+            credentials: "include",
+          }
+        );
+        if (res.ok) {
+          queryClient.invalidateQueries({
+            queryKey: [...chatKeys.all, "starred"],
+          });
+        }
+      } catch {
+        // Ignore error
+      }
+    },
+    [queryClient]
+  );
+}
+
+export function useForwardMessages() {
+  const queryClient = useQueryClient();
+
+  return useCallback(
+    async (params: {
+      messageIds: string[];
+      targetChatIds?: string[];
+      targetUserIds?: string[];
+    }) => {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+      const res = await fetch(`${apiBase}/api/v1/chats/forward`, {
+        method: "POST",
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(params),
+      });
+      if (res.ok) {
+        queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
+      }
+      return res.ok;
+    },
+    [queryClient]
   );
 }

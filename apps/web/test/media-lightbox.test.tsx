@@ -25,6 +25,10 @@ vi.mock("../src/lib/api/chatQueries", () => ({
       },
     ],
   }),
+  useChats: () => ({ data: [] }),
+  useToggleStarMessage: () => vi.fn(),
+  useReactToMessage: () => vi.fn(),
+  useForwardMessages: () => vi.fn(),
 }));
 
 describe("Fullscreen Media Lightbox Viewer Seam", () => {

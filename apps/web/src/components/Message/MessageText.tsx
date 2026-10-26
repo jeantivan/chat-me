@@ -11,6 +11,7 @@ import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 
 import { baseConfig } from "@/editor/baseConfig";
 
+import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 import mc from "@/lib/utils/mergeClassnames";
 
 type RootProps = {
@@ -44,9 +45,28 @@ function isValidLexicalJson(str: string): boolean {
 
 type Props = {
   body: string;
+  deleted?: boolean;
   className?: string;
 };
-export function MessageText({ body, className }: Props) {
+export function MessageText({ body, deleted, className }: Props) {
+  const isTombstone = Boolean(deleted) || body === DELETED_MESSAGE_TOMBSTONE;
+
+  if (isTombstone) {
+    return (
+      <div className="py-1 px-2">
+        <div
+          data-testid="tombstone-message"
+          className={mc(
+            "whitespace-pre-wrap break-words leading-tight italic text-neutral-500 dark:text-neutral-400",
+            className
+          )}
+        >
+          {body}
+        </div>
+      </div>
+    );
+  }
+
   if (!isValidLexicalJson(body)) {
     return (
       <div className="py-1 px-2">

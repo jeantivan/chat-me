@@ -134,6 +134,8 @@ export interface ChatSummary {
   unreadCount?: number;
 }
 
+export const DELETED_MESSAGE_TOMBSTONE = "This message was deleted";
+
 export interface MessagePayload {
   id: string;
   chatId: string;
@@ -143,6 +145,7 @@ export interface MessagePayload {
   time: string; // ISO string
   status: DeliveryStatus;
   starred: boolean;
+  deleted?: boolean;
   hasMedia: MediaPayload | null;
   reactions: Array<{ owner: string; type: string }>;
 }
@@ -179,6 +182,21 @@ export interface ClientToServerEvents {
     chatId: string;
     lastMessageId: string;
   }) => void;
+  "message:reaction": (
+    payload: {
+      messageId: string;
+      chatId: string;
+      emoji: string | null;
+    },
+    callback?: (ack: { success: boolean; error?: string }) => void
+  ) => void;
+  "message:delete": (
+    payload: {
+      messageId: string;
+      chatId: string;
+    },
+    callback?: (ack: { success: boolean; error?: string }) => void
+  ) => void;
   "chat:typing": (payload: {
     chatId: string;
     isTyping: boolean;
@@ -205,6 +223,15 @@ export interface ServerToClientEvents {
   "message:new": (message: MessagePayload) => void;
   "message:status_changed": (payload: ReceiptStatusPayload) => void;
   "receipt:updated": (payload: ReceiptStatusPayload) => void;
+  "message:reaction_updated": (payload: {
+    messageId: string;
+    chatId: string;
+    reactions: Array<{ owner: string; type: string }>;
+  }) => void;
+  "message:deleted": (payload: {
+    messageId: string;
+    chatId: string;
+  }) => void;
   "chat:typing_updated": (payload: {
     chatId: string;
     userId: string;

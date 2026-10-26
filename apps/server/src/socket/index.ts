@@ -7,6 +7,7 @@ import {
   chatParticipants,
   messages,
   messageReceipts,
+  messageReactions,
   mediaAttachments,
   users,
 } from "../db/schema.js";
@@ -417,6 +418,141 @@ export function setupSocketServer(
         }
       } catch (err) {
         app.log.error({ err, chatId, lastMessageId }, "Error processing read receipt");
+      }
+    });
+
+    // React or toggle reaction on message
+    socket.on("message:reaction", async ({ messageId, chatId, emoji }, callback) => {
+      try {
+        const participants = await app.db
+          .select({ userId: chatParticipants.userId })
+          .from(chatParticipants)
+          .where(eq(chatParticipants.chatId, chatId));
+
+        const isParticipant = participants.some((p) => p.userId === userId);
+        if (!isParticipant) {
+          if (callback) callback({ success: false, error: "Forbidden" });
+          return;
+        }
+
+        const msgRows = await app.db
+          .select({ id: messages.id })
+          .from(messages)
+          .where(and(eq(messages.id, messageId), eq(messages.chatId, chatId)))
+          .limit(1);
+
+        if (msgRows.length === 0) {
+          if (callback) callback({ success: false, error: "Message not found" });
+          return;
+        }
+
+        if (!emoji) {
+          await app.db
+            .delete(messageReactions)
+            .where(
+              and(
+                eq(messageReactions.messageId, messageId),
+                eq(messageReactions.userId, userId)
+              )
+            );
+        } else {
+          await app.db
+            .insert(messageReactions)
+            .values({
+              messageId,
+              userId,
+              emoji,
+              createdAt: new Date(),
+            })
+            .onConflictDoUpdate({
+              target: [messageReactions.messageId, messageReactions.userId],
+              set: {
+                emoji,
+                createdAt: new Date(),
+              },
+            });
+        }
+
+        const reactionRows = await app.db
+          .select()
+          .from(messageReactions)
+          .where(eq(messageReactions.messageId, messageId));
+
+        const reactions = reactionRows.map((r) => ({
+          owner: r.userId,
+          type: r.emoji,
+        }));
+
+        if (callback) callback({ success: true });
+
+        broadcastToChatAndParticipants(
+          io,
+          chatId,
+          participants,
+          "message:reaction_updated",
+          {
+            messageId,
+            chatId,
+            reactions,
+          }
+        );
+      } catch (err) {
+        app.log.error({ err, messageId, chatId, userId }, "Error handling message:reaction");
+        if (callback) callback({ success: false, error: "Failed to update reaction" });
+      }
+    });
+
+    // Soft-delete message ("Delete for everyone")
+    socket.on("message:delete", async ({ messageId, chatId }, callback) => {
+      try {
+        const msgRows = await app.db
+          .select({
+            id: messages.id,
+            senderId: messages.senderId,
+            chatId: messages.chatId,
+          })
+          .from(messages)
+          .where(and(eq(messages.id, messageId), eq(messages.chatId, chatId)))
+          .limit(1);
+
+        if (msgRows.length === 0) {
+          if (callback) callback({ success: false, error: "Message not found" });
+          return;
+        }
+
+        if (msgRows[0].senderId !== userId) {
+          if (callback) callback({ success: false, error: "Forbidden: Only sender can delete message" });
+          return;
+        }
+
+        const now = new Date();
+        await app.db
+          .update(messages)
+          .set({
+            deletedAt: now,
+          })
+          .where(eq(messages.id, messageId));
+
+        if (callback) callback({ success: true });
+
+        const participants = await app.db
+          .select({ userId: chatParticipants.userId })
+          .from(chatParticipants)
+          .where(eq(chatParticipants.chatId, chatId));
+
+        broadcastToChatAndParticipants(
+          io,
+          chatId,
+          participants,
+          "message:deleted",
+          {
+            messageId,
+            chatId,
+          }
+        );
+      } catch (err) {
+        app.log.error({ err, messageId, chatId, userId }, "Error handling message:delete");
+        if (callback) callback({ success: false, error: "Failed to delete message" });
       }
     });
 

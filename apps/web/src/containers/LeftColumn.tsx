@@ -15,6 +15,9 @@ import { NewChat } from "@/components/NewChat";
 import { NewGroup } from "@/components/NewGroup";
 import { ArchivedChats } from "@/components/ArchivedChats";
 import { Theme } from "@/components/Configuration/Theme";
+import { StarredMessages } from "@/components/Chat/StarredMessages";
+
+const GlobalStarredMessages = () => <StarredMessages isLeftDrawer={true} />;
 
 const elements: LeftDrawerElementProps[] = [
   {
@@ -66,6 +69,11 @@ const elements: LeftDrawerElementProps[] = [
     title: "Chats archivados",
     option: "ARCHIVED_CHATS",
     Component: ArchivedChats,
+  },
+  {
+    title: "Mensajes destacados",
+    option: "STARRED_MESSAGES",
+    Component: GlobalStarredMessages,
   },
 ];
 

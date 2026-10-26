@@ -12,7 +12,7 @@ type MessageProps = {
   senderName?: string;
 };
 export const Message = memo(function MessageRoot(props: MessageProps) {
-  const { body, hasMedia } = props.message;
+  const { body, deleted, hasMedia } = props.message;
   const openMediaMessage = useStore((state) => state.openMediaMessage);
 
   return (
@@ -25,7 +25,7 @@ export const Message = memo(function MessageRoot(props: MessageProps) {
           }}
         />
       )}
-      {body && <MessageText body={body} />}
+      {(body || deleted) && <MessageText body={body} deleted={deleted} />}
     </MessageContainer>
   );
 });

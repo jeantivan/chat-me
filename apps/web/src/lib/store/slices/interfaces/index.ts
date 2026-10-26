@@ -2,7 +2,6 @@ import {
   TChat,
   TMessage,
   TProfile,
-  TReaction,
   LeftDrawerContentOptions,
   RightDrawerContentOptions,
   TNotifications,
@@ -47,17 +46,6 @@ export interface ChatSlice {
   archiveChat: (chatId: string) => void;
 }
 
-// Interface para las acciones de los mensajes
-export interface MessageSlice {
-  addMessage: (message: TMessage) => void;
-  deleteMessage: (message: TMessage) => void;
-  starMessage: (message: TMessage) => void;
-  addReaction: (message: TMessage, reaction: TReaction) => void;
-  changeReaction: (message: TMessage, reaction: TReaction) => void;
-  deleteReaction: (message: TMessage) => void;
-  forwardMessages: (messages: TMessage[], chatIds: TUser[]) => void;
-}
-
 export interface LeftDrawerSlice {
   leftDrawer: LeftDrawerContentOptions | null;
   leftDrawerGoTo: (to: LeftDrawerContentOptions) => void;
@@ -87,7 +75,6 @@ export interface StoreSlice
   extends ProfileSlice,
     CurrentChatIdSlice,
     ChatSlice,
-    MessageSlice,
     MediaMessageSlice,
     LeftDrawerSlice,
     RightDrawerSlice,

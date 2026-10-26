@@ -107,6 +107,7 @@ export function Chat({ chatId }: { chatId: string }) {
       time: m.time,
       status: m.status,
       starred: m.starred,
+      deleted: m.deleted,
       hasMedia: m.hasMedia,
       reactions: (m.reactions || []) as any,
     }));

@@ -101,43 +101,47 @@ const mockGroupSummary: ChatSummary = {
   unreadCount: 0,
 };
 
-vi.mock("../src/lib/api/chatQueries", () => ({
-  useChats: () => ({
-    data: [mockGroupSummary],
-  }),
-  useContacts: () => ({
-    data: [
-      {
-        userId: "user-alice-1",
-        contactUserId: "user-bob-2",
-        nickname: "Bob Dev",
-        createdAt: "2026-10-01T00:00:00.000Z",
-        contact: {
-          id: "user-bob-2",
-          email: "bob@example.com",
-          name: "Bob Dev",
-          bio: "TypeScript enthusiast",
-          pictureUrl: "https://example.com/bob.png",
-          createdAt: "2026-10-02T00:00:00.000Z",
+vi.mock("../src/lib/api/chatQueries", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../src/lib/api/chatQueries")>();
+  return {
+    ...actual,
+    useChats: () => ({
+      data: [mockGroupSummary],
+    }),
+    useContacts: () => ({
+      data: [
+        {
+          userId: "user-alice-1",
+          contactUserId: "user-bob-2",
+          nickname: "Bob Dev",
+          createdAt: "2026-10-01T00:00:00.000Z",
+          contact: {
+            id: "user-bob-2",
+            email: "bob@example.com",
+            name: "Bob Dev",
+            bio: "TypeScript enthusiast",
+            pictureUrl: "https://example.com/bob.png",
+            createdAt: "2026-10-02T00:00:00.000Z",
+          },
         },
-      },
-      {
-        userId: "user-alice-1",
-        contactUserId: "user-charlie-3",
-        nickname: "Charlie Designer",
-        createdAt: "2026-10-01T00:00:00.000Z",
-        contact: {
-          id: "user-charlie-3",
-          email: "charlie@example.com",
-          name: "Charlie Designer",
-          bio: "UI & UX",
-          pictureUrl: "https://example.com/charlie.png",
-          createdAt: "2026-10-03T00:00:00.000Z",
+        {
+          userId: "user-alice-1",
+          contactUserId: "user-charlie-3",
+          nickname: "Charlie Designer",
+          createdAt: "2026-10-01T00:00:00.000Z",
+          contact: {
+            id: "user-charlie-3",
+            email: "charlie@example.com",
+            name: "Charlie Designer",
+            bio: "UI & UX",
+            pictureUrl: "https://example.com/charlie.png",
+            createdAt: "2026-10-03T00:00:00.000Z",
+          },
         },
-      },
-    ],
-  }),
-}));
+      ],
+    }),
+  };
+});
 
 describe("Frontend Group Chat UI & Participant Management Seam", () => {
   let queryClient: QueryClient;

@@ -69,6 +69,7 @@ export type TMessage = {
   chatId: string; // Referencia a un chat id, solo visual
   owner: string; // Referencia a un id de usuario
   starred: boolean;
+  deleted?: boolean;
   forwarded: boolean;
   time: string;
   status: "idle" | "send" | "received" | "read";
@@ -118,7 +119,8 @@ export type LeftDrawerContentOptions =
   | "SHORTCUTS"
   | "NEW_CHAT"
   | "NEW_GROUP"
-  | "ARCHIVED_CHATS";
+  | "ARCHIVED_CHATS"
+  | "STARRED_MESSAGES";
 
 export type RightDrawerContentOptions =
   | "CONTACT_INFO"

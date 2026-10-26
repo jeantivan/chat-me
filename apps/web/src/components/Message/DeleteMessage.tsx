@@ -6,7 +6,7 @@ import {
   AlertDialogCancel,
   AlertDialogTitle,
 } from "@/components/ui/AlertDialog";
-import useStore from "@/lib/store";
+import { useDeleteMessage } from "@/lib/api/chatQueries";
 import { TMessage } from "@/lib/types";
 
 type DeleteMessageProps = {
@@ -20,7 +20,7 @@ export function DeleteMessage({
   open,
   openChange,
 }: DeleteMessageProps) {
-  const deleteMessage = useStore((state) => state.deleteMessage);
+  const deleteMessageServer = useDeleteMessage();
 
   return (
     <AlertDialogRoot open={open} onOpenChange={openChange}>
@@ -41,7 +41,7 @@ export function DeleteMessage({
               <Button
                 variant="filled"
                 onClick={() => {
-                  deleteMessage(message);
+                  deleteMessageServer(message.id, message.chatId);
                 }}
               >
                 Eliminar mensaje

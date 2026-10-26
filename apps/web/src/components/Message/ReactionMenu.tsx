@@ -9,8 +9,7 @@ import {
 } from "@/components/ui/Menu";
 import mc from "@/lib/utils/mergeClassnames";
 import { EMOJI_IMAGES_PATH, REACTIONS } from "@/lib/utils/constants";
-import useStore from "@/lib/store";
-import { useUserId } from "@/lib/hooks";
+import { useReactToMessage } from "@/lib/api/chatQueries";
 import { ReactionKeys, TMessage, TReaction } from "@/lib/types";
 
 const itemVariants = {
@@ -68,14 +67,7 @@ export function ReactionMenu({
   onOpenChange
 }: ReactionMenuProps) {
   const [open, setOpen] = useState(false);
-  const userId = useUserId();
-  const { addReaction, changeReaction, deleteReaction } = useStore(
-    ({ addReaction, changeReaction, deleteReaction }) => ({
-      addReaction,
-      changeReaction,
-      deleteReaction
-    })
-  );
+  const reactToMessage = useReactToMessage();
 
   return (
     <MenuRoot
@@ -108,19 +100,8 @@ export function ReactionMenu({
                 type="single"
                 value={ownReaction?.type}
                 onValueChange={(newValue) => {
-                  const reaction: TReaction = {
-                    owner: userId,
-                    type: newValue as TReaction["type"]
-                  };
-
-                  if (!ownReaction) {
-                    addReaction(message, reaction);
-                  } else if (newValue === "") {
-                    deleteReaction(message);
-                  } else {
-                    changeReaction(message, reaction);
-                  }
-
+                  const emojiToSend = newValue === "" ? null : newValue;
+                  reactToMessage(message.id, message.chatId, emojiToSend);
                   setOpen(false);
                 }}
                 className="flex"

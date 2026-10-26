@@ -6,7 +6,8 @@ import {
   MenuItem,
   MenuTrigger,
 } from "@/components/ui/Menu";
-import useStore from "@/lib/store";
+import { useUserId } from "@/lib/hooks";
+import { useToggleStarMessage } from "@/lib/api/chatQueries";
 import { TMessage } from "@/lib/types";
 import { ForwardMessages } from "../ForwardMessages";
 
@@ -25,7 +26,9 @@ export function Menu({
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [forwardMessagesDialog, setForwardMessagesDialog] = useState(false);
 
-  const starMessage = useStore((state) => state.starMessage);
+  const userId = useUserId();
+  const isOwnMsg = message.owner === userId;
+  const toggleStarServer = useToggleStarMessage();
 
   return (
     <MenuRoot
@@ -51,19 +54,21 @@ export function Menu({
           </MenuItem>
           <MenuItem
             onClick={() => {
-              starMessage(message);
+              toggleStarServer(message.id, message.chatId);
             }}
           >
             {message.starred ? "No destacar" : "Destacar"}
           </MenuItem>
-          <MenuItem
-            onClick={(e) => {
-              e.stopPropagation();
-              setDeleteDialog(true);
-            }}
-          >
-            Eliminar
-          </MenuItem>
+          {isOwnMsg && (
+            <MenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                setDeleteDialog(true);
+              }}
+            >
+              Eliminar
+            </MenuItem>
+          )}
         </MenuContent>
       )}
       <DeleteMessage

@@ -6,6 +6,8 @@ import {
   Check,
   LogOut,
   Users,
+  Star,
+  ChevronRight,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -33,6 +35,7 @@ interface GroupInfoDrawerProps {
 export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
   const queryClient = useQueryClient();
   const closeRightDrawer = useStore((state) => state.closeRightDrawer);
+  const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
   const currentUserId = useUserId();
 
   const { data: serverContacts } = useContacts();
@@ -323,6 +326,20 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
                   onRemove={handleRemove}
                 />
               ))}
+            </div>
+          </section>
+
+          {/* Starred Messages Section */}
+          <section className="shadow bg-background-3">
+            <div
+              onClick={() => rightDrawerGoTo("STARRED_MESSAGES")}
+              className="flex items-center justify-between py-4 px-6 text-background-12 hover:bg-background-4 cursor-pointer transition-colors"
+            >
+              <div className="flex items-center gap-4">
+                <Star className="w-6 h-6 text-background-11" />
+                <span className="text-base">Mensajes destacados</span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-background-11" />
             </div>
           </section>
 
