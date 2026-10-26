@@ -18,3 +18,8 @@ Canonical 5-role defaults (`needs-triage`, `needs-info`, `ready-for-agent`, `rea
 ### Domain docs
 
 Single-context repo layout (`GLOSSARY.md` + `docs/adr/` at repo root). See `docs/agents/domain.md`.
+
+### CI/CD & GitHub Actions
+
+Enforced via GitHub Actions (`.github/workflows/ci.yml`). See `docs/agents/ci-cd.md`.
+All pipeline gates must pass cleanly before merging or completing tickets.

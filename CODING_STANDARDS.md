@@ -52,3 +52,31 @@ Engineering standards and conventions enforced across the `chat-me` monorepo. Th
 
 - **Database CLI (`psql`)**:
   - Always execute `psql` queries with `-P pager=off` (or `--no-align`) to avoid interactive terminal hangs in automated runs.
+
+---
+
+## 6. Continuous Integration & Delivery (CI/CD Rules with GitHub Actions)
+
+- **Mandatory Pipeline Gates**:
+  - Every pull request and push to `main` must pass the automated GitHub Actions verification workflow (`.github/workflows/ci.yml`).
+  - Required pipeline steps execute in strict deterministic order:
+    1. **Dependencies**: `pnpm install --frozen-lockfile` (ensures reproducible node_modules).
+    2. **Backing Services**: `docker compose up -d --wait` (PostgreSQL, Redis, MinIO health-checked).
+    3. **Schema Migrations**: `pnpm db:migrate` (ensures database schema is fully migrated before tests run).
+    4. **Static Linting**: `pnpm lint` (enforces ESLint, `lint:glossary`, and `lint:network`).
+    5. **Static Typecheck**: `pnpm typecheck` (verifies complete monorepo TypeScript compilation without emit).
+    6. **Unit & Integration Tests**: `pnpm test` (all server and web test suites run to completion).
+    7. **Production Build**: `pnpm build` (ensures all packages compile and bundle for production).
+    8. **Headless E2E Tests**: `pnpm --filter @chat-me/web test:e2e` (verifies user journeys in headless Chromium).
+- **Zero-Bypass Policy**:
+  - No skipping lint, typecheck, or tests via `--no-verify`, forced merges, or commented-out assertions.
+  - A branch or PR is not eligible for merge if any CI check fails.
+- **Workflow Security & Resource Hygiene**:
+  - **Least Privilege**: Workflows must explicitly declare `permissions: contents: read` (or the minimal required scope).
+  - **Concurrency Cancellation**: Workflows must specify concurrency groups with `cancel-in-progress: true` for PR branches to cancel redundant runs upon new commits.
+  - **Explicit Timeouts**: Every workflow job must define `timeout-minutes` (max 15 minutes) to prevent runaway hung processes.
+  - **Clean Container Teardown**: Backing service containers must be torn down cleanly (`docker compose down -v`) in an `always()` post-step.
+- **Debuggability & Artifact Retention**:
+  - E2E test failures must upload Playwright traces and test report artifacts (`apps/web/playwright-report/`) via `actions/upload-artifact` with a 7-day retention period.
+- **Branch Protection**:
+  - `main` requires all CI status checks to pass and linear history before merge.
