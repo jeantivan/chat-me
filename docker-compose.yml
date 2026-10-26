@@ -53,12 +53,10 @@ services:
     container_name: chat-me-minio-init
     volumes:
       - minio_data:/data
-    entrypoint: >
-      /bin/sh -c "
-      mkdir -p /data/chat-media
-      chmod -R 777 /data
-      echo 'MinIO chat-media bucket initialized.'
-      "
+    entrypoint:
+      - /bin/sh
+      - -c
+      - "mkdir -p /data/chat-media && chmod -R 777 /data && echo 'MinIO chat-media bucket initialized.'"
 
 volumes:
   postgres_data:
