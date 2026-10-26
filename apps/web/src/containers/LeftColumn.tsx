@@ -12,6 +12,7 @@ import { Privacy } from "@/components/Configuration/Privacy";
 import { SolInfo } from "@/components/Configuration/SolInfo";
 import { Help } from "@/components/Configuration/Help";
 import { NewChat } from "@/components/NewChat";
+import { NewGroup } from "@/components/NewGroup";
 import { ArchivedChats } from "@/components/ArchivedChats";
 import { Theme } from "@/components/Configuration/Theme";
 
@@ -55,6 +56,11 @@ const elements: LeftDrawerElementProps[] = [
     title: "Chat nuevo",
     option: "NEW_CHAT",
     Component: NewChat,
+  },
+  {
+    title: "Nuevo grupo",
+    option: "NEW_GROUP",
+    Component: NewGroup,
   },
   {
     title: "Chats archivados",

@@ -2,6 +2,7 @@ import type { ChatSummary } from "@chat-me/shared";
 import type { TChat, TMessage } from "@/lib/types";
 
 export function toUiChat(summary: ChatSummary, currentUserId?: string): TChat {
+  const isGroup = summary.type === "group";
   const otherParticipant =
     summary.participants.find((p) => p.userId !== currentUserId) ||
     summary.participants[0];
@@ -26,17 +27,32 @@ export function toUiChat(summary: ChatSummary, currentUserId?: string): TChat {
       ]
     : [];
 
+  const participants = isGroup
+    ? summary.participants.map((p) => ({
+        id: p.user?.id || p.userId,
+        name: p.user?.name || "Participant",
+        bio: p.user?.bio || "",
+        phone: p.user?.phone || "",
+        picture: p.user?.pictureUrl || "",
+        role: p.role,
+      }))
+    : [
+        {
+          id: otherParticipant?.user?.id || "",
+          name: otherParticipant?.user?.name || summary.title || "Chat",
+          bio: otherParticipant?.user?.bio || "",
+          phone: otherParticipant?.user?.phone || "",
+          picture: otherParticipant?.user?.pictureUrl || "",
+          role: otherParticipant?.role,
+        },
+      ];
+
   return {
     id: summary.id,
-    participants: [
-      {
-        id: otherParticipant?.user?.id || "",
-        name: otherParticipant?.user?.name || summary.title || "Chat",
-        bio: otherParticipant?.user?.bio || "",
-        phone: otherParticipant?.user?.phone || "",
-        picture: otherParticipant?.user?.pictureUrl || "",
-      },
-    ],
+    type: summary.type,
+    title: summary.title,
+    pictureUrl: summary.pictureUrl,
+    participants,
     pinned: participantSummary?.pinned || false,
     muted: participantSummary?.muted || false,
     archived: participantSummary?.archived || false,

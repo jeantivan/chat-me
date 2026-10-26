@@ -9,6 +9,7 @@ type MessageProps = {
   isOwnMsg: boolean;
   hasTail: boolean;
   message: TMessage;
+  senderName?: string;
 };
 export const Message = memo(function MessageRoot(props: MessageProps) {
   const { body, hasMedia } = props.message;

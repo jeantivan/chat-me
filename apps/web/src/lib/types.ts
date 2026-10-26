@@ -4,6 +4,7 @@ export type TUser = {
   bio: string;
   phone: string;
   picture: string;
+  role?: "admin" | "member";
 };
 
 export type TProfile = {
@@ -48,6 +49,9 @@ export type TPrivacy = {
 
 export type TChat = {
   id: string;
+  type?: "direct" | "group";
+  title?: string | null;
+  pictureUrl?: string | null;
   participants: TUser[]; // Uno o multiples usuarios pertenecientes al chat
   pinned: boolean;
   muted: boolean;
@@ -102,6 +106,7 @@ export type LeftDrawerContentOptions =
   | "OPTIONS"
   | "SHORTCUTS"
   | "NEW_CHAT"
+  | "NEW_GROUP"
   | "ARCHIVED_CHATS";
 
 export type RightDrawerContentOptions =

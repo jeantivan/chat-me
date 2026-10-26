@@ -4,6 +4,7 @@ import {
   LogOut,
   MoreVertical,
   Settings,
+  Users,
 } from "lucide-react";
 import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from "./ui/Menu";
 import useStore from "@/lib/store";
@@ -20,6 +21,14 @@ export function ShowMoreMenu() {
         <IconButton icon={MoreVertical} label="Mostrar más" />
       </MenuTrigger>
       <MenuContent align="end" className="w-60">
+        <MenuItem
+          icon={Users}
+          onClick={() => {
+            leftDrawerGoTo("NEW_GROUP");
+          }}
+        >
+          Nuevo grupo
+        </MenuItem>
         <MenuItem
           icon={Archive}
           onClick={() => {

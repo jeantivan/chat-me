@@ -153,7 +153,13 @@ describe("Socket.IO Ephemeral Typing & Presence Seam", () => {
       status: "online" | "offline";
       lastSeenAt?: string;
     }>((resolve) => {
-      clientA.once("presence:updated", (data) => resolve(data));
+      const listener = (data: any) => {
+        if (data.userId === userBId) {
+          clientA.off("presence:updated", listener);
+          resolve(data);
+        }
+      };
+      clientA.on("presence:updated", listener);
     });
 
     clientB.disconnect();

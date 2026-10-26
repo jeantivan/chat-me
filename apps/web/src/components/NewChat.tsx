@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import map from "lodash/map";
 import groupBy from "lodash/groupBy";
 import { useQueryClient } from "@tanstack/react-query";
+import { Users } from "lucide-react";
 
 import { ScrollArea } from "./ui/ScrollArea";
 import { ContactItem } from "./ContactItem";
@@ -17,6 +18,7 @@ export function NewChat() {
   const queryClient = useQueryClient();
   const setCurrentChatId = useStore((state) => state.setCurrentChatId);
   const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
+  const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
   const { data: serverContacts } = useContacts();
 
   const allContacts: TUser[] = useMemo(() => {
@@ -68,6 +70,25 @@ export function NewChat() {
   return (
     <ScrollArea type="auto">
       <div className="py-4 px-2 text-background-12 grid gap-4">
+        <button
+          onClick={() => {
+            leftDrawerGoTo("NEW_GROUP");
+          }}
+          className="flex items-center gap-4 p-3 rounded-xl hover:bg-background-4 transition-colors text-left"
+        >
+          <div className="w-12 h-12 rounded-full bg-primary-9 text-white flex items-center justify-center shrink-0">
+            <Users className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="font-medium text-base text-background-12">
+              Nuevo grupo
+            </div>
+            <div className="text-xs text-background-11">
+              Crea un grupo con múltiples contactos
+            </div>
+          </div>
+        </button>
+
         {contactGroupByFirstLetter.map(({ letter, contacts }) => {
           return (
             <div key={letter} className="grid gap-2">

@@ -7,3 +7,4 @@ export { SearchChats } from "./SearchChats";
 export { LeftDrawer, LeftDrawerElement } from "./LeftDrawer";
 export { RightDrawer, RightDrawerElement } from "./RightDrawer";
 export { Message } from "./Message";
+export { NewGroup } from "./NewGroup";

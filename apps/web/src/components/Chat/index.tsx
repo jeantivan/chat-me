@@ -183,6 +183,8 @@ export function Chat({ chatId }: { chatId: string }) {
         <Header chat={activeChat} />
         <Messages
           messages={messages}
+          isGroup={activeChat.type === "group"}
+          participants={activeChat.participants}
           onScrollTop={() => {
             if (hasNextPage && !isFetchingNextPage) {
               fetchNextPage();

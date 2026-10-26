@@ -63,7 +63,7 @@ const Content = ({ chatId }: { chatId: string }) => {
 
 export function Header({ chat }: { chat: TChat }) {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
-  const { name, picture, isTyping, presence } = useChatCounterpart(chat);
+  const { name, picture, isTyping, presence, isGroup } = useChatCounterpart(chat);
 
   return (
     <header className="chat-header bg-background-2 shadow-lg">
@@ -91,6 +91,13 @@ export function Header({ chat }: { chat: TChat }) {
                 className="text-xs text-primary-9 font-medium italic leading-tight animate-pulse"
               >
                 typing...
+              </span>
+            ) : isGroup ? (
+              <span
+                data-testid="header-participant-summary"
+                className="text-xs text-background-11 line-clamp-1 leading-tight"
+              >
+                {chat.participants.map((p) => p.name).join(", ")}
               </span>
             ) : presence?.status === "online" ? (
               <span

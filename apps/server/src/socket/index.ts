@@ -2,7 +2,7 @@ import { Server as SocketIOServer, Socket } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
 import { Redis } from "ioredis";
 import { FastifyInstance } from "fastify";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, inArray } from "drizzle-orm";
 import {
   chatParticipants,
   messages,
@@ -34,6 +34,50 @@ function broadcastToChatAndParticipants(
 ) {
   const rooms = [`chat:${chatId}`, ...participants.map((p) => `user:${p.userId}`)];
   io.to(rooms).emit(event as any, payload);
+}
+
+async function computeAggregatedStatus(
+  app: FastifyInstance,
+  chatId: string,
+  messageId: string,
+  senderId: string
+): Promise<"send" | "received" | "read"> {
+  const otherParticipants = await app.db
+    .select({ userId: chatParticipants.userId })
+    .from(chatParticipants)
+    .where(
+      and(
+        eq(chatParticipants.chatId, chatId),
+        sql`${chatParticipants.userId} <> ${senderId}`
+      )
+    );
+
+  if (otherParticipants.length === 0) return "send";
+
+  const otherIds = otherParticipants.map((p) => p.userId);
+  const receipts = await app.db
+    .select({ userId: messageReceipts.userId, status: messageReceipts.status })
+    .from(messageReceipts)
+    .where(
+      and(
+        eq(messageReceipts.messageId, messageId),
+        inArray(messageReceipts.userId, otherIds)
+      )
+    );
+
+  const isAllRead =
+    receipts.length === otherIds.length &&
+    receipts.every((r) => r.status === "read");
+
+  if (isAllRead) return "read";
+
+  const isAllReceived =
+    receipts.length === otherIds.length &&
+    receipts.every((r) => r.status === "received" || r.status === "read");
+
+  if (isAllReceived) return "received";
+
+  return "send";
 }
 
 export function setupSocketServer(
@@ -266,7 +310,14 @@ export function setupSocketServer(
               },
             });
 
-          const statusPayload = {
+          const aggregatedStatus = await computeAggregatedStatus(
+            app,
+            chatId,
+            msgId,
+            msg[0].senderId
+          );
+
+          const receiptPayload = {
             messageId: msgId,
             chatId,
             status: "received" as const,
@@ -278,16 +329,26 @@ export function setupSocketServer(
             io,
             chatId,
             participants,
-            "message:status_changed",
-            statusPayload
-          );
-          broadcastToChatAndParticipants(
-            io,
-            chatId,
-            participants,
             "receipt:updated",
-            statusPayload
+            receiptPayload
           );
+
+          if (aggregatedStatus !== "send") {
+            const statusPayload = {
+              messageId: msgId,
+              chatId,
+              status: aggregatedStatus,
+              userId: msg[0].senderId,
+              updatedAt: now.toISOString(),
+            };
+            broadcastToChatAndParticipants(
+              io,
+              chatId,
+              participants,
+              "message:status_changed",
+              statusPayload
+            );
+          }
         }
       } catch (err) {
         app.log.error({ err, chatId, messageIds }, "Error updating received receipt");
@@ -331,7 +392,7 @@ export function setupSocketServer(
 
         // Find unread messages sent by others in this chat up to targetDate (skipping already-read messages)
         const unreadMsgs = await app.db
-          .select({ id: messages.id })
+          .select({ id: messages.id, senderId: messages.senderId })
           .from(messages)
           .leftJoin(
             messageReceipts,
@@ -366,7 +427,14 @@ export function setupSocketServer(
               },
             });
 
-          const statusPayload = {
+          const aggregatedStatus = await computeAggregatedStatus(
+            app,
+            chatId,
+            msg.id,
+            msg.senderId
+          );
+
+          const receiptPayload = {
             messageId: msg.id,
             chatId,
             status: "read" as const,
@@ -378,16 +446,26 @@ export function setupSocketServer(
             io,
             chatId,
             participants,
-            "message:status_changed",
-            statusPayload
-          );
-          broadcastToChatAndParticipants(
-            io,
-            chatId,
-            participants,
             "receipt:updated",
-            statusPayload
+            receiptPayload
           );
+
+          if (aggregatedStatus !== "send") {
+            const statusPayload = {
+              messageId: msg.id,
+              chatId,
+              status: aggregatedStatus,
+              userId: msg.senderId,
+              updatedAt: now.toISOString(),
+            };
+            broadcastToChatAndParticipants(
+              io,
+              chatId,
+              participants,
+              "message:status_changed",
+              statusPayload
+            );
+          }
         }
       } catch (err) {
         app.log.error({ err, chatId, lastMessageId }, "Error processing read receipt");

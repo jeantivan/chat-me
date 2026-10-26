@@ -55,13 +55,15 @@ type ContainerProps = {
   hasTail: boolean;
   isOwnMsg: boolean;
   message: TMessage;
+  senderName?: string;
 };
 
 export function MessageContainer({
   children,
   isOwnMsg,
   hasTail,
-  message
+  message,
+  senderName,
 }: ContainerProps) {
   const { starred, status, time, reactions, hasMedia, forwarded } = message;
   const [showMenus, setShowMenus] = useState(false);
@@ -140,6 +142,14 @@ export function MessageContainer({
               )}
             >
               {forwarded && <Forwarded />}
+              {senderName && !isOwnMsg && (
+                <div
+                  data-testid="message-sender-name"
+                  className="px-2 pt-1 text-xs font-semibold text-primary-9 dark:text-primary-8 leading-tight"
+                >
+                  {senderName}
+                </div>
+              )}
               {children}
               <footer className="px-2 flex justify-end items-end gap-1">
                 <Reactions reactions={reactions} />

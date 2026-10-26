@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { Message } from "@/components/Message";
 
-import { TMessage } from "@/lib/types";
+import type { TMessage, TUser } from "@/lib/types";
 import { useCurrentChatId, useUserId } from "@/lib/hooks";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 
@@ -9,9 +9,17 @@ type MessagesProps = {
   messages: TMessage[];
   onScrollTop?: () => void;
   isLoadingMore?: boolean;
+  isGroup?: boolean;
+  participants?: TUser[];
 };
 
-export function Messages({ messages, onScrollTop, isLoadingMore }: MessagesProps) {
+export function Messages({
+  messages,
+  onScrollTop,
+  isLoadingMore,
+  isGroup = false,
+  participants = [],
+}: MessagesProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const userId = useUserId();
   const { currentChatId } = useCurrentChatId();
@@ -51,6 +59,10 @@ export function Messages({ messages, onScrollTop, isLoadingMore }: MessagesProps
           const isOwnMsg = userId === message.owner;
           const hasTail =
             i === 0 || isOwnMsg !== (userId === array[i - 1].owner);
+          const senderName =
+            isGroup && !isOwnMsg
+              ? participants.find((p) => p.id === message.owner)?.name
+              : undefined;
 
           return (
             <div key={message.id} className="px-[48px]">
@@ -58,6 +70,7 @@ export function Messages({ messages, onScrollTop, isLoadingMore }: MessagesProps
                 isOwnMsg={isOwnMsg}
                 hasTail={hasTail}
                 message={message}
+                senderName={senderName}
               />
             </div>
           );
