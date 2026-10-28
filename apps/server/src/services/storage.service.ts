@@ -3,6 +3,7 @@ import {
   PutObjectCommand,
   HeadBucketCommand,
   CreateBucketCommand,
+  PutBucketPolicyCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -35,6 +36,28 @@ export async function ensureBucketExists(): Promise<void> {
         // ignore if already created
       }
     }
+  }
+
+  try {
+    const policy = {
+      Version: "2012-10-17",
+      Statement: [
+        {
+          Effect: "Allow",
+          Principal: { AWS: ["*"] },
+          Action: ["s3:GetObject"],
+          Resource: [`arn:aws:s3:::${s3Bucket}/*`],
+        },
+      ],
+    };
+    await s3Client.send(
+      new PutBucketPolicyCommand({
+        Bucket: s3Bucket,
+        Policy: JSON.stringify(policy),
+      })
+    );
+  } catch {
+    // ignore if policy setting is unsupported on custom S3 provider
   }
 }
 

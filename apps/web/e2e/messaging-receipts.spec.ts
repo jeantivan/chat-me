@@ -1,7 +1,13 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Real-Time Direct Messaging & Status Receipts Progression", () => {
-  test("two simultaneous browser sessions verify real-time dispatch and receipt progression (idle -> send -> received -> read)", async ({
+// Valid 1x1 transparent PNG buffer for real browser canvas metadata extraction & S3/MinIO upload
+const ONE_BY_ONE_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+  "base64"
+);
+
+test.describe("Primary High Seam: Multi-User Real-Time Messaging, Receipts, Typing & Media Lightbox E2E", () => {
+  test("two simultaneous browser contexts verify messaging, receipt tick progression, typing indicators, and media lightbox", async ({
     browser,
   }) => {
     // 1. Create two isolated browser contexts
@@ -85,6 +91,57 @@ test.describe("Real-Time Direct Messaging & Status Receipts Progression", () => 
     // 10. Because Bob is viewing the message in active viewport, Bob's client emits message:ack_read
     // Alice's message status transitions to 'read' (double blue ticks)
     await expect(pageA.locator('[data-testid="message-status-read"]').last()).toBeVisible({ timeout: 10000 });
+
+    // 11. Verify real-time typing indicators:
+    // When Alice types in the composer, Bob sees the header typing indicator in real time
+    await pageA.click('[data-testid="message-input"]');
+    await pageA.keyboard.type("Checking typing indicator...");
+    await expect(pageB.getByTestId("header-typing-indicator")).toBeVisible({ timeout: 5000 });
+    await expect(pageB.getByTestId("header-typing-indicator")).toHaveText("typing...");
+
+    // Clear or send the typed message
+    await pageA.click('[data-testid="send-message-button"]');
+    await expect(pageB.locator(".chat-container").getByText("Checking typing indicator...")).toBeVisible({
+      timeout: 10000,
+    });
+
+    // 12. Verify Media Upload & Fullscreen Media Lightbox:
+    // Alice attaches a PNG image and sends it with a caption
+    const mediaCaption = `Playwright media upload ${timestamp}`;
+    const fileInput = pageA.locator('.chat-container input[type="file"]');
+    await fileInput.setInputFiles({
+      name: "e2e-photo.png",
+      mimeType: "image/png",
+      buffer: ONE_BY_ONE_PNG,
+    });
+
+    // Verify local preview thumbnail appears in Alice's composer before sending
+    await expect(pageA.locator('img[alt="e2e-photo.png"]')).toBeVisible({ timeout: 5000 });
+
+    await pageA.click('[data-testid="message-input"]');
+    await pageA.keyboard.type(mediaCaption);
+    await pageA.click('[data-testid="send-message-button"]');
+
+    // Bob receives the media message in real time
+    await expect(pageB.locator(".chat-container").getByText(mediaCaption)).toBeVisible({ timeout: 15000 });
+    const mediaAttachmentOnB = pageB.getByTestId("media-attachment").last();
+    await expect(mediaAttachmentOnB).toBeVisible({ timeout: 10000 });
+
+    // Bob clicks the media attachment to open the fullscreen Media Lightbox
+    await mediaAttachmentOnB.click();
+    const lightbox = pageB.getByTestId("media-lightbox");
+    await expect(lightbox).toBeVisible({ timeout: 5000 });
+    await expect(lightbox.getByText("Alice Playwright")).toBeVisible();
+    await expect(lightbox.getByText(mediaCaption)).toBeVisible();
+
+    // Verify zoom controls inside the Media Lightbox
+    await expect(lightbox.getByText("100%")).toBeVisible();
+    await lightbox.getByRole("button", { name: /acercar|zoom in/i }).click();
+    await expect(lightbox.getByText("125%")).toBeVisible();
+
+    // Close the Media Lightbox
+    await lightbox.getByRole("button", { name: /cerrar imagen/i }).click();
+    await expect(lightbox).toBeHidden();
 
     await contextA.close();
     await contextB.close();

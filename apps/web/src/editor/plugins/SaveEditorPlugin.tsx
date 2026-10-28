@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import {
   $getRoot,
@@ -11,7 +11,6 @@ import { mergeRegister } from "@lexical/utils";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { TRIM_EDITOR_COMMAND } from "./TrimEditorPlugin";
-import { useFilesToSend } from "@/components/SendFiles";
 
 export const SAVE_EDITOR_COMMAND = createCommand("SAVE_EDITOR_COMMAND");
 
@@ -21,12 +20,13 @@ export function SaveEditorPlugin({
   onSave: (editorState: string) => void;
 }) {
   const [editor] = useLexicalComposerContext();
-  const { files } = useFilesToSend();
+  const onSaveRef = useRef(onSave);
+  onSaveRef.current = onSave;
 
   const saveEditor = () => {
     const editorState = JSON.stringify(editor.getEditorState().toJSON());
 
-    onSave(editorState);
+    onSaveRef.current(editorState);
 
     editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
   };

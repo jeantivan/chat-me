@@ -1,4 +1,9 @@
-import type { Socket } from "socket.io-client";
+import { io as ioc, type Socket } from "socket.io-client";
+import type { FastifyInstance } from "fastify";
+import type {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from "@chat-me/shared";
 
 /**
  * Resilient socket event waiter that filters events by predicate and unregisters
@@ -36,4 +41,42 @@ export function waitForSocketEvent<T = any>(
 
     socket.on(event, handler);
   });
+}
+
+export async function registerTestUser(
+  app: FastifyInstance,
+  params: { email: string; password?: string; name: string }
+): Promise<{ userId: string; accessToken: string }> {
+  const res = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/register",
+    payload: {
+      email: params.email,
+      password: params.password || "Password123!",
+      name: params.name,
+    },
+  });
+  const data = res.json();
+  return {
+    userId: data.user.id,
+    accessToken: data.accessToken,
+  };
+}
+
+export async function connectTestSocket(
+  serverUrl: string,
+  token: string
+): Promise<Socket<ServerToClientEvents, ClientToServerEvents>> {
+  const socket: Socket<ServerToClientEvents, ClientToServerEvents> = ioc(
+    serverUrl,
+    {
+      auth: { token },
+      transports: ["websocket"],
+    }
+  );
+  await new Promise<void>((resolve, reject) => {
+    socket.once("connect", () => resolve());
+    socket.once("connect_error", (err) => reject(err));
+  });
+  return socket;
 }

@@ -1,10 +1,12 @@
 import "dotenv/config";
 import { buildApp } from "./app.js";
+import { ensureBucketExists } from "./services/storage.service.js";
 
 const PORT = Number(process.env.PORT) || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
 
 async function main() {
+  await ensureBucketExists().catch(() => {});
   const app = await buildApp();
 
   try {

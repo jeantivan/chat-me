@@ -76,4 +76,59 @@ describe("Client Upload Pipeline & Circular Progress Ring Seam", () => {
 
     expect(screen.queryByTestId("circular-progress-ring")).not.toBeInTheDocument();
   });
+
+  it("SaveEditorPlugin invokes the latest onSave callback when files state updates after mount", async () => {
+    const { LexicalComposer } = await import("@lexical/react/LexicalComposer");
+    const { RichTextPlugin } = await import("@lexical/react/LexicalRichTextPlugin");
+    const { ContentEditable } = await import("@lexical/react/LexicalContentEditable");
+    const LexicalErrorBoundary = (await import("@lexical/react/LexicalErrorBoundary")).default;
+    const { useLexicalComposerContext } = await import("@lexical/react/LexicalComposerContext");
+    const { SaveEditorPlugin, SAVE_EDITOR_COMMAND } = await import("../src/editor/plugins/SaveEditorPlugin");
+    const { baseConfig } = await import("../src/editor/baseConfig");
+
+    const initialOnSave = vi.fn();
+    const updatedOnSave = vi.fn();
+
+    function TriggerButton() {
+      const [editor] = useLexicalComposerContext();
+      return (
+        <button
+          data-testid="trigger-save"
+          onClick={() => editor.dispatchCommand(SAVE_EDITOR_COMMAND, undefined)}
+        >
+          Trigger
+        </button>
+      );
+    }
+
+    const { rerender } = render(
+      <LexicalComposer initialConfig={{ ...baseConfig, namespace: "TestSave" }}>
+        <RichTextPlugin
+          contentEditable={<ContentEditable />}
+          placeholder={null}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <SaveEditorPlugin onSave={initialOnSave} />
+        <TriggerButton />
+      </LexicalComposer>
+    );
+
+    // Rerender with updated onSave (simulating files added to Editor context)
+    rerender(
+      <LexicalComposer initialConfig={{ ...baseConfig, namespace: "TestSave" }}>
+        <RichTextPlugin
+          contentEditable={<ContentEditable />}
+          placeholder={null}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <SaveEditorPlugin onSave={updatedOnSave} />
+        <TriggerButton />
+      </LexicalComposer>
+    );
+
+    screen.getByTestId("trigger-save").click();
+
+    expect(updatedOnSave).toHaveBeenCalledTimes(1);
+    expect(initialOnSave).not.toHaveBeenCalled();
+  });
 });

@@ -25,6 +25,7 @@ export function ImageAndVideo({
 
   return (
     <div
+      data-testid="media-attachment"
       {...rest}
       className={mc(
         "relative mx-1 cursor-pointer overflow-hidden rounded",

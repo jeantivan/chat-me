@@ -6,24 +6,67 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   plugins: [react()],
   build: {
-    target: "esnext"
+    target: "esnext",
+    outDir: "dist",
+    assetsDir: "assets",
+    sourcemap: false,
+    minify: "esbuild",
+    cssMinify: true,
+    assetsInlineLimit: 4096,
+    chunkSizeWarningLimit: 550,
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (!id.includes("node_modules")) return undefined;
+          if (id.includes("/react/") || id.includes("/react-dom/") || id.includes("/scheduler/")) {
+            return "react-vendor";
+          }
+          if (id.includes("/@tanstack/")) {
+            return "tanstack-vendor";
+          }
+          if (id.includes("/lexical/") || id.includes("/@lexical/")) {
+            return "lexical-vendor";
+          }
+          if (
+            id.includes("/@radix-ui/") ||
+            id.includes("/framer-motion/") ||
+            id.includes("/lucide-react/") ||
+            id.includes("/@floating-ui/")
+          ) {
+            return "ui-vendor";
+          }
+          if (
+            id.includes("/socket.io-client/") ||
+            id.includes("/engine.io-client/") ||
+            id.includes("/lodash/") ||
+            id.includes("/dayjs/") ||
+            id.includes("/zustand/") ||
+            id.includes("/immer/") ||
+            id.includes("/blurhash/")
+          ) {
+            return "utils-vendor";
+          }
+          return undefined;
+        },
+      },
+    },
   },
   server: {
     port: 5173,
     proxy: {
       "/api": {
         target: "http://localhost:3001",
-        changeOrigin: true
+        changeOrigin: true,
       },
       "/socket.io": {
         target: "http://localhost:3001",
-        ws: true
-      }
-    }
+        ws: true,
+      },
+    },
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src")
-    }
-  }
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
 });

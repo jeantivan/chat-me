@@ -64,7 +64,10 @@ export function MediaMessageDialog({
         open={Boolean(message)}
         overlayClassName="bg-background-6/70"
       >
-        <div className="w-full h-screen grid grid-rows-[min-content_1fr_minmax(56px,_min-content)] gap-4 place-items-center py-4">
+        <div
+          data-testid="media-lightbox"
+          className="w-full h-screen grid grid-rows-[min-content_1fr_minmax(56px,_min-content)] gap-4 place-items-center py-4"
+        >
           <header className="w-full flex justify-between px-6">
             <div className="flex gap-4">
               <img
