@@ -227,6 +227,26 @@ export function useDeleteMessage() {
           }))
       );
 
+      queryClient.setQueryData<ChatSummary[]>(
+        chatKeys.lists(),
+        (oldChats) => {
+          if (!oldChats) return oldChats;
+          return oldChats.map((c) =>
+            c.id === chatId && c.lastMessage?.id === messageId
+              ? {
+                  ...c,
+                  lastMessage: {
+                    ...c.lastMessage,
+                    body: DELETED_MESSAGE_TOMBSTONE,
+                    deleted: true,
+                    hasMedia: null,
+                  },
+                }
+              : c
+          );
+        }
+      );
+
       const socket = getSocket();
       socket.emit("message:delete", { messageId, chatId });
     },

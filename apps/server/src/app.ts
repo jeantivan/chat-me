@@ -24,6 +24,23 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
     logger: process.env.NODE_ENV !== "test",
   });
 
+  app.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    (req, body: string, done) => {
+      if (!body || body.trim().length === 0) {
+        return done(null, {});
+      }
+      try {
+        const json = JSON.parse(body);
+        done(null, json);
+      } catch (err: any) {
+        err.statusCode = 400;
+        done(err, undefined);
+      }
+    }
+  );
+
   await app.register(cors, {
     origin: true,
     credentials: true,

@@ -62,7 +62,6 @@ export const authClient = {
   async refresh(): Promise<AuthResponse> {
     const res = await fetch(`${API_BASE}/api/v1/auth/refresh`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
     return handleResponse<AuthResponse>(res);

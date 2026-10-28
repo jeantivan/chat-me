@@ -5,10 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Messages } from "../src/components/Chat/Messages";
 import { StarredMessages } from "../src/components/Chat/StarredMessages";
 import { ForwardMessages } from "../src/components/ForwardMessages";
+import { LastMessage } from "../src/components/Message/LastMessage";
+import { ChatItem } from "../src/components/ChatItem";
 import { useSocketSync, chatKeys } from "../src/lib/socket/useSocketSync";
 import useStore from "../src/lib/store";
 import type { MessagePayload, MessagesPageResponse } from "@chat-me/shared";
-import type { TMessage } from "../src/lib/types";
+import type { TMessage, TChat } from "../src/lib/types";
 
 const mockSocketListeners: Record<string, Function[]> = {};
 const mockSocket = {
@@ -28,6 +30,12 @@ const mockSocket = {
 
 vi.mock("../src/lib/socket/socketClient", () => ({
   getSocket: () => mockSocket,
+}));
+
+vi.mock("../src/routes/router", () => ({
+  router: {
+    navigate: vi.fn(),
+  },
 }));
 
 vi.mock("../src/lib/auth/AuthContext", () => ({
@@ -301,5 +309,80 @@ describe("Frontend Message Reactions, Starred Messages, Deletion & Forwarding Se
     expect(reqBody.targetChatIds).toContain("group-chat-99");
 
     fetchSpy.mockRestore();
+  });
+
+  it("renders tombstone safely in LastMessage and ChatItem when a message is deleted without throwing SyntaxError", () => {
+    const deletedLastMsg: TMessage = {
+      id: "msg-del-last",
+      chatId: "chat-123",
+      owner: "user-alice-1",
+      body: "This message was deleted",
+      forwarded: false,
+      time: new Date().toISOString(),
+      status: "read",
+      starred: false,
+      deleted: true,
+      hasMedia: null,
+      reactions: [],
+    };
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LastMessage message={deletedLastMsg} hasUnreadMsg={false} />
+      </QueryClientProvider>
+    );
+
+    expect(screen.getByTestId("last-message-tombstone")).toHaveTextContent(
+      "This message was deleted"
+    );
+
+    const chatWithDeletedLastMsg: TChat = {
+      id: "chat-123",
+      participants: [
+        {
+          id: "user-bob-2",
+          name: "Bob Builder",
+          bio: "",
+          phone: "",
+          picture: "",
+        },
+      ],
+      pinned: false,
+      muted: false,
+      archived: false,
+      hasUnreadMsg: 0,
+      messages: [deletedLastMsg],
+    };
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <ChatItem chat={chatWithDeletedLastMsg} />
+      </QueryClientProvider>
+    );
+
+    expect(screen.getAllByText("This message was deleted").length).toBeGreaterThan(0);
+  });
+
+  it("renders plain-text non-Lexical-JSON message safely in LastMessage without throwing SyntaxError", () => {
+    const plainTextMsg: TMessage = {
+      id: "msg-plain-1",
+      chatId: "chat-123",
+      owner: "user-alice-1",
+      body: "Simple plain text message",
+      forwarded: false,
+      time: new Date().toISOString(),
+      status: "send",
+      starred: false,
+      hasMedia: null,
+      reactions: [],
+    };
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LastMessage message={plainTextMsg} hasUnreadMsg={false} />
+      </QueryClientProvider>
+    );
+
+    expect(screen.getByText("Simple plain text message")).toBeInTheDocument();
   });
 });

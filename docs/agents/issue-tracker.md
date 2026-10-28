@@ -48,10 +48,20 @@ Used by `/wayfinder`. The **map** is a single issue with **child** issues as tic
 ## Ticket completion
 
 When implementing an issue (`/implement <n>` or `/implement-spec`):
-1. **Verify**: Ensure `pnpm test`, `pnpm typecheck`, `pnpm lint`, and `pnpm build` pass cleanly.
-2. **Push**: Push committed changes to remote (`git push origin <branch>`).
-3. **Close**: Close the issue with completion comment (`gh issue close <n> --comment "..."`).
-A ticket is not done until the code is pushed and the issue is closed on GitHub.
+1. **Branch**: Create an isolated branch off latest `main`: `git checkout -b <type>/<n>-<short-slug>` (e.g., `feat/42-voice-player` or `fix/43-tombstone-crash`). Never commit directly to `main`.
+2. **Granularity Check**: Ensure the change remains granular (target diff < 200–300 lines of code, single responsibility). If a feature expands, decompose it into child sub-issues and handle them via discrete PRs.
+3. **Verify Locally**: Ensure `pnpm test`, `pnpm typecheck`, `pnpm lint`, and `pnpm build` pass cleanly.
+4. **Commit in English**: Use Conventional Commits (`git commit -m "<type>(<scope>): <summary in english>"`).
+5. **Push & Create PR**: Push the branch (`git push origin <branch>`) and submit a Pull Request using the template:
+   ```bash
+   gh pr create --title "<type>(<scope>): <summary>" --body "Closes #<n>"
+   ```
+6. **Merge via Squash**: Once the automated GitHub Actions CI workflow passes cleanly, merge the PR via squash and delete the feature branch:
+   ```bash
+   gh pr merge --squash --delete-branch
+   ```
+7. **Close Ticket**: Verify the issue is closed via GitHub's auto-close keyword or close it with `gh issue close <n> --comment "Merged via PR #<pr>"`.
+A ticket is not done until the code is merged to `main` via PR and the issue is closed on GitHub.
 
 ### Sandboxed Push Fallback
 
@@ -60,6 +70,6 @@ When operating in an agent session where `git push` or `gh` commands are denied 
 2. Do not retry `git push` repeatedly or stall the workflow.
 3. Provide the user with the exact copy-paste command to complete the remote operations manually:
    ```bash
-   git push origin <branch> && gh issue close <n> --comment "Implemented and verified in commit <hash>"
+   git push origin <branch> && gh pr create --title "<type>: <title>" --body "Closes #<n>"
    ```
 4. Output the ticket completion summary and hand off cleanly.
