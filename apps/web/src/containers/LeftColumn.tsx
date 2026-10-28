@@ -9,8 +9,7 @@ import { Profile } from "@/components/Configuration/Profile";
 import { Options } from "@/components/Configuration/Options";
 import { Notifications } from "@/components/Configuration/Notifications";
 import { Privacy } from "@/components/Configuration/Privacy";
-import { SolInfo } from "@/components/Configuration/SolInfo";
-import { Help } from "@/components/Configuration/Help";
+
 import { NewChat } from "@/components/NewChat";
 import { NewGroup } from "@/components/NewGroup";
 import { ArchivedChats } from "@/components/ArchivedChats";
@@ -45,16 +44,7 @@ const elements: LeftDrawerElementProps[] = [
     option: "THEME",
     Component: Theme,
   },
-  {
-    title: "Solicitar info de mi cuenta",
-    option: "SOL_INFO",
-    Component: SolInfo,
-  },
-  {
-    title: "Ayuda",
-    option: "HELP",
-    Component: Help,
-  },
+
   {
     title: "Chat nuevo",
     option: "NEW_CHAT",

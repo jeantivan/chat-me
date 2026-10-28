@@ -1,19 +1,17 @@
 import {
   LucideIcon,
+  User as UserIcon,
   Bell,
   Lock,
   Paintbrush,
-  FileText,
-  HelpCircle,
 } from "lucide-react";
-import { Shortcuts } from "./Shortcuts";
 
 import { Icon } from "@/components/ui/Icon";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { UserImage } from "@/components/UserImage";
 import useStore from "@/lib/store";
 
-const User = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+const UserCard = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   const { name, bio } = useStore((state) => state.user);
   return (
     <button
@@ -34,31 +32,68 @@ const User = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
 type ItemProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   icon: LucideIcon;
   label: string;
+  subtitle?: string;
 };
-const Item = ({ icon, label, ...rest }: ItemProps) => (
+
+const Item = ({ icon, label, subtitle, ...rest }: ItemProps) => (
   <button {...rest} className="w-full flex items-center hover:bg-background-3">
     <span className="w-20 flex items-center justify-center">
       <Icon icon={icon} label={label} className="w-6 h-6 text-background-10" />
     </span>
 
-    <span className="py-5 pr-4 flex-1 border-b text-left text-lg font-medium text-background-12 border-background-7">
+    <span className="py-4 pr-4 flex-1 border-b text-left text-lg font-medium text-background-12 border-background-7">
       {label}
+      {subtitle && (
+        <span className="block text-sm font-normal text-background-11 mt-0.5">
+          {subtitle}
+        </span>
+      )}
     </span>
   </button>
 );
 
 export function Options() {
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
+  const { bio } = useStore((state) => state.user);
+  const notifications = useStore((state) => state.notifications);
+  const privacy = useStore((state) => state.privacy);
+  const theme = useStore((state) => state.theme);
+
+  const notificationSubtitle = notifications.all
+    ? notifications.sound
+      ? "Sonidos y reacciones activados"
+      : "Activadas"
+    : "Desactivadas";
+
+  const privacySubtitle = privacy.readReceipt
+    ? "Confirmaciones de lectura activadas"
+    : "Confirmaciones de lectura desactivadas";
+
+  const themeSubtitle =
+    theme.mode === "dark"
+      ? "Oscuro"
+      : theme.mode === "light"
+      ? "Claro"
+      : "Tema del sistema";
 
   return (
     <ScrollArea type="auto" className="pr-2.5">
-      <User
+      <UserCard
+        onClick={() => {
+          leftDrawerGoTo("PROFILE");
+        }}
+      />
+      <Item
+        label="Perfil"
+        subtitle={bio || "Nombre y mensaje de estado"}
+        icon={UserIcon}
         onClick={() => {
           leftDrawerGoTo("PROFILE");
         }}
       />
       <Item
         label="Notificaciones"
+        subtitle={notificationSubtitle}
         icon={Bell}
         onClick={() => {
           leftDrawerGoTo("NOTIFICATIONS");
@@ -66,6 +101,7 @@ export function Options() {
       />
       <Item
         label="Privacidad"
+        subtitle={privacySubtitle}
         icon={Lock}
         onClick={() => {
           leftDrawerGoTo("PRIVACY");
@@ -73,24 +109,10 @@ export function Options() {
       />
       <Item
         label="Tema"
+        subtitle={themeSubtitle}
         icon={Paintbrush}
         onClick={() => {
           leftDrawerGoTo("THEME");
-        }}
-      />
-      <Item
-        label="Solicitar info. de la cuenta"
-        icon={FileText}
-        onClick={() => {
-          leftDrawerGoTo("SOL_INFO");
-        }}
-      />
-      <Shortcuts key="SHORTCUTS" />
-      <Item
-        label="Ayuda"
-        icon={HelpCircle}
-        onClick={() => {
-          leftDrawerGoTo("HELP");
         }}
       />
       <footer className="flex w-full justify-center p-3 mt-5">
