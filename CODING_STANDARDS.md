@@ -80,3 +80,54 @@ Engineering standards and conventions enforced across the `chat-me` monorepo. Th
   - E2E test failures must upload Playwright traces and test report artifacts (`apps/web/playwright-report/`) via `actions/upload-artifact` with a 7-day retention period.
 - **Branch Protection**:
   - `main` requires all CI status checks to pass and linear history before merge.
+
+---
+
+## 7. Language & Documentation Policy
+
+- **Repository Artifacts Exclusively in English**:
+  - All source code, identifiers, types, interfaces, database schemas, and migration files must be written in English.
+  - All inline comments, JSDoc, and docstrings must be written in English.
+  - All commit messages, GitHub issue titles and descriptions, pull request descriptions, and review comments must be in English.
+  - All markdown files (`README.md`, `GLOSSARY.md`, ADRs in `docs/adr/`, agent guides in `docs/agents/`, grilling results, and planning artifacts) must be in technical English.
+- **Conversational Exception**:
+  - The developer and agent may converse interactively in Spanish (or any language of choice). However, any text committed or persisted to disk or the issue tracker must strictly be translated to and recorded in English.
+
+---
+
+## 8. Branching, PR Lifecycle & Granularity Constraints
+
+- **Mandatory Feature Branches**:
+  - Direct pushes to `main` are strictly forbidden, even for solo maintainers.
+  - Every issue or sub-issue must be developed in a dedicated branch branched off the latest `main`.
+  - Branch naming format: `<type>/<issue-number>-<short-slug>` (e.g. `feat/102-voice-recording`, `fix/103-tombstone-syntax-error`).
+- **Granular PR Ceiling (< 200–300 lines)**:
+  - Pull requests must be small, focused, and reviewable in isolation without cognitive fatigue.
+  - Target diff size is strictly **< 200–300 lines of code** (excluding generated lockfiles, fixtures, or snapshots).
+  - Single Responsibility: Each PR must solve exactly one logical problem, component, bug, or endpoint seam.
+  - Large features or epics must be broken down into discrete sub-issues, each delivered via an incremental, non-breaking PR.
+- **Pull Request Lifecycle & Traceability**:
+  - Create PRs using `gh pr create` with the `.github/pull_request_template.md` filled out completely.
+  - Every PR must link to its issue using `Closes #<id>` (or `Part of #<id>` for multi-stage features).
+  - Merging is performed via **Squash and Merge** once all CI status checks pass cleanly.
+
+---
+
+## 9. Conventional Commits Standard
+
+- **Format**:
+  - `<type>(<scope>): <short imperative summary in English>`
+- **Allowed Types**:
+  - `feat`: A new user-facing or platform capability.
+  - `fix`: A bug fix.
+  - `refactor`: Code change that neither fixes a bug nor adds a feature.
+  - `docs`: Documentation updates only.
+  - `test`: Adding missing tests or correcting existing tests.
+  - `chore`: Build process, dependency updates, or toolchain changes.
+  - `perf`: Code change that improves performance.
+  - `ci`: CI/CD workflows and automation scripts.
+- **Rules**:
+  - Use imperative, present tense ("add feature" not "added feature" or "adds feature").
+  - Do not capitalize the first letter of the description.
+  - No trailing period (`.`).
+  - Scopes should match monorepo packages or functional areas (`server`, `web`, `shared`, `auth`, `chat`, `media`).

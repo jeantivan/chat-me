@@ -13,6 +13,7 @@ import { baseConfig } from "@/editor/baseConfig";
 
 import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 import mc from "@/lib/utils/mergeClassnames";
+import { isValidLexicalJson } from "@/lib/utils/lexical";
 
 type RootProps = {
   children: ReactNode;
@@ -32,16 +33,6 @@ function Root({ children, initialState }: RootProps) {
   );
 }
 
-function isValidLexicalJson(str: string): boolean {
-  if (!str || typeof str !== "string") return false;
-  if (!str.startsWith("{") || !str.endsWith("}")) return false;
-  try {
-    const parsed = JSON.parse(str);
-    return typeof parsed === "object" && parsed !== null && "root" in parsed;
-  } catch {
-    return false;
-  }
-}
 
 type Props = {
   body: string;

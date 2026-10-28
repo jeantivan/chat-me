@@ -21,6 +21,7 @@ export function toUiChat(summary: ChatSummary, currentUserId?: string): TChat {
           time: summary.lastMessage.time,
           status: summary.lastMessage.status,
           starred: summary.lastMessage.starred,
+          deleted: summary.lastMessage.deleted,
           hasMedia: summary.lastMessage.hasMedia,
           reactions: (summary.lastMessage.reactions || []) as any,
         },

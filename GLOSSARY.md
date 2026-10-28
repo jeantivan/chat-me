@@ -44,3 +44,16 @@ _Avoid_: File upload, asset, payload blob
 A cryptographically signed, short-lived S3 URL permitting a client to PUT a binary asset directly to object storage without server mediation.
 _Avoid_: Upload token, upload ticket
 
+**User Profile**:
+The public identity attributes of a registered user—such as display name, biography, and profile picture—that may be projected to other users subject to privacy audience rules.
+_Avoid_: Account info, user card, user metadata
+
+**User Preferences**:
+The user-configurable settings governing client appearance (theme mode and color palette), notification delivery, and privacy rules (presence visibility, profile visibility, and read receipt sharing).
+_Avoid_: User options, app config, system flags
+
+**Blocked User**:
+A directional restriction applied by a user against a target user that prohibits direct message exchange, conceals mutual presence and profile updates, and prevents the blocked party from initiating direct chats or adding the blocker to group chats.
+_Avoid_: Blacklist, banned user, muted user
+
+

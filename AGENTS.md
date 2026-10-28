@@ -5,11 +5,21 @@
 ### Issue tracker
 
 GitHub Issues via `gh` CLI. See `docs/agents/issue-tracker.md`.
-A ticket is complete only when verified, pushed to remote, and closed (`gh issue close`).
+A ticket is complete only when implemented on a dedicated branch, verified via CI, merged to `main` via a granular Pull Request (`gh pr create`), and closed (`gh issue close`).
 
 ### Coding standards
 
 Reviewed via `/code-review`. Single source of truth is `CODING_STANDARDS.md`.
+
+### Language & Documentation Policy
+
+All persisted code, comments, docstrings, commit messages, PRs, GitHub issues, grilling session outputs, ADRs, and documentation MUST be written strictly in technical English, regardless of whether conversational interaction with the user occurs in Spanish or another language.
+
+### Branching, PR Lifecycle & Granularity
+
+- **Isolated Branches**: Never commit directly to `main`. Every issue or sub-issue must be developed in an isolated branch (`feat/<issue-id>-<short-slug>` or `fix/<issue-id>-<short-slug>`).
+- **Granular PRs**: Pull requests must be small and scoped to a single responsibility (target diff < 200–300 lines). Complex features must be split into multiple sub-issues with independent PRs.
+- **Squash & Merge**: Merge PRs via Squash and Merge after all CI pipeline gates pass cleanly.
 
 ### Triage labels
 
