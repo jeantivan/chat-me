@@ -18,6 +18,23 @@ export interface UserProfile {
   createdAt: string;
 }
 
+export interface UpdateProfileInput {
+  name?: string;
+  bio?: string;
+  pictureUrl?: string;
+}
+
+export interface PresignAvatarRequest {
+  filename: string;
+  mimeType: string;
+  sizeBytes: number;
+}
+
+export interface PresignAvatarResponse {
+  uploadUrl: string;
+  publicUrl: string;
+}
+
 export type ThemeMode = "light" | "dark";
 export type PrivacyAudience = "all" | "contacts" | "none";
 
@@ -238,4 +255,5 @@ export interface ServerToClientEvents {
     isTyping: boolean;
   }) => void;
   "presence:updated": (payload: UserPresence) => void;
+  "user:profile_updated": (payload: UserProfile) => void;
 }
