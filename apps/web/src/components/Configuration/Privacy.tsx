@@ -64,22 +64,7 @@ export function Privacy() {
             <Checkbox defaultChecked id="preview" />
           </div>
         </div>
-        <div className="py-4 px-6 mb-5 bg-background-2">
-          <h2 className="text-primary-9 mb-4">Mensajes temporales</h2>
-          <div className="flex items-center text-sm">
-            <div className="flex-1">
-              <h3 className="text-background-12">
-                Duración predeterminada de los mensajes
-              </h3>
-              <p className="text-background-11">Desactivados</p>
-            </div>
-            <Icon
-              icon={ChevronRight}
-              label="chevron-right-icon"
-              className="w-6 h-6 text-background-9"
-            />
-          </div>
-        </div>
+
         <div className="py-4 px-6 bg-background-2">
           <div className="flex py-3 items-center text-sm">
             <div className="flex-1">

@@ -102,21 +102,12 @@ export type ReactionKeys =
   | ":loudly_crying_face:"
   | ":thinking_face:";
 
-export type TShortCut = {
-  slug: string;
-  title: string;
-  keys: string[];
-};
-
 export type LeftDrawerContentOptions =
   | "PROFILE"
   | "NOTIFICATIONS"
   | "PRIVACY"
   | "THEME"
-  | "SOL_INFO"
-  | "HELP"
   | "OPTIONS"
-  | "SHORTCUTS"
   | "NEW_CHAT"
   | "NEW_GROUP"
   | "ARCHIVED_CHATS"
