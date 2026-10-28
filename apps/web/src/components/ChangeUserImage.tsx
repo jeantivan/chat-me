@@ -6,10 +6,13 @@ import { Icon } from "./ui/Icon";
 import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from "./ui/Menu";
 import { DialogRoot, DialogContent } from "./ui/Dialog";
 import useStore from "@/lib/store";
-import { useUpdateProfile, uploadAvatar } from "@/lib/api/profileQueries";
+import { useUserProfile, useUpdateProfile, uploadAvatar } from "@/lib/api/profileQueries";
 
 export function ChangeUserImage() {
-  const picture = useStore((state) => state.user.picture);
+  const { data: userProfile } = useUserProfile();
+  const zustandPicture = useStore((state) => state.user.picture);
+  const picture = userProfile?.pictureUrl ?? zustandPicture;
+
   const updateProfile = useUpdateProfile();
   const fileInputRef = useRef<HTMLInputElement>(null);
 

@@ -6,6 +6,7 @@ interface EditableInputProps {
   label: string;
   value: string;
   maxLength?: number;
+  required?: boolean;
   onSave: (newValue: string) => void;
 }
 
@@ -13,6 +14,7 @@ export function EditableInput({
   label,
   value,
   maxLength,
+  required = false,
   onSave,
 }: EditableInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,7 +29,7 @@ export function EditableInput({
   };
 
   const handleSave = () => {
-    if (label.toLowerCase().includes("nombre") && newValue.trim() === "" && inputRef.current) {
+    if (required && newValue.trim() === "" && inputRef.current) {
       inputRef.current.focus();
       setError(`El ${label} no puede estar vacío.`);
       return;

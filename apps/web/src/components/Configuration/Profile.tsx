@@ -3,10 +3,14 @@ import { EditableInput } from "@/components/EditableInput";
 import { ChangeUserImage } from "@/components/ChangeUserImage";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
-import { useUpdateProfile } from "@/lib/api/profileQueries";
+import { useUserProfile, useUpdateProfile } from "@/lib/api/profileQueries";
 
 export function Profile() {
-  const { name, bio } = useStore((state) => state.user);
+  const { data: userProfile } = useUserProfile();
+  const zustandUser = useStore((state) => state.user);
+  const name = userProfile?.name ?? zustandUser.name;
+  const bio = userProfile?.bio ?? zustandUser.bio;
+
   const updateProfile = useUpdateProfile();
 
   const handleSaveUserName = (newName: string) => {
@@ -35,6 +39,7 @@ export function Profile() {
             label="Nombre"
             value={name}
             maxLength={100}
+            required
             onSave={handleSaveUserName}
           />
           <div className="text-sm text-background-11">
