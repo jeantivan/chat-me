@@ -60,6 +60,21 @@ export function AuthDialog({ open }: AuthDialogProps) {
     }
   };
 
+  const handleDemoLogin = async (email: string) => {
+    setServerError(null);
+    setErrors({});
+    setLoginEmail(email);
+    setLoginPassword("Password123!");
+    setIsSubmitting(true);
+    try {
+      await login(email, "Password123!");
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : "Failed to log in with demo account");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setServerError(null);
@@ -208,6 +223,38 @@ export function AuthDialog({ open }: AuthDialogProps) {
                 >
                   {isSubmitting ? "Logging in..." : "Log In"}
                 </button>
+
+                <div className="pt-3 mt-4 border-t border-background-6">
+                  <p className="text-xs font-medium text-center text-background-11 mb-2.5">
+                    Quick Demo Access (Seeded Accounts)
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      disabled={isSubmitting}
+                      onClick={() => handleDemoLogin("alice@example.com")}
+                      className={mc(
+                        "py-2 px-3 rounded-lg text-xs font-semibold transition-colors",
+                        "bg-background-4 hover:bg-background-5 text-background-12 border border-background-6",
+                        "disabled:opacity-50 disabled:cursor-not-allowed"
+                      )}
+                    >
+                      Demo as Alice
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isSubmitting}
+                      onClick={() => handleDemoLogin("bob@example.com")}
+                      className={mc(
+                        "py-2 px-3 rounded-lg text-xs font-semibold transition-colors",
+                        "bg-background-4 hover:bg-background-5 text-background-12 border border-background-6",
+                        "disabled:opacity-50 disabled:cursor-not-allowed"
+                      )}
+                    >
+                      Demo as Bob
+                    </button>
+                  </div>
+                </div>
               </form>
             </TabsPrimitive.Content>
 

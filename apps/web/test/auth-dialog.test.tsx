@@ -104,4 +104,17 @@ describe("Frontend AuthDialog Seam", () => {
       expect(screen.getByText(/invalid email or password/i)).toBeInTheDocument();
     });
   });
+
+  it("logs in immediately with seeded credentials when clicking Quick Demo Login button", async () => {
+    const user = userEvent.setup();
+    mockLogin.mockResolvedValueOnce(undefined);
+    renderWithAuth();
+
+    const demoAliceBtn = screen.getByRole("button", { name: /demo as alice/i });
+    await user.click(demoAliceBtn);
+
+    await waitFor(() => {
+      expect(mockLogin).toHaveBeenCalledWith("alice@example.com", "Password123!");
+    });
+  });
 });
