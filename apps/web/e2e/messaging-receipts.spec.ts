@@ -52,6 +52,10 @@ test.describe("Primary High Seam: Multi-User Real-Time Messaging, Receipts, Typi
     const chatData = await chatRes.json();
     const chatId = chatData.id;
 
+    // Clear cookies from API registration so that UI login flow is tested cleanly
+    await contextA.clearCookies();
+    await contextB.clearCookies();
+
     // 3. User B opens web app at '/' and logs in
     await pageB.goto("http://localhost:5173/");
     await pageB.fill("#login-email", userB.email);
