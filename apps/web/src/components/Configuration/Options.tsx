@@ -11,7 +11,7 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { UserImage } from "@/components/UserImage";
 import useStore from "@/lib/store";
 
-const UserCard = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+const UserProfileSummary = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   const { name, bio } = useStore((state) => state.user);
   return (
     <button
@@ -59,11 +59,15 @@ export function Options() {
   const privacy = useStore((state) => state.privacy);
   const theme = useStore((state) => state.theme);
 
-  const notificationSubtitle = notifications.all
-    ? notifications.sound
-      ? "Sonidos y reacciones activados"
-      : "Activadas"
-    : "Desactivadas";
+  const notificationSubtitle = !notifications.all
+    ? "Desactivadas"
+    : notifications.sound && notifications.reactions
+    ? "Sonidos y reacciones activados"
+    : notifications.sound
+    ? "Sonidos activados"
+    : notifications.reactions
+    ? "Reacciones activadas"
+    : "Activadas";
 
   const privacySubtitle = privacy.readReceipt
     ? "Confirmaciones de lectura activadas"
@@ -78,7 +82,7 @@ export function Options() {
 
   return (
     <ScrollArea type="auto" className="pr-2.5">
-      <UserCard
+      <UserProfileSummary
         onClick={() => {
           leftDrawerGoTo("PROFILE");
         }}
