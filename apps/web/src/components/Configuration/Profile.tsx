@@ -3,20 +3,22 @@ import { EditableInput } from "@/components/EditableInput";
 import { ChangeUserImage } from "@/components/ChangeUserImage";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
+import { useUserProfile, useUpdateProfile } from "@/lib/api/profileQueries";
 
 export function Profile() {
-  const { name, bio } = useStore((state) => state.user);
-  const { changeName, changeBio } = useStore((state) => ({
-    changeName: state.changeName,
-    changeBio: state.changeBio,
-  }));
+  const { data: userProfile } = useUserProfile();
+  const zustandUser = useStore((state) => state.user);
+  const name = userProfile?.name ?? zustandUser.name;
+  const bio = userProfile?.bio ?? zustandUser.bio;
+
+  const updateProfile = useUpdateProfile();
 
   const handleSaveUserName = (newName: string) => {
-    changeName(newName);
+    updateProfile.mutate({ name: newName.trim() });
   };
 
   const handleSaveUserStatus = (newBio: string) => {
-    changeBio(newBio);
+    updateProfile.mutate({ bio: newBio });
   };
 
   return (
@@ -36,6 +38,8 @@ export function Profile() {
           <EditableInput
             label="Nombre"
             value={name}
+            maxLength={100}
+            required
             onSave={handleSaveUserName}
           />
           <div className="text-sm text-background-11">
@@ -47,6 +51,7 @@ export function Profile() {
           <EditableInput
             label="Estado"
             value={bio}
+            maxLength={500}
             onSave={handleSaveUserStatus}
           />
         </div>

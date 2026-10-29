@@ -88,6 +88,9 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
     lazyConnect: true,
     maxRetriesPerRequest: 3,
   });
+  redisClient.on("error", () => {
+    // Avoid unhandled rejection on lazy disconnect
+  });
 
   app.addHook("onClose", async () => {
     await pgPool.end();

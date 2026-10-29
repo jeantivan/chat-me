@@ -63,7 +63,13 @@ export function setupSocketServer(
     lazyConnect: true,
     maxRetriesPerRequest: 3,
   });
+  pubClient.on("error", (err) => {
+    app.log.warn({ err }, "Socket.IO Redis pubClient error");
+  });
   const subClient = pubClient.duplicate();
+  subClient.on("error", (err) => {
+    app.log.warn({ err }, "Socket.IO Redis subClient error");
+  });
 
   Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
     io.adapter(createAdapter(pubClient, subClient));
@@ -605,11 +611,13 @@ export function setupSocketServer(
           app.log.error({ err, userId }, "Error updating user last seen on disconnect");
         }
 
-        io.emit("presence:updated", {
-          userId,
-          status: "offline",
-          lastSeenAt: now.toISOString(),
-        });
+        if (pubClient.status === "ready") {
+          io.emit("presence:updated", {
+            userId,
+            status: "offline",
+            lastSeenAt: now.toISOString(),
+          });
+        }
       } else {
         userSocketCounts.set(userId, remaining);
       }

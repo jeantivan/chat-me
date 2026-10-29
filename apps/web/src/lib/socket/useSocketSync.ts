@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useQueryClient, InfiniteData } from "@tanstack/react-query";
 import { getSocket } from "./socketClient";
 import { usePresenceStore } from "../store/presenceStore";
+import useStore from "../store";
 import {
   DELETED_MESSAGE_TOMBSTONE,
   type MessagePayload,
@@ -10,6 +11,8 @@ import {
   type ReceiptStatusPayload,
   type DeliveryStatus,
   type UserPresence,
+  type UserProfile,
+  type ContactSummary,
 } from "@chat-me/shared";
 
 export function patchMessageInPages(
@@ -253,12 +256,50 @@ export function useSocketSync(
       usePresenceStore.getState().setPresence(userId, { status, lastSeenAt });
     };
 
+    const handleProfileUpdated = (updatedUser: UserProfile) => {
+      // 1. If self update, update user query cache and Zustand profile store
+      if (currentUserId && updatedUser.id === currentUserId) {
+        queryClient.setQueryData<UserProfile>(chatKeys.user, updatedUser);
+        useStore.getState().changeName(updatedUser.name);
+        useStore.getState().changeBio(updatedUser.bio);
+        useStore.getState().changePicture(updatedUser.pictureUrl);
+      }
+
+      // 2. Update contacts cache
+      queryClient.setQueryData<ContactSummary[]>(chatKeys.contacts, (oldContacts) => {
+        if (!oldContacts) return oldContacts;
+        return oldContacts.map((c) =>
+          c.contactUserId === updatedUser.id
+            ? { ...c, contact: updatedUser }
+            : c
+        );
+      });
+
+      // 3. Update chats list cache
+      queryClient.setQueryData<ChatSummary[]>(chatKeys.lists(), (oldChats) => {
+        if (!oldChats) return oldChats;
+        return oldChats.map((chat) => {
+          const hasParticipant = chat.participants.some(
+            (p) => p.userId === updatedUser.id
+          );
+          if (!hasParticipant) return chat;
+          return {
+            ...chat,
+            participants: chat.participants.map((p) =>
+              p.userId === updatedUser.id ? { ...p, user: updatedUser } : p
+            ),
+          };
+        });
+      });
+    };
+
     socket.on("message:new", handleNewMessage);
     socket.on("message:status_changed", handleStatusChanged);
     socket.on("message:reaction_updated", handleReactionUpdated);
     socket.on("message:deleted", handleMessageDeleted);
     socket.on("chat:typing_updated", handleTypingUpdated);
     socket.on("presence:updated", handlePresenceUpdated);
+    socket.on("user:profile_updated", handleProfileUpdated);
 
     // Heartbeat every 30 seconds
     const heartbeatTimer = setInterval(() => {
@@ -273,6 +314,7 @@ export function useSocketSync(
       socket.off("message:deleted", handleMessageDeleted);
       socket.off("chat:typing_updated", handleTypingUpdated);
       socket.off("presence:updated", handlePresenceUpdated);
+      socket.off("user:profile_updated", handleProfileUpdated);
     };
   }, [queryClient, currentChatId, currentUserId]);
 }

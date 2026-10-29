@@ -5,25 +5,33 @@ import { Icon } from "./ui/Icon";
 interface EditableInputProps {
   label: string;
   value: string;
+  maxLength?: number;
+  required?: boolean;
   onSave: (newValue: string) => void;
 }
 
 export function EditableInput({
   label,
   value,
+  maxLength,
+  required = false,
   onSave,
-  ...rest
 }: EditableInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newValue, setNewValue] = useState(value);
   const [error, setError] = useState("");
 
-  const handleSave = () => {
-    if (newValue === "" && inputRef.current) {
-      inputRef.current.focus();
-      setError(`El ${label} no puedes estar vacío.`);
+  const handleStartEditing = () => {
+    setNewValue(value);
+    setError("");
+    setIsEditing(true);
+  };
 
+  const handleSave = () => {
+    if (required && newValue.trim() === "" && inputRef.current) {
+      inputRef.current.focus();
+      setError(`El ${label} no puede estar vacío.`);
       return;
     }
 
@@ -48,7 +56,8 @@ export function EditableInput({
             <input
               className="p-2 pb-1 flex-1 focus:outline-none bg-transparent text-background-12"
               name={label}
-              defaultValue={value}
+              value={newValue}
+              maxLength={maxLength}
               onChange={(e) => {
                 setNewValue(e.target.value);
               }}
@@ -81,9 +90,7 @@ export function EditableInput({
             <button
               className="w-4 h-4 text-background-9 self-center"
               title={`Editar ${label}.`}
-              onClick={() => {
-                setIsEditing(true);
-              }}
+              onClick={handleStartEditing}
             >
               <Icon icon={Pencil} label="Edit Icon" />
             </button>
