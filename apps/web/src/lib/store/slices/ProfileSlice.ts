@@ -63,6 +63,11 @@ export const createProfileSlice: StateCreator<
       state.notifications[type] = !state.notifications[type];
     });
   },
+  setNotification: (type, value) => {
+    set((state) => {
+      state.notifications[type] = value;
+    });
+  },
   changeThemeColors: (colors) => {
     set((state) => {
       state.theme.colors = colors;

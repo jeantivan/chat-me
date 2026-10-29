@@ -26,6 +26,7 @@ export interface ProfileSlice extends TProfile, ConfigSlice {
 // Interface para la configuración
 export interface ConfigSlice {
   toggleNotifications: (type: keyof TNotifications) => void;
+  setNotification: (type: keyof TNotifications, value: boolean) => void;
   changeThemeMode: (mode: TTheme["mode"]) => void;
   changeThemeColors: (colors: TTheme["colors"]) => void;
 }

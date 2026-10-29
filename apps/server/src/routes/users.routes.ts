@@ -2,13 +2,14 @@ import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import crypto from "crypto";
-import { formatUserProfile, getUserProfileAndSettings } from "../services/auth.service.js";
+import { formatUserProfile, formatUserSettings, getUserProfileAndSettings } from "../services/auth.service.js";
 import { generatePresignedUploadUrl } from "../services/storage.service.js";
 import { isUserOnline } from "../socket/index.js";
-import { users } from "../db/schema.js";
+import { users, userSettings } from "../db/schema.js";
 import type {
   UserPresence,
   UpdateProfileInput,
+  UpdateUserSettingsInput,
   PresignAvatarRequest,
 } from "@chat-me/shared";
 
@@ -32,6 +33,15 @@ const presignAvatarSchema = z.object({
   filename: z.string().min(1).max(255),
   mimeType: z.string().min(1).max(100),
   sizeBytes: z.number().int().positive(),
+});
+
+const updateUserSettingsSchema = z.object({
+  themeMode: z.enum(["light", "dark"]).optional(),
+  themeColor: z.string().min(1).max(30).optional(),
+  notifyAll: z.boolean().optional(),
+  notifySound: z.boolean().optional(),
+  notifyPreview: z.boolean().optional(),
+  notifyReactions: z.boolean().optional(),
 });
 
 export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
@@ -99,6 +109,36 @@ export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       }
 
       return reply.status(200).send(formattedProfile);
+    }
+  );
+
+  // PATCH /api/v1/users/me/settings
+  app.patch<{ Body: UpdateUserSettingsInput }>(
+    "/me/settings",
+    { preHandler: [app.authenticate] },
+    async (request, reply) => {
+      const userId = (request.user as { sub: string }).sub;
+
+      const parseResult = updateUserSettingsSchema.safeParse(request.body);
+      if (!parseResult.success) {
+        return reply.status(400).send({
+          error: parseResult.error.flatten(),
+        });
+      }
+
+      const data = parseResult.data;
+      const [updatedSettings] = await app.db
+        .update(userSettings)
+        .set(data)
+        .where(eq(userSettings.userId, userId))
+        .returning();
+
+      if (!updatedSettings) {
+        return reply.status(404).send({ error: "User settings not found" });
+      }
+
+      const formattedSettings = formatUserSettings(updatedSettings);
+      return reply.status(200).send(formattedSettings);
     }
   );
 
