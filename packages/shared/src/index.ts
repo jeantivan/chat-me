@@ -53,6 +53,20 @@ export interface UserSettingsData {
   privacyReadReceipt: boolean;
 }
 
+export interface UpdateUserSettingsInput {
+  themeMode?: ThemeMode;
+  themeColor?: string;
+  notifyAll?: boolean;
+  notifySound?: boolean;
+  notifyPreview?: boolean;
+  notifyReactions?: boolean;
+  privacyLastSeen?: PrivacyAudience;
+  privacyPicture?: PrivacyAudience;
+  privacyBio?: PrivacyAudience;
+  privacyGroups?: PrivacyAudience;
+  privacyReadReceipt?: boolean;
+}
+
 export interface AuthResponse {
   accessToken: string;
   user: UserProfile;

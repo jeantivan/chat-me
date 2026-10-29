@@ -4,6 +4,7 @@ import { Moon, Sun } from "lucide-react";
 import mc from "@/lib/utils/mergeClassnames";
 import { useTheme } from "@/lib/hooks";
 import { TTheme } from "@/lib/types";
+import { useUpdateSettings } from "@/lib/api/settingsQueries";
 
 type Option = { name: string; bg: string };
 const options: Record<TTheme["colors"], Option> = {
@@ -51,6 +52,7 @@ const ModeItem = (props: RadioGroup.RadioGroupItemProps) => {
 
 export function Theme() {
   const { colors, mode, changeThemeColors, changeThemeMode } = useTheme();
+  const { mutate: updateSettings } = useUpdateSettings();
 
   return (
     <div className="overflow-y-auto flex-1 bg-background-1 flex flex-col p-4">
@@ -60,7 +62,9 @@ export function Theme() {
           className="w-full grid grid-cols-3 gap-4"
           value={colors}
           onValueChange={(newValue) => {
-            changeThemeColors(newValue as typeof colors);
+            const nextColor = newValue as typeof colors;
+            changeThemeColors(nextColor);
+            updateSettings({ themeColor: nextColor });
           }}
         >
           {(Object.keys(options) as Array<TTheme["colors"]>).map((option) => (
@@ -73,7 +77,9 @@ export function Theme() {
         <RadioGroup.Root
           value={mode}
           onValueChange={(newValue) => {
-            changeThemeMode(newValue as typeof mode);
+            const nextMode = newValue as typeof mode;
+            changeThemeMode(nextMode);
+            updateSettings({ themeMode: nextMode });
           }}
           className="flex"
         >

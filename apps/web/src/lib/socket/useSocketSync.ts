@@ -4,6 +4,10 @@ import { getSocket } from "./socketClient";
 import { usePresenceStore } from "../store/presenceStore";
 import useStore from "../store";
 import {
+  handleInboundMessageNotification,
+  handleInboundReactionNotification,
+} from "../notifications/notificationEngine";
+import {
   DELETED_MESSAGE_TOMBSTONE,
   type MessagePayload,
   type MessagesPageResponse,
@@ -38,6 +42,17 @@ export function patchMessageStatusInPages(
   return patchMessageInPages(oldData, messageId, (m) => ({ ...m, status }));
 }
 
+export function isChatParticipantMuted(
+  queryClient: { getQueryData: <T>(key: readonly unknown[]) => T | undefined },
+  chatId: string,
+  userId?: string
+): boolean {
+  if (!userId) return false;
+  const chatList = queryClient.getQueryData<ChatSummary[]>(chatKeys.lists());
+  const currentChat = chatList?.find((c) => c.id === chatId);
+  return currentChat?.participants.find((p) => p.userId === userId)?.muted ?? false;
+}
+
 export const chatKeys = {
   all: ["chats"] as const,
   lists: () => [...chatKeys.all, "list"] as const,
@@ -47,6 +62,7 @@ export const chatKeys = {
     [...chatKeys.all, "starred", chatId || "all"] as const,
   contacts: ["contacts"] as const,
   user: ["user", "me"] as const,
+  settings: ["user", "settings"] as const,
 };
 
 export function useSocketSync(
@@ -134,6 +150,22 @@ export function useSocketSync(
           });
         }
       }
+
+      // 4. Trigger client notification engine
+      const isMuted = isChatParticipantMuted(queryClient, newMsg.chatId, currentUserId);
+      const settings = useStore.getState().notifications;
+
+      handleInboundMessageNotification({
+        message: newMsg,
+        currentUserId,
+        currentChatId,
+        isChatMuted: isMuted,
+        settings: {
+          notifyAll: settings.all,
+          notifySound: settings.sound,
+          notifyPreview: settings.preview,
+        },
+      });
     };
 
     const handleStatusChanged = ({
@@ -181,6 +213,41 @@ export function useSocketSync(
               )
             : oldStarred
       );
+
+      // Trigger client notification engine for reaction
+      const messagesData = queryClient.getQueryData<InfiniteData<MessagesPageResponse>>(
+        chatKeys.messages(chatId)
+      );
+      let targetMessage: MessagePayload | undefined;
+      if (messagesData) {
+        for (const page of messagesData.pages) {
+          const found = page.messages.find((m) => m.id === messageId);
+          if (found) {
+            targetMessage = found;
+            break;
+          }
+        }
+      }
+
+      const isMuted = isChatParticipantMuted(queryClient, chatId, currentUserId);
+      const settings = useStore.getState().notifications;
+
+      handleInboundReactionNotification({
+        chatId,
+        messageId,
+        reactions,
+        targetMessageOwnerId: targetMessage?.owner,
+        targetMessageBody: targetMessage?.body,
+        currentUserId,
+        currentChatId,
+        isChatMuted: isMuted,
+        settings: {
+          notifyAll: settings.all,
+          notifySound: settings.sound,
+          notifyPreview: settings.preview,
+          notifyReactions: settings.reactions,
+        },
+      });
     };
 
     const handleMessageDeleted = ({

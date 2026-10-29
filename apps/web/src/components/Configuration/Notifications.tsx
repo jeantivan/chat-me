@@ -3,10 +3,13 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Separator } from "@/components/ui/Separator";
 import { Label } from "@/components/ui/Label";
 import useStore from "@/lib/store";
+import { useUpdateSettings } from "@/lib/api/settingsQueries";
 
 export function Notifications() {
   const notifications = useStore((state) => state.notifications);
   const toggleNotification = useStore((state) => state.toggleNotifications);
+  const { mutate: updateSettings } = useUpdateSettings();
+
   return (
     <motion.div
       initial={{ x: 20, opacity: 0 }}
@@ -27,7 +30,9 @@ export function Notifications() {
             id="all"
             checked={notifications.all}
             onCheckedChange={() => {
+              const nextVal = !notifications.all;
               toggleNotification("all");
+              updateSettings({ notifyAll: nextVal });
             }}
           />
         </div>
@@ -41,7 +46,10 @@ export function Notifications() {
             disabled={!notifications.all}
             checked={notifications.preview}
             onCheckedChange={() => {
+              if (!notifications.all) return;
+              const nextVal = !notifications.preview;
               toggleNotification("preview");
+              updateSettings({ notifyPreview: nextVal });
             }}
           />
         </div>
@@ -54,12 +62,15 @@ export function Notifications() {
             disabled={!notifications.all}
             checked={notifications.reactions}
             onCheckedChange={() => {
+              if (!notifications.all) return;
+              const nextVal = !notifications.reactions;
               toggleNotification("reactions");
+              updateSettings({ notifyReactions: nextVal });
             }}
           />
         </div>
         <div className="flex items-center w-full mt-12">
-          <Label htmlFor="sound">
+          <Label htmlFor="sound" disabled={!notifications.all}>
             Sonido
             <span className="mt-1 text-sm select-none inline-block text-background-11">
               Reproduce un sonido cuando llega un mensaje
@@ -67,9 +78,13 @@ export function Notifications() {
           </Label>
           <Checkbox
             id="sound"
+            disabled={!notifications.all}
             checked={notifications.sound}
             onCheckedChange={() => {
+              if (!notifications.all) return;
+              const nextVal = !notifications.sound;
               toggleNotification("sound");
+              updateSettings({ notifySound: nextVal });
             }}
           />
         </div>

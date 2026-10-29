@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import { AuthProvider } from "./lib/auth/AuthContext";
 import { ThemeSync } from "./components/ThemeSync";
+import { InAppNotificationBanner } from "./components/InAppNotificationBanner";
 import { router } from "./routes/router";
 
 dayjs.extend(updateLocale);
@@ -46,6 +47,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeSync />
+      <InAppNotificationBanner />
       <AuthProvider>
         <RouterProvider router={router} />
       </AuthProvider>
