@@ -4,7 +4,12 @@ import { z } from "zod";
 import crypto from "crypto";
 import { formatUserProfile, formatUserSettings, getUserProfileAndSettings } from "../services/auth.service.js";
 import { generatePresignedUploadUrl } from "../services/storage.service.js";
-import { isUserOnline } from "../socket/index.js";
+import {
+  isUserOnline,
+  syncPresenceOnPrivacyChange,
+  broadcastSanitizedProfileUpdate,
+} from "../socket/index.js";
+import { canViewPresence } from "../lib/privacy.js";
 import { users, userSettings } from "../db/schema.js";
 import type {
   UserPresence,
@@ -42,6 +47,11 @@ const updateUserSettingsSchema = z.object({
   notifySound: z.boolean().optional(),
   notifyPreview: z.boolean().optional(),
   notifyReactions: z.boolean().optional(),
+  privacyLastSeen: z.enum(["all", "contacts", "none"]).optional(),
+  privacyPicture: z.enum(["all", "contacts", "none"]).optional(),
+  privacyBio: z.enum(["all", "contacts", "none"]).optional(),
+  privacyGroups: z.enum(["all", "contacts", "none"]).optional(),
+  privacyReadReceipt: z.boolean().optional(),
 });
 
 export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
@@ -103,10 +113,8 @@ export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
       const formattedProfile = formatUserProfile(updatedUser);
 
-      // Broadcast profile update event via Socket.IO
-      if (app.io) {
-        app.io.emit("user:profile_updated", formattedProfile);
-      }
+      // Broadcast sanitized profile update event via Socket.IO
+      await broadcastSanitizedProfileUpdate(app, formattedProfile);
 
       return reply.status(200).send(formattedProfile);
     }
@@ -135,6 +143,10 @@ export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
       if (!updatedSettings) {
         return reply.status(404).send({ error: "User settings not found" });
+      }
+
+      if (data.privacyLastSeen !== undefined) {
+        await syncPresenceOnPrivacyChange(app, userId);
       }
 
       const formattedSettings = formatUserSettings(updatedSettings);
@@ -191,6 +203,7 @@ export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
     { preHandler: [app.authenticate] },
     async (request, reply) => {
       const targetUserId = request.params.id;
+      const viewerUserId = (request.user as { sub: string }).sub;
       const targetUser = await app.db
         .select()
         .from(users)
@@ -199,6 +212,16 @@ export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
       if (targetUser.length === 0) {
         return reply.status(404).send({ error: "User not found" });
+      }
+
+      // Check reciprocity
+      const canSee = await canViewPresence(app.db, targetUserId, viewerUserId);
+      if (!canSee) {
+        const masked: UserPresence = {
+          userId: targetUserId,
+          status: "offline",
+        };
+        return reply.status(200).send(masked);
       }
 
       const online = isUserOnline(targetUserId);

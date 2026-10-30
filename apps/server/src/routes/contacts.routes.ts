@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import { eq, and } from "drizzle-orm";
 import { contacts, users } from "../db/schema.js";
+import { sanitizeUserProfiles } from "../lib/privacy.js";
 import type { ContactSummary } from "@chat-me/shared";
 
 export const contactsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
@@ -32,20 +33,28 @@ export const contactsRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
         .innerJoin(users, eq(contacts.contactUserId, users.id))
         .where(eq(contacts.userId, currentUserId));
 
-      const contactList: ContactSummary[] = rows.map((r) => ({
+      const rawContacts = rows.map((r) => ({
+        id: r.contactId,
+        email: r.contactEmail,
+        name: r.contactName,
+        bio: r.contactBio,
+        phone: r.contactPhone,
+        pictureUrl: r.contactPictureUrl,
+        createdAt: r.contactCreatedAt.toISOString(),
+      }));
+
+      const sanitizedContacts = await sanitizeUserProfiles(
+        app.db,
+        rawContacts,
+        currentUserId
+      );
+
+      const contactList: ContactSummary[] = rows.map((r, i) => ({
         userId: r.userId,
         contactUserId: r.contactUserId,
         nickname: r.nickname,
         createdAt: r.createdAt.toISOString(),
-        contact: {
-          id: r.contactId,
-          email: r.contactEmail,
-          name: r.contactName,
-          bio: r.contactBio,
-          phone: r.contactPhone,
-          pictureUrl: r.contactPictureUrl,
-          createdAt: r.contactCreatedAt.toISOString(),
-        },
+        contact: sanitizedContacts[i],
       }));
 
       return reply.send(contactList);
