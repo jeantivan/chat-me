@@ -4,7 +4,7 @@ import { getAuthHeaders } from "../auth/authClient";
 import { useAuth } from "../auth/AuthContext";
 import useStore from "../store";
 import type { TTheme } from "../types";
-import type { UserSettingsData, UpdateUserSettingsInput } from "@chat-me/shared";
+import type { UserSettingsData, UpdateUserSettingsInput, BlockedUserSummary } from "@chat-me/shared";
 
 const fallbackQueryClient = new QueryClient({
   defaultOptions: {
@@ -161,6 +161,93 @@ export function useUpdateSettings() {
       onSuccess: (updatedSettings) => {
         queryClient.setQueryData<UserSettingsData>(chatKeys.settings, updatedSettings);
         applySettingsToZustand(updatedSettings);
+      },
+    },
+    queryClient
+  );
+}
+
+export function useBlockedUsers() {
+  const { isAuthenticated, token } = useSafeAuth();
+  const queryClient = useSafeQueryClient();
+
+  return useQuery(
+    {
+      queryKey: chatKeys.blocked,
+      queryFn: async () => {
+        const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+        const res = await fetch(`${apiBase}/api/v1/users/me/blocked`, {
+          headers: getAuthHeaders(),
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Failed to fetch blocked users");
+        return (await res.json()) as BlockedUserSummary[];
+      },
+      enabled: Boolean(isAuthenticated && token),
+    },
+    queryClient
+  );
+}
+
+export function useBlockUser() {
+  const queryClient = useSafeQueryClient();
+
+  return useMutation(
+    {
+      mutationFn: async (targetUserId: string) => {
+        const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+        const res = await fetch(`${apiBase}/api/v1/users/me/blocked/${targetUserId}`, {
+          method: "POST",
+          headers: {
+            ...getAuthHeaders(),
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          const errJson = await res.json().catch(() => ({}));
+          throw new Error(errJson.error || "Failed to block user");
+        }
+
+        return (await res.json()) as { success: boolean };
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: chatKeys.blocked });
+        queryClient.invalidateQueries({ queryKey: chatKeys.contacts });
+        queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
+      },
+    },
+    queryClient
+  );
+}
+
+export function useUnblockUser() {
+  const queryClient = useSafeQueryClient();
+
+  return useMutation(
+    {
+      mutationFn: async (targetUserId: string) => {
+        const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+        const res = await fetch(`${apiBase}/api/v1/users/me/blocked/${targetUserId}`, {
+          method: "DELETE",
+          headers: {
+            ...getAuthHeaders(),
+          },
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          const errJson = await res.json().catch(() => ({}));
+          throw new Error(errJson.error || "Failed to unblock user");
+        }
+
+        return (await res.json()) as { success: boolean };
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: chatKeys.blocked });
+        queryClient.invalidateQueries({ queryKey: chatKeys.contacts });
+        queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
       },
     },
     queryClient

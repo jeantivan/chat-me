@@ -9,6 +9,7 @@ import { Profile } from "@/components/Configuration/Profile";
 import { Options } from "@/components/Configuration/Options";
 import { Notifications } from "@/components/Configuration/Notifications";
 import { Privacy } from "@/components/Configuration/Privacy";
+import { BlockedContacts } from "@/components/Configuration/BlockedContacts";
 
 import { NewChat } from "@/components/NewChat";
 import { NewGroup } from "@/components/NewGroup";
@@ -43,6 +44,11 @@ const elements: LeftDrawerElementProps[] = [
     title: "Personalizar interfaz",
     option: "THEME",
     Component: Theme,
+  },
+  {
+    title: "Contactos bloqueados",
+    option: "BLOCKED_USERS",
+    Component: BlockedContacts,
   },
 
   {

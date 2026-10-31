@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyPluginAsync } from "fastify";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 import crypto from "crypto";
 import { formatUserProfile, formatUserSettings, getUserProfileAndSettings } from "../services/auth.service.js";
@@ -7,15 +7,18 @@ import { generatePresignedUploadUrl } from "../services/storage.service.js";
 import {
   isUserOnline,
   syncPresenceOnPrivacyChange,
+  syncPresenceOnBlock,
+  syncPresenceOnUnblock,
   broadcastSanitizedProfileUpdate,
 } from "../socket/index.js";
 import { canViewPresence } from "../lib/privacy.js";
-import { users, userSettings } from "../db/schema.js";
+import { users, userSettings, blockedUsers } from "../db/schema.js";
 import type {
   UserPresence,
   UpdateProfileInput,
   UpdateUserSettingsInput,
   PresignAvatarRequest,
+  BlockedUserSummary,
 } from "@chat-me/shared";
 
 const AVATAR_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
@@ -66,6 +69,102 @@ export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
     return reply.status(200).send(profile);
   });
+
+  // GET /api/v1/users/me/blocked
+  app.get(
+    "/me/blocked",
+    { preHandler: [app.authenticate] },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+
+      const rows = await app.db
+        .select({
+          blockerId: blockedUsers.blockerId,
+          blockedId: blockedUsers.blockedId,
+          createdAt: blockedUsers.createdAt,
+          user: users,
+        })
+        .from(blockedUsers)
+        .innerJoin(users, eq(blockedUsers.blockedId, users.id))
+        .where(eq(blockedUsers.blockerId, currentUserId));
+
+      const list: BlockedUserSummary[] = rows.map((r) => ({
+        id: r.user.id,
+        name: r.user.name,
+        email: r.user.email,
+        bio: r.user.bio,
+        pictureUrl: r.user.pictureUrl,
+        createdAt: r.createdAt.toISOString(),
+        user: formatUserProfile(r.user),
+      }));
+
+      return reply.status(200).send(list);
+    }
+  );
+
+  // POST /api/v1/users/me/blocked/:targetUserId
+  app.post<{ Params: { targetUserId: string } }>(
+    "/me/blocked/:targetUserId",
+    { preHandler: [app.authenticate] },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+      const { targetUserId } = request.params;
+
+      if (targetUserId === currentUserId) {
+        return reply.status(400).send({ error: "Cannot block self" });
+      }
+
+      const parseResult = z.string().uuid().safeParse(targetUserId);
+      if (!parseResult.success) {
+        return reply.status(400).send({ error: "Invalid user ID" });
+      }
+
+      const targetUserRows = await app.db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.id, targetUserId))
+        .limit(1);
+
+      if (targetUserRows.length === 0) {
+        return reply.status(404).send({ error: "User not found" });
+      }
+
+      await app.db
+        .insert(blockedUsers)
+        .values({
+          blockerId: currentUserId,
+          blockedId: targetUserId,
+        })
+        .onConflictDoNothing();
+
+      await syncPresenceOnBlock(app, currentUserId, targetUserId);
+
+      return reply.status(200).send({ success: true });
+    }
+  );
+
+  // DELETE /api/v1/users/me/blocked/:targetUserId
+  app.delete<{ Params: { targetUserId: string } }>(
+    "/me/blocked/:targetUserId",
+    { preHandler: [app.authenticate] },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+      const { targetUserId } = request.params;
+
+      await app.db
+        .delete(blockedUsers)
+        .where(
+          and(
+            eq(blockedUsers.blockerId, currentUserId),
+            eq(blockedUsers.blockedId, targetUserId)
+          )
+        );
+
+      await syncPresenceOnUnblock(app, currentUserId, targetUserId);
+
+      return reply.status(200).send({ success: true });
+    }
+  );
 
   // PATCH /api/v1/users/me/profile
   app.patch<{ Body: UpdateProfileInput }>(

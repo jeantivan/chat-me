@@ -97,10 +97,20 @@ export interface ContactSummary {
   contact: UserProfile;
 }
 
+export interface BlockedUserSummary {
+  id: string;
+  name: string;
+  email: string;
+  bio: string;
+  pictureUrl: string;
+  createdAt: string;
+  user: UserProfile;
+}
+
 export interface UserPresence {
   userId: string;
   status: "online" | "offline";
-  lastSeenAt?: string;
+  lastSeenAt?: string | null;
 }
 
 // Chat & Message Domain Interfaces

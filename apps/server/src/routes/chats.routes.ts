@@ -32,6 +32,7 @@ import {
   sanitizeUserProfile,
   sanitizeUserProfiles,
   assertGroupAdditionAllowed,
+  isBlockActiveBetween,
 } from "../lib/privacy.js";
 
 async function hydrateMessagesMetadata(
@@ -138,6 +139,11 @@ async function createOrGetDirectChat(
 
   if (targetUsers.length === 0) {
     return { error: "Target user not found", status: 404 };
+  }
+
+  const isBlocked = await isBlockActiveBetween(app.db, currentUserId, targetUserId);
+  if (isBlocked) {
+    return { error: "Forbidden: Cannot create chat with a blocked user", status: 403 };
   }
 
   const pairHash = generateDirectPairHash(currentUserId, targetUserId);

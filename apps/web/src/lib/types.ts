@@ -111,7 +111,8 @@ export type LeftDrawerContentOptions =
   | "NEW_CHAT"
   | "NEW_GROUP"
   | "ARCHIVED_CHATS"
-  | "STARRED_MESSAGES";
+  | "STARRED_MESSAGES"
+  | "BLOCKED_USERS";
 
 export type RightDrawerContentOptions =
   | "CONTACT_INFO"

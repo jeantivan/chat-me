@@ -50,6 +50,13 @@
       "when": 1792775000000,
       "tag": "0006_message_reactions_and_stars",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792780000000,
+      "tag": "0007_blocked_users",
+      "breakpoints": true
     }
   ]
 }

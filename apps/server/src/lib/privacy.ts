@@ -1,8 +1,46 @@
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, or, inArray } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import * as schema from "../db/schema.js";
-import { contacts, userSettings, UserSettings } from "../db/schema.js";
+import { contacts, userSettings, UserSettings, blockedUsers } from "../db/schema.js";
 import type { PrivacyAudience, UserProfile, UserSettingsData } from "@chat-me/shared";
+
+export async function hasUserBlocked(
+  db: NodePgDatabase<typeof schema>,
+  blockerId: string,
+  blockedId: string
+): Promise<boolean> {
+  if (blockerId === blockedId) return false;
+  const rows = await db
+    .select({ blockerId: blockedUsers.blockerId })
+    .from(blockedUsers)
+    .where(
+      and(
+        eq(blockedUsers.blockerId, blockerId),
+        eq(blockedUsers.blockedId, blockedId)
+      )
+    )
+    .limit(1);
+  return rows.length > 0;
+}
+
+export async function isBlockActiveBetween(
+  db: NodePgDatabase<typeof schema>,
+  user1Id: string,
+  user2Id: string
+): Promise<boolean> {
+  if (user1Id === user2Id) return false;
+  const rows = await db
+    .select({ blockerId: blockedUsers.blockerId })
+    .from(blockedUsers)
+    .where(
+      or(
+        and(eq(blockedUsers.blockerId, user1Id), eq(blockedUsers.blockedId, user2Id)),
+        and(eq(blockedUsers.blockerId, user2Id), eq(blockedUsers.blockedId, user1Id))
+      )
+    )
+    .limit(1);
+  return rows.length > 0;
+}
 
 export async function canViewerAccess(
   db: NodePgDatabase<typeof schema>,
@@ -30,6 +68,10 @@ export async function canViewPresence(
   viewerId: string
 ): Promise<boolean> {
   if (targetId === viewerId) return true;
+
+  // Block isolation: concealment of mutual presence if blocked in either direction
+  const isBlocked = await isBlockActiveBetween(db, targetId, viewerId);
+  if (isBlocked) return false;
 
   const settingsRows = await db
     .select()
@@ -68,6 +110,26 @@ export async function sanitizeUserProfiles(
     return targetUsers.map((u) => ({ ...u }));
   }
 
+  // Batch query bidirectional block relationships
+  const blockRows = await db
+    .select({ blockerId: blockedUsers.blockerId, blockedId: blockedUsers.blockedId })
+    .from(blockedUsers)
+    .where(
+      or(
+        and(eq(blockedUsers.blockerId, viewerId), inArray(blockedUsers.blockedId, otherUserIds)),
+        and(inArray(blockedUsers.blockerId, otherUserIds), eq(blockedUsers.blockedId, viewerId))
+      )
+    );
+
+  const blockedUserIdsSet = new Set<string>();
+  for (const b of blockRows) {
+    if (b.blockerId === viewerId) {
+      blockedUserIdsSet.add(b.blockedId);
+    } else {
+      blockedUserIdsSet.add(b.blockerId);
+    }
+  }
+
   // Batch query settings for target users
   const settingsRows = await db
     .select()
@@ -92,6 +154,14 @@ export async function sanitizeUserProfiles(
   return targetUsers.map((user) => {
     if (user.id === viewerId) {
       return { ...user };
+    }
+
+    if (blockedUserIdsSet.has(user.id)) {
+      return {
+        ...user,
+        pictureUrl: "",
+        bio: "",
+      };
     }
 
     const userSetting = settingsMap.get(user.id);
@@ -124,6 +194,15 @@ export async function sanitizeUserProfile(
     return { ...targetUser };
   }
 
+  const isBlocked = await isBlockActiveBetween(db, targetUser.id, viewerId);
+  if (isBlocked) {
+    return {
+      ...targetUser,
+      pictureUrl: "",
+      bio: "",
+    };
+  }
+
   if (settings) {
     const pictureAudience: PrivacyAudience =
       (settings.privacyPicture as PrivacyAudience) || "all";
@@ -152,6 +231,10 @@ export async function canAddToGroup(
   actorId: string
 ): Promise<boolean> {
   if (targetUserId === actorId) return true;
+
+  // Block isolation: actor cannot add a target user who blocked the actor
+  const isBlocked = await hasUserBlocked(db, targetUserId, actorId);
+  if (isBlocked) return false;
 
   const rows = await db
     .select()

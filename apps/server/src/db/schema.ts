@@ -250,6 +250,25 @@ export const messageStars = pgTable(
   })
 );
 
+export const blockedUsers = pgTable(
+  "blocked_users",
+  {
+    blockerId: uuid("blocker_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    blockedId: uuid("blocked_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.blockerId, table.blockedId] }),
+    blockerIdIdx: index("idx_blocked_users_blocker").on(table.blockerId),
+    blockedIdIdx: index("idx_blocked_users_blocked").on(table.blockedId),
+    noSelfBlockCheck: check("chk_no_self_block", sql`${table.blockerId} <> ${table.blockedId}`),
+  })
+);
+
 import { generateDirectPairHash, type DirectPairHash } from "@chat-me/shared";
 export { generateDirectPairHash, type DirectPairHash };
 
@@ -273,3 +292,5 @@ export type MessageReaction = typeof messageReactions.$inferSelect;
 export type NewMessageReaction = typeof messageReactions.$inferInsert;
 export type MessageStar = typeof messageStars.$inferSelect;
 export type NewMessageStar = typeof messageStars.$inferInsert;
+export type BlockedUser = typeof blockedUsers.$inferSelect;
+export type NewBlockedUser = typeof blockedUsers.$inferInsert;
