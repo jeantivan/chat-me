@@ -7,6 +7,7 @@ import {
   TNotifications,
   TTheme,
   TUser,
+  TPrivacy,
 } from "@/lib/types";
 
 import type { UserSettingsData } from "@chat-me/shared";
@@ -29,6 +30,7 @@ export interface ConfigSlice {
   setNotification: (type: keyof TNotifications, value: boolean) => void;
   changeThemeMode: (mode: TTheme["mode"]) => void;
   changeThemeColors: (colors: TTheme["colors"]) => void;
+  setPrivacy: <K extends keyof TPrivacy>(key: K, value: TPrivacy[K]) => void;
 }
 
 // Interface del Id del Chat actual

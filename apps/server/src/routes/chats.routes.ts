@@ -28,6 +28,11 @@ import {
   computeMessageStatusForViewer,
   computeStatusFromReceipts,
 } from "../lib/receipts.js";
+import {
+  sanitizeUserProfile,
+  sanitizeUserProfiles,
+  assertGroupAdditionAllowed,
+} from "../lib/privacy.js";
 
 async function hydrateMessagesMetadata(
   app: FastifyInstance,
@@ -369,6 +374,15 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
             .send({ error: "One or more participants not found" });
         }
 
+        const groupAllowed = await assertGroupAdditionAllowed(
+          app.db,
+          uniqueInvitees,
+          currentUserId
+        );
+        if (!groupAllowed.allowed) {
+          return reply.status(403).send({ error: groupAllowed.error });
+        }
+
         const [newChat] = await app.db
           .insert(chats)
           .values({
@@ -497,6 +511,15 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
       if (existingUsers.length !== uniqueUserIds.length) {
         return reply.status(404).send({ error: "One or more users not found" });
+      }
+
+      const groupAllowed = await assertGroupAdditionAllowed(
+        app.db,
+        uniqueUserIds,
+        currentUserId
+      );
+      if (!groupAllowed.allowed) {
+        return reply.status(403).send({ error: groupAllowed.error });
       }
 
       await app.db
@@ -1110,21 +1133,25 @@ async function getChatSummary(
     .innerJoin(users, eq(chatParticipants.userId, users.id))
     .where(eq(chatParticipants.chatId, chatId));
 
-  const participants: ChatParticipantSummary[] = participantRows.map((p) => ({
+  const rawUsers = participantRows.map((p) => ({
+    id: p.userId,
+    email: p.userEmail,
+    name: p.userName,
+    bio: p.userBio,
+    pictureUrl: p.userPictureUrl,
+    createdAt: p.userCreatedAt.toISOString(),
+  }));
+
+  const sanitizedUsers = await sanitizeUserProfiles(app.db, rawUsers, currentUserId);
+
+  const participants: ChatParticipantSummary[] = participantRows.map((p, i) => ({
     userId: p.userId,
     role: p.role as "admin" | "member",
     pinned: p.pinned,
     muted: p.muted,
     archived: p.archived,
     lastReadAt: p.lastReadAt.toISOString(),
-    user: {
-      id: p.userId,
-      email: p.userEmail,
-      name: p.userName,
-      bio: p.userBio,
-      pictureUrl: p.userPictureUrl,
-      createdAt: p.userCreatedAt.toISOString(),
-    },
+    user: sanitizedUsers[i],
   }));
 
   // Find latest message

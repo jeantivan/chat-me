@@ -10,6 +10,8 @@ import {
   messageReactions,
   mediaAttachments,
   users,
+  chats,
+  userSettings,
 } from "../db/schema.js";
 import { toMediaPayload } from "../lib/media.js";
 import type {
@@ -17,8 +19,10 @@ import type {
   ServerToClientEvents,
   MessagePayload,
   MediaPayload,
+  UserProfile,
 } from "@chat-me/shared";
 import { processAndBroadcastReceipt } from "../lib/receipts.js";
+import { canViewPresence, sanitizeUserProfile } from "../lib/privacy.js";
 
 interface SocketData {
   userId: string;
@@ -30,6 +34,67 @@ export function isUserOnline(userId: string): boolean {
   return (userSocketCounts.get(userId) || 0) > 0;
 }
 
+export async function syncPresenceOnPrivacyChange(
+  app: FastifyInstance,
+  userId: string
+): Promise<void> {
+  if (!app.io) return;
+  const isOnline = isUserOnline(userId);
+  const userRows = await app.db
+    .select()
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+  const userLastSeen = userRows[0]?.lastSeenAt.toISOString();
+
+  for (const otherUserId of userSocketCounts.keys()) {
+    if (otherUserId === userId) continue;
+
+    // Reciprocal check: canViewPresence evaluates target and viewer symmetrically.
+    const canSeePresence = await canViewPresence(app.db, userId, otherUserId);
+    if (canSeePresence) {
+      app.io.to(`user:${otherUserId}`).emit("presence:updated", {
+        userId,
+        status: isOnline ? "online" : "offline",
+        ...(isOnline ? {} : userLastSeen ? { lastSeenAt: userLastSeen } : {}),
+      });
+    } else {
+      app.io.to(`user:${otherUserId}`).emit("presence:updated", {
+        userId,
+        status: "offline",
+      });
+    }
+
+    const otherOnline = isUserOnline(otherUserId);
+    if (canSeePresence) {
+      app.io.to(`user:${userId}`).emit("presence:updated", {
+        userId: otherUserId,
+        status: otherOnline ? "online" : "offline",
+      });
+    } else {
+      app.io.to(`user:${userId}`).emit("presence:updated", {
+        userId: otherUserId,
+        status: "offline",
+      });
+    }
+  }
+}
+
+export async function broadcastSanitizedProfileUpdate(
+  app: FastifyInstance,
+  profile: UserProfile
+): Promise<void> {
+  if (!app.io) return;
+  // Always deliver full unredacted profile to the owner themselves
+  app.io.to(`user:${profile.id}`).emit("user:profile_updated", profile);
+
+  for (const viewerId of userSocketCounts.keys()) {
+    if (viewerId === profile.id) continue;
+    const sanitized = await sanitizeUserProfile(app.db, profile, viewerId);
+    app.io.to(`user:${viewerId}`).emit("user:profile_updated", sanitized);
+  }
+}
+
 function broadcastToChatAndParticipants(
   io: SocketIOServer<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>,
   chatId: string,
@@ -39,6 +104,25 @@ function broadcastToChatAndParticipants(
 ) {
   const rooms = [`chat:${chatId}`, ...participants.map((p) => `user:${p.userId}`)];
   io.to(rooms).emit(event as any, payload);
+}
+
+function broadcastPresenceToConnectedPeers(
+  app: FastifyInstance,
+  userId: string,
+  payload: { status: "online" | "offline"; lastSeenAt?: string }
+): void {
+  for (const otherUserId of userSocketCounts.keys()) {
+    if (otherUserId !== userId) {
+      canViewPresence(app.db, userId, otherUserId).then((canSee) => {
+        if (canSee) {
+          app.io.to(`user:${otherUserId}`).emit("presence:updated", {
+            userId,
+            ...payload,
+          });
+        }
+      });
+    }
+  }
 }
 
 export function setupSocketServer(
@@ -122,18 +206,19 @@ export function setupSocketServer(
     const currentCount = userSocketCounts.get(userId) || 0;
     userSocketCounts.set(userId, currentCount + 1);
     if (currentCount === 0) {
-      io.emit("presence:updated", {
-        userId,
-        status: "online",
-      });
+      broadcastPresenceToConnectedPeers(app, userId, { status: "online" });
     }
 
     // Hydrate currently online users to this newly connected socket
     for (const [onlineUserId, count] of userSocketCounts.entries()) {
       if (onlineUserId !== userId && count > 0) {
-        socket.emit("presence:updated", {
-          userId: onlineUserId,
-          status: "online",
+        canViewPresence(app.db, onlineUserId, userId).then((canSee) => {
+          if (canSee) {
+            socket.emit("presence:updated", {
+              userId: onlineUserId,
+              status: "online",
+            });
+          }
         });
       }
     }
@@ -353,6 +438,30 @@ export function setupSocketServer(
               eq(chatParticipants.userId, userId)
             )
           );
+
+        // Check if direct chat and privacyReadReceipt reciprocity applies
+        const chatRows = await app.db
+          .select({ type: chats.type })
+          .from(chats)
+          .where(eq(chats.id, chatId))
+          .limit(1);
+
+        if (chatRows.length > 0 && chatRows[0].type === "direct") {
+          const participantSettings = await app.db
+            .select({ privacyReadReceipt: userSettings.privacyReadReceipt })
+            .from(chatParticipants)
+            .innerJoin(userSettings, eq(chatParticipants.userId, userSettings.userId))
+            .where(eq(chatParticipants.chatId, chatId));
+
+          const allAllowReceipts = participantSettings.every(
+            (s) => s.privacyReadReceipt === true
+          );
+
+          if (!allAllowReceipts) {
+            // Read receipt reciprocity: do not record or broadcast 'read' status
+            return;
+          }
+        }
 
         // Find last message timestamp if lastMessageId provided
         let targetDate = now;
@@ -611,13 +720,10 @@ export function setupSocketServer(
           app.log.error({ err, userId }, "Error updating user last seen on disconnect");
         }
 
-        if (pubClient.status === "ready") {
-          io.emit("presence:updated", {
-            userId,
-            status: "offline",
-            lastSeenAt: now.toISOString(),
-          });
-        }
+        broadcastPresenceToConnectedPeers(app, userId, {
+          status: "offline",
+          lastSeenAt: now.toISOString(),
+        });
       } else {
         userSocketCounts.set(userId, remaining);
       }

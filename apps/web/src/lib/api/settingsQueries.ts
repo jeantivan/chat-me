@@ -49,6 +49,21 @@ function applySettingsToZustand(settings: Partial<UserSettingsData>) {
   if (settings.notifyReactions !== undefined) {
     store.setNotification("reactions", settings.notifyReactions);
   }
+  if (settings.privacyLastSeen !== undefined) {
+    store.setPrivacy("lastTimeOnline", settings.privacyLastSeen);
+  }
+  if (settings.privacyPicture !== undefined) {
+    store.setPrivacy("picture", settings.privacyPicture);
+  }
+  if (settings.privacyBio !== undefined) {
+    store.setPrivacy("bio", settings.privacyBio);
+  }
+  if (settings.privacyGroups !== undefined) {
+    store.setPrivacy("groups", settings.privacyGroups);
+  }
+  if (settings.privacyReadReceipt !== undefined) {
+    store.setPrivacy("readReceipt", settings.privacyReadReceipt);
+  }
 }
 
 export function useUserSettings() {
@@ -116,6 +131,7 @@ export function useUpdateSettings() {
           themeMode: zustandStore.theme.mode,
           themeColors: zustandStore.theme.colors,
           notifications: { ...zustandStore.notifications },
+          privacy: { ...zustandStore.privacy },
         };
 
         // Optimistically update Zustand store
@@ -135,6 +151,11 @@ export function useUpdateSettings() {
           store.setNotification("sound", context.previousZustand.notifications.sound);
           store.setNotification("preview", context.previousZustand.notifications.preview);
           store.setNotification("reactions", context.previousZustand.notifications.reactions);
+          store.setPrivacy("lastTimeOnline", context.previousZustand.privacy.lastTimeOnline);
+          store.setPrivacy("picture", context.previousZustand.privacy.picture);
+          store.setPrivacy("bio", context.previousZustand.privacy.bio);
+          store.setPrivacy("groups", context.previousZustand.privacy.groups);
+          store.setPrivacy("readReceipt", context.previousZustand.privacy.readReceipt);
         }
       },
       onSuccess: (updatedSettings) => {

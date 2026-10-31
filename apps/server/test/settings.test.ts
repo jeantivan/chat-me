@@ -137,4 +137,71 @@ describe("User Preferences Persistence Seam (PATCH /api/v1/users/me/settings)", 
     expect(updatedAll.notifyAll).toBe(false);
     expect(updatedAll.notifySound).toBe(false);
   });
+
+  it("persists privacy settings (privacyLastSeen, privacyPicture, privacyBio, privacyGroups, privacyReadReceipt)", async () => {
+    const res = await app.inject({
+      method: "PATCH",
+      url: "/api/v1/users/me/settings",
+      headers: {
+        authorization: `Bearer ${user.accessToken}`,
+      },
+      payload: {
+        privacyLastSeen: "contacts",
+        privacyPicture: "none",
+        privacyBio: "contacts",
+        privacyGroups: "none",
+        privacyReadReceipt: false,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const updated = res.json() as UserSettingsData;
+    expect(updated.privacyLastSeen).toBe("contacts");
+    expect(updated.privacyPicture).toBe("none");
+    expect(updated.privacyBio).toBe("contacts");
+    expect(updated.privacyGroups).toBe("none");
+    expect(updated.privacyReadReceipt).toBe(false);
+
+    // Verify GET /api/v1/users/me returns updated privacy settings
+    const getRes = await app.inject({
+      method: "GET",
+      url: "/api/v1/users/me",
+      headers: {
+        authorization: `Bearer ${user.accessToken}`,
+      },
+    });
+    expect(getRes.statusCode).toBe(200);
+    const meData = getRes.json();
+    expect(meData.settings.privacyLastSeen).toBe("contacts");
+    expect(meData.settings.privacyPicture).toBe("none");
+    expect(meData.settings.privacyBio).toBe("contacts");
+    expect(meData.settings.privacyGroups).toBe("none");
+    expect(meData.settings.privacyReadReceipt).toBe(false);
+  });
+
+  it("rejects invalid privacy settings values with 400", async () => {
+    const res = await app.inject({
+      method: "PATCH",
+      url: "/api/v1/users/me/settings",
+      headers: {
+        authorization: `Bearer ${user.accessToken}`,
+      },
+      payload: {
+        privacyLastSeen: "invalid-audience",
+      },
+    });
+    expect(res.statusCode).toBe(400);
+
+    const res2 = await app.inject({
+      method: "PATCH",
+      url: "/api/v1/users/me/settings",
+      headers: {
+        authorization: `Bearer ${user.accessToken}`,
+      },
+      payload: {
+        privacyReadReceipt: "not-a-boolean",
+      },
+    });
+    expect(res2.statusCode).toBe(400);
+  });
 });

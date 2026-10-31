@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
 import { ProfileSlice, StoreSlice } from "./interfaces/index.js";
-import { TProfile } from "@/lib/types.js";
+import { TProfile, TPrivacy } from "@/lib/types.js";
 import { sysModePref } from "@/lib/utils/sysModePref.js";
 
 const initialProfileState: TProfile = {
@@ -76,6 +76,27 @@ export const createProfileSlice: StateCreator<
   changeThemeMode: (mode) => {
     set((state) => {
       state.theme.mode = mode;
+    });
+  },
+  setPrivacy: (key, value) => {
+    set((state) => {
+      switch (key) {
+        case "lastTimeOnline":
+          state.privacy.lastTimeOnline = value as TPrivacy["lastTimeOnline"];
+          break;
+        case "picture":
+          state.privacy.picture = value as TPrivacy["picture"];
+          break;
+        case "bio":
+          state.privacy.bio = value as TPrivacy["bio"];
+          break;
+        case "groups":
+          state.privacy.groups = value as TPrivacy["groups"];
+          break;
+        case "readReceipt":
+          state.privacy.readReceipt = value as TPrivacy["readReceipt"];
+          break;
+      }
     });
   },
   setUserProfile: (userData, settingsData) => {
