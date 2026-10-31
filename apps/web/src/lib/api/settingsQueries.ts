@@ -212,6 +212,40 @@ export function useBlockUser() {
 
         return (await res.json()) as { success: boolean };
       },
+      onMutate: async (targetUserId) => {
+        await queryClient.cancelQueries({ queryKey: chatKeys.blocked });
+        const previousBlocked = queryClient.getQueryData<BlockedUserSummary[]>(chatKeys.blocked) || [];
+
+        if (!previousBlocked.some((b) => b.id === targetUserId)) {
+          const optimisticItem: BlockedUserSummary = {
+            id: targetUserId,
+            name: "User",
+            email: "",
+            bio: "",
+            pictureUrl: "",
+            createdAt: new Date().toISOString(),
+            user: {
+              id: targetUserId,
+              name: "User",
+              email: "",
+              bio: "",
+              pictureUrl: "",
+              createdAt: new Date().toISOString(),
+            },
+          };
+          queryClient.setQueryData<BlockedUserSummary[]>(chatKeys.blocked, [
+            ...previousBlocked,
+            optimisticItem,
+          ]);
+        }
+
+        return { previousBlocked };
+      },
+      onError: (_err, _variables, context) => {
+        if (context?.previousBlocked) {
+          queryClient.setQueryData<BlockedUserSummary[]>(chatKeys.blocked, context.previousBlocked);
+        }
+      },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: chatKeys.blocked });
         queryClient.invalidateQueries({ queryKey: chatKeys.contacts });
@@ -243,6 +277,22 @@ export function useUnblockUser() {
         }
 
         return (await res.json()) as { success: boolean };
+      },
+      onMutate: async (targetUserId) => {
+        await queryClient.cancelQueries({ queryKey: chatKeys.blocked });
+        const previousBlocked = queryClient.getQueryData<BlockedUserSummary[]>(chatKeys.blocked) || [];
+
+        queryClient.setQueryData<BlockedUserSummary[]>(
+          chatKeys.blocked,
+          previousBlocked.filter((b) => b.id !== targetUserId)
+        );
+
+        return { previousBlocked };
+      },
+      onError: (_err, _variables, context) => {
+        if (context?.previousBlocked) {
+          queryClient.setQueryData<BlockedUserSummary[]>(chatKeys.blocked, context.previousBlocked);
+        }
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: chatKeys.blocked });
