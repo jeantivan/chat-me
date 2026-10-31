@@ -16,6 +16,7 @@ import useStore from "@/lib/store";
 import { useUserId } from "@/lib/hooks";
 import mc from "@/lib/utils/mergeClassnames";
 import { useChatMessages, useChats } from "@/lib/api/chatQueries";
+import { useBlockedUsers, useUnblockUser } from "@/lib/api/settingsQueries";
 import { getSocket } from "@/lib/socket/socketClient";
 import { toUiChat } from "@/lib/utils/chatAdapter";
 import type { TChat, TMessage } from "@/lib/types";
@@ -97,8 +98,8 @@ export function Chat({ chatId }: { chatId: string }) {
       return legacyChat?.messages || [];
     }
     const reversedPages = [...messagesData.pages].reverse();
-    const flattened = reversedPages.flatMap((page) => page.messages);
-    return flattened.map((m) => ({
+    const flattened = reversedPages.flatMap((page) => page?.messages || []);
+    return flattened.filter(Boolean).map((m) => ({
       id: m.id,
       chatId: m.chatId,
       owner: m.owner,
@@ -176,7 +177,21 @@ export function Chat({ chatId }: { chatId: string }) {
     };
   }, [currentChatSummary, legacyChat, userId, chatId, messages]);
 
+  const { data: blockedUsers = [] } = useBlockedUsers();
+  const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser();
+
   if (!activeChat) return null;
+
+  const isGroup = activeChat.type === "group";
+  const counterpartUserId = !isGroup
+    ? activeChat.participants[0]?.id
+    : undefined;
+
+  const isCounterpartBlocked = Boolean(
+    !isGroup &&
+      counterpartUserId &&
+      blockedUsers.some((b) => b.id === counterpartUserId)
+  );
 
   return (
     <div className="relative w-full h-full flex">
@@ -193,13 +208,37 @@ export function Chat({ chatId }: { chatId: string }) {
           }}
           isLoadingMore={isFetchingNextPage}
         />
-        <div className="input-container bg-background-2 text-background-12 h-full py-3 px-5 grid items-center gap-2">
-          <FileList />
-          <div className="flex gap-2">
-            <AddImage />
-            <Editor key={chatId} chatId={chatId} />
+        {isCounterpartBlocked ? (
+          <div
+            role="alert"
+            aria-live="polite"
+            data-testid="blocked-composer-banner"
+            className="input-container bg-background-2 text-background-12 h-[72px] py-3 px-5 flex items-center justify-center border-t border-background-5"
+          >
+            <div className="text-sm text-background-11 text-center">
+              You blocked this contact.{" "}
+              <button
+                type="button"
+                data-testid="composer-unblock-btn"
+                onClick={() =>
+                  counterpartUserId && unblockUser(counterpartUserId)
+                }
+                disabled={isUnblocking}
+                className="text-sm font-medium text-primary-9 hover:underline inline-block cursor-pointer focus:outline-none"
+              >
+                Click to unblock
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="input-container bg-background-2 text-background-12 h-full py-3 px-5 grid items-center gap-2">
+            <FileList />
+            <div className="flex gap-2">
+              <AddImage />
+              <Editor key={chatId} chatId={chatId} />
+            </div>
+          </div>
+        )}
       </FilesToSend>
       <RightDrawer>
         <RightDrawerElement

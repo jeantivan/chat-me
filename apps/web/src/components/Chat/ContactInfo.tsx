@@ -18,6 +18,11 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
 import mc from "@/lib/utils/mergeClassnames";
 import { useChats } from "@/lib/api/chatQueries";
+import {
+  useBlockedUsers,
+  useBlockUser,
+  useUnblockUser,
+} from "@/lib/api/settingsQueries";
 import { useUserId, useCurrentChatId } from "@/lib/hooks";
 import { GroupInfoDrawer } from "./GroupInfoDrawer";
 
@@ -43,7 +48,9 @@ const Item = ({
       {...rest}
       className={mc(
         "flex gap-6 py-4 px-6 text-background-11 text-lg ",
-        danger && "text-red-500"
+        rest.onClick && "cursor-pointer hover:bg-background-4 select-none",
+        danger && "text-red-500",
+        rest.className
       )}
     >
       {icon && <Icon className="w-6 h-6" />}
@@ -75,6 +82,10 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
 
   const { data: chatList } = useChats();
   const chatSummary = chatList?.find((c) => c.id === currentChatId);
+
+  const { data: blockedUsers = [] } = useBlockedUsers();
+  const { mutate: blockUser, isPending: isBlocking } = useBlockUser();
+  const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser();
 
   if (!chatSummary) return null;
 
@@ -111,6 +122,20 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
     phone: "",
     bio: "",
     picture: "",
+  };
+
+  const targetUserId = contact?.id;
+  const isBlocked = Boolean(
+    targetUserId && blockedUsers.some((b) => b.id === targetUserId)
+  );
+
+  const handleToggleBlock = () => {
+    if (!targetUserId || isBlocking || isUnblocking) return;
+    if (isBlocked) {
+      unblockUser(targetUserId);
+    } else {
+      blockUser(targetUserId);
+    }
   };
 
   return (
@@ -220,8 +245,22 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
             <Item icon={Trash2} danger>
               Eliminar chat
             </Item>
-            <Item icon={CircleSlash} danger>
-              Bloquear a {name}
+            <Item
+              icon={CircleSlash}
+              danger={!isBlocked}
+              data-testid="block-unblock-contact-action"
+              role="button"
+              tabIndex={0}
+              aria-label={isBlocked ? `Desbloquear a ${name}` : `Bloquear a ${name}`}
+              onClick={handleToggleBlock}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleToggleBlock();
+                }
+              }}
+            >
+              {isBlocked ? `Desbloquear a ${name}` : `Bloquear a ${name}`}
             </Item>
           </section>
         </div>

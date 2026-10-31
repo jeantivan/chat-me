@@ -39,7 +39,7 @@ export function toUiChat(summary: ChatSummary, currentUserId?: string): TChat {
       }))
     : [
         {
-          id: otherParticipant?.user?.id || "",
+          id: otherParticipant?.user?.id || otherParticipant?.userId || "",
           name: otherParticipant?.user?.name || summary.title || "Chat",
           bio: otherParticipant?.user?.bio || "",
           phone: otherParticipant?.user?.phone || "",
