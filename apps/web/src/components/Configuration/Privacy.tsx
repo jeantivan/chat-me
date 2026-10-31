@@ -7,7 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
-import { useUserSettings, useUpdateSettings } from "@/lib/api/settingsQueries";
+import { useUserSettings, useUpdateSettings, useBlockedUsers } from "@/lib/api/settingsQueries";
 
 const AUDIENCE_LABELS: Record<PrivacyAudience, string> = {
   all: "Todos",
@@ -62,8 +62,10 @@ function AudienceOption({
 
 export function Privacy() {
   const { data: userSettings } = useUserSettings();
+  const { data: blockedUsers = [] } = useBlockedUsers();
   const zustandPrivacy = useStore((state) => state.privacy);
   const setPrivacy = useStore((state) => state.setPrivacy);
+  const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
   const { mutate: updateSettings } = useUpdateSettings();
 
   const privacy = {
@@ -159,15 +161,28 @@ export function Privacy() {
             }}
           />
 
-          <div className="flex py-3 items-center text-sm">
+          <div
+            role="button"
+            tabIndex={0}
+            data-testid="blocked-contacts-entry"
+            onClick={() => leftDrawerGoTo("BLOCKED_USERS")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                leftDrawerGoTo("BLOCKED_USERS");
+              }
+            }}
+            className="flex py-3 items-center text-sm cursor-pointer group"
+          >
             <div className="flex-1">
               <h3 className="text-background-12">Contactos bloqueados</h3>
-              <p className="text-background-11">15</p>
+              <p data-testid="blocked-contacts-count" className="text-background-11">
+                {blockedUsers.length}
+              </p>
             </div>
             <Icon
               icon={ChevronRight}
               label="chevron-right-icon"
-              className="w-6 h-6 text-background-9"
+              className="w-6 h-6 text-background-9 group-hover:text-background-12 transition-colors"
             />
           </div>
         </div>

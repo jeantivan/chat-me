@@ -22,7 +22,7 @@ import type {
   UserProfile,
 } from "@chat-me/shared";
 import { processAndBroadcastReceipt } from "../lib/receipts.js";
-import { canViewPresence, sanitizeUserProfile } from "../lib/privacy.js";
+import { canViewPresence, sanitizeUserProfile, isBlockActiveBetween } from "../lib/privacy.js";
 
 interface SocketData {
   userId: string;
@@ -78,6 +78,64 @@ export async function syncPresenceOnPrivacyChange(
       });
     }
   }
+}
+
+export async function syncPresenceOnBlock(
+  app: FastifyInstance,
+  blockerId: string,
+  blockedId: string
+): Promise<void> {
+  if (!app.io) return;
+  app.io.to(`user:${blockerId}`).emit("presence:updated", {
+    userId: blockedId,
+    status: "offline",
+    lastSeenAt: null,
+  });
+  app.io.to(`user:${blockedId}`).emit("presence:updated", {
+    userId: blockerId,
+    status: "offline",
+    lastSeenAt: null,
+  });
+}
+
+async function sendEvaluatedPresenceUpdate(
+  app: FastifyInstance,
+  viewerId: string,
+  targetId: string
+): Promise<void> {
+  const canView = await canViewPresence(app.db, targetId, viewerId);
+  const isOnline = isUserOnline(targetId);
+  if (canView) {
+    const targetRows = await app.db
+      .select({ lastSeenAt: users.lastSeenAt })
+      .from(users)
+      .where(eq(users.id, targetId))
+      .limit(1);
+    const lastSeen = targetRows[0]?.lastSeenAt.toISOString();
+
+    app.io.to(`user:${viewerId}`).emit("presence:updated", {
+      userId: targetId,
+      status: isOnline ? "online" : "offline",
+      ...(isOnline ? {} : lastSeen ? { lastSeenAt: lastSeen } : {}),
+    });
+  } else {
+    app.io.to(`user:${viewerId}`).emit("presence:updated", {
+      userId: targetId,
+      status: "offline",
+    });
+  }
+}
+
+export async function syncPresenceOnUnblock(
+  app: FastifyInstance,
+  blockerId: string,
+  blockedId: string
+): Promise<void> {
+  if (!app.io) return;
+  await Promise.all([
+    sendEvaluatedPresenceUpdate(app, blockerId, blockedId),
+    sendEvaluatedPresenceUpdate(app, blockedId, blockerId),
+  ]);
 }
 
 export async function broadcastSanitizedProfileUpdate(
@@ -273,6 +331,45 @@ export function setupSocketServer(
             });
           }
           return;
+        }
+
+        // Direct chat block isolation check
+        const chatRows = await app.db
+          .select({ type: chats.type })
+          .from(chats)
+          .where(eq(chats.id, chatId))
+          .limit(1);
+
+        if (chatRows.length > 0 && chatRows[0].type === "direct") {
+          const otherParticipants = await app.db
+            .select({ userId: chatParticipants.userId })
+            .from(chatParticipants)
+            .where(
+              and(
+                eq(chatParticipants.chatId, chatId),
+                sql`${chatParticipants.userId} <> ${userId}`
+              )
+            )
+            .limit(1);
+
+          if (otherParticipants.length > 0) {
+            const isBlocked = await isBlockActiveBetween(
+              app.db,
+              userId,
+              otherParticipants[0].userId
+            );
+            if (isBlocked) {
+              if (callback) {
+                callback({
+                  success: false,
+                  id,
+                  createdAt: "",
+                  error: "Forbidden: Cannot send messages to a blocked user",
+                });
+              }
+              return;
+            }
+          }
         }
 
         let mediaPayloadData: MediaPayload | null = null;
@@ -672,8 +769,14 @@ export function setupSocketServer(
     });
 
     // Ephemeral typing indicator
-    socket.on("chat:typing", async ({ chatId, isTyping }) => {
+    const handleTyping = async ({ chatId, isTyping }: { chatId: string; isTyping: boolean }) => {
       try {
+        const chatRows = await app.db
+          .select({ type: chats.type })
+          .from(chats)
+          .where(eq(chats.id, chatId))
+          .limit(1);
+
         const participants = await app.db
           .select({ userId: chatParticipants.userId })
           .from(chatParticipants)
@@ -681,6 +784,17 @@ export function setupSocketServer(
 
         const isMember = participants.some((p) => p.userId === userId);
         if (!isMember) return;
+
+        // If direct chat, suppress typing if block exists in either direction
+        if (chatRows.length > 0 && chatRows[0].type === "direct") {
+          const otherParticipant = participants.find((p) => p.userId !== userId);
+          if (otherParticipant) {
+            const isBlocked = await isBlockActiveBetween(app.db, userId, otherParticipant.userId);
+            if (isBlocked) {
+              return; // Suppressed
+            }
+          }
+        }
 
         // Broadcast to other participants in the chat
         const targetRooms = [
@@ -698,7 +812,9 @@ export function setupSocketServer(
       } catch (err) {
         app.log.error({ err, chatId, userId }, "Error handling chat:typing");
       }
-    });
+    };
+
+    socket.on("chat:typing", handleTyping);
 
     // Presence heartbeat
     socket.on("presence:heartbeat", () => {

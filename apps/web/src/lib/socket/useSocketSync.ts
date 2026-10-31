@@ -63,6 +63,7 @@ export const chatKeys = {
   contacts: ["contacts"] as const,
   user: ["user", "me"] as const,
   settings: ["user", "settings"] as const,
+  blocked: ["user", "blocked"] as const,
 };
 
 export function useSocketSync(
@@ -320,7 +321,7 @@ export function useSocketSync(
       status,
       lastSeenAt,
     }: UserPresence) => {
-      usePresenceStore.getState().setPresence(userId, { status, lastSeenAt });
+      usePresenceStore.getState().setPresence(userId, { status, lastSeenAt: lastSeenAt || undefined });
     };
 
     const handleProfileUpdated = (updatedUser: UserProfile) => {
