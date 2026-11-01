@@ -93,24 +93,22 @@ This project combines **hand-crafted frontend engineering** with **spec-driven a
 ## Quickstart (Local Development)
 
 ### Prerequisites
+- **Make** (GNU Make)
 - **Node.js** >= 20 (v22 recommended)
 - **pnpm** (`corepack enable`)
 - **Docker** & **Docker Compose**
 
-### 1. Start Backing Infrastructure (PostgreSQL, Redis, MinIO)
+### 1. One-Command Setup & Build (42-Style)
+Bootstrap environment files, generate cryptographic secrets, install dependencies, start backing infrastructure (PostgreSQL, Redis, MinIO), apply database schema migrations, and compile all monorepo packages:
 ```bash
-docker compose up -d --wait
+make
+# or: make all
 ```
 
-### 2. Install Dependencies & Seed Demo Data
+### 2. Run the Full-Stack Development Environment
+Ensure environment files and backing services are ready, apply pending migrations, conditionally seed demo data if the database has no registered users, and launch concurrent web and server development servers:
 ```bash
-pnpm install
-pnpm db:seed
-```
-
-### 3. Run the Full-Stack Development Environment
-```bash
-pnpm dev
+make dev
 ```
 - **Web App**: `http://localhost:5173` (Vite proxies `/api` and `/socket.io` to port `3001`)
 - **Backend API & Socket.IO**: `http://localhost:3001`
@@ -142,19 +140,46 @@ chat-me/
 ├── docs/
 │   ├── adr/                # Architecture Decision Records (0001–0004)
 │   └── spec/               # Full-stack engineering specifications
-├── scripts/                # Mechanical architecture & glossary linters
+├── scripts/                # Architecture linters & environment setup (setup-env.sh)
+├── Makefile                # 42-style automation rules (all, clean, fclean, re, dev, check)
+├── .env.example            # Root environment template configuration
 ├── GLOSSARY.md             # Ubiquitous domain language
 └── CODING_STANDARDS.md     # Enforced engineering rules & CI pipeline gates
 ```
 
-### Available Scripts
-```bash
-pnpm dev          # Start web (5173) and server (3001) concurrently via Turborepo
-pnpm build        # Build shared packages, backend, and production frontend bundle
-pnpm lint         # Run ESLint + mechanical glossary, network, and state boundary linters
-pnpm typecheck    # Full monorepo TypeScript verification
-pnpm test         # Run all unit and container-backed integration test suites
-pnpm db:migrate   # Run Drizzle PostgreSQL schema migrations
-pnpm db:seed      # Seed PostgreSQL with demo users, direct chats, group chat, and reactions
-pnpm health       # Probe PostgreSQL, Redis, and MinIO readiness
-```
+### Makefile Target Reference (42-Style)
+
+| Target | Description |
+| :--- | :--- |
+| `make` / `make all` | Bootstrap `.env`, install dependencies, start containers (`docker compose up -d --wait`), apply migrations, and compile all packages. |
+| `make dev` | Ensure `.env`, backing services, and migrations are ready; conditionally seed demo data if empty; and launch dev servers. |
+| `make clean` | Remove build outputs, caches, test reports and stop containers without removing persistent volumes. |
+| `make fclean` | Complete clean (`clean` + remove all `node_modules` and tear down Docker containers with named volumes `-v`). Preserves `.env`. |
+| `make re` | Scratch rebuild (`fclean` followed by `all`). |
+| `make env` | Non-interactively provision `.env` files and generate cryptographic secrets idempotently. |
+| `make up` / `make down` | Start (`up -d --wait`) or stop (`down`) backing Docker containers. |
+| `make logs` | Stream Docker container logs (`docker compose logs -f`). |
+| `make migrate` | Apply pending PostgreSQL schema migrations. |
+| `make seed` | Unconditionally seed demo users, direct chats, group chat, and messages. |
+| `make health` | Probe PostgreSQL, Redis, and MinIO readiness. |
+| `make lint` | Run ESLint, domain glossary checks, network seam checks, and state separation checks. |
+| `make typecheck` | Execute TypeScript compiler typecheck across all workspaces without emit. |
+| `make test` | Run unit and container-backed integration test suites (ensures infra is ready). |
+| `make test-e2e` | Run multi-participant headless browser Playwright E2E tests. |
+| `make build` | Compile monorepo packages and production client bundle. |
+| `make check` / `make ci` | Execute the complete verification pipeline in strict sequence (`lint` → `typecheck` → `test` → `build` → `test-e2e`). |
+| `make help` | Display formatted summary of all available targets and descriptions. |
+
+### Underlying Package Manager Scripts
+For direct granular script invocations, package manager commands remain available:
+
+| Script | Command | Purpose |
+| :--- | :--- | :--- |
+| `pnpm dev` | `turbo run dev` | Start web (`5173`) and server (`3001`) concurrently via Turborepo |
+| `pnpm build` | `turbo run build` | Build shared packages, backend, and production frontend bundle |
+| `pnpm lint` | `turbo run lint && ...` | Run ESLint + mechanical glossary, network, and state boundary linters |
+| `pnpm typecheck` | `turbo run typecheck` | Full monorepo TypeScript verification |
+| `pnpm test` | `turbo run test` | Run all unit and container-backed integration test suites |
+| `pnpm db:migrate` | `pnpm --filter @chat-me/server db:migrate` | Run Drizzle PostgreSQL schema migrations |
+| `pnpm db:seed` | `pnpm --filter @chat-me/server db:seed` | Seed PostgreSQL with demo users, direct chats, group chat, and reactions |
+| `pnpm health` | `tsx scripts/check-health.ts` | Probe PostgreSQL, Redis, and MinIO readiness |
