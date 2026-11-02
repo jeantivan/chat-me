@@ -11,6 +11,7 @@ import mc from "@/lib/utils/mergeClassnames";
 import { EMOJI_IMAGES_PATH, REACTIONS } from "@/lib/utils/constants";
 import { useReactToMessage } from "@/lib/api/chatQueries";
 import { ReactionKeys, TMessage, TReaction } from "@/lib/types";
+import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 
 const itemVariants = {
   initial: {
@@ -68,6 +69,11 @@ export function ReactionMenu({
 }: ReactionMenuProps) {
   const [open, setOpen] = useState(false);
   const reactToMessage = useReactToMessage();
+  const isDeleted = Boolean(message.deleted) || message.body === DELETED_MESSAGE_TOMBSTONE;
+
+  if (isDeleted) {
+    return null;
+  }
 
   return (
     <MenuRoot

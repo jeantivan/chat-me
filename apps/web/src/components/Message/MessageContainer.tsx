@@ -12,6 +12,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import mc from "@/lib/utils/mergeClassnames";
 import { TMessage } from "@/lib/types";
 import useStore from "@/lib/store";
+import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 
 const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
@@ -65,7 +66,8 @@ export function MessageContainer({
   message,
   senderName,
 }: ContainerProps) {
-  const { starred, status, time, reactions, hasMedia, forwarded } = message;
+  const { starred, status, time, reactions, hasMedia, forwarded, deleted, body } = message;
+  const isDeleted = Boolean(deleted) || body === DELETED_MESSAGE_TOMBSTONE;
   const [showMenus, setShowMenus] = useState(false);
   const [openMenus, setOpenMenus] = useState(false);
   const userId = useStore((state) => state.user.id);
@@ -81,7 +83,9 @@ export function MessageContainer({
     <div className={mc("mt-1.5", hasTail && "mt-4")}>
       <div
         onMouseEnter={() => {
-          setShowMenus(true);
+          if (!isDeleted) {
+            setShowMenus(true);
+          }
         }}
         onMouseLeave={() => {
           if (openMenus) return;
@@ -92,36 +96,38 @@ export function MessageContainer({
           !isOwnMsg && "justify-start"
         )}
       >
-        <motion.div
-          className={mc(
-            "gap-1 flex invisible shrink-0",
-            !isOwnMsg && "order-2",
-            showMenus && "visible"
-          )}
-        >
-          <Menu
-            message={message}
-            onOpenChange={stateChange}
-            align={isOwnMsg ? "end" : "start"}
+        {!isDeleted && (
+          <motion.div
+            className={mc(
+              "gap-1 flex invisible shrink-0",
+              !isOwnMsg && "order-2",
+              showMenus && "visible"
+            )}
           >
-            <IconButton
-              className="w-7 h-7 p-1"
-              icon={MoreVertical}
-              label="Abrir menu"
-            />
-          </Menu>
-          <ReactionMenu
-            onOpenChange={stateChange}
-            ownReaction={ownReaction}
-            message={message}
-          >
-            <IconButton
-              label="Reaccionar a este mensaje"
-              icon={Smile}
-              className="w-7 h-7 p-1"
-            />
-          </ReactionMenu>
-        </motion.div>
+            <Menu
+              message={message}
+              onOpenChange={stateChange}
+              align={isOwnMsg ? "end" : "start"}
+            >
+              <IconButton
+                className="w-7 h-7 p-1"
+                icon={MoreVertical}
+                label="Abrir menu"
+              />
+            </Menu>
+            <ReactionMenu
+              onOpenChange={stateChange}
+              ownReaction={ownReaction}
+              message={message}
+            >
+              <IconButton
+                label="Reaccionar a este mensaje"
+                icon={Smile}
+                className="w-7 h-7 p-1"
+              />
+            </ReactionMenu>
+          </motion.div>
+        )}
         <div
           className={mc(
             "drop-shadow",
@@ -141,7 +147,7 @@ export function MessageContainer({
                   : undefined
               )}
             >
-              {forwarded && <Forwarded />}
+              {forwarded && !isDeleted && <Forwarded />}
               {senderName && !isOwnMsg && (
                 <div
                   data-testid="message-sender-name"
@@ -151,16 +157,18 @@ export function MessageContainer({
                 </div>
               )}
               {children}
-              <footer className="px-2 flex justify-end items-end gap-1">
-                <Reactions reactions={reactions} />
-                <div className="flex items-center gap-1">
-                  {starred && <Starred />}
-                  <span className="leading-none text-sm text-neutral-600 dark:text-neutral-400">
-                    {formatTime}
-                  </span>
-                  {isOwnMsg && <Status status={status} />}
-                </div>
-              </footer>
+              {!isDeleted && (
+                <footer className="px-2 flex justify-end items-end gap-1">
+                  <Reactions reactions={reactions} />
+                  <div className="flex items-center gap-1">
+                    {starred && <Starred />}
+                    <span className="leading-none text-sm text-neutral-600 dark:text-neutral-400">
+                      {formatTime}
+                    </span>
+                    {isOwnMsg && <Status status={status} />}
+                  </div>
+                </footer>
+              )}
             </div>
           </div>
         </div>

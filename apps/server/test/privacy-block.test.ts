@@ -13,7 +13,7 @@ import {
   assertGroupAdditionAllowed,
 } from "../src/lib/privacy.js";
 import { blockedUsers, userSettings } from "../src/db/schema.js";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 
 describe("Privacy Block Isolation Seam (Unit & Lib)", () => {
   let app: FastifyInstance;
@@ -46,7 +46,17 @@ describe("Privacy Block Isolation Seam (Unit & Lib)", () => {
   });
 
   afterEach(async () => {
-    await app.db.delete(blockedUsers);
+    if (alice?.userId && bob?.userId && charlie?.userId) {
+      await app.db
+        .delete(blockedUsers)
+        .where(
+          or(
+            eq(blockedUsers.blockerId, alice.userId),
+            eq(blockedUsers.blockerId, bob.userId),
+            eq(blockedUsers.blockerId, charlie.userId)
+          )
+        );
+    }
   });
 
   afterAll(async () => {

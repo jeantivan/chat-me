@@ -9,6 +9,7 @@ import {
 import { useUserId } from "@/lib/hooks";
 import { useToggleStarMessage } from "@/lib/api/chatQueries";
 import { TMessage } from "@/lib/types";
+import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 import { ForwardMessages } from "../ForwardMessages";
 
 export function Menu({
@@ -28,7 +29,12 @@ export function Menu({
 
   const userId = useUserId();
   const isOwnMsg = message.owner === userId;
+  const isDeleted = Boolean(message.deleted) || message.body === DELETED_MESSAGE_TOMBSTONE;
   const toggleStarServer = useToggleStarMessage();
+
+  if (isDeleted) {
+    return null;
+  }
 
   return (
     <MenuRoot

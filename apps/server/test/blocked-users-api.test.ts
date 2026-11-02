@@ -4,6 +4,7 @@ import { FastifyInstance } from "fastify";
 import pg from "pg";
 import { registerTestUser } from "./test-helpers.js";
 import { blockedUsers } from "../src/db/schema.js";
+import { eq, or } from "drizzle-orm";
 
 describe("Blocked Users API Seam", () => {
   let app: FastifyInstance;
@@ -36,7 +37,20 @@ describe("Blocked Users API Seam", () => {
   });
 
   afterEach(async () => {
-    await app.db.delete(blockedUsers);
+    if (alice?.userId && bob?.userId && charlie?.userId) {
+      await app.db
+        .delete(blockedUsers)
+        .where(
+          or(
+            eq(blockedUsers.blockerId, alice.userId),
+            eq(blockedUsers.blockerId, bob.userId),
+            eq(blockedUsers.blockerId, charlie.userId),
+            eq(blockedUsers.blockedId, alice.userId),
+            eq(blockedUsers.blockedId, bob.userId),
+            eq(blockedUsers.blockedId, charlie.userId)
+          )
+        );
+    }
   });
 
   afterAll(async () => {

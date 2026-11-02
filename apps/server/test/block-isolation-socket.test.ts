@@ -6,7 +6,7 @@ import { AddressInfo } from "net";
 import pg from "pg";
 import { registerTestUser, waitForSocketEvent } from "./test-helpers.js";
 import { blockedUsers, chats, chatParticipants, messages, users } from "../src/db/schema.js";
-import { eq, and } from "drizzle-orm";
+import { eq, and, or } from "drizzle-orm";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -47,7 +47,20 @@ describe("Block Isolation & Socket Flows Seam", () => {
   });
 
   afterEach(async () => {
-    await app.db.delete(blockedUsers);
+    if (alice?.userId && bob?.userId && charlie?.userId) {
+      await app.db
+        .delete(blockedUsers)
+        .where(
+          or(
+            eq(blockedUsers.blockerId, alice.userId),
+            eq(blockedUsers.blockerId, bob.userId),
+            eq(blockedUsers.blockerId, charlie.userId),
+            eq(blockedUsers.blockedId, alice.userId),
+            eq(blockedUsers.blockedId, bob.userId),
+            eq(blockedUsers.blockedId, charlie.userId)
+          )
+        );
+    }
   });
 
   afterAll(async () => {
@@ -112,7 +125,18 @@ describe("Block Isolation & Socket Flows Seam", () => {
 
       // But an existing group chat where both are already members remains fully visible
       // Unblock temporarily to establish initial group chat with Alice, Bob, Charlie
-      await app.db.delete(blockedUsers);
+      await app.db
+        .delete(blockedUsers)
+        .where(
+          or(
+            eq(blockedUsers.blockerId, alice.userId),
+            eq(blockedUsers.blockerId, bob.userId),
+            eq(blockedUsers.blockerId, charlie.userId),
+            eq(blockedUsers.blockedId, alice.userId),
+            eq(blockedUsers.blockedId, bob.userId),
+            eq(blockedUsers.blockedId, charlie.userId)
+          )
+        );
 
       const groupRes = await app.inject({
         method: "POST",

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
+import dayjs from "dayjs";
 import { render, screen, act, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Messages } from "../src/components/Chat/Messages";
@@ -384,5 +385,48 @@ describe("Frontend Message Reactions, Starred Messages, Deletion & Forwarding Se
     );
 
     expect(screen.getByText("Simple plain text message")).toBeInTheDocument();
+  });
+
+  it("does not show reactions, date, forward button or pin for deleted messages", () => {
+    const formattedIso = "2026-10-26T14:35:00.000Z";
+    const deletedMessage: TMessage = {
+      id: "msg-del-ui-1",
+      chatId: "chat-123",
+      owner: "user-alice-1",
+      body: "This message was deleted",
+      forwarded: true,
+      time: formattedIso,
+      status: "read",
+      starred: true,
+      hasMedia: null,
+      deleted: true,
+      reactions: [{ owner: "user-bob-2", type: ":sparkling_heart:" }],
+    };
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Messages messages={[deletedMessage]} />
+      </QueryClientProvider>
+    );
+
+    // 1. Tombstone message is displayed
+    expect(screen.getByTestId("tombstone-message")).toHaveTextContent(
+      "This message was deleted"
+    );
+
+    // 2. Reactions are NOT displayed
+    expect(screen.queryByAltText("💖")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Reaccionar a este mensaje")).not.toBeInTheDocument();
+
+    // 3. Date / timestamp footer is NOT displayed
+    const formattedTime = dayjs(formattedIso).format("HH:mm");
+    expect(screen.queryByText(formattedTime)).not.toBeInTheDocument();
+
+    // 4. Forward button / forwarded badge is NOT displayed
+    expect(screen.queryByText("Reenviado")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Abrir menu")).not.toBeInTheDocument();
+
+    // 5. Pin / star indicator is NOT displayed
+    expect(document.querySelector(".fill-background-11")).not.toBeInTheDocument();
   });
 });

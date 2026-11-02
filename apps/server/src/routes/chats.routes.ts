@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { z } from "zod";
-import { eq, and, sql, desc, lt, inArray } from "drizzle-orm";
+import { eq, and, sql, desc, lt, inArray, isNull } from "drizzle-orm";
 import {
   chats,
   chatParticipants,
@@ -112,13 +112,13 @@ function formatMessagePayload(
     chatId: msg.chatId,
     owner: msg.senderId,
     body: isDeleted ? DELETED_MESSAGE_TOMBSTONE : msg.body,
-    forwarded: msg.forwarded,
+    forwarded: isDeleted ? false : msg.forwarded,
     time: msg.createdAt.toISOString(),
     status,
-    starred,
+    starred: isDeleted ? false : starred,
     deleted: isDeleted,
     hasMedia,
-    reactions: reactionsMap.get(msg.id) || [],
+    reactions: isDeleted ? [] : reactionsMap.get(msg.id) || [],
   };
 }
 
@@ -830,13 +830,13 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       }
 
       const msgRows = await app.db
-        .select({ id: messages.id })
+        .select({ id: messages.id, deletedAt: messages.deletedAt })
         .from(messages)
         .where(and(eq(messages.id, messageId), eq(messages.chatId, chatId)))
         .limit(1);
 
-      if (msgRows.length === 0) {
-        return reply.status(404).send({ error: "Message not found" });
+      if (msgRows.length === 0 || msgRows[0].deletedAt) {
+        return reply.status(404).send({ error: "Message not found or deleted" });
       }
 
       const existingStar = await app.db
@@ -886,7 +886,10 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       const currentUserId = (request.user as { sub: string }).sub;
       const { chatId } = request.query;
 
-      const conditions = [eq(messageStars.userId, currentUserId)];
+      const conditions = [
+        eq(messageStars.userId, currentUserId),
+        isNull(messages.deletedAt),
+      ];
       if (chatId) {
         conditions.push(eq(messages.chatId, chatId));
       }
