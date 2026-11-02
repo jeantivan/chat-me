@@ -105,7 +105,7 @@ Engineering standards and conventions enforced across the `chat-me` monorepo. Th
   - Pull requests must be small, focused, and reviewable in isolation without cognitive fatigue.
   - Target diff size is strictly **< 200–300 lines of code** (excluding generated lockfiles, fixtures, or snapshots).
   - Single Responsibility: Each PR must solve exactly one logical problem, component, bug, or endpoint seam.
-  - Large features or epics must be broken down into discrete sub-issues, each delivered via an incremental, non-breaking PR.
+  - Large features or epics must be broken down into discrete sub-issues upfront, each delivered via an incremental, non-breaking PR.
 - **Pull Request Lifecycle & Traceability**:
   - Create PRs using `gh pr create` with the `.github/pull_request_template.md` filled out completely.
   - Every PR must link to its issue using `Closes #<id>` (or `Part of #<id>` for multi-stage features).

@@ -1,6 +1,11 @@
 import { StateCreator } from "zustand";
 import { ChatSlice, StoreSlice } from "./interfaces";
 
+/**
+ * @deprecated Legacy prototype slice. Server entities belong strictly in TanStack Query (ADR 0003).
+ * Do NOT read `state.chats` in UI components or add new server collections here.
+ * Use TanStack Query hooks (`useChats`, `useUpdateChatParticipant`, `useDeleteChat`, `useClearChat`).
+ */
 export const createChatSlice: StateCreator<
   StoreSlice,
   [

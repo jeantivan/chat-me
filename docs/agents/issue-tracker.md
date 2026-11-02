@@ -49,7 +49,7 @@ Used by `/wayfinder`. The **map** is a single issue with **child** issues as tic
 
 When implementing an issue (`/implement <n>` or `/implement-spec`):
 1. **Branch**: Create an isolated branch off latest `main`: `git checkout -b <type>/<n>-<short-slug>` (e.g., `feat/42-voice-player` or `fix/43-tombstone-crash`). Never commit directly to `main`.
-2. **Granularity Check**: Ensure the change remains granular (target diff < 200–300 lines of code, single responsibility). If a feature expands, decompose it into child sub-issues and handle them via discrete PRs.
+2. **Granularity Check**: Ensure the change remains granular (target diff < 200–300 lines of code, single responsibility). If an issue combines migrations, multiple API routes, and multi-component UI workflows, decompose it upfront into child sub-issues using `gh issue create --parent <n>` (e.g. backend/contracts first, UI/dialogs second) and deliver each via discrete PRs.
 3. **Verify Locally**: Ensure `pnpm test`, `pnpm typecheck`, `pnpm lint`, and `pnpm build` pass cleanly.
 4. **Commit in English**: Use Conventional Commits (`git commit -m "<type>(<scope>): <summary in english>"`).
 5. **Push & Create PR**: Push the branch (`git push origin <branch>`) and submit a Pull Request using the template:

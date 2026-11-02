@@ -12,7 +12,6 @@ import {
 import { IconButton } from "@/components/ui/IconButton";
 import { TChat } from "@/lib/types";
 import useStore from "@/lib/store";
-import { useChatActions } from "@/lib/hooks";
 import { useChatDisplay } from "@/lib/hooks/useChatCounterpart";
 import { useUpdateChatParticipant } from "@/lib/api/chatQueries";
 import { UserImage } from "@/components/UserImage";
@@ -33,7 +32,7 @@ const Content = ({
   onOpenDelete: () => void;
 }) => {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
-  const { closeChat } = useChatActions();
+  const closeChat = useStore((state) => state.closeChat);
   const updateParticipant = useUpdateChatParticipant();
   return (
     <MenuContent>
