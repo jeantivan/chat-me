@@ -553,16 +553,30 @@ export function setupSocketServer(
       try {
         const now = new Date();
 
-        // Update lastReadAt for participant
-        await app.db
+        // Update lastReadAt for participant and reset markedUnread
+        const updatedParticipants = await app.db
           .update(chatParticipants)
-          .set({ lastReadAt: now })
+          .set({ lastReadAt: now, markedUnread: false })
           .where(
             and(
               eq(chatParticipants.chatId, chatId),
               eq(chatParticipants.userId, userId)
             )
-          );
+          )
+          .returning();
+
+        if (updatedParticipants.length > 0) {
+          const participant = updatedParticipants[0];
+          app.io.to(`user:${userId}`).emit("chat:participant_updated", {
+            chatId,
+            userId,
+            pinned: participant.pinned,
+            muted: participant.muted,
+            archived: participant.archived,
+            markedUnread: false,
+            lastReadAt: participant.lastReadAt.toISOString(),
+          });
+        }
 
         // Check if direct chat and privacyReadReceipt reciprocity applies
         const chatRows = await app.db

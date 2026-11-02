@@ -423,6 +423,118 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
     }
   );
 
+  // Update participant settings (pinned, muted, archived, markedUnread)
+  app.patch<{
+    Params: { chatId: string };
+    Body: {
+      pinned?: boolean;
+      muted?: boolean;
+      archived?: boolean;
+      markedUnread?: boolean;
+    };
+  }>(
+    "/:chatId/participant",
+    {
+      preHandler: [app.authenticate],
+    },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+      const { chatId } = request.params;
+
+      const bodySchema = z.object({
+        pinned: z.boolean().optional(),
+        muted: z.boolean().optional(),
+        archived: z.boolean().optional(),
+        markedUnread: z.boolean().optional(),
+      });
+
+      const parseResult = bodySchema.safeParse(request.body);
+      if (!parseResult.success) {
+        return reply.status(400).send({ error: parseResult.error.flatten() });
+      }
+
+      // Check caller is an active participant in this chat
+      const participantRows = await app.db
+        .select()
+        .from(chatParticipants)
+        .where(
+          and(
+            eq(chatParticipants.chatId, chatId),
+            eq(chatParticipants.userId, currentUserId)
+          )
+        )
+        .limit(1);
+
+      if (participantRows.length === 0) {
+        return reply
+          .status(403)
+          .send({ error: "Forbidden: Not a participant of this chat" });
+      }
+
+      const existingParticipant = participantRows[0];
+      const data = parseResult.data;
+      const updateData: Partial<typeof chatParticipants.$inferInsert> = {};
+
+      if (data.pinned !== undefined) {
+        updateData.pinned = data.pinned;
+      }
+      if (data.muted !== undefined) {
+        updateData.muted = data.muted;
+      }
+      if (data.archived !== undefined) {
+        updateData.archived = data.archived;
+        if (data.archived === true) {
+          updateData.pinned = false;
+        }
+      }
+      if (data.markedUnread !== undefined) {
+        updateData.markedUnread = data.markedUnread;
+        if (data.markedUnread === false) {
+          updateData.lastReadAt = new Date();
+        }
+      }
+
+      let updatedParticipant = existingParticipant;
+      if (Object.keys(updateData).length > 0) {
+        const rows = await app.db
+          .update(chatParticipants)
+          .set(updateData)
+          .where(
+            and(
+              eq(chatParticipants.chatId, chatId),
+              eq(chatParticipants.userId, currentUserId)
+            )
+          )
+          .returning();
+
+        if (rows.length > 0) {
+          updatedParticipant = rows[0];
+        }
+      }
+
+      const participantPayload = {
+        chatId,
+        userId: currentUserId,
+        pinned: updatedParticipant.pinned,
+        muted: updatedParticipant.muted,
+        archived: updatedParticipant.archived,
+        markedUnread: updatedParticipant.markedUnread,
+        lastReadAt: updatedParticipant.lastReadAt.toISOString(),
+      };
+
+      const io = (app as any).io;
+      if (io) {
+        io.to(`user:${currentUserId}`).emit(
+          "chat:participant_updated",
+          participantPayload
+        );
+      }
+
+      const summary = await getChatSummary(app, chatId, currentUserId);
+      return reply.send(summary);
+    }
+  );
+
   // Update group chat metadata (title, picture, bio)
   app.patch<{
     Params: { chatId: string };
@@ -1131,6 +1243,7 @@ async function getChatSummary(
       pinned: chatParticipants.pinned,
       muted: chatParticipants.muted,
       archived: chatParticipants.archived,
+      markedUnread: chatParticipants.markedUnread,
       lastReadAt: chatParticipants.lastReadAt,
       userName: users.name,
       userEmail: users.email,
@@ -1159,6 +1272,7 @@ async function getChatSummary(
     pinned: p.pinned,
     muted: p.muted,
     archived: p.archived,
+    markedUnread: p.markedUnread,
     lastReadAt: p.lastReadAt.toISOString(),
     user: sanitizedUsers[i],
   }));
@@ -1212,6 +1326,9 @@ async function getChatSummary(
         )
       );
     unreadCount = Number(unreadResult[0]?.count || 0);
+    if (unreadCount === 0 && currentParticipant.markedUnread) {
+      unreadCount = 1;
+    }
   }
 
   return {

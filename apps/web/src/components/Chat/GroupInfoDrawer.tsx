@@ -8,13 +8,16 @@ import {
   Users,
   Star,
   ChevronRight,
+  Bell,
+  Archive,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { IconButton } from "@/components/ui/IconButton";
 import { ScrollArea } from "@/components/ui/ScrollArea";
+import { Switch } from "@/components/ui/Switch";
 import useStore from "@/lib/store";
-import { useContacts } from "@/lib/api/chatQueries";
+import { useContacts, useUpdateChatParticipant } from "@/lib/api/chatQueries";
 import { useUserId } from "@/lib/hooks";
 import { usePresenceStore } from "@/lib/store/presenceStore";
 import { chatKeys } from "@/lib/socket/useSocketSync";
@@ -53,6 +56,9 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
   const participants = chatSummary.participants || [];
   const myParticipant = participants.find((p) => p.userId === currentUserId);
   const isAdmin = myParticipant?.role === "admin";
+  const isMuted = myParticipant?.muted || false;
+  const isArchived = myParticipant?.archived || false;
+  const updateParticipant = useUpdateChatParticipant();
   const groupTitle = chatSummary.title || "Grupo";
   const groupBio = chatSummary.bio || "";
   const groupPicture = chatSummary.pictureUrl || "";
@@ -329,6 +335,25 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
             </div>
           </section>
 
+          {/* Mute and Notifications section */}
+          <section className="py-4 shadow bg-background-3">
+            <div className="flex items-center justify-between px-6 py-2">
+              <div className="flex items-center gap-4 text-background-12">
+                <Bell className="w-6 h-6 text-background-11" />
+                <span className="text-base">Silenciar Notificaciones</span>
+              </div>
+              <Switch
+                checked={isMuted}
+                onCheckedChange={() => {
+                  updateParticipant.mutate({
+                    chatId: chatSummary.id,
+                    muted: !isMuted,
+                  });
+                }}
+              />
+            </div>
+          </section>
+
           {/* Starred Messages Section */}
           <section className="shadow bg-background-3">
             <div
@@ -343,8 +368,22 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
             </div>
           </section>
 
-          {/* Leave Group section */}
+          {/* Archive and Leave Group section */}
           <section className="shadow bg-background-3">
+            <div
+              onClick={() => {
+                updateParticipant.mutate({
+                  chatId: chatSummary.id,
+                  archived: !isArchived,
+                });
+              }}
+              className="flex items-center gap-4 py-4 px-6 text-background-12 hover:bg-background-4 cursor-pointer transition-colors"
+            >
+              <Archive className="w-6 h-6 text-background-11" />
+              <span className="text-base">
+                {isArchived ? "Desarchivar chat" : "Archivar chat"}
+              </span>
+            </div>
             <div
               data-testid="leave-group-button"
               onClick={() => handleRemove(currentUserId)}

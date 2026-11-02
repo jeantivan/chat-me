@@ -17,6 +17,7 @@ import {
   type UserPresence,
   type UserProfile,
   type ContactSummary,
+  type ChatParticipantUpdatedPayload,
 } from "@chat-me/shared";
 
 export function patchMessageInPages(
@@ -42,15 +43,31 @@ export function patchMessageStatusInPages(
   return patchMessageInPages(oldData, messageId, (m) => ({ ...m, status }));
 }
 
+export function getChatParticipant(
+  queryClient: { getQueryData: <T>(key: readonly unknown[]) => T | undefined },
+  chatId: string,
+  userId?: string
+) {
+  if (!userId) return undefined;
+  const chatList = queryClient.getQueryData<ChatSummary[]>(chatKeys.lists());
+  const currentChat = chatList?.find((c) => c.id === chatId);
+  return currentChat?.participants.find((p) => p.userId === userId);
+}
+
 export function isChatParticipantMuted(
   queryClient: { getQueryData: <T>(key: readonly unknown[]) => T | undefined },
   chatId: string,
   userId?: string
 ): boolean {
-  if (!userId) return false;
-  const chatList = queryClient.getQueryData<ChatSummary[]>(chatKeys.lists());
-  const currentChat = chatList?.find((c) => c.id === chatId);
-  return currentChat?.participants.find((p) => p.userId === userId)?.muted ?? false;
+  return getChatParticipant(queryClient, chatId, userId)?.muted ?? false;
+}
+
+export function isChatParticipantArchived(
+  queryClient: { getQueryData: <T>(key: readonly unknown[]) => T | undefined },
+  chatId: string,
+  userId?: string
+): boolean {
+  return getChatParticipant(queryClient, chatId, userId)?.archived ?? false;
 }
 
 export const chatKeys = {
@@ -72,16 +89,24 @@ export function useSocketSync(
 ) {
   const queryClient = useQueryClient();
 
-  // Reset unreadCount in chat list cache immediately upon viewing active chat
+  // Reset unreadCount and markedUnread in chat list cache immediately upon viewing active chat
   useEffect(() => {
     if (!currentChatId) return;
     queryClient.setQueryData<ChatSummary[]>(chatKeys.lists(), (oldChats) => {
       if (!oldChats) return oldChats;
       return oldChats.map((c) =>
-        c.id === currentChatId ? { ...c, unreadCount: 0 } : c
+        c.id === currentChatId
+          ? {
+              ...c,
+              unreadCount: 0,
+              participants: c.participants.map((p) =>
+                p.userId === currentUserId ? { ...p, markedUnread: false } : p
+              ),
+            }
+          : c
       );
     });
-  }, [currentChatId, queryClient]);
+  }, [currentChatId, currentUserId, queryClient]);
 
   useEffect(() => {
     const socket = getSocket();
@@ -153,7 +178,9 @@ export function useSocketSync(
       }
 
       // 4. Trigger client notification engine
-      const isMuted = isChatParticipantMuted(queryClient, newMsg.chatId, currentUserId);
+      const participant = getChatParticipant(queryClient, newMsg.chatId, currentUserId);
+      const isMuted = participant?.muted ?? false;
+      const isArchived = participant?.archived ?? false;
       const settings = useStore.getState().notifications;
 
       handleInboundMessageNotification({
@@ -161,6 +188,7 @@ export function useSocketSync(
         currentUserId,
         currentChatId,
         isChatMuted: isMuted,
+        isChatArchived: isArchived,
         settings: {
           notifyAll: settings.all,
           notifySound: settings.sound,
@@ -231,6 +259,7 @@ export function useSocketSync(
       }
 
       const isMuted = isChatParticipantMuted(queryClient, chatId, currentUserId);
+      const isArchived = isChatParticipantArchived(queryClient, chatId, currentUserId);
       const settings = useStore.getState().notifications;
 
       handleInboundReactionNotification({
@@ -242,6 +271,7 @@ export function useSocketSync(
         currentUserId,
         currentChatId,
         isChatMuted: isMuted,
+        isChatArchived: isArchived,
         settings: {
           notifyAll: settings.all,
           notifySound: settings.sound,
@@ -364,6 +394,41 @@ export function useSocketSync(
       });
     };
 
+    const handleParticipantUpdated = (payload: ChatParticipantUpdatedPayload) => {
+      queryClient.setQueryData<ChatSummary[]>(chatKeys.lists(), (oldChats) => {
+        if (!oldChats) return oldChats;
+        return oldChats.map((c) => {
+          if (c.id !== payload.chatId) return c;
+          const updatedParticipants = c.participants.map((p) => {
+            if (p.userId !== payload.userId) return p;
+            return {
+              ...p,
+              pinned: payload.pinned,
+              muted: payload.muted,
+              archived: payload.archived,
+              markedUnread: payload.markedUnread,
+              lastReadAt: payload.lastReadAt,
+            };
+          });
+
+          let newUnreadCount = c.unreadCount;
+          if (payload.userId === currentUserId) {
+            if (payload.markedUnread) {
+              newUnreadCount = (c.unreadCount && c.unreadCount > 0) ? c.unreadCount : 1;
+            } else if (!payload.markedUnread && payload.lastReadAt) {
+              newUnreadCount = 0;
+            }
+          }
+
+          return {
+            ...c,
+            participants: updatedParticipants,
+            unreadCount: newUnreadCount,
+          };
+        });
+      });
+    };
+
     socket.on("message:new", handleNewMessage);
     socket.on("message:status_changed", handleStatusChanged);
     socket.on("message:reaction_updated", handleReactionUpdated);
@@ -371,6 +436,7 @@ export function useSocketSync(
     socket.on("chat:typing_updated", handleTypingUpdated);
     socket.on("presence:updated", handlePresenceUpdated);
     socket.on("user:profile_updated", handleProfileUpdated);
+    socket.on("chat:participant_updated", handleParticipantUpdated);
 
     // Heartbeat every 30 seconds
     const heartbeatTimer = setInterval(() => {
@@ -386,6 +452,7 @@ export function useSocketSync(
       socket.off("chat:typing_updated", handleTypingUpdated);
       socket.off("presence:updated", handlePresenceUpdated);
       socket.off("user:profile_updated", handleProfileUpdated);
+      socket.off("chat:participant_updated", handleParticipantUpdated);
     };
   }, [queryClient, currentChatId, currentUserId]);
 }

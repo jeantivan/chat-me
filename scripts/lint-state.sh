@@ -9,14 +9,7 @@ EXIT_CODE=0
 
 echo "🔍 Checking client codebase for forbidden Zustand access to server collections (ADR 0003)..."
 
-# Known legacy files grandfathered in pending dedicated migration tickets:
-# - apps/web/src/components/ArchivedChats.tsx
-# - apps/web/src/components/Chat/index.tsx
-# - apps/web/src/components/ChatList.tsx
-
-LEGACY_EXCLUDES=':(exclude)apps/web/src/components/ArchivedChats.tsx :(exclude)apps/web/src/components/Chat/index.tsx :(exclude)apps/web/src/components/ChatList.tsx'
-
-matches=$(git grep -inE 'useStore\([^)]*state\.(chats|contacts|messages)' -- 'apps/web/src/components/**' $LEGACY_EXCLUDES || true)
+matches=$(git grep -inE 'useStore\([^)]*state\.(chats|contacts|messages)' -- 'apps/web/src/components/**' || true)
 
 if [ -n "$matches" ]; then
   echo "❌ Client State Lint Violation: Direct Zustand access to server collections detected in UI components!"

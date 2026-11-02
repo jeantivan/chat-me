@@ -120,6 +120,7 @@ export const chatParticipants = pgTable(
     pinned: boolean("pinned").notNull().default(false),
     muted: boolean("muted").notNull().default(false),
     archived: boolean("archived").notNull().default(false),
+    markedUnread: boolean("marked_unread").notNull().default(false),
     lastReadAt: timestamp("last_read_at", { withTimezone: true }).notNull().defaultNow(),
     joinedAt: timestamp("joined_at", { withTimezone: true }).notNull().defaultNow(),
   },

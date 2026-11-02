@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import {
   users,
   chats,
@@ -157,5 +157,43 @@ describe("Database Schema & Relational Integrity Seam (Direct Messaging)", () =>
     // Clean up users
     await db.delete(users).where(eq(users.id, userA.id));
     await db.delete(users).where(eq(users.id, userB.id));
+  });
+
+  it("persists chat_participants with marked_unread column defaulting to false", async () => {
+    const [user] = await db
+      .insert(users)
+      .values({
+        email: `unread-user-${Date.now()}@example.com`,
+        name: "Unread User",
+      })
+      .returning();
+
+    const [chat] = await db
+      .insert(chats)
+      .values({
+        type: "direct",
+      })
+      .returning();
+
+    const [participant] = await db
+      .insert(chatParticipants)
+      .values({
+        chatId: chat.id,
+        userId: user.id,
+      })
+      .returning();
+
+    expect(participant.markedUnread).toBe(false);
+
+    const [updated] = await db
+      .update(chatParticipants)
+      .set({ markedUnread: true })
+      .where(and(eq(chatParticipants.chatId, chat.id), eq(chatParticipants.userId, user.id)))
+      .returning();
+
+    expect(updated.markedUnread).toBe(true);
+
+    await db.delete(chats).where(eq(chats.id, chat.id));
+    await db.delete(users).where(eq(users.id, user.id));
   });
 });

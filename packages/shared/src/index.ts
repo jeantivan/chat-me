@@ -157,6 +157,7 @@ export interface ChatParticipantSummary {
   pinned: boolean;
   muted: boolean;
   archived: boolean;
+  markedUnread: boolean;
   lastReadAt: string;
   user: UserProfile;
 }
@@ -221,7 +222,7 @@ export interface ClientToServerEvents {
   }) => void;
   "message:ack_read": (payload: {
     chatId: string;
-    lastMessageId: string;
+    lastMessageId?: string;
   }) => void;
   "message:reaction": (
     payload: {
@@ -260,6 +261,16 @@ export interface ReceiptStatusPayload {
   updatedAt: string;
 }
 
+export interface ChatParticipantUpdatedPayload {
+  chatId: string;
+  userId: string;
+  pinned: boolean;
+  muted: boolean;
+  archived: boolean;
+  markedUnread: boolean;
+  lastReadAt: string;
+}
+
 export interface ServerToClientEvents {
   "message:new": (message: MessagePayload) => void;
   "message:status_changed": (payload: ReceiptStatusPayload) => void;
@@ -280,4 +291,5 @@ export interface ServerToClientEvents {
   }) => void;
   "presence:updated": (payload: UserPresence) => void;
   "user:profile_updated": (payload: UserProfile) => void;
+  "chat:participant_updated": (payload: ChatParticipantUpdatedPayload) => void;
 }

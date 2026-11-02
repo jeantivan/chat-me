@@ -1,11 +1,21 @@
-import useStore from "@/lib/store";
+import { useMemo } from "react";
+import orderBy from "lodash/orderBy";
+import { useUserId } from "@/lib/hooks";
+import { useChats } from "@/lib/api/chatQueries";
+import { toUiChat, getDateOfLastMessage } from "@/lib/utils/chatAdapter";
 import { ChatItem } from "./ChatItem";
 import { ScrollArea } from "./ui/ScrollArea";
 
 export function ArchivedChats() {
-  const chats = useStore((state) => state.chats);
+  const currentUserId = useUserId();
+  const { data: serverChats } = useChats();
 
-  const archivedChats = chats.filter((c) => c.archived);
+  const archivedChats = useMemo(() => {
+    if (!serverChats) return [];
+    const uiChats = serverChats.map((sc) => toUiChat(sc, currentUserId));
+    const archived = uiChats.filter((c) => c.archived);
+    return orderBy(archived, [getDateOfLastMessage], ["desc"]);
+  }, [serverChats, currentUserId]);
 
   return (
     <ScrollArea type="always" className="p-2">

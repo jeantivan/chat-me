@@ -12,7 +12,6 @@ import { IconButton } from "@/components/ui/IconButton";
 import { RightDrawer, RightDrawerElement } from "@/components/RightDrawer";
 import { FilesToSend, useFilesToSend } from "@/components/SendFiles";
 
-import useStore from "@/lib/store";
 import { useUserId } from "@/lib/hooks";
 import mc from "@/lib/utils/mergeClassnames";
 import { useChatMessages, useChats } from "@/lib/api/chatQueries";
@@ -78,9 +77,6 @@ const AddImage = () => {
 
 export function Chat({ chatId }: { chatId: string }) {
   const userId = useUserId();
-  const legacyChat = useStore((state) =>
-    state.chats.find((chat) => chat.id === chatId)
-  );
 
   const { data: chatList } = useChats();
   const currentChatSummary = chatList?.find((c) => c.id === chatId);
@@ -95,7 +91,7 @@ export function Chat({ chatId }: { chatId: string }) {
   // Flatten messages: reverse pages order so older pages come first, then flatten
   const messages: TMessage[] = useMemo(() => {
     if (!messagesData?.pages?.length) {
-      return legacyChat?.messages || [];
+      return [];
     }
     const reversedPages = [...messagesData.pages].reverse();
     const flattened = reversedPages.flatMap((page) => page?.messages || []);
@@ -112,7 +108,7 @@ export function Chat({ chatId }: { chatId: string }) {
       hasMedia: m.hasMedia,
       reactions: (m.reactions || []) as any,
     }));
-  }, [messagesData, legacyChat]);
+  }, [messagesData]);
 
   // Emit message:ack_read when viewing messages in active viewport
   const lastOtherMessage = useMemo(
@@ -120,9 +116,14 @@ export function Chat({ chatId }: { chatId: string }) {
     [messages, userId]
   );
 
+  const currentParticipant = currentChatSummary?.participants.find(
+    (p) => p.userId === userId
+  );
+
   useEffect(() => {
     const targetMsgId = lastOtherMessage?.id;
-    if (!targetMsgId) return;
+    const isMarkedUnread = Boolean(currentParticipant?.markedUnread);
+    if (!targetMsgId && !isMarkedUnread) return;
 
     const emitRead = () => {
       if (typeof document !== "undefined" && document.visibilityState === "visible") {
@@ -142,7 +143,7 @@ export function Chat({ chatId }: { chatId: string }) {
       window.removeEventListener("focus", emitRead);
       document.removeEventListener("visibilitychange", emitRead);
     };
-  }, [chatId, lastOtherMessage?.id]);
+  }, [chatId, lastOtherMessage?.id, currentParticipant?.markedUnread]);
 
   // Construct TChat view adapter for Header
   const activeChat: TChat = useMemo(() => {
@@ -152,10 +153,6 @@ export function Chat({ chatId }: { chatId: string }) {
         ...uiChat,
         messages,
       };
-    }
-
-    if (legacyChat) {
-      return legacyChat;
     }
 
     return {
@@ -175,7 +172,7 @@ export function Chat({ chatId }: { chatId: string }) {
       hasUnreadMsg: 0,
       messages,
     };
-  }, [currentChatSummary, legacyChat, userId, chatId, messages]);
+  }, [currentChatSummary, userId, chatId, messages]);
 
   const { data: blockedUsers = [] } = useBlockedUsers();
   const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser();

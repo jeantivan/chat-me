@@ -103,6 +103,7 @@ export interface InboundMessageNotificationParams {
   currentUserId?: string;
   currentChatId?: string | null;
   isChatMuted?: boolean;
+  isChatArchived?: boolean;
   settings: {
     notifyAll: boolean;
     notifySound: boolean;
@@ -115,10 +116,11 @@ export function handleInboundMessageNotification({
   currentUserId,
   currentChatId,
   isChatMuted = false,
+  isChatArchived = false,
   settings,
 }: InboundMessageNotificationParams): void {
   if (!settings.notifyAll) return;
-  if (isChatMuted) return;
+  if (isChatMuted || isChatArchived) return;
   if (currentUserId && message.owner === currentUserId) return;
 
   if (settings.notifySound) {
@@ -147,6 +149,7 @@ export interface InboundReactionNotificationParams {
   currentUserId?: string;
   currentChatId?: string | null;
   isChatMuted?: boolean;
+  isChatArchived?: boolean;
   settings: {
     notifyAll: boolean;
     notifySound: boolean;
@@ -163,11 +166,12 @@ export function handleInboundReactionNotification({
   currentUserId,
   currentChatId,
   isChatMuted = false,
+  isChatArchived = false,
   settings,
 }: InboundReactionNotificationParams): void {
   if (!settings.notifyAll) return;
   if (!settings.notifyReactions) return;
-  if (isChatMuted) return;
+  if (isChatMuted || isChatArchived) return;
 
   // Must be on the current user's message
   if (targetMessageOwnerId && targetMessageOwnerId !== currentUserId) {

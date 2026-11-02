@@ -101,6 +101,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
             isMuted={chat.muted}
             isPinned={chat.pinned}
             isArchived={chat.archived}
+            isUnread={Boolean(hasUnreadMsg && hasUnreadMsg > 0)}
             isOpenChat={isOpenChat}
           />
         </div>
