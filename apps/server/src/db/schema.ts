@@ -123,6 +123,8 @@ export const chatParticipants = pgTable(
     markedUnread: boolean("marked_unread").notNull().default(false),
     lastReadAt: timestamp("last_read_at", { withTimezone: true }).notNull().defaultNow(),
     joinedAt: timestamp("joined_at", { withTimezone: true }).notNull().defaultNow(),
+    clearedAt: timestamp("cleared_at", { withTimezone: true }),
+    hiddenAt: timestamp("hidden_at", { withTimezone: true }),
   },
   (table) => ({
     pk: primaryKey({ columns: [table.chatId, table.userId] }),

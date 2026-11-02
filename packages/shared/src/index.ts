@@ -159,6 +159,8 @@ export interface ChatParticipantSummary {
   archived: boolean;
   markedUnread: boolean;
   lastReadAt: string;
+  clearedAt?: string | null;
+  hiddenAt?: string | null;
   user: UserProfile;
 }
 
@@ -271,6 +273,13 @@ export interface ChatParticipantUpdatedPayload {
   lastReadAt: string;
 }
 
+export interface ChatClearedPayload {
+  chatId: string;
+  userId: string;
+  clearedAt: string;
+  hiddenAt?: string | null;
+}
+
 export interface ServerToClientEvents {
   "message:new": (message: MessagePayload) => void;
   "message:status_changed": (payload: ReceiptStatusPayload) => void;
@@ -292,4 +301,5 @@ export interface ServerToClientEvents {
   "presence:updated": (payload: UserPresence) => void;
   "user:profile_updated": (payload: UserProfile) => void;
   "chat:participant_updated": (payload: ChatParticipantUpdatedPayload) => void;
+  "chat:cleared": (payload: ChatClearedPayload) => void;
 }

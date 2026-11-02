@@ -1,10 +1,10 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import {
   Archive,
-  BarChart,
   Bell,
   ChevronRight,
   CircleSlash,
+  Eraser,
   LucideIcon,
   Star,
   Trash2,
@@ -26,6 +26,8 @@ import {
 import { useUserId, useCurrentChatId } from "@/lib/hooks";
 import { UserImage } from "@/components/UserImage";
 import { GroupInfoDrawer } from "./GroupInfoDrawer";
+import { ClearChatDialog } from "./ClearChatDialog";
+import { DeleteChatDialog } from "./DeleteChatDialog";
 
 type ItemProps = {
   children: ReactNode;
@@ -87,6 +89,8 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
   const { data: blockedUsers = [] } = useBlockedUsers();
   const { mutate: blockUser, isPending: isBlocking } = useBlockUser();
   const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser();
+  const [isClearOpen, setIsClearOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   if (!chatSummary) return null;
 
@@ -231,13 +235,6 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
             >
               Silenciar Notificaciones
             </Item>
-            <Item
-              icon={BarChart}
-              textHelper={`Ve estadísticas relevantes de este chat 
-              como: cantidad de mensajes enviados, almacenamiento de archivos, etc.`}
-            >
-              Estadísticas
-            </Item>
           </section>
           <section className="shadow bg-background-3">
             <Item
@@ -258,7 +255,18 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
                 ? "Desarchivar chat"
                 : "Archivar chat"}
             </Item>
-            <Item icon={Trash2} danger>
+            <Item
+              icon={Eraser}
+              danger
+              onClick={() => setIsClearOpen(true)}
+            >
+              Vaciar chat
+            </Item>
+            <Item
+              icon={Trash2}
+              danger
+              onClick={() => setIsDeleteOpen(true)}
+            >
               Eliminar chat
             </Item>
             <Item
@@ -281,6 +289,16 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
           </section>
         </div>
       </ScrollArea>
+      <ClearChatDialog
+        chatId={id}
+        open={isClearOpen}
+        onOpenChange={setIsClearOpen}
+      />
+      <DeleteChatDialog
+        chatId={id}
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+      />
     </div>
   );
 }

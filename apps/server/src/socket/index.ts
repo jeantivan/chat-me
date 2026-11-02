@@ -451,6 +451,11 @@ export function setupSocketServer(
               })
               .where(eq(mediaAttachments.id, mediaId));
           }
+
+          await tx
+            .update(chatParticipants)
+            .set({ hiddenAt: null })
+            .where(eq(chatParticipants.chatId, chatId));
         });
 
         if (callback) {

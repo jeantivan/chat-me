@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { Trigger as MenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { MenuRoot, MenuContent, MenuItem } from "./ui/Menu";
 import { Icon } from "./ui/Icon";
 import mc from "@/lib/utils/mergeClassnames";
-import { useChatActions } from "@/lib/hooks";
 import { useUpdateChatParticipant } from "@/lib/api/chatQueries";
+import { DeleteChatDialog } from "./Chat/DeleteChatDialog";
 
 type ChatItemMenuProps = {
   isMuted?: boolean;
@@ -21,69 +22,74 @@ export function ChatItemMenu({
   isPinned,
   isArchived,
   isUnread,
-  isOpenChat,
 }: ChatItemMenuProps) {
-  const { deleteChat, closeChat } = useChatActions();
   const updateParticipant = useUpdateChatParticipant();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   return (
-    <MenuRoot>
-      <MenuTrigger
-        onClick={(e) => e.stopPropagation()}
-        className={mc(
-          "p-0.5 outline-none inline-flex rounded-lg",
-          "text-background-12 hover:bg-background-5 data-[state=open]:bg-background-6"
-        )}
-      >
-        <Icon icon={MoreHorizontal} label="Menu del chat" className="w-5 h-5" />
-      </MenuTrigger>
-      <MenuContent align="start">
-        <MenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            updateParticipant.mutate({ chatId, archived: !isArchived });
-          }}
+    <>
+      <MenuRoot>
+        <MenuTrigger
+          onClick={(e) => e.stopPropagation()}
+          className={mc(
+            "p-0.5 outline-none inline-flex rounded-lg",
+            "text-background-12 hover:bg-background-5 data-[state=open]:bg-background-6"
+          )}
         >
-          {isArchived ? "Desarchivar chat" : "Archivar chat"}
-        </MenuItem>
-        {!isArchived && (
+          <Icon icon={MoreHorizontal} label="Menu del chat" className="w-5 h-5" />
+        </MenuTrigger>
+        <MenuContent align="start">
           <MenuItem
             onClick={(e) => {
               e.stopPropagation();
-              updateParticipant.mutate({ chatId, muted: !isMuted });
+              updateParticipant.mutate({ chatId, archived: !isArchived });
             }}
           >
-            {isMuted ? "Activar notificaciones" : "Silenciar notificaciones"}
+            {isArchived ? "Desarchivar chat" : "Archivar chat"}
           </MenuItem>
-        )}
-        <MenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            updateParticipant.mutate({ chatId, markedUnread: !isUnread });
-          }}
-        >
-          {isUnread ? "Marcar como leído" : "Marcar como no leído"}
-        </MenuItem>
-        <MenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            if (isOpenChat) closeChat();
-            deleteChat(chatId);
-          }}
-        >
-          Eliminar chat
-        </MenuItem>
-        {!isArchived && (
+          {!isArchived && (
+            <MenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                updateParticipant.mutate({ chatId, muted: !isMuted });
+              }}
+            >
+              {isMuted ? "Activar notificaciones" : "Silenciar notificaciones"}
+            </MenuItem>
+          )}
           <MenuItem
             onClick={(e) => {
               e.stopPropagation();
-              updateParticipant.mutate({ chatId, pinned: !isPinned });
+              updateParticipant.mutate({ chatId, markedUnread: !isUnread });
             }}
           >
-            {isPinned ? "Desfijar chat" : "Fijar chat"}
+            {isUnread ? "Marcar como leído" : "Marcar como no leído"}
           </MenuItem>
-        )}
-      </MenuContent>
-    </MenuRoot>
+          <MenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsDeleteOpen(true);
+            }}
+          >
+            Eliminar chat
+          </MenuItem>
+          {!isArchived && (
+            <MenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                updateParticipant.mutate({ chatId, pinned: !isPinned });
+              }}
+            >
+              {isPinned ? "Desfijar chat" : "Fijar chat"}
+            </MenuItem>
+          )}
+        </MenuContent>
+      </MenuRoot>
+      <DeleteChatDialog
+        chatId={chatId}
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+      />
+    </>
   );
 }

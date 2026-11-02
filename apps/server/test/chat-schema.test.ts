@@ -196,4 +196,55 @@ describe("Database Schema & Relational Integrity Seam (Direct Messaging)", () =>
     await db.delete(chats).where(eq(chats.id, chat.id));
     await db.delete(users).where(eq(users.id, user.id));
   });
+
+  it("persists chat_participants with cleared_at and hidden_at nullable timestamps", async () => {
+    const [user] = await db
+      .insert(users)
+      .values({
+        email: `clear-user-${Date.now()}@example.com`,
+        name: "Clear User",
+      })
+      .returning();
+
+    const [chat] = await db
+      .insert(chats)
+      .values({
+        type: "direct",
+      })
+      .returning();
+
+    const [participant] = await db
+      .insert(chatParticipants)
+      .values({
+        chatId: chat.id,
+        userId: user.id,
+      })
+      .returning();
+
+    expect(participant.clearedAt).toBeNull();
+    expect(participant.hiddenAt).toBeNull();
+
+    const now = new Date();
+    const [updated] = await db
+      .update(chatParticipants)
+      .set({ clearedAt: now, hiddenAt: now })
+      .where(and(eq(chatParticipants.chatId, chat.id), eq(chatParticipants.userId, user.id)))
+      .returning();
+
+    expect(updated.clearedAt).toBeInstanceOf(Date);
+    expect(updated.hiddenAt).toBeInstanceOf(Date);
+
+    // Can be reset to null
+    const [reset] = await db
+      .update(chatParticipants)
+      .set({ hiddenAt: null })
+      .where(and(eq(chatParticipants.chatId, chat.id), eq(chatParticipants.userId, user.id)))
+      .returning();
+
+    expect(reset.hiddenAt).toBeNull();
+    expect(reset.clearedAt).toBeInstanceOf(Date);
+
+    await db.delete(chats).where(eq(chats.id, chat.id));
+    await db.delete(users).where(eq(users.id, user.id));
+  });
 });
