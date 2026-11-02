@@ -23,6 +23,7 @@ import type {
 } from "@chat-me/shared";
 import { processAndBroadcastReceipt } from "../lib/receipts.js";
 import { canViewPresence, sanitizeUserProfile, isBlockActiveBetween } from "../lib/privacy.js";
+import { formatUserProfile } from "../services/auth.service.js";
 
 interface SocketData {
   userId: string;
@@ -136,6 +137,33 @@ export async function syncPresenceOnUnblock(
     sendEvaluatedPresenceUpdate(app, blockerId, blockedId),
     sendEvaluatedPresenceUpdate(app, blockedId, blockerId),
   ]);
+}
+
+export async function syncProfilesOnBlockOrUnblock(
+  app: FastifyInstance,
+  user1Id: string,
+  user2Id: string
+): Promise<void> {
+  if (!app.io) return;
+  const userRows = await app.db
+    .select()
+    .from(users)
+    .where(inArray(users.id, [user1Id, user2Id]));
+
+  const user1 = userRows.find((u) => u.id === user1Id);
+  const user2 = userRows.find((u) => u.id === user2Id);
+
+  if (user1) {
+    const profile1 = formatUserProfile(user1);
+    const sanitizedFor2 = await sanitizeUserProfile(app.db, profile1, user2Id);
+    app.io.to(`user:${user2Id}`).emit("user:profile_updated", sanitizedFor2);
+  }
+
+  if (user2) {
+    const profile2 = formatUserProfile(user2);
+    const sanitizedFor1 = await sanitizeUserProfile(app.db, profile2, user1Id);
+    app.io.to(`user:${user1Id}`).emit("user:profile_updated", sanitizedFor1);
+  }
 }
 
 export async function broadcastSanitizedProfileUpdate(

@@ -355,4 +355,16 @@ describe("Direct Chat Block / Unblock Interaction & Composer Banner Seam", () =>
     expect(await screen.findByTestId("message-input")).toBeInTheDocument();
     expect(screen.queryByTestId("blocked-composer-banner")).not.toBeInTheDocument();
   });
+
+  it("falls back to default avatar icon in header and contact info when counterpart is blocked", async () => {
+    currentBlockedList = [mockBlockedBob];
+    queryClient.setQueryData(chatKeys.blocked, [mockBlockedBob]);
+
+    const { unmount } = renderWithProviders(<Chat chatId="chat-direct-1" />);
+    expect(screen.getByTestId("user-avatar-fallback-icon")).toBeInTheDocument();
+    unmount();
+
+    renderWithProviders(<ContactInfo chatId="chat-direct-1" />);
+    expect(screen.getByTestId("user-avatar-fallback-icon")).toBeInTheDocument();
+  });
 });

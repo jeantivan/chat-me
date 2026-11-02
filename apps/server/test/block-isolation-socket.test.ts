@@ -5,7 +5,7 @@ import { io as ioc, Socket as ClientSocket } from "socket.io-client";
 import { AddressInfo } from "net";
 import pg from "pg";
 import { registerTestUser, waitForSocketEvent } from "./test-helpers.js";
-import { blockedUsers, chats, chatParticipants, messages } from "../src/db/schema.js";
+import { blockedUsers, chats, chatParticipants, messages, users } from "../src/db/schema.js";
 import { eq, and } from "drizzle-orm";
 import type {
   ClientToServerEvents,
@@ -358,6 +358,86 @@ describe("Block Isolation & Socket Flows Seam", () => {
       // Wait a short time to verify typing event is suppressed
       await new Promise((r) => setTimeout(r, 200));
       expect(typingReceivedByAlice).toBe(false);
+    });
+
+    it("synchronizes sanitized profile updates (pictureUrl: '') over socket when block is established, and restores pictureUrl on unblock", async () => {
+      // Set pictureUrls on Alice and Bob
+      await app.db
+        .update(users)
+        .set({ pictureUrl: "https://example.com/alice-photo.jpg" })
+        .where(eq(users.id, alice.userId));
+      await app.db
+        .update(users)
+        .set({ pictureUrl: "https://example.com/bob-photo.jpg" })
+        .where(eq(users.id, bob.userId));
+
+      clientAlice = ioc(serverUrl, {
+        auth: { token: alice.accessToken },
+        transports: ["websocket"],
+      });
+      clientBob = ioc(serverUrl, {
+        auth: { token: bob.accessToken },
+        transports: ["websocket"],
+      });
+
+      await Promise.all([
+        new Promise<void>((resolve) => clientAlice.on("connect", resolve)),
+        new Promise<void>((resolve) => clientBob.on("connect", resolve)),
+      ]);
+
+      // Set up listeners for profile updates
+      const bobProfilePromiseForAlice = waitForSocketEvent<any>(
+        clientAlice,
+        "user:profile_updated",
+        (p) => p.id === bob.userId
+      );
+      const aliceProfilePromiseForBob = waitForSocketEvent<any>(
+        clientBob,
+        "user:profile_updated",
+        (p) => p.id === alice.userId
+      );
+
+      // Alice blocks Bob
+      await app.inject({
+        method: "POST",
+        url: `/api/v1/users/me/blocked/${bob.userId}`,
+        headers: { authorization: `Bearer ${alice.accessToken}` },
+      });
+
+      const [updatedBobForAlice, updatedAliceForBob] = await Promise.all([
+        bobProfilePromiseForAlice,
+        aliceProfilePromiseForBob,
+      ]);
+
+      expect(updatedBobForAlice.pictureUrl).toBe("");
+      expect(updatedAliceForBob.pictureUrl).toBe("");
+
+      // Now set up listeners for unblock
+      const restoredBobPromiseForAlice = waitForSocketEvent<any>(
+        clientAlice,
+        "user:profile_updated",
+        (p) => p.id === bob.userId
+      );
+      const restoredAlicePromiseForBob = waitForSocketEvent<any>(
+        clientBob,
+        "user:profile_updated",
+        (p) => p.id === alice.userId
+      );
+
+      // Alice unblocks Bob
+      await app.inject({
+        method: "DELETE",
+        url: `/api/v1/users/me/blocked/${bob.userId}`,
+        headers: { authorization: `Bearer ${alice.accessToken}` },
+      });
+
+      const [restoredBobForAlice, restoredAliceForBob] = await Promise.all([
+        restoredBobPromiseForAlice,
+        restoredAlicePromiseForBob,
+      ]);
+
+      expect(restoredBobForAlice.pictureUrl).toBe("https://example.com/bob-photo.jpg");
+      expect(restoredAliceForBob.pictureUrl).toBe("https://example.com/alice-photo.jpg");
     });
   });
 });

@@ -3,6 +3,7 @@ import { UserPlus, X, UserX } from "lucide-react";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
+import { UserImage } from "@/components/UserImage";
 import { useContacts } from "@/lib/api/chatQueries";
 import {
   useBlockedUsers,
@@ -76,18 +77,12 @@ export function BlockedContacts() {
                       }}
                       className="flex items-center gap-3 p-2 rounded hover:bg-background-4 text-left transition-colors"
                     >
-                      <div className="w-8 h-8 rounded-full bg-background-5 flex items-center justify-center overflow-hidden shrink-0">
-                        {c.contact.pictureUrl ? (
-                          <img
-                            src={c.contact.pictureUrl}
-                            alt={c.contact.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-xs font-semibold text-background-11">
-                            {c.contact.name.slice(0, 2).toUpperCase()}
-                          </span>
-                        )}
+                      <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
+                        <UserImage
+                          src={c.contact.pictureUrl}
+                          alt={c.contact.name}
+                          className="w-full h-full"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-background-12 truncate">
@@ -138,18 +133,12 @@ export function BlockedContacts() {
                     className="flex items-center justify-between py-3 px-2 gap-3 hover:bg-background-3/50 rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-10 h-10 rounded-full bg-background-5 flex items-center justify-center overflow-hidden shrink-0">
-                        {displayPicture ? (
-                          <img
-                            src={displayPicture}
-                            alt={displayName}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-sm font-semibold text-background-11">
-                            {displayName.slice(0, 2).toUpperCase()}
-                          </span>
-                        )}
+                      <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+                        <UserImage
+                          src={displayPicture}
+                          alt={displayName}
+                          className="w-full h-full"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-medium text-background-12 truncate">

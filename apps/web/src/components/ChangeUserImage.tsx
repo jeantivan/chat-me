@@ -48,7 +48,7 @@ export function ChangeUserImage() {
   return (
     <>
       <div className="group w-[200px] h-[200px] cursor-pointer relative rounded-full text-gray-400 overflow-hidden">
-        <UserImage />
+        <UserImage src={picture} />
         <div className="hidden group-hover:flex select-none items-center justify-center absolute w-full h-full inset-0 bg-neutral-900/80">
           <MenuRoot>
             <MenuTrigger asChild>

@@ -2,6 +2,7 @@ import mc from "@/lib/utils/mergeClassnames";
 import { TUser } from "@/lib/types";
 import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
+import { UserImage } from "./UserImage";
 
 type BaseProps = { contact: TUser; className?: string };
 
@@ -51,11 +52,10 @@ export const ContactItem = ({
       )}
       <div className="flex items-center">
         <div className="w-14 h-14">
-          <img
-            className="bg-background-3 w-full h-full overflow-hidden rounded-full"
+          <UserImage
             src={contact.picture}
             alt={`Foto de perfil de ${contact.name}`}
-            loading="lazy"
+            className="w-full h-full"
           />
         </div>
       </div>

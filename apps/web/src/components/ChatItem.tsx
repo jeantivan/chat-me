@@ -1,9 +1,10 @@
 import { forwardRef, memo } from "react";
 import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
-import { BellOff, Pin } from "lucide-react";
+import { BellOff, Pin, Users } from "lucide-react";
 
 import { ChatItemMenu } from "./ChatItemMenu";
 import { LastMessage } from "./Message/LastMessage";
+import { UserImage } from "./UserImage";
 
 import mc from "@/lib/utils/mergeClassnames";
 import { TChat } from "@/lib/types";
@@ -40,7 +41,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
   const lastMessage = chat.messages[chat.messages.length - 1];
   const isOpenChat = currentChatId === chat.id;
 
-  const { name, picture, isTyping, isOnline } = useChatDisplay(chat);
+  const { name, picture, isTyping, isOnline, isGroup } = useChatDisplay(chat);
 
   return (
     <div
@@ -58,11 +59,15 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
     >
       <div className="flex items-center relative">
         <div className="w-14 h-14 relative">
-          <img
-            className="bg-background-3 w-full h-full overflow-hidden rounded-full"
+          <UserImage
             src={picture}
             alt={`Foto de perfil de ${name}`}
-            loading="lazy"
+            className="w-full h-full"
+            fallback={
+              isGroup ? (
+                <Users className="w-full h-full p-3 text-neutral-400" />
+              ) : undefined
+            }
           />
           {isOnline && (
             <span

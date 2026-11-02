@@ -1,23 +1,62 @@
-import * as Avatar from "@radix-ui/react-avatar";
+import React, { useState, useEffect } from "react";
 import { UserCircle2 } from "lucide-react";
 
 import useStore from "@/lib/store";
 import mc from "@/lib/utils/mergeClassnames";
 
-export function UserImage({ className }: { className?: string }) {
-  const picture = useStore((state) => state.user.picture);
+export interface UserImageProps {
+  src?: string | null;
+  alt?: string;
+  className?: string;
+  fallback?: React.ReactNode;
+}
+
+export function UserImage({
+  src,
+  alt = "Foto de perfil",
+  className,
+  fallback,
+}: UserImageProps = {}) {
+  const selfPicture = useStore((state) => state.user.picture);
+  const imageSrc = src !== undefined ? (src || "") : (selfPicture || "");
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [imageSrc]);
+
+  const showImage = Boolean(imageSrc.trim() && !hasError);
 
   return (
-    <Avatar.Root
-      className={mc("bg-background-6 rounded-full overflow-hidden", className)}
+    <div
+      data-testid="user-avatar-root"
+      className={mc(
+        "bg-background-6 rounded-full overflow-hidden flex items-center justify-center shrink-0 select-none",
+        className
+      )}
     >
-      <Avatar.Image src={picture} alt="Tu foto de perfil"></Avatar.Image>
-      <Avatar.Fallback className="w-full h-full">
-        <UserCircle2
-          className="w-full h-full text-neutral-400"
-          strokeWidth={1}
+      {showImage ? (
+        <img
+          src={imageSrc}
+          alt={alt}
+          onError={() => setHasError(true)}
+          className="w-full h-full object-cover"
         />
-      </Avatar.Fallback>
-    </Avatar.Root>
+      ) : (
+        <div
+          data-testid="user-avatar-fallback"
+          className="w-full h-full flex items-center justify-center"
+        >
+          {fallback || (
+            <UserCircle2
+              data-testid="user-avatar-fallback-icon"
+              className="w-full h-full text-neutral-400"
+              strokeWidth={1}
+            />
+          )}
+        </div>
+      )}
+    </div>
   );
 }
+
