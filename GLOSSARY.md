@@ -22,7 +22,7 @@ _Avoid_: Message status, ack state
 
 **Receipt**:
 A record establishing that an individual participant's client has received or read a specific message.
-_Avoid_: Confirmation, delivery tag
+_Avoid_: Confirmation (when referring to message delivery/read state; UI alert/confirmation dialogs are exempt), delivery tag
 
 **Direct Chat**:
 A private, two-party chat strictly bound to exactly two participants, where only one unique thread can ever exist between that pair.

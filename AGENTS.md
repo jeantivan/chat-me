@@ -18,7 +18,7 @@ All persisted code, comments, docstrings, commit messages, PRs, GitHub issues, g
 ### Branching, PR Lifecycle & Granularity
 
 - **Isolated Branches**: Never commit directly to `main`. Every issue or sub-issue must be developed in an isolated branch (`feat/<issue-id>-<short-slug>` or `fix/<issue-id>-<short-slug>`).
-- **Granular PRs**: Pull requests must be small and scoped to a single responsibility (target diff < 200–300 lines). Complex features must be split into multiple sub-issues with independent PRs.
+- **Granular PRs**: Pull requests must be small and scoped to a single responsibility (target diff < 200–300 lines). Complex features must be decomposed into multiple sub-issues with independent PRs upfront before implementation.
 - **Squash & Merge**: Merge PRs via Squash and Merge after all CI pipeline gates pass cleanly.
 
 ### Triage labels
