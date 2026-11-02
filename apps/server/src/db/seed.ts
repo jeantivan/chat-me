@@ -10,6 +10,7 @@ import {
   chats,
   chatParticipants,
   messages,
+  mediaAttachments,
   messageReceipts,
   messageReactions,
   messageStars,
@@ -17,6 +18,7 @@ import {
 } from "./schema.js";
 import { hashPassword } from "../services/auth.service.js";
 import { migrateDb } from "./migrate.js";
+import { SEED_USERS, SAMPLE_IMAGES, getRandomPhrase } from "./seed-data.js";
 
 function makeLexicalBody(text: string): string {
   return JSON.stringify({
@@ -60,40 +62,9 @@ export async function seedDb(pool: pg.Pool) {
   const defaultPassword = "Password123!";
   const passwordHash = await hashPassword(defaultPassword);
 
-  const testUsersData = [
-    {
-      email: "alice@example.com",
-      name: "Alice Smith",
-      bio: "Software engineer & open-source enthusiast",
-      phone: "+1 555-0101",
-      pictureUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-    },
-    {
-      email: "bob@example.com",
-      name: "Bob Builder",
-      bio: "Can we build it? Yes we can!",
-      phone: "+1 555-0102",
-      pictureUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
-    },
-    {
-      email: "charlie@example.com",
-      name: "Charlie Brown",
-      bio: "A day without laughter is a day wasted",
-      phone: "+1 555-0103",
-      pictureUrl: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150",
-    },
-    {
-      email: "diana@example.com",
-      name: "Diana Prince",
-      bio: "Always striving for justice and connection",
-      phone: "+1 555-0104",
-      pictureUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150",
-    },
-  ];
-
   const seededUsers: Record<string, string> = {}; // email -> userId
 
-  for (const u of testUsersData) {
+  for (const u of SEED_USERS) {
     const existing = await db
       .select({ id: users.id, email: users.email })
       .from(users)
@@ -102,7 +73,6 @@ export async function seedDb(pool: pg.Pool) {
 
     if (existing.length > 0) {
       seededUsers[u.email] = existing[0].id;
-      // Update fields
       await db
         .update(users)
         .set({
@@ -140,26 +110,32 @@ export async function seedDb(pool: pg.Pool) {
   const bobId = seededUsers["bob@example.com"];
   const charlieId = seededUsers["charlie@example.com"];
   const dianaId = seededUsers["diana@example.com"];
+  const edwardId = seededUsers["edward@example.com"];
+  const fionaId = seededUsers["fiona@example.com"];
+  const georgeId = seededUsers["george@example.com"];
+  const hannahId = seededUsers["hannah@example.com"];
+  const ianId = seededUsers["ian@example.com"];
+  const juliaId = seededUsers["julia@example.com"];
 
-  console.log("🌱 Establishing bidirectional contacts...");
-  const contactPairs = [
-    [aliceId, bobId],
-    [aliceId, charlieId],
-    [aliceId, dianaId],
-    [bobId, charlieId],
-  ];
+  console.log("🌱 Establishing bidirectional contacts for Alice and Bob...");
+  const otherUsersForAlice = SEED_USERS.filter((u) => u.email !== "alice@example.com").map(
+    (u) => seededUsers[u.email]
+  );
+  const otherUsersForBob = SEED_USERS.filter((u) => u.email !== "bob@example.com").map(
+    (u) => seededUsers[u.email]
+  );
 
-  for (const [u1, u2] of contactPairs) {
-    await db
-      .insert(contacts)
-      .values([
-        { userId: u1, contactUserId: u2 },
-        { userId: u2, contactUserId: u1 },
-      ])
-      .onConflictDoNothing();
+  const contactRows: Array<typeof contacts.$inferInsert> = [];
+  for (const targetId of otherUsersForAlice) {
+    contactRows.push({ userId: aliceId, contactUserId: targetId });
+    contactRows.push({ userId: targetId, contactUserId: aliceId });
+  }
+  for (const targetId of otherUsersForBob) {
+    contactRows.push({ userId: bobId, contactUserId: targetId });
+    contactRows.push({ userId: targetId, contactUserId: bobId });
   }
 
-  console.log("🌱 Seeding direct conversations...");
+  await db.insert(contacts).values(contactRows).onConflictDoNothing();
 
   async function getOrCreateDirectChat(userA: string, userB: string) {
     const pairHash = generateDirectPairHash(userA, userB);
@@ -170,6 +146,7 @@ export async function seedDb(pool: pg.Pool) {
       .limit(1);
 
     if (existing.length > 0) {
+      await db.delete(mediaAttachments).where(eq(mediaAttachments.chatId, existing[0].id));
       await db.delete(messages).where(eq(messages.chatId, existing[0].id));
       return existing[0].id;
     }
@@ -190,309 +167,362 @@ export async function seedDb(pool: pg.Pool) {
     return newChat.id;
   }
 
-  const now = Date.now();
+  async function seedMessagesForDirectChat(
+    chatId: string,
+    user1Id: string,
+    user2Id: string,
+    options?: {
+      unreadForUser1?: number;
+      chatSeedOffset?: number;
+    }
+  ) {
+    const unreadCount = options?.unreadForUser1 ?? 0;
+    const chatSeedOffset = options?.chatSeedOffset ?? 0;
+    const messageCount = 52;
+    const imageIndices = [8, 24, 42];
 
-  // 1. Chat Alice & Bob (Active conversation, all read)
+    const newMediaRows: Array<typeof mediaAttachments.$inferInsert> = [];
+    const mediaLinks: Array<{ mediaId: string; msgId: string }> = [];
+    const newMsgRows: Array<typeof messages.$inferInsert> = [];
+    const newReceiptRows: Array<typeof messageReceipts.$inferInsert> = [];
+
+    const now = Date.now();
+
+    for (let i = 0; i < messageCount; i++) {
+      const msgId = randomUUID();
+      const sender = i % 4 === 1 || i % 4 === 2 ? user2Id : user1Id;
+      const recipient = sender === user1Id ? user2Id : user1Id;
+      const offsetMinutes = Math.max(1, (messageCount - i) * 35 - (chatSeedOffset % 15));
+      const msgTime = new Date(now - offsetMinutes * 60 * 1000);
+
+      let mediaId: string | null = null;
+      let textBody: string;
+
+      if (imageIndices.includes(i)) {
+        mediaId = randomUUID();
+        const sampleImg = SAMPLE_IMAGES[(chatSeedOffset + i) % SAMPLE_IMAGES.length];
+        newMediaRows.push({
+          id: mediaId,
+          messageId: null,
+          chatId,
+          uploaderId: sender,
+          type: "image",
+          url: sampleImg.url,
+          storageKey: `seed/images/${mediaId}.jpg`,
+          blurhash: sampleImg.blurhash,
+          orientation: sampleImg.orientation,
+          width: sampleImg.width,
+          height: sampleImg.height,
+          sizeBytes: sampleImg.sizeBytes,
+          mimeType: "image/jpeg",
+          status: "attached",
+          createdAt: msgTime,
+        });
+        mediaLinks.push({ mediaId, msgId });
+        textBody = sampleImg.caption;
+      } else {
+        textBody = getRandomPhrase(chatSeedOffset + i);
+      }
+
+      newMsgRows.push({
+        id: msgId,
+        chatId,
+        senderId: sender,
+        mediaId,
+        body: makeLexicalBody(textBody),
+        createdAt: msgTime,
+        forwarded: i % 17 === 0,
+      });
+
+      const isUnreadForRecipient =
+        sender === user2Id && recipient === user1Id && i >= messageCount - unreadCount;
+      newReceiptRows.push({
+        messageId: msgId,
+        userId: recipient,
+        status: isUnreadForRecipient ? "received" : "read",
+      });
+    }
+
+    if (newMediaRows.length > 0) {
+      await db.insert(mediaAttachments).values(newMediaRows).onConflictDoNothing();
+    }
+    await db.insert(messages).values(newMsgRows).onConflictDoNothing();
+
+    for (const link of mediaLinks) {
+      await db
+        .update(mediaAttachments)
+        .set({ messageId: link.msgId })
+        .where(eq(mediaAttachments.id, link.mediaId));
+    }
+
+    await db.insert(messageReceipts).values(newReceiptRows).onConflictDoNothing();
+
+    if (newMsgRows.length > 10) {
+      await db
+        .insert(messageStars)
+        .values([
+          { userId: user1Id, messageId: newMsgRows[imageIndices[0]].id },
+          { userId: user2Id, messageId: newMsgRows[1].id },
+        ])
+        .onConflictDoNothing();
+
+      await db
+        .insert(messageReactions)
+        .values([
+          { messageId: newMsgRows[0].id, userId: user2Id, emoji: "🎉" },
+          { messageId: newMsgRows[imageIndices[0]].id, userId: user1Id, emoji: "❤️" },
+          { messageId: newMsgRows[imageIndices[1]].id, userId: user2Id, emoji: "🚀" },
+        ])
+        .onConflictDoNothing();
+    }
+
+    if (unreadCount > 0) {
+      const unreadThresholdTime = new Date(now - unreadCount * 45 * 60 * 1000);
+      await db
+        .update(chatParticipants)
+        .set({ lastReadAt: unreadThresholdTime })
+        .where(and(eq(chatParticipants.chatId, chatId), eq(chatParticipants.userId, user1Id)));
+      await db
+        .update(chatParticipants)
+        .set({ lastReadAt: new Date(now) })
+        .where(and(eq(chatParticipants.chatId, chatId), eq(chatParticipants.userId, user2Id)));
+    } else {
+      await db
+        .update(chatParticipants)
+        .set({ lastReadAt: new Date(now) })
+        .where(eq(chatParticipants.chatId, chatId));
+    }
+  }
+
+  console.log("🌱 Seeding direct conversations (8 for Alice, 8 for Bob)...");
+  // 1. Shared direct chat: Alice & Bob
   const chatAliceBob = await getOrCreateDirectChat(aliceId, bobId);
-  const aliceBobMessages = [
-    {
-      sender: bobId,
-      recipient: aliceId,
-      text: "Hey Alice! Welcome to the chat-me platform 🎉",
-      offsetMinutesAgo: 60,
-    },
-    {
-      sender: aliceId,
-      recipient: bobId,
-      text: "Hi Bob! The real-time messaging with Socket.IO is super responsive!",
-      offsetMinutesAgo: 50,
-    },
-    {
-      sender: bobId,
-      recipient: aliceId,
-      text: "Have you checked out the unread watermarks and typing indicators?",
-      offsetMinutesAgo: 30,
-    },
-    {
-      sender: aliceId,
-      recipient: bobId,
-      text: "Yes, they update immediately when someone starts typing in the editor!",
-      offsetMinutesAgo: 20,
-    },
+  await seedMessagesForDirectChat(chatAliceBob, aliceId, bobId, { chatSeedOffset: 1 });
+
+  // 2-8. Alice's direct chats with 7 other users
+  const alicePartners = [
+    { id: charlieId, unread: 2, offset: 2 },
+    { id: dianaId, unread: 1, offset: 3 },
+    { id: edwardId, unread: 0, offset: 4 },
+    { id: fionaId, unread: 0, offset: 5 },
+    { id: georgeId, unread: 0, offset: 6 },
+    { id: hannahId, unread: 0, offset: 7 },
+    { id: ianId, unread: 0, offset: 8 },
   ];
 
-  const aliceBobMsgIds: string[] = [];
-  for (const msg of aliceBobMessages) {
-    const msgId = randomUUID();
-    aliceBobMsgIds.push(msgId);
-    const time = new Date(now - msg.offsetMinutesAgo * 60 * 1000);
-    await db
-      .insert(messages)
-      .values({
-        id: msgId,
-        chatId: chatAliceBob,
-        senderId: msg.sender,
-        body: makeLexicalBody(msg.text),
-        createdAt: time,
-        forwarded: false,
-      })
-      .onConflictDoNothing();
-
-    await db
-      .insert(messageReceipts)
-      .values([
-        { messageId: msgId, userId: msg.recipient, status: "read" },
-      ])
-      .onConflictDoNothing();
+  for (const partner of alicePartners) {
+    const cId = await getOrCreateDirectChat(aliceId, partner.id);
+    await seedMessagesForDirectChat(cId, aliceId, partner.id, {
+      unreadForUser1: partner.unread,
+      chatSeedOffset: partner.offset * 10,
+    });
   }
 
-  // Seed reactions and starred messages on Alice & Bob conversation
-  if (aliceBobMsgIds.length >= 2) {
-    await db
-      .insert(messageReactions)
-      .values([
-        { messageId: aliceBobMsgIds[0], userId: aliceId, emoji: "🎉" },
-        { messageId: aliceBobMsgIds[1], userId: bobId, emoji: "🚀" },
-        { messageId: aliceBobMsgIds[3], userId: bobId, emoji: "❤️" },
-      ])
-      .onConflictDoNothing();
-
-    await db
-      .insert(messageStars)
-      .values([
-        { userId: aliceId, messageId: aliceBobMsgIds[0] },
-        { userId: aliceId, messageId: aliceBobMsgIds[1] },
-        { userId: bobId, messageId: aliceBobMsgIds[1] },
-      ])
-      .onConflictDoNothing();
-  }
-
-  // Update Alice and Bob's lastReadAt so all are marked read
-  await db
-    .update(chatParticipants)
-    .set({ lastReadAt: new Date(now) })
-    .where(eq(chatParticipants.chatId, chatAliceBob));
-
-  // 2. Chat Alice & Charlie (Charlie sent 2 unread messages for Alice!)
-  const chatAliceCharlie = await getOrCreateDirectChat(aliceId, charlieId);
-  const aliceCharlieMessages = [
-    {
-      sender: aliceId,
-      recipient: charlieId,
-      text: "Hey Charlie, are we still meeting this afternoon?",
-      offsetMinutesAgo: 45,
-    },
-    {
-      sender: charlieId,
-      recipient: aliceId,
-      text: "Yes! 3:00 PM works perfectly for me.",
-      offsetMinutesAgo: 10,
-    },
-    {
-      sender: charlieId,
-      recipient: aliceId,
-      text: "I'll bring the project architecture diagrams along.",
-      offsetMinutesAgo: 5,
-    },
+  // Bob's direct chats with 7 other users
+  const bobPartners = [
+    { id: charlieId, offset: 12 },
+    { id: dianaId, offset: 13 },
+    { id: edwardId, offset: 14 },
+    { id: fionaId, offset: 15 },
+    { id: georgeId, offset: 16 },
+    { id: hannahId, offset: 17 },
+    { id: ianId, offset: 18 },
   ];
 
-  for (const msg of aliceCharlieMessages) {
-    const msgId = randomUUID();
-    const time = new Date(now - msg.offsetMinutesAgo * 60 * 1000);
-    await db
-      .insert(messages)
-      .values({
-        id: msgId,
-        chatId: chatAliceCharlie,
-        senderId: msg.sender,
-        body: makeLexicalBody(msg.text),
-        createdAt: time,
-        forwarded: false,
-      })
-      .onConflictDoNothing();
-
-    await db
-      .insert(messageReceipts)
-      .values([
-        {
-          messageId: msgId,
-          userId: msg.recipient,
-          status: msg.offsetMinutesAgo > 30 ? "read" : "received",
-        },
-      ])
-      .onConflictDoNothing();
+  for (const partner of bobPartners) {
+    const cId = await getOrCreateDirectChat(bobId, partner.id);
+    await seedMessagesForDirectChat(cId, bobId, partner.id, {
+      chatSeedOffset: partner.offset * 10,
+    });
   }
 
-  // Alice last read 30 minutes ago -> the 2 recent Charlie messages will show as unread badge (2)!
-  await db
-    .update(chatParticipants)
-    .set({ lastReadAt: new Date(now - 30 * 60 * 1000) })
-    .where(
-      and(
-        eq(chatParticipants.chatId, chatAliceCharlie),
-        eq(chatParticipants.userId, aliceId)
-      )
-    );
-  // Charlie read everything
-  await db
-    .update(chatParticipants)
-    .set({ lastReadAt: new Date(now) })
-    .where(
-      and(
-        eq(chatParticipants.chatId, chatAliceCharlie),
-        eq(chatParticipants.userId, charlieId)
-      )
-    );
+  console.log("🌱 Seeding 2 group conversations...");
+  async function getOrCreateGroupChat(
+    title: string,
+    bio: string,
+    pictureUrl: string,
+    members: Array<{ userId: string; role: "admin" | "member"; pinned?: boolean }>
+  ) {
+    const existing = await db
+      .select({ id: chats.id })
+      .from(chats)
+      .where(and(eq(chats.type, "group"), eq(chats.title, title)))
+      .limit(1);
 
-  // 3. Chat Alice & Diana (Recent single unread message from Diana!)
-  const chatAliceDiana = await getOrCreateDirectChat(aliceId, dianaId);
-  const msgDianaId = randomUUID();
-  const dianaMsgTime = new Date(now - 2 * 60 * 1000);
-  await db
-    .insert(messages)
-    .values({
-      id: msgDianaId,
-      chatId: chatAliceDiana,
-      senderId: dianaId,
-      body: makeLexicalBody("Hey Alice, can you review the new PR when you get a chance?"),
-      createdAt: dianaMsgTime,
-      forwarded: false,
-    })
-    .onConflictDoNothing();
+    let groupChatId: string;
+    if (existing.length > 0) {
+      groupChatId = existing[0].id;
+      await db.delete(mediaAttachments).where(eq(mediaAttachments.chatId, groupChatId));
+      await db.delete(messages).where(eq(messages.chatId, groupChatId));
+    } else {
+      const [newGroup] = await db
+        .insert(chats)
+        .values({
+          type: "group",
+          title,
+          bio,
+          pictureUrl,
+        })
+        .returning();
+      groupChatId = newGroup.id;
 
-  await db
-    .insert(messageReceipts)
-    .values([
-      { messageId: msgDianaId, userId: aliceId, status: "received" },
-    ])
-    .onConflictDoNothing();
-
-  // Alice last read 15 minutes ago -> Diana message is unread (1)!
-  await db
-    .update(chatParticipants)
-    .set({ lastReadAt: new Date(now - 15 * 60 * 1000) })
-    .where(
-      and(
-        eq(chatParticipants.chatId, chatAliceDiana),
-        eq(chatParticipants.userId, aliceId)
-      )
-    );
-
-  // 4. Group Chat: Engineering & Architecture (Alice, Bob, Charlie, Diana)
-  console.log("🌱 Seeding group conversation...");
-  const groupTitle = "Engineering & Architecture";
-  const existingGroups = await db
-    .select({ id: chats.id })
-    .from(chats)
-    .where(and(eq(chats.type, "group"), eq(chats.title, groupTitle)))
-    .limit(1);
-
-  let groupChatId: string;
-  if (existingGroups.length > 0) {
-    groupChatId = existingGroups[0].id;
-    await db.delete(messages).where(eq(messages.chatId, groupChatId));
-  } else {
-    const [newGroup] = await db
-      .insert(chats)
-      .values({
-        type: "group",
-        title: groupTitle,
-        bio: "Real-time architecture, Lexical rich-text plugins, and hybrid TanStack Query + Zustand state.",
-        pictureUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150",
-      })
-      .returning();
-    groupChatId = newGroup.id;
-
-    await db
-      .insert(chatParticipants)
-      .values([
-        { chatId: groupChatId, userId: aliceId, role: "admin", pinned: true },
-        { chatId: groupChatId, userId: bobId, role: "member", pinned: true },
-        { chatId: groupChatId, userId: charlieId, role: "member" },
-        { chatId: groupChatId, userId: dianaId, role: "member" },
-      ])
-      .onConflictDoNothing();
+      await db.insert(chatParticipants).values(
+        members.map((m) => ({
+          chatId: groupChatId,
+          userId: m.userId,
+          role: m.role,
+          pinned: m.pinned ?? false,
+        }))
+      );
+    }
+    return groupChatId;
   }
 
-  const groupMessagesData = [
-    {
-      sender: aliceId,
-      text: "Welcome team! We just migrated client server-state to TanStack Query v5 with Socket.IO cache patching.",
-      offsetMinutesAgo: 25,
-    },
-    {
-      sender: bobId,
-      text: "The optimistic Lexical message pipeline and S3 presigned media uploads feel instantaneous!",
-      offsetMinutesAgo: 18,
-    },
-    {
-      sender: charlieId,
-      text: "Multi-participant delivery receipts and read watermarks are passing all Playwright E2E checks.",
-      offsetMinutesAgo: 12,
-    },
-  ];
+  async function seedMessagesForGroupChat(
+    chatId: string,
+    participantIds: string[],
+    groupSeedOffset: number
+  ) {
+    const messageCount = 52;
+    const imageIndices = [6, 20, 36, 48];
 
-  const allGroupUserIds = [aliceId, bobId, charlieId, dianaId];
-  const groupMsgIds: string[] = [];
+    const newMediaRows: Array<typeof mediaAttachments.$inferInsert> = [];
+    const mediaLinks: Array<{ mediaId: string; msgId: string }> = [];
+    const newMsgRows: Array<typeof messages.$inferInsert> = [];
+    const newReceiptRows: Array<typeof messageReceipts.$inferInsert> = [];
 
-  for (const gMsg of groupMessagesData) {
-    const msgId = randomUUID();
-    groupMsgIds.push(msgId);
-    const time = new Date(now - gMsg.offsetMinutesAgo * 60 * 1000);
-    await db
-      .insert(messages)
-      .values({
+    const now = Date.now();
+
+    for (let i = 0; i < messageCount; i++) {
+      const msgId = randomUUID();
+      const sender = participantIds[(i + groupSeedOffset) % participantIds.length];
+      const offsetMinutes = Math.max(1, (messageCount - i) * 30);
+      const msgTime = new Date(now - offsetMinutes * 60 * 1000);
+
+      let mediaId: string | null = null;
+      let textBody: string;
+
+      if (imageIndices.includes(i)) {
+        mediaId = randomUUID();
+        const sampleImg = SAMPLE_IMAGES[(groupSeedOffset + i) % SAMPLE_IMAGES.length];
+        newMediaRows.push({
+          id: mediaId,
+          messageId: null,
+          chatId,
+          uploaderId: sender,
+          type: "image",
+          url: sampleImg.url,
+          storageKey: `seed/images/${mediaId}.jpg`,
+          blurhash: sampleImg.blurhash,
+          orientation: sampleImg.orientation,
+          width: sampleImg.width,
+          height: sampleImg.height,
+          sizeBytes: sampleImg.sizeBytes,
+          mimeType: "image/jpeg",
+          status: "attached",
+          createdAt: msgTime,
+        });
+        mediaLinks.push({ mediaId, msgId });
+        textBody = sampleImg.caption;
+      } else {
+        textBody = getRandomPhrase(groupSeedOffset + i);
+      }
+
+      newMsgRows.push({
         id: msgId,
-        chatId: groupChatId,
-        senderId: gMsg.sender,
-        body: makeLexicalBody(gMsg.text),
-        createdAt: time,
+        chatId,
+        senderId: sender,
+        mediaId,
+        body: makeLexicalBody(textBody),
+        createdAt: msgTime,
         forwarded: false,
-      })
-      .onConflictDoNothing();
+      });
 
-    const otherParticipants = allGroupUserIds.filter((uid) => uid !== gMsg.sender);
-    await db
-      .insert(messageReceipts)
-      .values(
-        otherParticipants.map((uid) => ({
+      const otherParticipants = participantIds.filter((uid) => uid !== sender);
+      for (const uid of otherParticipants) {
+        newReceiptRows.push({
           messageId: msgId,
           userId: uid,
-          status: "read" as const,
-        }))
-      )
-      .onConflictDoNothing();
+          status: "read",
+        });
+      }
+    }
+
+    if (newMediaRows.length > 0) {
+      await db.insert(mediaAttachments).values(newMediaRows).onConflictDoNothing();
+    }
+    await db.insert(messages).values(newMsgRows).onConflictDoNothing();
+
+    for (const link of mediaLinks) {
+      await db
+        .update(mediaAttachments)
+        .set({ messageId: link.msgId })
+        .where(eq(mediaAttachments.id, link.mediaId));
+    }
+
+    await db.insert(messageReceipts).values(newReceiptRows).onConflictDoNothing();
+
+    if (newMsgRows.length > 5) {
+      await db
+        .insert(messageReactions)
+        .values([
+          { messageId: newMsgRows[0].id, userId: participantIds[1], emoji: "🔥" },
+          { messageId: newMsgRows[imageIndices[0]].id, userId: participantIds[0], emoji: "💯" },
+          { messageId: newMsgRows[imageIndices[1]].id, userId: participantIds[2], emoji: "🚀" },
+        ])
+        .onConflictDoNothing();
+
+      await db
+        .insert(messageStars)
+        .values([{ userId: participantIds[0], messageId: newMsgRows[imageIndices[0]].id }])
+        .onConflictDoNothing();
+    }
+
+    await db
+      .update(chatParticipants)
+      .set({ lastReadAt: new Date(now) })
+      .where(eq(chatParticipants.chatId, chatId));
   }
 
-  if (groupMsgIds.length >= 2) {
-    await db
-      .insert(messageReactions)
-      .values([
-        { messageId: groupMsgIds[0], userId: bobId, emoji: "🔥" },
-        { messageId: groupMsgIds[0], userId: charlieId, emoji: "🚀" },
-        { messageId: groupMsgIds[1], userId: aliceId, emoji: "💯" },
-      ])
-      .onConflictDoNothing();
+  // Group 1: Engineering & Architecture
+  const group1Id = await getOrCreateGroupChat(
+    "Engineering & Architecture",
+    "Real-time architecture, Lexical rich-text plugins, and hybrid TanStack Query + Zustand state.",
+    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150",
+    [
+      { userId: aliceId, role: "admin", pinned: true },
+      { userId: bobId, role: "member", pinned: true },
+      { userId: charlieId, role: "member" },
+      { userId: dianaId, role: "member" },
+      { userId: edwardId, role: "member" },
+      { userId: fionaId, role: "member" },
+    ]
+  );
+  await seedMessagesForGroupChat(group1Id, [aliceId, bobId, charlieId, dianaId, edwardId, fionaId], 100);
 
-    await db
-      .insert(messageStars)
-      .values([{ userId: aliceId, messageId: groupMsgIds[0] }])
-      .onConflictDoNothing();
-  }
-
-  await db
-    .update(chatParticipants)
-    .set({ lastReadAt: new Date(now) })
-    .where(eq(chatParticipants.chatId, groupChatId));
+  // Group 2: Product & Design Team
+  const group2Id = await getOrCreateGroupChat(
+    "Product & Design Team",
+    "User research, component libraries, interaction design, and design system tokens.",
+    "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=150",
+    [
+      { userId: aliceId, role: "admin" },
+      { userId: bobId, role: "member" },
+      { userId: georgeId, role: "member" },
+      { userId: hannahId, role: "member" },
+      { userId: ianId, role: "member" },
+      { userId: juliaId, role: "member" },
+    ]
+  );
+  await seedMessagesForGroupChat(group2Id, [aliceId, bobId, georgeId, hannahId, ianId, juliaId], 200);
 
   console.log("✅ Database successfully seeded!");
-  console.log("-------------------------------------------------------");
+  console.log("----------------------------------------------------------------------");
   console.log("Test accounts available (Password for all: Password123!)");
-  console.log("1. alice@example.com   - Has active chats and unread badges");
-  console.log("2. bob@example.com     - Active chat with Alice");
-  console.log("3. charlie@example.com - Sent 2 unread messages to Alice");
-  console.log("4. diana@example.com   - Sent 1 unread message to Alice");
-  console.log("-------------------------------------------------------");
+  console.log("• Alice: alice@example.com (20 contacts, 10 chats [8 direct, 2 groups], 12 contacts to start new chats)");
+  console.log("• Bob:   bob@example.com   (20 contacts, 10 chats [8 direct, 2 groups], 12 contacts to start new chats)");
+  console.log("• Each chat contains 50+ messages with varied phrases and example image attachments.");
+  console.log("----------------------------------------------------------------------");
 }
 
 if (process.argv[1] && process.argv[1].endsWith("seed.ts")) {
