@@ -362,6 +362,27 @@ describe("Message Reactions, Starred Messages, Deletion & Forwarding Seam", () =
     expect(deletedMsg).toBeDefined();
     expect(deletedMsg.body).toBe("This message was deleted");
     expect(deletedMsg.hasMedia).toBeNull();
+    expect(deletedMsg.reactions).toEqual([]);
+    expect(deletedMsg.starred).toBe(false);
+    expect(deletedMsg.forwarded).toBe(false);
+
+    // 4. Verify reacting to deleted message is rejected
+    const reactAck = await new Promise<{ success: boolean; error?: string }>((resolve) => {
+      clientB.emit(
+        "message:reaction",
+        { messageId, chatId: directChatABId, emoji: ":thumbs_up:" },
+        (ack: { success: boolean; error?: string }) => resolve(ack)
+      );
+    });
+    expect(reactAck.success).toBe(false);
+
+    // 5. Verify starring deleted message returns 404
+    const starDeletedRes = await app.inject({
+      method: "POST",
+      url: `/api/v1/chats/${directChatABId}/messages/${messageId}/star`,
+      headers: { authorization: `Bearer ${tokenB}` },
+    });
+    expect(starDeletedRes.statusCode).toBe(404);
   });
 
   it("allows users to star and unstar messages and query starred messages", async () => {

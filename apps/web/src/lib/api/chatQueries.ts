@@ -224,6 +224,9 @@ export function useDeleteMessage() {
             body: DELETED_MESSAGE_TOMBSTONE,
             deleted: true,
             hasMedia: null,
+            reactions: [],
+            starred: false,
+            forwarded: false,
           }))
       );
 
@@ -240,6 +243,9 @@ export function useDeleteMessage() {
                     body: DELETED_MESSAGE_TOMBSTONE,
                     deleted: true,
                     hasMedia: null,
+                    reactions: [],
+                    starred: false,
+                    forwarded: false,
                   },
                 }
               : c

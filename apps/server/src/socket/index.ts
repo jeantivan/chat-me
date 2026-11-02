@@ -676,13 +676,13 @@ export function setupSocketServer(
         }
 
         const msgRows = await app.db
-          .select({ id: messages.id })
+          .select({ id: messages.id, deletedAt: messages.deletedAt })
           .from(messages)
           .where(and(eq(messages.id, messageId), eq(messages.chatId, chatId)))
           .limit(1);
 
-        if (msgRows.length === 0) {
-          if (callback) callback({ success: false, error: "Message not found" });
+        if (msgRows.length === 0 || msgRows[0].deletedAt) {
+          if (callback) callback({ success: false, error: "Message not found or deleted" });
           return;
         }
 

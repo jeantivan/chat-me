@@ -4,6 +4,7 @@ import { MessageText } from "./MessageText";
 import { ImageAndVideo } from "./ImageAndVideo";
 import { TMessage } from "@/lib/types";
 import useStore from "@/lib/store";
+import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 
 type MessageProps = {
   isOwnMsg: boolean;
@@ -13,11 +14,12 @@ type MessageProps = {
 };
 export const Message = memo(function MessageRoot(props: MessageProps) {
   const { body, deleted, hasMedia } = props.message;
+  const isDeleted = Boolean(deleted) || body === DELETED_MESSAGE_TOMBSTONE;
   const openMediaMessage = useStore((state) => state.openMediaMessage);
 
   return (
     <MessageContainer {...props}>
-      {hasMedia && (
+      {hasMedia && !isDeleted && (
         <ImageAndVideo
           {...hasMedia}
           onClick={() => {
@@ -25,7 +27,7 @@ export const Message = memo(function MessageRoot(props: MessageProps) {
           }}
         />
       )}
-      {(body || deleted) && <MessageText body={body} deleted={deleted} />}
+      {(body || isDeleted) && <MessageText body={body} deleted={deleted} />}
     </MessageContainer>
   );
 });

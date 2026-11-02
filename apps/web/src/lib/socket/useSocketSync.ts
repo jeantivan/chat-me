@@ -263,6 +263,9 @@ export function useSocketSync(
         body: DELETED_MESSAGE_TOMBSTONE,
         deleted: true,
         hasMedia: null,
+        reactions: [],
+        starred: false,
+        forwarded: false,
       });
 
       queryClient.setQueryData<InfiniteData<MessagesPageResponse>>(
