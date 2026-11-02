@@ -62,3 +62,9 @@ export function toUiChat(summary: ChatSummary, currentUserId?: string): TChat {
     messages: lastMsg,
   };
 }
+
+export function getDateOfLastMessage(c: TChat): Date {
+  if (!c.messages.length) return new Date(0);
+  const date = c.messages[c.messages.length - 1].time;
+  return new Date(date);
+}

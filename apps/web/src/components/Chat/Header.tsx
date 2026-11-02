@@ -13,13 +13,21 @@ import { TChat } from "@/lib/types";
 import useStore from "@/lib/store";
 import { useChatActions } from "@/lib/hooks";
 import { useChatDisplay } from "@/lib/hooks/useChatCounterpart";
+import { useUpdateChatParticipant } from "@/lib/api/chatQueries";
 import { UserImage } from "@/components/UserImage";
 
 dayjs.extend(relativeTime);
 
-const Content = ({ chatId }: { chatId: string }) => {
+const Content = ({
+  chatId,
+  isMuted,
+}: {
+  chatId: string;
+  isMuted?: boolean;
+}) => {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
-  const { muteChat, deleteChat, closeChat } = useChatActions();
+  const { deleteChat, closeChat } = useChatActions();
+  const updateParticipant = useUpdateChatParticipant();
   return (
     <MenuContent>
       <MenuItem
@@ -36,10 +44,10 @@ const Content = ({ chatId }: { chatId: string }) => {
       <MenuItem
         onClick={(e) => {
           e.stopPropagation();
-          muteChat(chatId);
+          updateParticipant.mutate({ chatId, muted: !isMuted });
         }}
       >
-        Silenciar notificaciones
+        {isMuted ? "Activar notificaciones" : "Silenciar notificaciones"}
       </MenuItem>
       <MenuItem
         onClick={(e) => {
@@ -131,7 +139,7 @@ export function Header({ chat }: { chat: TChat }) {
             <MenuTrigger asChild>
               <IconButton icon={MoreVerticalIcon} label="Abrir menu del chat" />
             </MenuTrigger>
-            <Content chatId={chat.id} />
+            <Content chatId={chat.id} isMuted={chat.muted} />
           </MenuRoot>
         </div>
       </div>

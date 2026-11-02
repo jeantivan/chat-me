@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import {
   useQuery,
   useInfiniteQuery,
+  useMutation,
   useQueryClient,
   InfiniteData,
 } from "@tanstack/react-query";
@@ -324,4 +325,99 @@ export function useForwardMessages() {
     },
     [queryClient]
   );
+}
+
+export interface UpdateChatParticipantParams {
+  chatId: string;
+  pinned?: boolean;
+  muted?: boolean;
+  archived?: boolean;
+  markedUnread?: boolean;
+}
+
+export function useUpdateChatParticipant() {
+  const queryClient = useQueryClient();
+  const userId = useUserId();
+
+  return useMutation({
+    mutationFn: async ({
+      chatId,
+      pinned,
+      muted,
+      archived,
+      markedUnread,
+    }: UpdateChatParticipantParams) => {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+      const body: Record<string, boolean> = {};
+      if (pinned !== undefined) body.pinned = pinned;
+      if (muted !== undefined) body.muted = muted;
+      if (archived !== undefined) body.archived = archived;
+      if (markedUnread !== undefined) body.markedUnread = markedUnread;
+
+      const res = await fetch(`${apiBase}/api/v1/chats/${chatId}/participant`, {
+        method: "PATCH",
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update chat participant");
+      }
+      return (await res.json()) as ChatSummary;
+    },
+    onMutate: async ({ chatId, pinned, muted, archived, markedUnread }) => {
+      await queryClient.cancelQueries({ queryKey: chatKeys.lists() });
+      const previousChats = queryClient.getQueryData<ChatSummary[]>(chatKeys.lists());
+
+      queryClient.setQueryData<ChatSummary[]>(chatKeys.lists(), (old) => {
+        if (!old) return old;
+        return old.map((c) => {
+          if (c.id !== chatId) return c;
+          const nextParticipants = c.participants.map((p) => {
+            if (p.userId !== userId) return p;
+            const nextPinned =
+              archived === true ? false : pinned !== undefined ? pinned : p.pinned;
+            const nextMuted = muted !== undefined ? muted : p.muted;
+            const nextArchived = archived !== undefined ? archived : p.archived;
+            const nextMarkedUnread =
+              markedUnread !== undefined ? markedUnread : p.markedUnread;
+            return {
+              ...p,
+              pinned: nextPinned,
+              muted: nextMuted,
+              archived: nextArchived,
+              markedUnread: nextMarkedUnread,
+            };
+          });
+
+          let nextUnreadCount = c.unreadCount;
+          if (markedUnread === true) {
+            nextUnreadCount = (c.unreadCount && c.unreadCount > 0) ? c.unreadCount : 1;
+          } else if (markedUnread === false) {
+            nextUnreadCount = 0;
+          }
+
+          return {
+            ...c,
+            participants: nextParticipants,
+            unreadCount: nextUnreadCount,
+          };
+        });
+      });
+
+      return { previousChats };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousChats) {
+        queryClient.setQueryData(chatKeys.lists(), context.previousChats);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
+    },
+  });
 }

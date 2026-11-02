@@ -17,7 +17,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
 import mc from "@/lib/utils/mergeClassnames";
-import { useChats } from "@/lib/api/chatQueries";
+import { useChats, useUpdateChatParticipant } from "@/lib/api/chatQueries";
 import {
   useBlockedUsers,
   useBlockUser,
@@ -76,7 +76,7 @@ const Item = ({
 export function ContactInfo({ chatId }: { chatId?: string } = {}) {
   const closeRightDrawer = useStore((state) => state.closeRightDrawer);
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
-  const muteChat = useStore((state) => state.muteChat);
+  const updateParticipant = useUpdateChatParticipant();
   const { currentChatId: activeChatId } = useCurrentChatId();
   const currentChatId = chatId || activeChatId;
   const currentUserId = useUserId();
@@ -224,7 +224,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
                 <Switch
                   checked={muted}
                   onCheckedChange={() => {
-                    muteChat(id);
+                    updateParticipant.mutate({ chatId: id, muted: !muted });
                   }}
                 />
               }
@@ -240,8 +240,23 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
             </Item>
           </section>
           <section className="shadow bg-background-3">
-            <Item icon={Archive} danger>
-              Archivar chat
+            <Item
+              icon={Archive}
+              danger
+              onClick={() => {
+                const isArchived =
+                  chatSummary.participants.find((p) => p.userId === currentUserId)
+                    ?.archived || false;
+                updateParticipant.mutate({
+                  chatId: id,
+                  archived: !isArchived,
+                });
+              }}
+            >
+              {chatSummary.participants.find((p) => p.userId === currentUserId)
+                ?.archived
+                ? "Desarchivar chat"
+                : "Archivar chat"}
             </Item>
             <Item icon={Trash2} danger>
               Eliminar chat

@@ -4,23 +4,27 @@ import { MenuRoot, MenuContent, MenuItem } from "./ui/Menu";
 import { Icon } from "./ui/Icon";
 import mc from "@/lib/utils/mergeClassnames";
 import { useChatActions } from "@/lib/hooks";
+import { useUpdateChatParticipant } from "@/lib/api/chatQueries";
 
 type ChatItemMenuProps = {
   isMuted?: boolean;
   isPinned?: boolean;
   isArchived?: boolean;
+  isUnread?: boolean;
   isOpenChat?: boolean;
   chatId: string;
 };
+
 export function ChatItemMenu({
   chatId,
   isMuted,
   isPinned,
   isArchived,
+  isUnread,
   isOpenChat,
 }: ChatItemMenuProps) {
-  const { archiveChat, deleteChat, closeChat, muteChat, pinChat } =
-    useChatActions();
+  const { deleteChat, closeChat } = useChatActions();
+  const updateParticipant = useUpdateChatParticipant();
 
   return (
     <MenuRoot>
@@ -37,7 +41,7 @@ export function ChatItemMenu({
         <MenuItem
           onClick={(e) => {
             e.stopPropagation();
-            archiveChat(chatId);
+            updateParticipant.mutate({ chatId, archived: !isArchived });
           }}
         >
           {isArchived ? "Desarchivar chat" : "Archivar chat"}
@@ -46,12 +50,20 @@ export function ChatItemMenu({
           <MenuItem
             onClick={(e) => {
               e.stopPropagation();
-              muteChat(chatId);
+              updateParticipant.mutate({ chatId, muted: !isMuted });
             }}
           >
             {isMuted ? "Activar notificaciones" : "Silenciar notificaciones"}
           </MenuItem>
         )}
+        <MenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            updateParticipant.mutate({ chatId, markedUnread: !isUnread });
+          }}
+        >
+          {isUnread ? "Marcar como leído" : "Marcar como no leído"}
+        </MenuItem>
         <MenuItem
           onClick={(e) => {
             e.stopPropagation();
@@ -65,7 +77,7 @@ export function ChatItemMenu({
           <MenuItem
             onClick={(e) => {
               e.stopPropagation();
-              pinChat(chatId);
+              updateParticipant.mutate({ chatId, pinned: !isPinned });
             }}
           >
             {isPinned ? "Desfijar chat" : "Fijar chat"}
