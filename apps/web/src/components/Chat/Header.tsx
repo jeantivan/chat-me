@@ -1,4 +1,4 @@
-import { MoreVerticalIcon, Search } from "lucide-react";
+import { MoreVerticalIcon, Search, Users } from "lucide-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -13,6 +13,7 @@ import { TChat } from "@/lib/types";
 import useStore from "@/lib/store";
 import { useChatActions } from "@/lib/hooks";
 import { useChatDisplay } from "@/lib/hooks/useChatCounterpart";
+import { UserImage } from "@/components/UserImage";
 
 dayjs.extend(relativeTime);
 
@@ -74,11 +75,16 @@ export function Header({ chat }: { chat: TChat }) {
             rightDrawerGoTo("CONTACT_INFO");
           }}
         >
-          <span className="text-gray-400 w-10 h-10 rounded-full mr-3 shrink-0">
-            <img
-              className="bg-gray-400 w-full h-full rounded-full"
+          <span className="w-10 h-10 rounded-full mr-3 shrink-0">
+            <UserImage
               src={picture}
               alt={`Foto de perfil de ${name}`}
+              className="w-full h-full"
+              fallback={
+                isGroup ? (
+                  <Users className="w-full h-full p-2 text-neutral-400" />
+                ) : undefined
+              }
             />
           </span>
           <span className="flex flex-col items-start justify-center text-left">

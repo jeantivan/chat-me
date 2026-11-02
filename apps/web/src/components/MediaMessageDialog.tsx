@@ -14,6 +14,7 @@ import useStore from "@/lib/store";
 import { useContacts, useToggleStarMessage } from "@/lib/api/chatQueries";
 import { TMessage } from "@/lib/types";
 import { MessageText } from "./Message/MessageText";
+import { UserImage } from "./UserImage";
 
 const dimensions: Record<"square" | "landscape" | "portrait", string> = {
   square: "aspect-[1]",
@@ -70,12 +71,13 @@ export function MediaMessageDialog({
         >
           <header className="w-full flex justify-between px-6">
             <div className="flex gap-4">
-              <img
-                className="w-12 h-12 rounded-full bg-background-10 object-cover"
-                src={ownerPicture}
-                loading="lazy"
-                alt={ownerName}
-              />
+              <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
+                <UserImage
+                  className="w-full h-full"
+                  src={ownerPicture}
+                  alt={ownerName}
+                />
+              </div>
               <div className="text-background-12">
                 <div>{ownerName}</div>
                 <div className="text-sm text-background-11">{formatTime}</div>

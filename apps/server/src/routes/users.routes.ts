@@ -9,6 +9,7 @@ import {
   syncPresenceOnPrivacyChange,
   syncPresenceOnBlock,
   syncPresenceOnUnblock,
+  syncProfilesOnBlockOrUnblock,
   broadcastSanitizedProfileUpdate,
 } from "../socket/index.js";
 import { canViewPresence } from "../lib/privacy.js";
@@ -138,6 +139,7 @@ export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
         .onConflictDoNothing();
 
       await syncPresenceOnBlock(app, currentUserId, targetUserId);
+      await syncProfilesOnBlockOrUnblock(app, currentUserId, targetUserId);
 
       return reply.status(200).send({ success: true });
     }
@@ -161,6 +163,7 @@ export const usersRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
         );
 
       await syncPresenceOnUnblock(app, currentUserId, targetUserId);
+      await syncProfilesOnBlockOrUnblock(app, currentUserId, targetUserId);
 
       return reply.status(200).send({ success: true });
     }

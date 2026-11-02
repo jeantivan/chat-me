@@ -1,5 +1,6 @@
 import { ShieldCheck, ShieldAlert, UserMinus } from "lucide-react";
 import type { ChatParticipantSummary } from "@chat-me/shared";
+import { UserImage } from "@/components/UserImage";
 
 interface GroupParticipantItemProps {
   participant: ChatParticipantSummary;
@@ -23,11 +24,11 @@ export function GroupParticipantItem({
   return (
     <div className="flex items-center justify-between px-5 py-3 hover:bg-background-4 transition-colors">
       <div className="flex items-center gap-3 min-w-0">
-        <div className="relative w-10 h-10 rounded-full overflow-hidden bg-background-4 shrink-0">
-          <img
-            src={p.user?.pictureUrl || ""}
+        <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0">
+          <UserImage
+            src={p.user?.pictureUrl}
             alt={p.user?.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full"
           />
           {isOnline && (
             <span

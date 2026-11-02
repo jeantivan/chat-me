@@ -24,6 +24,7 @@ import {
   useUnblockUser,
 } from "@/lib/api/settingsQueries";
 import { useUserId, useCurrentChatId } from "@/lib/hooks";
+import { UserImage } from "@/components/UserImage";
 import { GroupInfoDrawer } from "./GroupInfoDrawer";
 
 type ItemProps = {
@@ -160,11 +161,11 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
           <section className="py-4 shadow bg-background-3">
             <div className="flex flex-col px-5">
               <div className="mx-auto mt-16 mb-4">
-                <div className="w-40 h-40 rounded-full text-gray-500">
-                  <img
-                    className="bg-gray-400 w-full h-full rounded-full"
-                    src={picture}
+                <div className="w-40 h-40 rounded-full">
+                  <UserImage
+                    src={isBlocked ? "" : picture}
                     alt={`Foto de perfil de ${name}`}
+                    className="w-full h-full"
                   />
                 </div>
               </div>
