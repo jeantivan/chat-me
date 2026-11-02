@@ -64,6 +64,13 @@
       "when": 1792785000000,
       "tag": "0008_chat_participants_marked_unread",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792790000000,
+      "tag": "0009_chat_participants_clear_hidden",
+      "breakpoints": true
     }
   ]
 }

@@ -158,6 +158,15 @@ async function createOrGetDirectChat(
 
   if (existingChats.length > 0) {
     chatId = existingChats[0].id;
+    await app.db
+      .update(chatParticipants)
+      .set({ hiddenAt: null })
+      .where(
+        and(
+          eq(chatParticipants.chatId, chatId),
+          eq(chatParticipants.userId, currentUserId)
+        )
+      );
   } else {
     const [newChat] = await app.db
       .insert(chats)
@@ -535,6 +544,163 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
     }
   );
 
+  // Clear chat history for current user
+  app.post<{
+    Params: { chatId: string };
+  }>(
+    "/:chatId/clear",
+    {
+      preHandler: [app.authenticate],
+    },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+      const { chatId } = request.params;
+
+      const participantRows = await app.db
+        .select()
+        .from(chatParticipants)
+        .where(
+          and(
+            eq(chatParticipants.chatId, chatId),
+            eq(chatParticipants.userId, currentUserId)
+          )
+        )
+        .limit(1);
+
+      if (participantRows.length === 0) {
+        return reply.status(403).send({ error: "Forbidden: Not a participant of this chat" });
+      }
+
+      const now = new Date();
+
+      await app.db
+        .update(chatParticipants)
+        .set({
+          clearedAt: now,
+          lastReadAt: now,
+          markedUnread: false,
+        })
+        .where(
+          and(
+            eq(chatParticipants.chatId, chatId),
+            eq(chatParticipants.userId, currentUserId)
+          )
+        );
+
+      const chatMessages = await app.db
+        .select({ id: messages.id })
+        .from(messages)
+        .where(eq(messages.chatId, chatId));
+
+      if (chatMessages.length > 0) {
+        const msgIds = chatMessages.map((m) => m.id);
+        await app.db
+          .delete(messageStars)
+          .where(
+            and(
+              eq(messageStars.userId, currentUserId),
+              inArray(messageStars.messageId, msgIds)
+            )
+          );
+      }
+
+      const io = (app as any).io;
+      if (io) {
+        io.to(`user:${currentUserId}`).emit("chat:cleared", {
+          chatId,
+          userId: currentUserId,
+          clearedAt: now.toISOString(),
+          hiddenAt: null,
+        });
+      }
+
+      const summary = await getChatSummary(app, chatId, currentUserId);
+      return reply.send(
+        summary || {
+          id: chatId,
+          lastMessage: null,
+          unreadCount: 0,
+        }
+      );
+    }
+  );
+
+  // Delete / hide chat for current user
+  app.delete<{
+    Params: { chatId: string };
+  }>(
+    "/:chatId",
+    {
+      preHandler: [app.authenticate],
+    },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+      const { chatId } = request.params;
+
+      const participantRows = await app.db
+        .select()
+        .from(chatParticipants)
+        .where(
+          and(
+            eq(chatParticipants.chatId, chatId),
+            eq(chatParticipants.userId, currentUserId)
+          )
+        )
+        .limit(1);
+
+      if (participantRows.length === 0) {
+        return reply.status(403).send({ error: "Forbidden: Not a participant of this chat" });
+      }
+
+      const now = new Date();
+
+      await app.db
+        .update(chatParticipants)
+        .set({
+          clearedAt: now,
+          lastReadAt: now,
+          markedUnread: false,
+          pinned: false,
+          hiddenAt: now,
+        })
+        .where(
+          and(
+            eq(chatParticipants.chatId, chatId),
+            eq(chatParticipants.userId, currentUserId)
+          )
+        );
+
+      const chatMessages = await app.db
+        .select({ id: messages.id })
+        .from(messages)
+        .where(eq(messages.chatId, chatId));
+
+      if (chatMessages.length > 0) {
+        const msgIds = chatMessages.map((m) => m.id);
+        await app.db
+          .delete(messageStars)
+          .where(
+            and(
+              eq(messageStars.userId, currentUserId),
+              inArray(messageStars.messageId, msgIds)
+            )
+          );
+      }
+
+      const io = (app as any).io;
+      if (io) {
+        io.to(`user:${currentUserId}`).emit("chat:cleared", {
+          chatId,
+          userId: currentUserId,
+          clearedAt: now.toISOString(),
+          hiddenAt: now.toISOString(),
+        });
+      }
+
+      return reply.send({ success: true });
+    }
+  );
+
   // Update group chat metadata (title, picture, bio)
   app.patch<{
     Params: { chatId: string };
@@ -773,12 +939,32 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       const currentUserId = (request.user as { sub: string }).sub;
 
       const participantRows = await app.db
-        .select({ chatId: chatParticipants.chatId })
+        .select({
+          chatId: chatParticipants.chatId,
+          hiddenAt: chatParticipants.hiddenAt,
+        })
         .from(chatParticipants)
         .where(eq(chatParticipants.userId, currentUserId));
 
       const chatList: ChatSummary[] = [];
       for (const row of participantRows) {
+        if (row.hiddenAt) {
+          const newerMsgs = await app.db
+            .select({ id: messages.id })
+            .from(messages)
+            .where(
+              and(
+                eq(messages.chatId, row.chatId),
+                sql`${messages.createdAt} > ${row.hiddenAt}`
+              )
+            )
+            .limit(1);
+
+          if (newerMsgs.length === 0) {
+            continue;
+          }
+        }
+
         const summary = await getChatSummary(app, row.chatId, currentUserId);
         if (summary) {
           chatList.push(summary);
@@ -832,6 +1018,10 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
       // Query messages ordered by createdAt DESC
       const conditions = [eq(messages.chatId, chatId)];
+      const callerParticipant = participantRows[0];
+      if (callerParticipant.clearedAt) {
+        conditions.push(sql`${messages.createdAt} > ${callerParticipant.clearedAt}`);
+      }
       if (cursor && !isNaN(cursor.getTime())) {
         conditions.push(lt(messages.createdAt, cursor));
       }
@@ -1184,6 +1374,11 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
             createdAt: now,
           });
 
+          await app.db
+            .update(chatParticipants)
+            .set({ hiddenAt: null })
+            .where(eq(chatParticipants.chatId, destChatId));
+
           if (clonedMediaId) {
             await app.db
               .update(mediaAttachments)
@@ -1245,6 +1440,8 @@ async function getChatSummary(
       archived: chatParticipants.archived,
       markedUnread: chatParticipants.markedUnread,
       lastReadAt: chatParticipants.lastReadAt,
+      clearedAt: chatParticipants.clearedAt,
+      hiddenAt: chatParticipants.hiddenAt,
       userName: users.name,
       userEmail: users.email,
       userBio: users.bio,
@@ -1274,14 +1471,22 @@ async function getChatSummary(
     archived: p.archived,
     markedUnread: p.markedUnread,
     lastReadAt: p.lastReadAt.toISOString(),
+    clearedAt: p.clearedAt ? p.clearedAt.toISOString() : null,
+    hiddenAt: p.hiddenAt ? p.hiddenAt.toISOString() : null,
     user: sanitizedUsers[i],
   }));
+
+  const currentParticipantRow = participantRows.find((p) => p.userId === currentUserId);
+  const lastMsgConditions = [eq(messages.chatId, chatId)];
+  if (currentParticipantRow?.clearedAt) {
+    lastMsgConditions.push(sql`${messages.createdAt} > ${currentParticipantRow.clearedAt}`);
+  }
 
   // Find latest message
   const lastMsgRows = await app.db
     .select()
     .from(messages)
-    .where(eq(messages.chatId, chatId))
+    .where(and(...lastMsgConditions))
     .orderBy(desc(messages.createdAt))
     .limit(1);
 
@@ -1315,16 +1520,18 @@ async function getChatSummary(
   const currentParticipant = participants.find((p) => p.userId === currentUserId);
   let unreadCount = 0;
   if (currentParticipant) {
+    const unreadConditions = [
+      eq(messages.chatId, chatId),
+      sql`${messages.createdAt} > ${new Date(currentParticipant.lastReadAt)}`,
+      sql`${messages.senderId} <> ${currentUserId}`,
+    ];
+    if (currentParticipantRow?.clearedAt) {
+      unreadConditions.push(sql`${messages.createdAt} > ${currentParticipantRow.clearedAt}`);
+    }
     const unreadResult = await app.db
       .select({ count: sql<number>`count(*)` })
       .from(messages)
-      .where(
-        and(
-          eq(messages.chatId, chatId),
-          sql`${messages.createdAt} > ${new Date(currentParticipant.lastReadAt)}`,
-          sql`${messages.senderId} <> ${currentUserId}`
-        )
-      );
+      .where(and(...unreadConditions));
     unreadCount = Number(unreadResult[0]?.count || 0);
     if (unreadCount === 0 && currentParticipant.markedUnread) {
       unreadCount = 1;

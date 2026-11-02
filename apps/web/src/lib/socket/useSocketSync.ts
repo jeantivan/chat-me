@@ -3,6 +3,7 @@ import { useQueryClient, InfiniteData } from "@tanstack/react-query";
 import { getSocket } from "./socketClient";
 import { usePresenceStore } from "../store/presenceStore";
 import useStore from "../store";
+import { router } from "@/routes/router";
 import {
   handleInboundMessageNotification,
   handleInboundReactionNotification,
@@ -18,6 +19,7 @@ import {
   type UserProfile,
   type ContactSummary,
   type ChatParticipantUpdatedPayload,
+  type ChatClearedPayload,
 } from "@chat-me/shared";
 
 export function patchMessageInPages(
@@ -429,6 +431,56 @@ export function useSocketSync(
       });
     };
 
+    const handleChatCleared = (payload: ChatClearedPayload) => {
+      if (payload.userId !== currentUserId) return;
+
+      queryClient.setQueryData<InfiniteData<MessagesPageResponse>>(
+        chatKeys.messages(payload.chatId),
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            pages: [{ messages: [], nextCursor: null, hasMore: false }],
+            pageParams: [null],
+          };
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: chatKeys.messages(payload.chatId) });
+      queryClient.invalidateQueries({ queryKey: chatKeys.starred(payload.chatId) });
+      queryClient.invalidateQueries({ queryKey: chatKeys.starred() });
+
+      queryClient.setQueryData<ChatSummary[]>(chatKeys.lists(), (oldChats) => {
+        if (!oldChats) return oldChats;
+        if (payload.hiddenAt) {
+          return oldChats.filter((c) => c.id !== payload.chatId);
+        }
+        return oldChats.map((c) =>
+          c.id === payload.chatId
+            ? {
+                ...c,
+                lastMessage: null,
+                unreadCount: 0,
+                participants: c.participants.map((p) =>
+                  p.userId === currentUserId
+                    ? {
+                        ...p,
+                        clearedAt: payload.clearedAt,
+                        markedUnread: false,
+                        lastReadAt: payload.clearedAt,
+                      }
+                    : p
+                ),
+              }
+            : c
+        );
+      });
+      queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
+
+      if (payload.hiddenAt && currentChatId === payload.chatId) {
+        useStore.getState().closeChat();
+        router.navigate({ to: "/" });
+      }
+    };
+
     socket.on("message:new", handleNewMessage);
     socket.on("message:status_changed", handleStatusChanged);
     socket.on("message:reaction_updated", handleReactionUpdated);
@@ -437,6 +489,7 @@ export function useSocketSync(
     socket.on("presence:updated", handlePresenceUpdated);
     socket.on("user:profile_updated", handleProfileUpdated);
     socket.on("chat:participant_updated", handleParticipantUpdated);
+    socket.on("chat:cleared", handleChatCleared);
 
     // Heartbeat every 30 seconds
     const heartbeatTimer = setInterval(() => {
@@ -453,6 +506,7 @@ export function useSocketSync(
       socket.off("presence:updated", handlePresenceUpdated);
       socket.off("user:profile_updated", handleProfileUpdated);
       socket.off("chat:participant_updated", handleParticipantUpdated);
+      socket.off("chat:cleared", handleChatCleared);
     };
   }, [queryClient, currentChatId, currentUserId]);
 }

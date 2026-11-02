@@ -12,9 +12,11 @@ import {
   patchMessageInPages,
   patchMessageStatusInPages,
 } from "../socket/useSocketSync";
-import { useUserId } from "../hooks";
+import { useUserId, useCurrentChatId } from "../hooks";
 import { getAuthHeaders } from "../auth/authClient";
 import { useAuth } from "../auth/AuthContext";
+import { router } from "@/routes/router";
+import useStore from "../store";
 import {
   DELETED_MESSAGE_TOMBSTONE,
   type ChatSummary,
@@ -418,6 +420,129 @@ export function useUpdateChatParticipant() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
+    },
+  });
+}
+
+export function useClearChat() {
+  const queryClient = useQueryClient();
+  const userId = useUserId();
+
+  return useMutation({
+    mutationFn: async (chatId: string) => {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+      const res = await fetch(`${apiBase}/api/v1/chats/${chatId}/clear`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        credentials: "include",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to clear chat");
+      }
+      return (await res.json()) as ChatSummary;
+    },
+    onMutate: async (chatId) => {
+      await queryClient.cancelQueries({ queryKey: chatKeys.lists() });
+      const previousChats = queryClient.getQueryData<ChatSummary[]>(chatKeys.lists());
+
+      queryClient.setQueryData<ChatSummary[]>(chatKeys.lists(), (old) => {
+        if (!old) return old;
+        return old.map((c) =>
+          c.id === chatId
+            ? {
+                ...c,
+                lastMessage: null,
+                unreadCount: 0,
+                participants: c.participants.map((p) =>
+                  p.userId === userId ? { ...p, markedUnread: false } : p
+                ),
+              }
+            : c
+        );
+      });
+
+      queryClient.setQueryData<InfiniteData<MessagesPageResponse>>(
+        chatKeys.messages(chatId),
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            pages: [{ messages: [], nextCursor: null, hasMore: false }],
+            pageParams: [null],
+          };
+        }
+      );
+
+      return { previousChats };
+    },
+    onError: (_err, _chatId, context) => {
+      if (context?.previousChats) {
+        queryClient.setQueryData(chatKeys.lists(), context.previousChats);
+      }
+    },
+    onSettled: (_data, _err, chatId) => {
+      queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: chatKeys.messages(chatId) });
+      queryClient.invalidateQueries({ queryKey: chatKeys.starred(chatId) });
+      queryClient.invalidateQueries({ queryKey: chatKeys.starred() });
+    },
+  });
+}
+
+export function useDeleteChat() {
+  const queryClient = useQueryClient();
+  const { currentChatId } = useCurrentChatId();
+  const closeChat = useStore((state) => state.closeChat);
+
+  return useMutation({
+    mutationFn: async (chatId: string) => {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+      const res = await fetch(`${apiBase}/api/v1/chats/${chatId}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+        credentials: "include",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete chat");
+      }
+      return (await res.json()) as { success: boolean };
+    },
+    onMutate: async (chatId) => {
+      await queryClient.cancelQueries({ queryKey: chatKeys.lists() });
+      const previousChats = queryClient.getQueryData<ChatSummary[]>(chatKeys.lists());
+
+      queryClient.setQueryData<ChatSummary[]>(chatKeys.lists(), (old) => {
+        if (!old) return old;
+        return old.filter((c) => c.id !== chatId);
+      });
+
+      queryClient.setQueryData<InfiniteData<MessagesPageResponse>>(
+        chatKeys.messages(chatId),
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            pages: [{ messages: [], nextCursor: null, hasMore: false }],
+            pageParams: [null],
+          };
+        }
+      );
+
+      if (currentChatId === chatId) {
+        closeChat();
+        router.navigate({ to: "/" });
+      }
+
+      return { previousChats };
+    },
+    onError: (_err, _chatId, context) => {
+      if (context?.previousChats) {
+        queryClient.setQueryData(chatKeys.lists(), context.previousChats);
+      }
+    },
+    onSettled: (_data, _err, chatId) => {
+      queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: chatKeys.messages(chatId) });
+      queryClient.invalidateQueries({ queryKey: chatKeys.starred(chatId) });
+      queryClient.invalidateQueries({ queryKey: chatKeys.starred() });
     },
   });
 }

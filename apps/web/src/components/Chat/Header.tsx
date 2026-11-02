@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { MoreVerticalIcon, Search, Users } from "lucide-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -15,18 +16,24 @@ import { useChatActions } from "@/lib/hooks";
 import { useChatDisplay } from "@/lib/hooks/useChatCounterpart";
 import { useUpdateChatParticipant } from "@/lib/api/chatQueries";
 import { UserImage } from "@/components/UserImage";
+import { ClearChatDialog } from "./ClearChatDialog";
+import { DeleteChatDialog } from "./DeleteChatDialog";
 
 dayjs.extend(relativeTime);
 
 const Content = ({
   chatId,
   isMuted,
+  onOpenClear,
+  onOpenDelete,
 }: {
   chatId: string;
   isMuted?: boolean;
+  onOpenClear: () => void;
+  onOpenDelete: () => void;
 }) => {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
-  const { deleteChat, closeChat } = useChatActions();
+  const { closeChat } = useChatActions();
   const updateParticipant = useUpdateChatParticipant();
   return (
     <MenuContent>
@@ -39,7 +46,6 @@ const Content = ({
         Info de contacto
       </MenuItem>
       <MenuItem disabled>Archivos</MenuItem>
-      {/* TODO: <MenuItem>Estadísticas</MenuItem> */}
 
       <MenuItem
         onClick={(e) => {
@@ -61,7 +67,16 @@ const Content = ({
       <MenuItem
         onClick={(e) => {
           e.stopPropagation();
-          deleteChat(chatId);
+          onOpenClear();
+        }}
+      >
+        Vaciar chat
+      </MenuItem>
+
+      <MenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpenDelete();
         }}
       >
         Eliminar chat
@@ -73,6 +88,8 @@ const Content = ({
 export function Header({ chat }: { chat: TChat }) {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
   const { name, picture, isTyping, presence, isGroup } = useChatDisplay(chat);
+  const [isClearOpen, setIsClearOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   return (
     <header className="chat-header bg-background-2 shadow-lg">
@@ -139,10 +156,25 @@ export function Header({ chat }: { chat: TChat }) {
             <MenuTrigger asChild>
               <IconButton icon={MoreVerticalIcon} label="Abrir menu del chat" />
             </MenuTrigger>
-            <Content chatId={chat.id} isMuted={chat.muted} />
+            <Content
+              chatId={chat.id}
+              isMuted={chat.muted}
+              onOpenClear={() => setIsClearOpen(true)}
+              onOpenDelete={() => setIsDeleteOpen(true)}
+            />
           </MenuRoot>
         </div>
       </div>
+      <ClearChatDialog
+        chatId={chat.id}
+        open={isClearOpen}
+        onOpenChange={setIsClearOpen}
+      />
+      <DeleteChatDialog
+        chatId={chat.id}
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+      />
     </header>
   );
 }

@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Bell,
   Archive,
+  Eraser,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -30,6 +31,7 @@ import {
   removeParticipant,
 } from "@/lib/api/groupActions";
 import { GroupParticipantItem } from "./GroupParticipantItem";
+import { ClearChatDialog } from "./ClearChatDialog";
 
 interface GroupInfoDrawerProps {
   chatSummary: ChatSummary;
@@ -52,6 +54,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
   const [editedPicture, setEditedPicture] = useState("");
   const [showAddParticipant, setShowAddParticipant] = useState(false);
   const [selectedNewParticipantId, setSelectedNewParticipantId] = useState("");
+  const [isClearOpen, setIsClearOpen] = useState(false);
 
   const participants = chatSummary.participants || [];
   const myParticipant = participants.find((p) => p.userId === currentUserId);
@@ -385,6 +388,14 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
               </span>
             </div>
             <div
+              data-testid="clear-group-chat-button"
+              onClick={() => setIsClearOpen(true)}
+              className="flex items-center gap-4 py-4 px-6 text-red-500 hover:bg-background-4 cursor-pointer transition-colors"
+            >
+              <Eraser className="w-6 h-6" />
+              <span className="text-base font-medium">Vaciar chat</span>
+            </div>
+            <div
               data-testid="leave-group-button"
               onClick={() => handleRemove(currentUserId)}
               className="flex items-center gap-4 py-4 px-6 text-red-500 hover:bg-background-4 cursor-pointer transition-colors"
@@ -395,6 +406,11 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
           </section>
         </div>
       </ScrollArea>
+      <ClearChatDialog
+        chatId={chatSummary.id}
+        open={isClearOpen}
+        onOpenChange={setIsClearOpen}
+      />
     </div>
   );
 }
