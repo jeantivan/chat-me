@@ -13,11 +13,13 @@ import { RightDrawer, RightDrawerElement } from "@/components/RightDrawer";
 import { FilesToSend, useFilesToSend } from "@/components/SendFiles";
 
 import { useUserId } from "@/lib/hooks";
+import useStore from "@/lib/store";
 import mc from "@/lib/utils/mergeClassnames";
 import { useChatMessages, useChats } from "@/lib/api/chatQueries";
 import { useBlockedUsers, useUnblockUser } from "@/lib/api/settingsQueries";
 import { getSocket } from "@/lib/socket/socketClient";
 import { toUiChat } from "@/lib/utils/chatAdapter";
+import { extractPlainText } from "@/lib/utils/lexical";
 import type { TChat, TMessage } from "@/lib/types";
 
 const Image = ({ image, className }: { image: File; className?: string }) => {
@@ -77,6 +79,8 @@ const AddImage = () => {
 
 export function Chat({ chatId }: { chatId: string }) {
   const userId = useUserId();
+  const inChatSearchQuery = useStore((state) => state.inChatSearchQuery);
+  const isInChatSearchOpen = useStore((state) => state.isInChatSearchOpen);
 
   const { data: chatList } = useChats();
   const currentChatSummary = chatList?.find((c) => c.id === chatId);
@@ -177,6 +181,16 @@ export function Chat({ chatId }: { chatId: string }) {
   const { data: blockedUsers = [] } = useBlockedUsers();
   const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser();
 
+  const displayedMessages = useMemo(() => {
+    if (!isInChatSearchOpen || !inChatSearchQuery.trim()) {
+      return messages;
+    }
+    const query = inChatSearchQuery.trim().toLowerCase();
+    return messages.filter((m) =>
+      Boolean(m.body && extractPlainText(m.body).toLowerCase().includes(query))
+    );
+  }, [messages, isInChatSearchOpen, inChatSearchQuery]);
+
   if (!activeChat) return null;
 
   const isGroup = activeChat.type === "group";
@@ -195,7 +209,7 @@ export function Chat({ chatId }: { chatId: string }) {
       <FilesToSend className="chat-container flex-1 min-h-screen">
         <Header chat={activeChat} />
         <Messages
-          messages={messages}
+          messages={displayedMessages}
           isGroup={activeChat.type === "group"}
           participants={activeChat.participants}
           onScrollTop={() => {

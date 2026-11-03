@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { z } from "zod";
-import { eq, and, sql, desc, lt, gt, inArray, isNull, isNotNull } from "drizzle-orm";
+import { eq, and, sql, desc, lt, gt, inArray, isNull, isNotNull, ilike } from "drizzle-orm";
 import {
   chats,
   chatParticipants,
@@ -985,10 +985,10 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
     }
   );
 
-  // Get messages for chat with cursor pagination (upward scrolling: older pages)
+  // Get messages for chat with cursor pagination (upward scrolling: older pages) or search filter
   app.get<{
     Params: { chatId: string };
-    Querystring: { cursor?: string; limit?: string };
+    Querystring: { cursor?: string; limit?: string; search?: string };
   }>(
     "/:chatId/messages",
     {
@@ -999,6 +999,7 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       const { chatId } = request.params;
       const limit = Math.min(Math.max(Number(request.query.limit) || 40, 1), 100);
       const cursor = request.query.cursor ? new Date(request.query.cursor) : null;
+      const search = request.query.search?.trim();
 
       // Check participant access
       const participantRows = await app.db
@@ -1024,6 +1025,10 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
       }
       if (cursor && !isNaN(cursor.getTime())) {
         conditions.push(lt(messages.createdAt, cursor));
+      }
+      if (search) {
+        conditions.push(ilike(messages.body, `%${search}%`));
+        conditions.push(isNull(messages.deletedAt));
       }
 
       const rows = await app.db
