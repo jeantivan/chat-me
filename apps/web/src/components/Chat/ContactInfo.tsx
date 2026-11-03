@@ -13,7 +13,6 @@ import {
 
 import { IconButton } from "@/components/ui/IconButton";
 import { Switch } from "@/components/ui/Switch";
-import { Icon } from "@/components/ui/Icon";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
 import mc from "@/lib/utils/mergeClassnames";
@@ -28,6 +27,7 @@ import { UserImage } from "@/components/UserImage";
 import { GroupInfoDrawer } from "./GroupInfoDrawer";
 import { ClearChatDialog } from "./ClearChatDialog";
 import { DeleteChatDialog } from "./DeleteChatDialog";
+import { SharedMediaPreview } from "./SharedMediaPreview";
 
 type ItemProps = {
   children: ReactNode;
@@ -186,31 +186,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
             </div>
           </section>
 
-          <section className="py-4 shadow bg-background-3">
-            <div className="flex px-5 mb-4">
-              <div className="flex-1 text-sm text-primary-9">
-                Archivos, enlaces y documentos.
-              </div>
-              <button
-                onClick={() => {
-                  rightDrawerGoTo("SHARED_CONTENT");
-                }}
-                className="inline-flex items-center text-background-11 text-sm"
-              >
-                20
-                <Icon icon={ChevronRight} label="Ver más" />
-              </button>
-            </div>
-            <div className="px-5 flex flex-row w-full mb-4">
-              <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
-              <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
-              <div className="w-1/3 aspect-square rounded-md bg-gray-300 mx-2" />
-            </div>
-            <div className={`text-sm text-background-12 px-5`}>
-              Usa WhatsApp en tu teléfono para ver el historial de mensajes
-              completo.
-            </div>
-          </section>
+          <SharedMediaPreview chatId={currentChatId} testIdPrefix="contact" />
 
           <section className="py-4 shadow bg-background-3">
             <Item

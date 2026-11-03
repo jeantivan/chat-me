@@ -79,6 +79,8 @@ export const chatKeys = {
   messages: (chatId: string) => [...chatKeys.all, "messages", chatId] as const,
   starred: (chatId?: string | null) =>
     [...chatKeys.all, "starred", chatId || "all"] as const,
+  media: (chatId: string, type?: string) =>
+    [...chatKeys.all, "media", chatId, type || "all"] as const,
   contacts: ["contacts"] as const,
   user: ["user", "me"] as const,
   settings: ["user", "settings"] as const,
@@ -184,6 +186,10 @@ export function useSocketSync(
       const isMuted = participant?.muted ?? false;
       const isArchived = participant?.archived ?? false;
       const settings = useStore.getState().notifications;
+
+      if (newMsg.hasMedia) {
+        queryClient.invalidateQueries({ queryKey: [...chatKeys.all, "media"] });
+      }
 
       handleInboundMessageNotification({
         message: newMsg,
@@ -335,6 +341,8 @@ export function useSocketSync(
             ? oldStarred.map((m) => (m.id === messageId ? toTombstone(m) : m))
             : oldStarred
       );
+
+      queryClient.invalidateQueries({ queryKey: [...chatKeys.all, "media"] });
     };
 
     const handleTypingUpdated = ({
@@ -447,6 +455,7 @@ export function useSocketSync(
       queryClient.invalidateQueries({ queryKey: chatKeys.messages(payload.chatId) });
       queryClient.invalidateQueries({ queryKey: chatKeys.starred(payload.chatId) });
       queryClient.invalidateQueries({ queryKey: chatKeys.starred() });
+      queryClient.invalidateQueries({ queryKey: [...chatKeys.all, "media"] });
 
       queryClient.setQueryData<ChatSummary[]>(chatKeys.lists(), (oldChats) => {
         if (!oldChats) return oldChats;

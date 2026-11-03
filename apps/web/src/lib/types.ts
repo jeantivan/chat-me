@@ -92,6 +92,10 @@ export type TMedia = {
   height?: number | null;
   blurhash?: string | null;
   uploadProgress?: number; // 0-100% while uploading
+  filename?: string;
+  sizeBytes?: number;
+  mimeType?: string;
+  createdAt?: string;
 };
 
 export type ReactionKeys =

@@ -32,6 +32,7 @@ import {
 } from "@/lib/api/groupActions";
 import { GroupParticipantItem } from "./GroupParticipantItem";
 import { ClearChatDialog } from "./ClearChatDialog";
+import { SharedMediaPreview } from "./SharedMediaPreview";
 
 interface GroupInfoDrawerProps {
   chatSummary: ChatSummary;
@@ -337,6 +338,9 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
               ))}
             </div>
           </section>
+
+          {/* Shared Content preview section */}
+          <SharedMediaPreview chatId={chatSummary.id} testIdPrefix="group" />
 
           {/* Mute and Notifications section */}
           <section className="py-4 shadow bg-background-3">
