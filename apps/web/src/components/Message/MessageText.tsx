@@ -14,6 +14,7 @@ import { baseConfig } from "@/editor/baseConfig";
 import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 import mc from "@/lib/utils/mergeClassnames";
 import { isValidLexicalJson } from "@/lib/utils/lexical";
+import useStore from "@/lib/store";
 
 type RootProps = {
   children: ReactNode;
@@ -40,6 +41,8 @@ type Props = {
   className?: string;
 };
 export function MessageText({ body, deleted, className }: Props) {
+  const inChatSearchQuery = useStore((state) => state.inChatSearchQuery);
+  const isInChatSearchOpen = useStore((state) => state.isInChatSearchOpen);
   const isTombstone = Boolean(deleted) || body === DELETED_MESSAGE_TOMBSTONE;
 
   if (isTombstone) {
@@ -58,6 +61,28 @@ export function MessageText({ body, deleted, className }: Props) {
     );
   }
 
+  const highlightQuery = isInChatSearchOpen ? inChatSearchQuery.trim() : "";
+
+  const renderContent = (text: string) => {
+    if (!highlightQuery) return text;
+    const escaped = highlightQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(`(${escaped})`, "gi");
+    const parts = text.split(regex);
+    return parts.map((part, index) =>
+      part.toLowerCase() === highlightQuery.toLowerCase() ? (
+        <mark
+          key={index}
+          data-testid="search-highlight"
+          className="bg-yellow-200 dark:bg-yellow-700 text-inherit rounded-xs px-0.5"
+        >
+          {part}
+        </mark>
+      ) : (
+        part
+      )
+    );
+  };
+
   if (!isValidLexicalJson(body)) {
     return (
       <div className="py-1 px-2">
@@ -67,7 +92,7 @@ export function MessageText({ body, deleted, className }: Props) {
             className
           )}
         >
-          {body}
+          {renderContent(body)}
         </div>
       </div>
     );

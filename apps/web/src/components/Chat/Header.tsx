@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreVerticalIcon, Search, Users } from "lucide-react";
+import { MoreVerticalIcon, Search, Users, X } from "lucide-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -93,6 +93,12 @@ const Content = ({
 
 export function Header({ chat }: { chat: TChat }) {
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
+  const isInChatSearchOpen = useStore((state) => state.isInChatSearchOpen);
+  const toggleInChatSearch = useStore((state) => state.toggleInChatSearch);
+  const inChatSearchQuery = useStore((state) => state.inChatSearchQuery);
+  const setInChatSearchQuery = useStore((state) => state.setInChatSearchQuery);
+  const clearInChatSearchQuery = useStore((state) => state.clearInChatSearchQuery);
+
   const { name, picture, isTyping, presence, isGroup } = useChatDisplay(chat);
   const [isClearOpen, setIsClearOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -157,7 +163,12 @@ export function Header({ chat }: { chat: TChat }) {
           </span>
         </button>
         <div className="flex items-center gap-2">
-          <IconButton icon={Search} label="Buscar" />
+          <IconButton
+            data-testid="toggle-in-chat-search"
+            icon={Search}
+            label="Buscar"
+            onClick={() => toggleInChatSearch()}
+          />
           <MenuRoot>
             <MenuTrigger asChild>
               <IconButton icon={MoreVerticalIcon} label="Abrir menu del chat" />
@@ -171,6 +182,43 @@ export function Header({ chat }: { chat: TChat }) {
           </MenuRoot>
         </div>
       </div>
+      {isInChatSearchOpen && (
+        <div
+          data-testid="in-chat-search-bar"
+          className="flex items-center px-5 py-2 bg-background-3 border-t border-background-5 gap-2"
+        >
+          <Search className="w-4 h-4 text-background-11 shrink-0" />
+          <input
+            data-testid="in-chat-search-input"
+            type="text"
+            value={inChatSearchQuery}
+            onChange={(e) => setInChatSearchQuery(e.target.value)}
+            placeholder="Buscar en el chat"
+            className="flex-1 bg-transparent text-sm text-background-12 placeholder:text-background-10 focus:outline-none"
+            autoFocus
+          />
+          {inChatSearchQuery.length > 0 && (
+            <button
+              type="button"
+              data-testid="clear-in-chat-search"
+              aria-label="Clear in-chat search"
+              onClick={clearInChatSearchQuery}
+              className="p-1 text-background-10 hover:text-background-12 shrink-0 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+          <button
+            type="button"
+            data-testid="close-in-chat-search"
+            aria-label="Close search"
+            onClick={() => toggleInChatSearch(false)}
+            className="p-1 text-background-10 hover:text-background-12 shrink-0 cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      )}
       <ClearChatDialog
         chatId={chat.id}
         open={isClearOpen}

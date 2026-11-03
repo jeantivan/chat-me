@@ -5,3 +5,4 @@ export { createMediaMessageSlice } from "./MediaMessageSlice";
 export { createLeftDrawerSlice } from "./LeftDrawerSlice";
 export { createRightDrawerSlice } from "./RightDrawerSlice";
 export { createLoadingSlice } from "./LoadingSlice";
+export { createSearchSlice } from "./SearchSlice";

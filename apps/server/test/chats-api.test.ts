@@ -184,4 +184,66 @@ describe("Fastify Chat HTTP & Cursor Pagination Seam", () => {
     });
     expect(forbidRes.statusCode).toBe(403);
   });
+
+  it("GET /api/v1/chats/:chatId/messages?search=<term> filters messages case-insensitively and excludes deleted", async () => {
+    const chatRes = await app.inject({
+      method: "POST",
+      url: "/api/v1/chats/direct",
+      headers: {
+        authorization: `Bearer ${tokenA}`,
+      },
+      payload: {
+        targetUserId: userBId,
+      },
+    });
+    const chat = JSON.parse(chatRes.payload);
+
+    const matchMsg1 = {
+      id: crypto.randomUUID(),
+      chatId: chat.id,
+      senderId: userAId,
+      body: "Important meeting tomorrow about roadmap",
+      createdAt: new Date(Date.now() - 5000),
+    };
+    const matchMsg2 = {
+      id: crypto.randomUUID(),
+      chatId: chat.id,
+      senderId: userBId,
+      body: "Yes, the ROADMAP looks solid",
+      createdAt: new Date(Date.now() - 4000),
+    };
+    const nonMatchMsg = {
+      id: crypto.randomUUID(),
+      chatId: chat.id,
+      senderId: userAId,
+      body: "Just having lunch right now",
+      createdAt: new Date(Date.now() - 3000),
+    };
+    const deletedMatchMsg = {
+      id: crypto.randomUUID(),
+      chatId: chat.id,
+      senderId: userAId,
+      body: "Deleted message mentioning roadmap",
+      createdAt: new Date(Date.now() - 2000),
+      deletedAt: new Date(),
+    };
+
+    await db.insert(messages).values([matchMsg1, matchMsg2, nonMatchMsg, deletedMatchMsg]);
+
+    const searchRes = await app.inject({
+      method: "GET",
+      url: `/api/v1/chats/${chat.id}/messages?search=roadmap`,
+      headers: {
+        authorization: `Bearer ${tokenA}`,
+      },
+    });
+
+    expect(searchRes.statusCode).toBe(200);
+    const searchData = JSON.parse(searchRes.payload);
+    const ids = searchData.messages.map((m: any) => m.id);
+    expect(ids).toContain(matchMsg1.id);
+    expect(ids).toContain(matchMsg2.id);
+    expect(ids).not.toContain(nonMatchMsg.id);
+    expect(ids).not.toContain(deletedMatchMsg.id);
+  });
 });

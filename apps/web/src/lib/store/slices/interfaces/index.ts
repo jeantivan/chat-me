@@ -74,6 +74,18 @@ export interface LoadingSlice {
   loading: "idle" | "contacts" | "chats" | "messages" | "ready";
   prepareApp: Awaited<() => void>;
 }
+
+export interface SearchSlice {
+  chatSearchFilter: string;
+  setChatSearchFilter: (query: string) => void;
+  clearChatSearchFilter: () => void;
+  inChatSearchQuery: string;
+  isInChatSearchOpen: boolean;
+  setInChatSearchQuery: (query: string) => void;
+  clearInChatSearchQuery: () => void;
+  toggleInChatSearch: (open?: boolean) => void;
+}
+
 export interface StoreSlice
   extends ProfileSlice,
     CurrentChatIdSlice,
@@ -81,4 +93,5 @@ export interface StoreSlice
     MediaMessageSlice,
     LeftDrawerSlice,
     RightDrawerSlice,
-    LoadingSlice {}
+    LoadingSlice,
+    SearchSlice {}

@@ -15,6 +15,7 @@ export function ChatList() {
   const currentUserId = useUserId();
   const { data: serverChats } = useChats();
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
+  const chatSearchFilter = useStore((state) => state.chatSearchFilter);
 
   const uiChats: TChat[] = useMemo(() => {
     if (!serverChats) return [];
@@ -26,9 +27,25 @@ export function ChatList() {
     [uiChats]
   );
 
+  const filteredChats = useMemo(() => {
+    const query = chatSearchFilter.trim().toLowerCase();
+    if (!query) return orderChats;
+
+    return orderChats.filter((c) => {
+      const matchTitle = Boolean(c.title && c.title.toLowerCase().includes(query));
+      const matchParticipant = c.participants.some((p) =>
+        Boolean(p.name && p.name.toLowerCase().includes(query))
+      );
+      const lastMessageBody = c.messages[c.messages.length - 1]?.body || "";
+      const matchBody = lastMessageBody.toLowerCase().includes(query);
+
+      return matchTitle || matchParticipant || matchBody;
+    });
+  }, [orderChats, chatSearchFilter]);
+
   const [archivedChats, nonArchivedChats] = useMemo(
-    () => partition(orderChats, { archived: true }),
-    [orderChats]
+    () => partition(filteredChats, { archived: true }),
+    [filteredChats]
   );
 
   const [pinnedChats, restChats] = useMemo(

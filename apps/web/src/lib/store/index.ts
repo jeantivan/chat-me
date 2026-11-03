@@ -10,6 +10,7 @@ import {
   createRightDrawerSlice,
   createLoadingSlice,
   createMediaMessageSlice,
+  createSearchSlice,
 } from "./slices";
 
 const useStore = create<StoreSlice>()(
@@ -23,6 +24,7 @@ const useStore = create<StoreSlice>()(
         ...createMediaMessageSlice(...a),
         ...createLeftDrawerSlice(...a),
         ...createRightDrawerSlice(...a),
+        ...createSearchSlice(...a),
       })),
       {
         name: "zustand-chat-me",
