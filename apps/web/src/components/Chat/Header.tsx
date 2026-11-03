@@ -44,7 +44,14 @@ const Content = ({
       >
         Info de contacto
       </MenuItem>
-      <MenuItem disabled>Archivos</MenuItem>
+      <MenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          rightDrawerGoTo("SHARED_CONTENT");
+        }}
+      >
+        Archivos
+      </MenuItem>
 
       <MenuItem
         onClick={(e) => {

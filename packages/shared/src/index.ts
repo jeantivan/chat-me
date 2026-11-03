@@ -130,6 +130,10 @@ export interface MediaPayload {
   width?: number | null;
   height?: number | null;
   blurhash?: string | null;
+  filename?: string;
+  sizeBytes?: number;
+  mimeType?: string;
+  createdAt?: string;
 }
 
 export interface PresignMediaRequest {

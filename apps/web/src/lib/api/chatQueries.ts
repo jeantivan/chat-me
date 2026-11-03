@@ -183,6 +183,31 @@ export function useStarredMessages(chatId?: string | null) {
   });
 }
 
+export function useChatMedia(
+  chatId?: string | null,
+  type?: "image" | "video" | "audio" | "document" | "visual"
+) {
+  const { isAuthenticated, token } = useSafeAuth();
+  return useQuery<MessagePayload[]>({
+    queryKey: chatId ? chatKeys.media(chatId, type) : ["chats", "media", "none"],
+    queryFn: async () => {
+      if (!chatId) return [];
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+      const queryParam = type ? `?type=${encodeURIComponent(type)}` : "";
+      const res = await fetch(
+        `${apiBase}/api/v1/chats/${encodeURIComponent(chatId)}/media${queryParam}`,
+        {
+          headers: getAuthHeaders(),
+          credentials: "include",
+        }
+      );
+      if (!res.ok) throw new Error("Failed to fetch chat media");
+      return res.json();
+    },
+    enabled: Boolean(isAuthenticated && token && chatId),
+  });
+}
+
 export function useReactToMessage() {
   const queryClient = useQueryClient();
   const userId = useUserId();
@@ -484,6 +509,7 @@ export function useClearChat() {
       queryClient.invalidateQueries({ queryKey: chatKeys.messages(chatId) });
       queryClient.invalidateQueries({ queryKey: chatKeys.starred(chatId) });
       queryClient.invalidateQueries({ queryKey: chatKeys.starred() });
+      queryClient.invalidateQueries({ queryKey: [...chatKeys.all, "media"] });
     },
   });
 }
@@ -543,6 +569,7 @@ export function useDeleteChat() {
       queryClient.invalidateQueries({ queryKey: chatKeys.messages(chatId) });
       queryClient.invalidateQueries({ queryKey: chatKeys.starred(chatId) });
       queryClient.invalidateQueries({ queryKey: chatKeys.starred() });
+      queryClient.invalidateQueries({ queryKey: [...chatKeys.all, "media"] });
     },
   });
 }

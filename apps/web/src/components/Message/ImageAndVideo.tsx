@@ -17,6 +17,14 @@ export function ImageAndVideo({
   uploadProgress,
   type,
   blurhash,
+  filename: _filename,
+  sizeBytes: _sizeBytes,
+  mimeType: _mimeType,
+  createdAt: _createdAt,
+  duration: _duration,
+  width: _width,
+  height: _height,
+  id: _id,
   ...rest
 }: ImageAndVideoProps) {
   const [isLoaded, setIsLoaded] = useState(false);

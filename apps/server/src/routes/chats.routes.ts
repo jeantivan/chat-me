@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { z } from "zod";
-import { eq, and, sql, desc, lt, inArray, isNull } from "drizzle-orm";
+import { eq, and, sql, desc, lt, gt, inArray, isNull, isNotNull } from "drizzle-orm";
 import {
   chats,
   chatParticipants,
@@ -1227,6 +1227,105 @@ export const chatsRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
           formatMessagePayload(msg, status, true, mediaMap, reactionsMap)
         );
       }
+
+      return reply.send(result);
+    }
+  );
+
+  // GET /api/v1/chats/:chatId/media
+  app.get<{
+    Params: { chatId: string };
+    Querystring: { type?: string };
+  }>(
+    "/:chatId/media",
+    {
+      preHandler: [app.authenticate],
+    },
+    async (request, reply) => {
+      const currentUserId = (request.user as { sub: string }).sub;
+      const { chatId } = request.params;
+
+      const querySchema = z.object({
+        type: z.enum(["visual", "image", "video", "audio", "document"]).optional(),
+      });
+      const parseResult = querySchema.safeParse(request.query);
+      if (!parseResult.success) {
+        return reply.status(400).send({ error: parseResult.error.flatten() });
+      }
+      const { type } = parseResult.data;
+
+      // 1. Verify caller is a participant of the chat
+      const participantRows = await app.db
+        .select()
+        .from(chatParticipants)
+        .where(
+          and(
+            eq(chatParticipants.chatId, chatId),
+            eq(chatParticipants.userId, currentUserId)
+          )
+        )
+        .limit(1);
+
+      if (participantRows.length === 0) {
+        return reply.status(403).send({ error: "Forbidden: Not a participant of this chat" });
+      }
+
+      const participant = participantRows[0];
+
+      // 2. Build query conditions
+      const conditions: any[] = [
+        eq(messages.chatId, chatId),
+        isNotNull(messages.mediaId),
+        isNull(messages.deletedAt),
+      ];
+
+      if (participant.clearedAt) {
+        conditions.push(gt(messages.createdAt, participant.clearedAt));
+      }
+
+      if (type) {
+        if (type === "visual") {
+          conditions.push(inArray(mediaAttachments.type, ["image", "video"]));
+        } else {
+          conditions.push(eq(mediaAttachments.type, type));
+        }
+      }
+
+      const rows = await app.db
+        .select({
+          msg: messages,
+        })
+        .from(messages)
+        .innerJoin(mediaAttachments, eq(messages.mediaId, mediaAttachments.id))
+        .where(and(...conditions))
+        .orderBy(desc(messages.createdAt));
+
+      const msgRows = rows.map((r) => r.msg);
+      const { reactionsMap, starsSet, mediaMap } = await hydrateMessagesMetadata(
+        app,
+        msgRows,
+        currentUserId
+      );
+
+      const result: MessagePayload[] = await Promise.all(
+        msgRows.map(async (msg) => {
+          const status = await computeMessageStatusForViewer(
+            app,
+            msg.chatId,
+            msg.id,
+            msg.senderId,
+            currentUserId
+          );
+
+          return formatMessagePayload(
+            msg,
+            status,
+            starsSet.has(msg.id),
+            mediaMap,
+            reactionsMap
+          );
+        })
+      );
 
       return reply.send(result);
     }

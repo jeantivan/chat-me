@@ -2,6 +2,8 @@ import { memo } from "react";
 import { MessageContainer } from "./MessageContainer";
 import { MessageText } from "./MessageText";
 import { ImageAndVideo } from "./ImageAndVideo";
+import { AudioAttachment } from "./AudioAttachment";
+import { DocumentAttachment } from "./DocumentAttachment";
 import { TMessage } from "@/lib/types";
 import useStore from "@/lib/store";
 import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
@@ -20,12 +22,22 @@ export const Message = memo(function MessageRoot(props: MessageProps) {
   return (
     <MessageContainer {...props}>
       {hasMedia && !isDeleted && (
-        <ImageAndVideo
-          {...hasMedia}
-          onClick={() => {
-            openMediaMessage(props.message);
-          }}
-        />
+        <>
+          {(hasMedia.type === "image" || hasMedia.type === "video") && (
+            <ImageAndVideo
+              {...hasMedia}
+              onClick={() => {
+                openMediaMessage(props.message);
+              }}
+            />
+          )}
+          {hasMedia.type === "audio" && (
+            <AudioAttachment media={hasMedia} />
+          )}
+          {hasMedia.type === "document" && (
+            <DocumentAttachment media={hasMedia} />
+          )}
+        </>
       )}
       {(body || isDeleted) && <MessageText body={body} deleted={deleted} />}
     </MessageContainer>

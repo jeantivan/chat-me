@@ -75,8 +75,16 @@ export function useSendMediaMessage(chatId: string) {
 
       // 1. Extract dimensions, orientation, duration, blurhash client-side
       const metadata = await extractMediaMetadata(file);
-      const isVideo = file.type.startsWith("video/");
-      const mediaType = isVideo ? "video" : "image";
+      let mediaType: "image" | "video" | "audio" | "document" = "document";
+      if (file.type.startsWith("image/")) {
+        mediaType = "image";
+      } else if (file.type.startsWith("video/")) {
+        mediaType = "video";
+      } else if (file.type.startsWith("audio/")) {
+        mediaType = "audio";
+      } else {
+        mediaType = "document";
+      }
 
       const optimisticMedia: TMedia = {
         type: mediaType,
@@ -86,6 +94,10 @@ export function useSendMediaMessage(chatId: string) {
         blurhash: metadata.blurhash ?? null,
         width: metadata.width ?? null,
         height: metadata.height ?? null,
+        filename: file.name,
+        sizeBytes: file.size,
+        mimeType: file.type || "application/octet-stream",
+        createdAt: now,
         uploadProgress: 0,
       };
 

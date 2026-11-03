@@ -9,7 +9,7 @@ import { useDropzone } from "react-dropzone";
 
 const DragActive = () => (
   <div className="w-full border-2 border-background-6 flex items-center justify-center">
-    <h2 className="text-background-11 text-2xl">Arrastra tus imágenes aquí</h2>
+    <h2 className="text-background-11 text-2xl">Arrastra tus archivos aquí</h2>
   </div>
 );
 
@@ -48,6 +48,12 @@ export function FilesToSend({
     accept: {
       "image/*": [],
       "video/*": [],
+      "audio/*": [],
+      "application/pdf": [],
+      "application/zip": [],
+      "text/plain": [],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
     },
     onDrop(acceptedFiles) {
       setFilesToSend([...filesToSend, ...acceptedFiles]);
