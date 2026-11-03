@@ -84,6 +84,7 @@ export interface SearchSlice {
   setInChatSearchQuery: (query: string) => void;
   clearInChatSearchQuery: () => void;
   toggleInChatSearch: (open?: boolean) => void;
+  resetInChatSearch: () => void;
 }
 
 export interface StoreSlice

@@ -12,3 +12,28 @@ export function isValidLexicalJson(str: string): boolean {
     return false;
   }
 }
+
+/**
+ * Recursively extracts plain text from serialized Lexical JSON or returns the input if plain text.
+ */
+export function extractPlainText(body: string): string {
+  if (!body || typeof body !== "string") return "";
+  if (!isValidLexicalJson(body)) return body;
+  try {
+    const data = JSON.parse(body);
+    const textFragments: string[] = [];
+    const traverse = (node: any) => {
+      if (!node) return;
+      if (typeof node.text === "string") {
+        textFragments.push(node.text);
+      }
+      if (Array.isArray(node.children)) {
+        node.children.forEach(traverse);
+      }
+    };
+    traverse(data.root);
+    return textFragments.join(" ").trim();
+  } catch {
+    return body;
+  }
+}

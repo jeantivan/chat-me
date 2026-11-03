@@ -30,6 +30,11 @@ export const createSearchSlice: StateCreator<
     set((state) => {
       state.inChatSearchQuery = "";
     }),
+  resetInChatSearch: () =>
+    set((state) => {
+      state.isInChatSearchOpen = false;
+      state.inChatSearchQuery = "";
+    }),
   toggleInChatSearch: (open) =>
     set((state) => {
       state.isInChatSearchOpen =

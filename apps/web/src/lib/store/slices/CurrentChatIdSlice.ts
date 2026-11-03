@@ -21,15 +21,13 @@ export const createCurrentChatIdSlice: StateCreator<
       );
 
       state.currentChatId = chatId;
-      state.isInChatSearchOpen = false;
-      state.inChatSearchQuery = "";
+      state.resetInChatSearch();
     }),
   closeChat: () => {
     set((state) => {
       state.rightDrawer = null;
       state.currentChatId = undefined;
-      state.isInChatSearchOpen = false;
-      state.inChatSearchQuery = "";
+      state.resetInChatSearch();
     });
   },
 });

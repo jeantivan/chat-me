@@ -13,7 +13,7 @@ import { baseConfig } from "@/editor/baseConfig";
 
 import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 import mc from "@/lib/utils/mergeClassnames";
-import { isValidLexicalJson } from "@/lib/utils/lexical";
+import { isValidLexicalJson, extractPlainText } from "@/lib/utils/lexical";
 import useStore from "@/lib/store";
 
 type RootProps = {
@@ -93,6 +93,21 @@ export function MessageText({ body, deleted, className }: Props) {
           )}
         >
           {renderContent(body)}
+        </div>
+      </div>
+    );
+  }
+
+  if (highlightQuery) {
+    return (
+      <div className="py-1 px-2">
+        <div
+          className={mc(
+            "whitespace-pre-wrap break-words leading-tight",
+            className
+          )}
+        >
+          {renderContent(extractPlainText(body))}
         </div>
       </div>
     );

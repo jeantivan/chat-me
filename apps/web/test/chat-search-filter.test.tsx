@@ -378,6 +378,31 @@ describe("Sidebar Chat Filter & In-Chat Search Seams", () => {
       .map((el) => el.textContent);
     expect(renderedNames[0]).toBe("Bob Builder");
     expect(renderedNames[1]).toBe("Dana Scully");
+
+    // 5. Searching user's own name does not match direct chats where counterpart is someone else
+    act(() => {
+      useStore.setState({ chatSearchFilter: "Alice" } as any);
+    });
+    rerender(
+      <QueryClientProvider client={queryClient}>
+        <ChatList />
+      </QueryClientProvider>
+    );
+    expect(screen.queryByText("Bob Builder")).toBeNull();
+    expect(screen.queryByText("Dana Scully")).toBeNull();
+    expect(screen.queryByText("Design System Squad")).toBeNull();
+
+    // 6. Searching raw internal Lexical JSON properties (e.g. "paragraph") produces no false matches
+    act(() => {
+      useStore.setState({ chatSearchFilter: "paragraph" } as any);
+    });
+    rerender(
+      <QueryClientProvider client={queryClient}>
+        <ChatList />
+      </QueryClientProvider>
+    );
+    expect(screen.queryByText("Bob Builder")).toBeNull();
+    expect(screen.queryByText("Dana Scully")).toBeNull();
   });
 
   it("Header toggles inline search input bar, typing filters messages, and closing search restores full timeline", async () => {

@@ -9,6 +9,7 @@ import useStore from "@/lib/store";
 import { useUserId } from "@/lib/hooks";
 import { useChats } from "@/lib/api/chatQueries";
 import { toUiChat, getDateOfLastMessage } from "@/lib/utils/chatAdapter";
+import { extractPlainText } from "@/lib/utils/lexical";
 import { TChat } from "@/lib/types";
 
 export function ChatList() {
@@ -33,15 +34,16 @@ export function ChatList() {
 
     return orderChats.filter((c) => {
       const matchTitle = Boolean(c.title && c.title.toLowerCase().includes(query));
-      const matchParticipant = c.participants.some((p) =>
-        Boolean(p.name && p.name.toLowerCase().includes(query))
-      );
-      const lastMessageBody = c.messages[c.messages.length - 1]?.body || "";
+      const matchParticipant = c.participants
+        .filter((p) => p.id !== currentUserId)
+        .some((p) => Boolean(p.name && p.name.toLowerCase().includes(query)));
+      const rawBody = c.messages[c.messages.length - 1]?.body || "";
+      const lastMessageBody = extractPlainText(rawBody);
       const matchBody = lastMessageBody.toLowerCase().includes(query);
 
       return matchTitle || matchParticipant || matchBody;
     });
-  }, [orderChats, chatSearchFilter]);
+  }, [orderChats, chatSearchFilter, currentUserId]);
 
   const [archivedChats, nonArchivedChats] = useMemo(
     () => partition(filteredChats, { archived: true }),

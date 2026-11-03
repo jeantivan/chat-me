@@ -19,6 +19,7 @@ import { useChatMessages, useChats } from "@/lib/api/chatQueries";
 import { useBlockedUsers, useUnblockUser } from "@/lib/api/settingsQueries";
 import { getSocket } from "@/lib/socket/socketClient";
 import { toUiChat } from "@/lib/utils/chatAdapter";
+import { extractPlainText } from "@/lib/utils/lexical";
 import type { TChat, TMessage } from "@/lib/types";
 
 const Image = ({ image, className }: { image: File; className?: string }) => {
@@ -186,7 +187,7 @@ export function Chat({ chatId }: { chatId: string }) {
     }
     const query = inChatSearchQuery.trim().toLowerCase();
     return messages.filter((m) =>
-      Boolean(m.body && m.body.toLowerCase().includes(query))
+      Boolean(m.body && extractPlainText(m.body).toLowerCase().includes(query))
     );
   }, [messages, isInChatSearchOpen, inChatSearchQuery]);
 
