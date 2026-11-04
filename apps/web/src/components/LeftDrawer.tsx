@@ -4,6 +4,7 @@ import useStore from "@/lib/store";
 import { LeftDrawerContentOptions } from "@/lib/types";
 import { ArrowLeft } from "lucide-react";
 import { IconButton } from "./ui/IconButton";
+import { useTranslation } from "@/lib/i18n";
 
 const drawerVariants: Variants = {
   initial: {
@@ -28,6 +29,7 @@ const drawerVariants: Variants = {
 };
 
 const LeftDrawerHeader = ({ children }: { children: string }) => {
+  const { t } = useTranslation();
   const ldGoBack = useStore((state) => state.ldGoBack);
   return (
     <header className="pt-16 bg-primary-9 dark:bg-background-2 pb-5">
@@ -47,7 +49,7 @@ const LeftDrawerHeader = ({ children }: { children: string }) => {
           className="text-background-1 dark:text-background-12 hover:bg-background-6/20"
           onClick={ldGoBack}
           icon={ArrowLeft}
-          label="Volver atrás"
+          label={t("common.goBack")}
         />
         <h2
           id="left-drawer-title"

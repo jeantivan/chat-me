@@ -2,14 +2,21 @@ import { Clock, Check, CheckCheck, LucideIcon } from "lucide-react";
 import { Icon } from "@/components/ui/Icon";
 import { TMessage } from "@/lib/types";
 import mc from "@/lib/utils/mergeClassnames";
+import { useTranslation, TranslationKey } from "@/lib/i18n";
 
-const STATUS: Record<TMessage["status"], { icon: LucideIcon; label: string }> =
-  {
-    idle: { icon: Clock, label: "Enviando mensaje" },
-    send: { icon: Check, label: "Mensaje enviado" },
-    received: { icon: CheckCheck, label: "Mensaje recibido" },
-    read: { icon: CheckCheck, label: "Mensaje leído" },
-  };
+const STATUS_ICONS: Record<TMessage["status"], LucideIcon> = {
+  idle: Clock,
+  send: Check,
+  received: CheckCheck,
+  read: CheckCheck,
+};
+
+const STATUS_KEY_MAP: Record<TMessage["status"], TranslationKey> = {
+  idle: "chat.statusIdle",
+  send: "chat.statusSent",
+  received: "chat.statusReceived",
+  read: "chat.statusRead",
+};
 
 export function Status({
   status,
@@ -18,7 +25,9 @@ export function Status({
   status: TMessage["status"];
   className?: string;
 }) {
-  const { icon, label } = STATUS[status];
+  const { t } = useTranslation();
+  const icon = STATUS_ICONS[status];
+  const label = t(STATUS_KEY_MAP[status]);
 
   return (
     <span data-testid={`message-status-${status}`} data-status={status} className="inline-flex">

@@ -144,7 +144,7 @@ test.describe("Primary High Seam: Multi-User Real-Time Messaging, Receipts, Typi
     await expect(lightbox.getByText("125%")).toBeVisible();
 
     // Close the Media Lightbox
-    await lightbox.getByRole("button", { name: /cerrar imagen/i }).click();
+    await lightbox.getByRole("button", { name: /cerrar imagen|close image/i }).click();
     await expect(lightbox).toBeHidden();
 
     await contextA.close();

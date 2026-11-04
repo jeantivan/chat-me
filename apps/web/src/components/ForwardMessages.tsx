@@ -17,6 +17,7 @@ import {
 } from "@/lib/api/chatQueries";
 import { ContactItem } from "./ContactItem";
 import { TMessage, TUser } from "@/lib/types";
+import { useTranslation } from "@/lib/i18n";
 
 type ForwardTarget = {
   id: string;
@@ -35,6 +36,7 @@ export function ForwardMessages({
   open,
   openChange,
 }: ForwardMessagesProps) {
+  const { t } = useTranslation();
   const { data: serverContacts = [] } = useContacts();
   const { data: chatList = [] } = useChats();
   const forwardMessagesMutation = useForwardMessages();
@@ -65,8 +67,8 @@ export function ForwardMessages({
           targetType: "chat",
           contactView: {
             id: chat.id,
-            name: chat.title || "Grupo",
-            bio: chat.bio || "Chat grupal",
+            name: chat.title || t("common.group"),
+            bio: chat.bio || t("chat.groupChatSubtitle"),
             phone: "",
             picture: chat.pictureUrl || "",
           },
@@ -75,7 +77,7 @@ export function ForwardMessages({
     }
 
     return items;
-  }, [serverContacts, chatList]);
+  }, [serverContacts, chatList, t]);
 
   const handleToggleTarget = (target: ForwardTarget) => {
     setSelectedTargets((prev) => {
@@ -121,10 +123,10 @@ export function ForwardMessages({
         >
           <header className="px-4 py-2 flex items-center gap-4 bg-background-3">
             <DialogClose asChild>
-              <IconButton icon={X} label="Cerrar ventana" />
+              <IconButton icon={X} label={t("chat.closeWindow")} />
             </DialogClose>
             <DialogTitle className="text-lg text-background-12">
-              Reenviar mensaje a:
+              {t("chat.forwardMessageTo")}
             </DialogTitle>
           </header>
           <ScrollArea type="always" className="pr-2.5 flex-1">
@@ -164,7 +166,7 @@ export function ForwardMessages({
               </div>
               <IconButton
                 icon={Send}
-                label="Enviar mensajes"
+                label={t("chat.sendMessages")}
                 iconClassName="rotate-45"
                 className={mc(
                   "w-11 h-11 shrink-0",

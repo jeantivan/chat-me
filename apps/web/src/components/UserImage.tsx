@@ -3,6 +3,7 @@ import { UserCircle2 } from "lucide-react";
 
 import useStore from "@/lib/store";
 import mc from "@/lib/utils/mergeClassnames";
+import { useTranslation } from "@/lib/i18n";
 
 export interface UserImageProps {
   src?: string | null;
@@ -13,10 +14,12 @@ export interface UserImageProps {
 
 export function UserImage({
   src,
-  alt = "Foto de perfil",
+  alt,
   className,
   fallback,
 }: UserImageProps = {}) {
+  const { t } = useTranslation();
+  const resolvedAlt = alt ?? t("drawer.profilePictureAlt");
   const selfPicture = useStore((state) => state.user.picture);
   const imageSrc = src !== undefined ? (src || "") : (selfPicture || "");
   const [hasError, setHasError] = useState(false);
@@ -38,7 +41,7 @@ export function UserImage({
       {showImage ? (
         <img
           src={imageSrc}
-          alt={alt}
+          alt={resolvedAlt}
           onError={() => setHasError(true)}
           className="w-full h-full object-cover"
         />

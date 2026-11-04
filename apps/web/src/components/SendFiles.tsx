@@ -6,12 +6,16 @@ import {
   useState
 } from "react";
 import { useDropzone } from "react-dropzone";
+import { useTranslation } from "@/lib/i18n";
 
-const DragActive = () => (
-  <div className="w-full border-2 border-background-6 flex items-center justify-center">
-    <h2 className="text-background-11 text-2xl">Arrastra tus archivos aquí</h2>
-  </div>
-);
+const DragActive = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="w-full border-2 border-background-6 flex items-center justify-center">
+      <h2 className="text-background-11 text-2xl">{t("chat.dragFilesHere")}</h2>
+    </div>
+  );
+};
 
 type TFilesToSend = {
   open: () => void;

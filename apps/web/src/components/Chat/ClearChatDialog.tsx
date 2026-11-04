@@ -8,6 +8,7 @@ import {
   AlertDialogDescription,
 } from "@/components/ui/AlertDialog";
 import { useClearChat } from "@/lib/api/chatQueries";
+import { useTranslation } from "@/lib/i18n";
 
 type ClearChatDialogProps = {
   chatId: string;
@@ -20,6 +21,7 @@ export function ClearChatDialog({
   open,
   onOpenChange,
 }: ClearChatDialogProps) {
+  const { t } = useTranslation();
   const clearChatMutation = useClearChat();
 
   return (
@@ -28,16 +30,16 @@ export function ClearChatDialog({
         <div className="p-6">
           <div className="mb-4">
             <AlertDialogTitle className="text-xl font-light">
-              ¿Vaciar este chat?
+              {t("chat.clearChatDialogTitle")}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-sm text-background-11 mt-2">
-              Se borrarán los mensajes de este chat para ti. Los demás participantes mantendrán su historial.
+              {t("chat.clearChatDialogDescription")}
             </AlertDialogDescription>
           </div>
           <div className="w-full flex gap-4 justify-end mt-8">
             <AlertDialogCancel asChild>
               <Button variant="outlined" className="outline-none">
-                Cancelar
+                {t("common.cancel")}
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
@@ -48,7 +50,7 @@ export function ClearChatDialog({
                   clearChatMutation.mutate(chatId);
                 }}
               >
-                Vaciar chat
+                {t("chat.clearChat")}
               </Button>
             </AlertDialogAction>
           </div>

@@ -290,11 +290,11 @@ describe("Shared Media Browser & Timeline Seam", () => {
     );
 
     // Open menu
-    const menuBtn = screen.getByRole("button", { name: /abrir menu del chat/i });
+    const menuBtn = screen.getByRole("button", { name: /abrir menu del chat|open chat menu/i });
     fireEvent.pointerDown(menuBtn, { pointerType: "mouse" });
     fireEvent.click(menuBtn);
 
-    const archivosItem = await screen.findByText("Archivos");
+    const archivosItem = await screen.findByText(/archivos|files/i);
     expect(archivosItem).toBeInTheDocument();
     expect(archivosItem).not.toBeDisabled();
 
@@ -380,7 +380,7 @@ describe("Shared Media Browser & Timeline Seam", () => {
     );
 
     expect(screen.getByText("report-q3.pdf")).toBeInTheDocument();
-    const docDownloadLink = screen.getByRole("link", { name: /descargar report-q3\.pdf/i });
+    const docDownloadLink = screen.getByRole("link", { name: /(descargar|download) report-q3\.pdf/i });
     expect(docDownloadLink).toHaveAttribute("href", "https://minio/docs/report-q3.pdf");
   });
 });

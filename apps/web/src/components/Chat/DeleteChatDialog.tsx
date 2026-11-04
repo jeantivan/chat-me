@@ -8,6 +8,7 @@ import {
   AlertDialogDescription,
 } from "@/components/ui/AlertDialog";
 import { useDeleteChat } from "@/lib/api/chatQueries";
+import { useTranslation } from "@/lib/i18n";
 
 type DeleteChatDialogProps = {
   chatId: string;
@@ -20,6 +21,7 @@ export function DeleteChatDialog({
   open,
   onOpenChange,
 }: DeleteChatDialogProps) {
+  const { t } = useTranslation();
   const deleteChatMutation = useDeleteChat();
 
   return (
@@ -28,16 +30,16 @@ export function DeleteChatDialog({
         <div className="p-6">
           <div className="mb-4">
             <AlertDialogTitle className="text-xl font-light">
-              ¿Eliminar este chat?
+              {t("chat.deleteChatDialogTitle")}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-sm text-background-11 mt-2">
-              Se eliminará el historial de este chat y no aparecerá en tu lista de chats.
+              {t("chat.deleteChatDialogDescription")}
             </AlertDialogDescription>
           </div>
           <div className="w-full flex gap-4 justify-end mt-8">
             <AlertDialogCancel asChild>
               <Button variant="outlined" className="outline-none">
-                Cancelar
+                {t("common.cancel")}
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
@@ -48,7 +50,7 @@ export function DeleteChatDialog({
                   deleteChatMutation.mutate(chatId);
                 }}
               >
-                Eliminar chat
+                {t("chat.deleteChat")}
               </Button>
             </AlertDialogAction>
           </div>

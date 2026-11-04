@@ -7,8 +7,10 @@ import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from "./ui/Menu";
 import { DialogRoot, DialogContent } from "./ui/Dialog";
 import useStore from "@/lib/store";
 import { useUserProfile, useUpdateProfile, uploadAvatar } from "@/lib/api/profileQueries";
+import { useTranslation } from "@/lib/i18n";
 
 export function ChangeUserImage() {
+  const { t } = useTranslation();
   const { data: userProfile } = useUserProfile();
   const zustandPicture = useStore((state) => state.user.picture);
   const picture = userProfile?.pictureUrl ?? zustandPicture;
@@ -28,7 +30,7 @@ export function ChangeUserImage() {
       const publicUrl = await uploadAvatar(file);
       await updateProfile.mutateAsync({ pictureUrl: publicUrl });
     } catch (err: any) {
-      alert(err?.message || "Error al subir la imagen de perfil");
+      alert(err?.message || t("drawer.uploadError"));
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -41,30 +43,30 @@ export function ChangeUserImage() {
     try {
       await updateProfile.mutateAsync({ pictureUrl: "" });
     } catch (err: any) {
-      alert(err?.message || "Error al eliminar la foto de perfil");
+      alert(err?.message || t("drawer.deletePhotoError"));
     }
   };
 
   return (
     <>
       <div className="group w-[200px] h-[200px] cursor-pointer relative rounded-full text-gray-400 overflow-hidden">
-        <UserImage src={picture} />
+        <UserImage src={picture} alt={t("drawer.profilePictureAlt")} />
         <div className="hidden group-hover:flex select-none items-center justify-center absolute w-full h-full inset-0 bg-neutral-900/80">
           <MenuRoot>
             <MenuTrigger asChild>
               <button
                 type="button"
-                aria-label="Elegir foto de perfil"
+                aria-label={t("drawer.chooseProfilePicture")}
                 disabled={isUploading}
                 className="w-3/4 flex flex-col items-center justify-center mt-5 outline-none cursor-pointer"
               >
                 <Icon
-                  label="Cámara"
+                  label={t("drawer.camera")}
                   icon={Camera}
                   className="w-6 h-6 mb-1 text-neutral-50"
                 />
                 <span className="uppercase text-center text-sm text-neutral-50 w-4/5">
-                  {isUploading ? "Subiendo..." : "Elegir foto de perfil"}
+                  {isUploading ? t("drawer.uploading") : t("drawer.chooseProfilePicture")}
                 </span>
               </button>
             </MenuTrigger>
@@ -75,13 +77,13 @@ export function ChangeUserImage() {
                 disabled={!picture}
                 onClick={() => setLightboxOpen(true)}
               >
-                Ver foto
+                {t("drawer.viewPhoto")}
               </MenuItem>
               <MenuItem
                 icon={Upload}
                 onClick={() => fileInputRef.current?.click()}
               >
-                Subir foto
+                {t("drawer.uploadPhoto")}
               </MenuItem>
               <MenuItem
                 icon={Trash2}
@@ -89,14 +91,14 @@ export function ChangeUserImage() {
                 onClick={handleRemovePicture}
                 className="text-red-500 hover:text-red-600 data-[disabled]:text-background-11"
               >
-                Eliminar foto
+                {t("drawer.deletePhoto")}
               </MenuItem>
             </MenuContent>
           </MenuRoot>
         </div>
 
         <VisuallyHidden.Root>
-          <label htmlFor="profile-picture">Seleccionar imagen de perfil:</label>
+          <label htmlFor="profile-picture">{t("drawer.selectProfilePictureLabel")}</label>
           <input
             ref={fileInputRef}
             type="file"
@@ -117,17 +119,17 @@ export function ChangeUserImage() {
             {picture ? (
               <img
                 src={picture}
-                alt="Foto de perfil"
+                alt={t("drawer.profilePictureAlt")}
                 className="max-w-full max-h-[70vh] rounded-lg object-contain shadow-2xl"
               />
             ) : null}
             <button
               onClick={() => setLightboxOpen(false)}
               className="mt-4 px-4 py-2 bg-background-5 hover:bg-background-6 text-background-12 rounded-md font-medium text-sm flex items-center gap-2 cursor-pointer"
-              aria-label="Cerrar"
+              aria-label={t("drawer.closePhoto")}
             >
               <X className="w-4 h-4" />
-              <span>Cerrar</span>
+              <span>{t("drawer.closePhoto")}</span>
             </button>
           </div>
         </DialogContent>

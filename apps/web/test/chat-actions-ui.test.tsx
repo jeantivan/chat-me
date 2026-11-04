@@ -342,12 +342,12 @@ describe("Chat Actions & UI Seams (Pin, Mute, Archive, Mark Read/Unread)", () =>
       />
     );
 
-    const trigger = screen.getByRole("button", { name: /menu del chat/i });
+    const trigger = screen.getByRole("button", { name: /menu del chat|chat menu/i });
     fireEvent.pointerDown(trigger, { pointerType: "mouse" });
     fireEvent.click(trigger);
 
     // Pin option
-    const pinOption = screen.getByText(/fijar chat/i);
+    const pinOption = screen.getByText(/fijar chat|pin chat/i);
     fireEvent.click(pinOption);
     expect(mockMutate).toHaveBeenCalledWith({
       chatId: "chat-unpinned",
@@ -357,7 +357,7 @@ describe("Chat Actions & UI Seams (Pin, Mute, Archive, Mark Read/Unread)", () =>
     // Mute option
     fireEvent.pointerDown(trigger, { pointerType: "mouse" });
     fireEvent.click(trigger);
-    const muteOption = screen.getByText(/silenciar notificaciones/i);
+    const muteOption = screen.getByText(/silenciar notificaciones|mute notifications/i);
     fireEvent.click(muteOption);
     expect(mockMutate).toHaveBeenCalledWith({
       chatId: "chat-unpinned",
@@ -367,7 +367,7 @@ describe("Chat Actions & UI Seams (Pin, Mute, Archive, Mark Read/Unread)", () =>
     // Archive option
     fireEvent.pointerDown(trigger, { pointerType: "mouse" });
     fireEvent.click(trigger);
-    const archiveOption = screen.getByText(/archivar chat/i);
+    const archiveOption = screen.getByText(/archivar chat|archive chat/i);
     fireEvent.click(archiveOption);
     expect(mockMutate).toHaveBeenCalledWith({
       chatId: "chat-unpinned",
@@ -377,7 +377,7 @@ describe("Chat Actions & UI Seams (Pin, Mute, Archive, Mark Read/Unread)", () =>
     // Mark as unread option
     fireEvent.pointerDown(trigger, { pointerType: "mouse" });
     fireEvent.click(trigger);
-    const markUnreadOption = screen.getByText(/marcar como no leído/i);
+    const markUnreadOption = screen.getByText(/marcar como no leído|mark as unread/i);
     fireEvent.click(markUnreadOption);
     expect(mockMutate).toHaveBeenCalledWith({
       chatId: "chat-unpinned",
@@ -401,11 +401,11 @@ describe("Chat Actions & UI Seams (Pin, Mute, Archive, Mark Read/Unread)", () =>
 
     renderWithClient(<Header chat={dummyChat} />);
 
-    const menuTrigger = screen.getByRole("button", { name: /abrir menu del chat/i });
+    const menuTrigger = screen.getByRole("button", { name: /abrir menu del chat|open chat menu/i });
     fireEvent.pointerDown(menuTrigger, { pointerType: "mouse" });
     fireEvent.click(menuTrigger);
 
-    const muteOption = screen.getByText(/silenciar notificaciones/i);
+    const muteOption = screen.getByText(/silenciar notificaciones|mute notifications/i);
     fireEvent.click(muteOption);
 
     expect(mockMutate).toHaveBeenCalledWith({

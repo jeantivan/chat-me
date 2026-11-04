@@ -13,6 +13,7 @@ import mc from "@/lib/utils/mergeClassnames";
 import { TMessage } from "@/lib/types";
 import useStore from "@/lib/store";
 import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
+import { useTranslation } from "@/lib/i18n";
 
 const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   <span
@@ -38,12 +39,15 @@ const MessageTail = ({ isOwnMsg }: { isOwnMsg: boolean }) => (
   </span>
 );
 
-const Forwarded = () => (
-  <div className="px-2 text-sm text-background-11 flex items-center gap-1">
-    <Forward className="w-4 h-4" />
-    <span>Reenviado</span>
-  </div>
-);
+const Forwarded = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="px-2 text-sm text-background-11 flex items-center gap-1">
+      <Forward className="w-4 h-4" />
+      <span>{t("chat.forwarded")}</span>
+    </div>
+  );
+};
 
 const Starred = () => (
   <span className="w-4 h-4 inline-block">
@@ -66,6 +70,7 @@ export function MessageContainer({
   message,
   senderName,
 }: ContainerProps) {
+  const { t } = useTranslation();
   const { starred, status, time, reactions, hasMedia, forwarded, deleted, body } = message;
   const isDeleted = Boolean(deleted) || body === DELETED_MESSAGE_TOMBSTONE;
   const [showMenus, setShowMenus] = useState(false);
@@ -112,7 +117,7 @@ export function MessageContainer({
               <IconButton
                 className="w-7 h-7 p-1"
                 icon={MoreVertical}
-                label="Abrir menu"
+                label={t("chat.openMenu")}
               />
             </Menu>
             <ReactionMenu
@@ -121,7 +126,7 @@ export function MessageContainer({
               message={message}
             >
               <IconButton
-                label="Reaccionar a este mensaje"
+                label={t("chat.reactToMessage")}
                 icon={Smile}
                 className="w-7 h-7 p-1"
               />

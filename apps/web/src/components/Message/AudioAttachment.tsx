@@ -1,15 +1,17 @@
 import { Music } from "lucide-react";
 import type { TMedia } from "@/lib/types";
 import { formatDuration } from "@/lib/utils/formatters";
+import { useTranslation } from "@/lib/i18n";
 
 export function AudioAttachment({ media }: { media: TMedia }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-1.5 p-2 bg-background-3/80 rounded-lg max-w-xs w-full my-1">
       <div className="flex items-center justify-between text-xs text-background-11 px-1">
         <div className="flex items-center gap-1.5 truncate">
           <Music className="w-3.5 h-3.5 text-primary-9 shrink-0" />
           <span className="font-medium text-background-12 truncate">
-            {media.filename || "Audio"}
+            {media.filename || t("chat.audio")}
           </span>
         </div>
         {media.duration ? <span>{formatDuration(media.duration)}</span> : null}

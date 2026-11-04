@@ -15,6 +15,7 @@ import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 import mc from "@/lib/utils/mergeClassnames";
 import { isValidLexicalJson, extractPlainText } from "@/lib/utils/lexical";
 import useStore from "@/lib/store";
+import { useTranslation } from "@/lib/i18n";
 
 type RootProps = {
   children: ReactNode;
@@ -41,6 +42,7 @@ type Props = {
   className?: string;
 };
 export function MessageText({ body, deleted, className }: Props) {
+  const { t } = useTranslation();
   const inChatSearchQuery = useStore((state) => state.inChatSearchQuery);
   const isInChatSearchOpen = useStore((state) => state.isInChatSearchOpen);
   const isTombstone = Boolean(deleted) || body === DELETED_MESSAGE_TOMBSTONE;
@@ -55,7 +57,7 @@ export function MessageText({ body, deleted, className }: Props) {
             className
           )}
         >
-          {body}
+          {isTombstone ? t("chat.deletedMessage") : body}
         </div>
       </div>
     );

@@ -21,6 +21,7 @@ import { useUserId } from "@/lib/hooks";
 import { TMessage } from "@/lib/types";
 import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 import { isValidLexicalJson } from "@/lib/utils/lexical";
+import { useTranslation } from "@/lib/i18n";
 
 type RootProps = {
   children: ReactNode;
@@ -45,6 +46,7 @@ type LastMessageProps = {
   hasUnreadMsg: number | boolean;
 };
 export function LastMessage({ message, hasUnreadMsg }: LastMessageProps) {
+  const { t } = useTranslation();
   const userId = useUserId();
   const { time, body, status, owner, deleted, hasMedia } = message;
   const isOwnMsg = owner === userId;
@@ -68,7 +70,7 @@ export function LastMessage({ message, hasUnreadMsg }: LastMessageProps) {
           data-testid="last-message-tombstone"
           className="flex-1 line-clamp-1 italic text-neutral-500 dark:text-neutral-400"
         >
-          {body || DELETED_MESSAGE_TOMBSTONE}
+          {isTombstone ? t("chat.deletedMessage") : (body || DELETED_MESSAGE_TOMBSTONE)}
         </span>
         <span className="shrink-0 mr-1">{formatTime}</span>
       </div>

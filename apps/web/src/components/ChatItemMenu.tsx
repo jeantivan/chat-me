@@ -6,6 +6,7 @@ import { Icon } from "./ui/Icon";
 import mc from "@/lib/utils/mergeClassnames";
 import { useUpdateChatParticipant } from "@/lib/api/chatQueries";
 import { DeleteChatDialog } from "./Chat/DeleteChatDialog";
+import { useTranslation } from "@/lib/i18n";
 
 type ChatItemMenuProps = {
   isMuted?: boolean;
@@ -23,6 +24,7 @@ export function ChatItemMenu({
   isArchived,
   isUnread,
 }: ChatItemMenuProps) {
+  const { t } = useTranslation();
   const updateParticipant = useUpdateChatParticipant();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -36,7 +38,7 @@ export function ChatItemMenu({
             "text-background-12 hover:bg-background-5 data-[state=open]:bg-background-6"
           )}
         >
-          <Icon icon={MoreHorizontal} label="Menu del chat" className="w-5 h-5" />
+          <Icon icon={MoreHorizontal} label={t("chat.chatMenu")} className="w-5 h-5" />
         </MenuTrigger>
         <MenuContent align="start">
           <MenuItem
@@ -45,7 +47,7 @@ export function ChatItemMenu({
               updateParticipant.mutate({ chatId, archived: !isArchived });
             }}
           >
-            {isArchived ? "Desarchivar chat" : "Archivar chat"}
+            {isArchived ? t("chat.unarchiveChat") : t("chat.archiveChat")}
           </MenuItem>
           {!isArchived && (
             <MenuItem
@@ -54,7 +56,7 @@ export function ChatItemMenu({
                 updateParticipant.mutate({ chatId, muted: !isMuted });
               }}
             >
-              {isMuted ? "Activar notificaciones" : "Silenciar notificaciones"}
+              {isMuted ? t("chat.unmuteNotifications") : t("chat.muteNotifications")}
             </MenuItem>
           )}
           <MenuItem
@@ -63,7 +65,7 @@ export function ChatItemMenu({
               updateParticipant.mutate({ chatId, markedUnread: !isUnread });
             }}
           >
-            {isUnread ? "Marcar como leído" : "Marcar como no leído"}
+            {isUnread ? t("chat.markAsRead") : t("chat.markAsUnread")}
           </MenuItem>
           <MenuItem
             onClick={(e) => {
@@ -71,7 +73,7 @@ export function ChatItemMenu({
               setIsDeleteOpen(true);
             }}
           >
-            Eliminar chat
+            {t("chat.deleteChat")}
           </MenuItem>
           {!isArchived && (
             <MenuItem
@@ -80,7 +82,7 @@ export function ChatItemMenu({
                 updateParticipant.mutate({ chatId, pinned: !isPinned });
               }}
             >
-              {isPinned ? "Desfijar chat" : "Fijar chat"}
+              {isPinned ? t("chat.unpinChat") : t("chat.pinChat")}
             </MenuItem>
           )}
         </MenuContent>
