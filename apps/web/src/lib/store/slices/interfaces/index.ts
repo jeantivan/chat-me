@@ -70,11 +70,6 @@ export interface MediaMessageSlice {
   closeMediaMessage: () => void;
 }
 
-export interface LoadingSlice {
-  loading: "idle" | "contacts" | "chats" | "messages" | "ready";
-  prepareApp: Awaited<() => void>;
-}
-
 export interface SearchSlice {
   chatSearchFilter: string;
   setChatSearchFilter: (query: string) => void;
@@ -94,5 +89,4 @@ export interface StoreSlice
     MediaMessageSlice,
     LeftDrawerSlice,
     RightDrawerSlice,
-    LoadingSlice,
     SearchSlice {}

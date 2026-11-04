@@ -13,9 +13,8 @@ import { useSocketSync } from "@/lib/socket/useSocketSync";
 import { getSocket } from "@/lib/socket/socketClient";
 import useStore from "@/lib/store";
 
-function RootLayout() {
+export function RootLayout() {
   const { isAuthenticated, isLoading, token, user } = useAuth();
-  const loading = useStore((state) => state.loading);
   const currentChatId = useStore((state) => state.currentChatId);
 
   // Connect socket when authenticated
@@ -67,14 +66,8 @@ function RootLayout() {
 
   return (
     <Main>
-      {loading !== "ready" ? (
-        <Loading />
-      ) : (
-        <>
-          <LeftColumn />
-          <RightColumn />
-        </>
-      )}
+      <LeftColumn />
+      <RightColumn />
       <Outlet />
     </Main>
   );
