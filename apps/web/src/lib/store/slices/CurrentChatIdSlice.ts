@@ -10,24 +10,19 @@ export const createCurrentChatIdSlice: StateCreator<
   ],
   [],
   CurrentChatIdSlice
-> = (set) => ({
+> = (set, get) => ({
   currentChatId: undefined,
-  setCurrentChatId: (chatId) =>
+  setCurrentChatId: (chatId) => {
     set((state) => {
-      state.chats = state.chats.map((chat) =>
-        chat.id === chatId
-          ? { ...chat, isOpenChat: true }
-          : { ...chat, isOpenChat: false }
-      );
-
       state.currentChatId = chatId;
-      state.resetInChatSearch();
-    }),
+    });
+    get().resetInChatSearch();
+  },
   closeChat: () => {
     set((state) => {
       state.rightDrawer = null;
       state.currentChatId = undefined;
-      state.resetInChatSearch();
     });
+    get().resetInChatSearch();
   },
 });

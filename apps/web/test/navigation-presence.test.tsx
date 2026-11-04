@@ -37,11 +37,6 @@ vi.mock("../src/routes/router", () => ({
 vi.mock("../src/lib/hooks", () => ({
   useUserId: () => "current-user-1",
   useCurrentChatId: () => ({ currentChatId: "chat-1", setCurrentChatId: vi.fn() }),
-  useChatActions: () => ({
-    muteChat: vi.fn(),
-    deleteChat: vi.fn(),
-    closeChat: vi.fn(),
-  }),
 }));
 
 const mockChatWithUnread: TChat = {

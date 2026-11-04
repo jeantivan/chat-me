@@ -51,11 +51,6 @@ vi.mock("../src/lib/auth/AuthContext", () => ({
 vi.mock("../src/lib/hooks", () => ({
   useUserId: () => "user-alice-1",
   useCurrentChatId: () => ({ currentChatId: "chat-123", setCurrentChatId: vi.fn() }),
-  useChatActions: () => ({
-    muteChat: vi.fn(),
-    deleteChat: vi.fn(),
-    closeChat: vi.fn(),
-  }),
 }));
 
 function SocketSyncWrapper({ children }: { children: React.ReactNode }) {

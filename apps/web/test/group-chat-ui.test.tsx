@@ -20,11 +20,6 @@ let mockCurrentUserId = "user-alice-1";
 vi.mock("../src/lib/hooks", () => ({
   useUserId: () => mockCurrentUserId,
   useCurrentChatId: () => ({ currentChatId: "group-chat-1", setCurrentChatId: vi.fn() }),
-  useChatActions: () => ({
-    muteChat: vi.fn(),
-    deleteChat: vi.fn(),
-    closeChat: vi.fn(),
-  }),
 }));
 
 const mockGroupSummary: ChatSummary = {

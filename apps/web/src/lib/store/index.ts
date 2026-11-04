@@ -5,7 +5,6 @@ import { StoreSlice } from "./slices/interfaces";
 import {
   createProfileSlice,
   createCurrentChatIdSlice,
-  createChatSlice,
   createLeftDrawerSlice,
   createRightDrawerSlice,
   createMediaMessageSlice,
@@ -18,7 +17,6 @@ const useStore = create<StoreSlice>()(
       immer((...a) => ({
         ...createProfileSlice(...a),
         ...createCurrentChatIdSlice(...a),
-        ...createChatSlice(...a),
         ...createMediaMessageSlice(...a),
         ...createLeftDrawerSlice(...a),
         ...createRightDrawerSlice(...a),

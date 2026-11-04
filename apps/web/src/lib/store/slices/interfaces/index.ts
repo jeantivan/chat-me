@@ -1,5 +1,4 @@
 import {
-  TChat,
   TMessage,
   TProfile,
   LeftDrawerContentOptions,
@@ -40,15 +39,6 @@ export interface CurrentChatIdSlice {
   closeChat: () => void;
 }
 
-// Interface para el Chat
-export interface ChatSlice {
-  chats: TChat[];
-  pinChat: (chatId: string) => void;
-  muteChat: (chatId: string) => void;
-  deleteChat: (chatId: string) => void;
-  archiveChat: (chatId: string) => void;
-}
-
 export interface LeftDrawerSlice {
   leftDrawer: LeftDrawerContentOptions | null;
   leftDrawerGoTo: (to: LeftDrawerContentOptions) => void;
@@ -85,7 +75,6 @@ export interface SearchSlice {
 export interface StoreSlice
   extends ProfileSlice,
     CurrentChatIdSlice,
-    ChatSlice,
     MediaMessageSlice,
     LeftDrawerSlice,
     RightDrawerSlice,

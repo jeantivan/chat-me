@@ -38,13 +38,6 @@ let mockCurrentUserId = "user-alice-1";
 vi.mock("../src/lib/hooks", () => ({
   useUserId: () => mockCurrentUserId,
   useCurrentChatId: () => ({ currentChatId: "chat-1", setCurrentChatId: vi.fn() }),
-  useChatActions: () => ({
-    archiveChat: vi.fn(),
-    muteChat: vi.fn(),
-    deleteChat: vi.fn(),
-    closeChat: vi.fn(),
-    pinChat: vi.fn(),
-  }),
 }));
 
 describe("Chat Actions & UI Seams (Pin, Mute, Archive, Mark Read/Unread)", () => {
