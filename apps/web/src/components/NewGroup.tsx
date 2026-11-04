@@ -13,8 +13,10 @@ import { getAuthHeaders } from "@/lib/auth/authClient";
 import { chatKeys } from "@/lib/socket/useSocketSync";
 import { router } from "@/routes/router";
 import { TUser } from "@/lib/types";
+import { useTranslation } from "@/lib/i18n";
 
 export function NewGroup() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const setCurrentChatId = useStore((state) => state.setCurrentChatId);
   const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
@@ -100,15 +102,16 @@ export function NewGroup() {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Nombre del grupo..."
+            placeholder={t("drawer.groupNamePlaceholder")}
             className="flex-1 bg-background-1 text-background-12 border border-background-7 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-9"
           />
         </div>
 
         <div className="flex items-center justify-between">
           <span className="text-xs text-background-11">
-            {selectedIds.length}{" "}
-            {selectedIds.length === 1 ? "contacto seleccionado" : "contactos seleccionados"}
+            {selectedIds.length === 1
+              ? t("drawer.contactSelected")
+              : t("drawer.contactsSelected", { count: selectedIds.length })}
           </span>
           <button
             data-testid="create-group-button"
@@ -118,7 +121,7 @@ export function NewGroup() {
             className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-primary-9 text-white text-sm font-medium rounded-lg hover:bg-primary-10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Check className="w-4 h-4" />
-            Crear grupo
+            {t("drawer.createGroupButton")}
           </button>
         </div>
       </div>

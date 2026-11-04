@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TMedia } from "@/lib/types";
 import mc from "@/lib/utils/mergeClassnames";
 import { Play } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 const dimensions: Record<"square" | "landscape" | "portrait", string> = {
   square: "w-[300px] h-[300px]",
@@ -27,6 +28,7 @@ export function ImageAndVideo({
   id: _id,
   ...rest
 }: ImageAndVideoProps) {
+  const { t } = useTranslation();
   const [isLoaded, setIsLoaded] = useState(false);
   const isUploading = uploadProgress !== undefined && uploadProgress < 100;
   const isVideo = type === "video";
@@ -85,7 +87,7 @@ export function ImageAndVideo({
             <svg
               className="w-12 h-12 -rotate-90"
               viewBox="0 0 36 36"
-              aria-label="Upload Progress"
+              aria-label={t("chat.uploadProgress")}
             >
               <path
                 className="text-white/20"

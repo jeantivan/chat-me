@@ -4,6 +4,7 @@ import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { useAuth } from "@/lib/auth/AuthContext.js";
 import { useDialogContainer } from "@/components/DialogContainer";
 import mc from "@/lib/utils/mergeClassnames.js";
+import { useTranslation } from "@/lib/i18n";
 
 interface AuthDialogProps {
   open: boolean;
@@ -16,6 +17,7 @@ function isValidEmail(email: string): boolean {
 export function AuthDialog({ open }: AuthDialogProps) {
   const { login, register, error: contextError } = useAuth();
   const { container } = useDialogContainer();
+  const { t } = useTranslation();
 
   const [tab, setTab] = useState<"login" | "register">("login");
 
@@ -38,10 +40,10 @@ export function AuthDialog({ open }: AuthDialogProps) {
     const newErrors: { [key: string]: string } = {};
 
     if (!isValidEmail(loginEmail)) {
-      newErrors.loginEmail = "Please enter a valid email";
+      newErrors.loginEmail = t("auth.emailInvalidError");
     }
     if (!loginPassword) {
-      newErrors.loginPassword = "Password is required";
+      newErrors.loginPassword = t("auth.passwordRequiredError");
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -54,7 +56,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
     try {
       await login(loginEmail, loginPassword);
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Failed to log in");
+      setServerError(err instanceof Error ? err.message : t("auth.loginFailedError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -69,7 +71,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
     try {
       await login(email, "Password123!");
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Failed to log in with demo account");
+      setServerError(err instanceof Error ? err.message : t("auth.demoLoginFailedError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -81,13 +83,13 @@ export function AuthDialog({ open }: AuthDialogProps) {
     const newErrors: { [key: string]: string } = {};
 
     if (!registerName.trim()) {
-      newErrors.registerName = "Please enter your name";
+      newErrors.registerName = t("auth.nameRequiredError");
     }
     if (!isValidEmail(registerEmail)) {
-      newErrors.registerEmail = "Please enter a valid email";
+      newErrors.registerEmail = t("auth.emailInvalidError");
     }
     if (!registerPassword || registerPassword.length < 6) {
-      newErrors.registerPassword = "Password must be at least 6 characters";
+      newErrors.registerPassword = t("auth.passwordMinLengthError");
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -100,7 +102,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
     try {
       await register(registerEmail, registerPassword, registerName.trim());
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Failed to create account");
+      setServerError(err instanceof Error ? err.message : t("auth.registerFailedError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -118,10 +120,10 @@ export function AuthDialog({ open }: AuthDialogProps) {
           )}
         >
           <DialogPrimitive.Title className="text-2xl font-bold text-center mb-1 text-background-12">
-            Welcome to ChatMe
+            {t("auth.title")}
           </DialogPrimitive.Title>
           <DialogPrimitive.Description className="text-sm text-center text-background-11 mb-6">
-            Log in to your account or register to start messaging.
+            {t("auth.subtitle")}
           </DialogPrimitive.Description>
 
           {(serverError || contextError) && (
@@ -146,7 +148,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                   "text-background-11 data-[state=active]:bg-background-2 data-[state=active]:text-background-12 shadow-sm"
                 )}
               >
-                Log In
+                {t("auth.loginTab")}
               </TabsPrimitive.Trigger>
               <TabsPrimitive.Trigger
                 value="register"
@@ -155,7 +157,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                   "text-background-11 data-[state=active]:bg-background-2 data-[state=active]:text-background-12 shadow-sm"
                 )}
               >
-                Register
+                {t("auth.registerTab")}
               </TabsPrimitive.Trigger>
             </TabsPrimitive.List>
 
@@ -167,7 +169,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                     htmlFor="login-email"
                     className="block text-xs font-semibold uppercase text-background-11 mb-1.5"
                   >
-                    Email
+                    {t("auth.emailLabel")}
                   </label>
                   <input
                     id="login-email"
@@ -180,7 +182,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                       "focus:outline-none focus:ring-2 focus:ring-primary-9 transition-all text-sm",
                       errors.loginEmail ? "border-red-500" : "border-background-6"
                     )}
-                    placeholder="you@example.com"
+                    placeholder={t("auth.emailPlaceholder")}
                   />
                   {errors.loginEmail && (
                     <p className="mt-1 text-xs text-red-500">{errors.loginEmail}</p>
@@ -192,7 +194,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                     htmlFor="login-password"
                     className="block text-xs font-semibold uppercase text-background-11 mb-1.5"
                   >
-                    Password
+                    {t("auth.passwordLabel")}
                   </label>
                   <input
                     id="login-password"
@@ -205,7 +207,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                       "focus:outline-none focus:ring-2 focus:ring-primary-9 transition-all text-sm",
                       errors.loginPassword ? "border-red-500" : "border-background-6"
                     )}
-                    placeholder="••••••••"
+                    placeholder={t("auth.passwordPlaceholder")}
                   />
                   {errors.loginPassword && (
                     <p className="mt-1 text-xs text-red-500">{errors.loginPassword}</p>
@@ -221,12 +223,12 @@ export function AuthDialog({ open }: AuthDialogProps) {
                     "disabled:opacity-50 disabled:cursor-not-allowed"
                   )}
                 >
-                  {isSubmitting ? "Logging in..." : "Log In"}
+                  {isSubmitting ? t("auth.loggingIn") : t("auth.loginButton")}
                 </button>
 
                 <div className="pt-3 mt-4 border-t border-background-6">
                   <p className="text-xs font-medium text-center text-background-11 mb-2.5">
-                    Quick Demo Access (Seeded Accounts)
+                    {t("auth.quickDemoTitle")}
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -239,7 +241,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                         "disabled:opacity-50 disabled:cursor-not-allowed"
                       )}
                     >
-                      Demo as Alice
+                      {t("auth.demoAlice")}
                     </button>
                     <button
                       type="button"
@@ -251,7 +253,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                         "disabled:opacity-50 disabled:cursor-not-allowed"
                       )}
                     >
-                      Demo as Bob
+                      {t("auth.demoBob")}
                     </button>
                   </div>
                 </div>
@@ -266,7 +268,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                     htmlFor="register-name"
                     className="block text-xs font-semibold uppercase text-background-11 mb-1.5"
                   >
-                    Full Name
+                    {t("auth.nameLabel")}
                   </label>
                   <input
                     id="register-name"
@@ -279,7 +281,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                       "focus:outline-none focus:ring-2 focus:ring-primary-9 transition-all text-sm",
                       errors.registerName ? "border-red-500" : "border-background-6"
                     )}
-                    placeholder="Alex Morgan"
+                    placeholder={t("auth.namePlaceholder")}
                   />
                   {errors.registerName && (
                     <p className="mt-1 text-xs text-red-500">{errors.registerName}</p>
@@ -291,7 +293,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                     htmlFor="register-email"
                     className="block text-xs font-semibold uppercase text-background-11 mb-1.5"
                   >
-                    Email
+                    {t("auth.emailLabel")}
                   </label>
                   <input
                     id="register-email"
@@ -304,7 +306,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                       "focus:outline-none focus:ring-2 focus:ring-primary-9 transition-all text-sm",
                       errors.registerEmail ? "border-red-500" : "border-background-6"
                     )}
-                    placeholder="you@example.com"
+                    placeholder={t("auth.emailPlaceholder")}
                   />
                   {errors.registerEmail && (
                     <p className="mt-1 text-xs text-red-500">{errors.registerEmail}</p>
@@ -316,7 +318,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                     htmlFor="register-password"
                     className="block text-xs font-semibold uppercase text-background-11 mb-1.5"
                   >
-                    Password
+                    {t("auth.passwordLabel")}
                   </label>
                   <input
                     id="register-password"
@@ -329,7 +331,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                       "focus:outline-none focus:ring-2 focus:ring-primary-9 transition-all text-sm",
                       errors.registerPassword ? "border-red-500" : "border-background-6"
                     )}
-                    placeholder="••••••••"
+                    placeholder={t("auth.passwordPlaceholder")}
                   />
                   {errors.registerPassword && (
                     <p className="mt-1 text-xs text-red-500">{errors.registerPassword}</p>
@@ -345,7 +347,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
                     "disabled:opacity-50 disabled:cursor-not-allowed"
                   )}
                 >
-                  {isSubmitting ? "Creating Account..." : "Create Account"}
+                  {isSubmitting ? t("auth.creatingAccount") : t("auth.registerButton")}
                 </button>
               </form>
             </TabsPrimitive.Content>

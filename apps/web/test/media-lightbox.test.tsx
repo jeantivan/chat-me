@@ -87,7 +87,7 @@ describe("Fullscreen Media Lightbox Viewer Seam", () => {
     expect(screen.getByText("Look at this mountain view")).toBeInTheDocument();
 
     // Media element
-    const img = screen.getByAltText(/Foto enviada por Sender Jane/i);
+    const img = screen.getByAltText(/(Foto enviada por|Photo sent by) Sender Jane/i);
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute("src", "https://storage.example.com/mountain.jpg");
   });

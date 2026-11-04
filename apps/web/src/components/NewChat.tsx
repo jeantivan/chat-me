@@ -13,8 +13,10 @@ import { getAuthHeaders } from "@/lib/auth/authClient";
 import { chatKeys } from "@/lib/socket/useSocketSync";
 import { router } from "@/routes/router";
 import { TUser } from "@/lib/types";
+import { useTranslation } from "@/lib/i18n";
 
 export function NewChat() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const setCurrentChatId = useStore((state) => state.setCurrentChatId);
   const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
@@ -81,10 +83,10 @@ export function NewChat() {
           </div>
           <div>
             <div className="font-medium text-base text-background-12">
-              Nuevo grupo
+              {t("drawer.newGroup")}
             </div>
             <div className="text-xs text-background-11">
-              Crea un grupo con múltiples contactos
+              {t("drawer.createGroupDesc")}
             </div>
           </div>
         </button>

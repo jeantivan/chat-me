@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/AlertDialog";
 import { useDeleteMessage } from "@/lib/api/chatQueries";
 import { TMessage } from "@/lib/types";
+import { useTranslation } from "@/lib/i18n";
 
 type DeleteMessageProps = {
   open: boolean;
@@ -20,6 +21,7 @@ export function DeleteMessage({
   open,
   openChange,
 }: DeleteMessageProps) {
+  const { t } = useTranslation();
   const deleteMessageServer = useDeleteMessage();
 
   return (
@@ -28,13 +30,13 @@ export function DeleteMessage({
         <div className="p-6">
           <div className="mb-10">
             <AlertDialogTitle className="text-xl font-light">
-              ¿Deseas eliminar este mensaje?
+              {t("chat.deleteMessageTitle")}
             </AlertDialogTitle>
           </div>
           <div className="w-full flex gap-4 justify-end mt-8">
             <AlertDialogCancel asChild>
               <Button variant="outlined" className="outline-none">
-                Cancelar
+                {t("common.cancel")}
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
@@ -44,7 +46,7 @@ export function DeleteMessage({
                   deleteMessageServer(message.id, message.chatId);
                 }}
               >
-                Eliminar mensaje
+                {t("chat.deleteMessageAction")}
               </Button>
             </AlertDialogAction>
           </div>

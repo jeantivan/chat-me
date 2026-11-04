@@ -283,7 +283,7 @@ describe("Frontend Message Reactions, Starred Messages, Deletion & Forwarding Se
     const groupCheckbox = screen.getByTestId("checkbox-contact-group-chat-99");
     fireEvent.click(groupCheckbox);
 
-    const sendBtn = screen.getByRole("button", { name: /Enviar mensajes/i });
+    const sendBtn = screen.getByRole("button", { name: /Enviar mensajes|Send messages/i });
     fireEvent.click(sendBtn);
 
     await waitFor(() => {

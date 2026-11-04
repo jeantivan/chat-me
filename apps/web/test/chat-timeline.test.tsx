@@ -86,8 +86,8 @@ describe("Frontend Real-Time Data & Timeline Seam", () => {
       </QueryClientProvider>
     );
 
-    // 1. Initial status: idle (Enviando mensaje)
-    expect(screen.getByText(/Enviando mensaje/i)).toBeDefined();
+    // 1. Initial status: idle (Enviando mensaje / Sending message)
+    expect(screen.getByText(/(Enviando mensaje|Sending message)/i)).toBeDefined();
 
     // 2. Transition to "send" upon server ACK
     act(() => {
@@ -118,7 +118,7 @@ describe("Frontend Real-Time Data & Timeline Seam", () => {
         </SocketSyncWrapper>
       </QueryClientProvider>
     );
-    expect(screen.getByText(/Mensaje enviado/i)).toBeDefined();
+    expect(screen.getByText(/(Mensaje enviado|Message sent)/i)).toBeDefined();
 
     // 3. Socket event "message:status_changed" with received
     act(() => {
@@ -146,7 +146,7 @@ describe("Frontend Real-Time Data & Timeline Seam", () => {
         </SocketSyncWrapper>
       </QueryClientProvider>
     );
-    expect(screen.getByText(/Mensaje recibido/i)).toBeDefined();
+    expect(screen.getByText(/(Mensaje recibido|Message received)/i)).toBeDefined();
 
     // 4. Socket event "message:status_changed" with read
     act(() => {
@@ -174,6 +174,6 @@ describe("Frontend Real-Time Data & Timeline Seam", () => {
         </SocketSyncWrapper>
       </QueryClientProvider>
     );
-    expect(screen.getByText(/Mensaje leído/i)).toBeDefined();
+    expect(screen.getByText(/(Mensaje leído|Message read)/i)).toBeDefined();
   });
 });

@@ -180,16 +180,16 @@ describe("Frontend Chat Empty & Delete Confirmation Dialogs Seam", () => {
     );
 
     // Open menu
-    const menuTrigger = screen.getByRole("button", { name: /menu del chat/i });
+    const menuTrigger = screen.getByRole("button", { name: /menu del chat|chat menu/i });
     fireEvent.pointerDown(menuTrigger, { pointerType: "mouse" });
     fireEvent.click(menuTrigger);
 
     // Click "Eliminar chat" menu item
-    const deleteMenuItem = await screen.findByText("Eliminar chat");
+    const deleteMenuItem = await screen.findByText(/eliminar chat|delete chat/i);
     fireEvent.click(deleteMenuItem);
 
     // AlertDialog should appear with confirmation title
-    const dialogTitle = await screen.findByText(/¿Eliminar este chat\?/i);
+    const dialogTitle = await screen.findByText(/(¿Eliminar este chat\?|Delete this chat\?)/i);
     expect(dialogTitle).toBeDefined();
 
     // Confirm action
@@ -227,16 +227,16 @@ describe("Frontend Chat Empty & Delete Confirmation Dialogs Seam", () => {
     );
 
     // Open header menu
-    const menuTrigger = screen.getByRole("button", { name: /abrir menu del chat/i });
+    const menuTrigger = screen.getByRole("button", { name: /abrir menu del chat|open chat menu/i });
     fireEvent.pointerDown(menuTrigger, { pointerType: "mouse" });
     fireEvent.click(menuTrigger);
 
     // "Vaciar chat" should be in the menu
-    const clearMenuItem = await screen.findByText("Vaciar chat");
+    const clearMenuItem = await screen.findByText(/vaciar chat|clear chat/i);
     fireEvent.click(clearMenuItem);
 
     // AlertDialog for clear should appear
-    const clearTitle = await screen.findByText(/¿Vaciar este chat\?/i);
+    const clearTitle = await screen.findByText(/(¿Vaciar este chat\?|Clear this chat\?)/i);
     expect(clearTitle).toBeDefined();
 
     const confirmClearBtn = screen.getByTestId("confirm-clear-chat-button");
@@ -258,7 +258,7 @@ describe("Frontend Chat Empty & Delete Confirmation Dialogs Seam", () => {
     const clearAction = screen.getByText("Vaciar chat");
     fireEvent.click(clearAction);
 
-    const clearTitle = await screen.findByText(/¿Vaciar este chat\?/i);
+    const clearTitle = await screen.findByText(/(¿Vaciar este chat\?|Clear this chat\?)/i);
     expect(clearTitle).toBeDefined();
 
     const confirmClearBtn = screen.getByTestId("confirm-clear-chat-button");
@@ -269,7 +269,7 @@ describe("Frontend Chat Empty & Delete Confirmation Dialogs Seam", () => {
     const deleteAction = screen.getByText("Eliminar chat");
     fireEvent.click(deleteAction);
 
-    const deleteTitle = await screen.findByText(/¿Eliminar este chat\?/i);
+    const deleteTitle = await screen.findByText(/(¿Eliminar este chat\?|Delete this chat\?)/i);
     expect(deleteTitle).toBeDefined();
 
     const confirmDeleteBtn = screen.getByTestId("confirm-delete-chat-button");
@@ -321,7 +321,7 @@ describe("Frontend Chat Empty & Delete Confirmation Dialogs Seam", () => {
     const clearButton = screen.getByTestId("clear-group-chat-button");
     fireEvent.click(clearButton);
 
-    const clearTitle = await screen.findByText(/¿Vaciar este chat\?/i);
+    const clearTitle = await screen.findByText(/(¿Vaciar este chat\?|Clear this chat\?)/i);
     expect(clearTitle).toBeDefined();
 
     const confirmBtn = screen.getByTestId("confirm-clear-chat-button");

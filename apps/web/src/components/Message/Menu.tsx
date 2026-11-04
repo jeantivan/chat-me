@@ -11,6 +11,7 @@ import { useToggleStarMessage } from "@/lib/api/chatQueries";
 import { TMessage } from "@/lib/types";
 import { DELETED_MESSAGE_TOMBSTONE } from "@chat-me/shared";
 import { ForwardMessages } from "../ForwardMessages";
+import { useTranslation } from "@/lib/i18n";
 
 export function Menu({
   children,
@@ -23,6 +24,7 @@ export function Menu({
   align?: "start" | "end";
   onOpenChange?: (open: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [forwardMessagesDialog, setForwardMessagesDialog] = useState(false);
@@ -56,14 +58,14 @@ export function Menu({
               setForwardMessagesDialog(true);
             }}
           >
-            Reenviar
+            {t("chat.forward")}
           </MenuItem>
           <MenuItem
             onClick={() => {
               toggleStarServer(message.id, message.chatId);
             }}
           >
-            {message.starred ? "No destacar" : "Destacar"}
+            {message.starred ? t("chat.unstar") : t("chat.star")}
           </MenuItem>
           {isOwnMsg && (
             <MenuItem
@@ -72,7 +74,7 @@ export function Menu({
                 setDeleteDialog(true);
               }}
             >
-              Eliminar
+              {t("common.delete")}
             </MenuItem>
           )}
         </MenuContent>

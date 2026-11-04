@@ -11,8 +11,10 @@ import { useChats } from "@/lib/api/chatQueries";
 import { toUiChat, getDateOfLastMessage } from "@/lib/utils/chatAdapter";
 import { extractPlainText } from "@/lib/utils/lexical";
 import { TChat } from "@/lib/types";
+import { useTranslation } from "@/lib/i18n";
 
 export function ChatList() {
+  const { t } = useTranslation();
   const currentUserId = useUserId();
   const { data: serverChats } = useChats();
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
@@ -73,13 +75,13 @@ export function ChatList() {
           {archivedChats.length > 0 && (
             <button
               data-testid="archived-banner-button"
-              aria-label="Archived"
+              aria-label={t("chat.archivedTitle")}
               onClick={() => leftDrawerGoTo("ARCHIVED_CHATS")}
               className="flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-background-4 text-background-12 transition-colors mb-1 cursor-pointer select-none"
             >
               <div className="flex items-center gap-4">
                 <Archive className="w-5 h-5 text-primary-9" />
-                <span className="font-medium text-base">Archived</span>
+                <span className="font-medium text-base">{t("chat.archivedTitle")}</span>
               </div>
               {totalArchivedUnread > 0 && (
                 <span

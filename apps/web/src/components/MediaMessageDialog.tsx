@@ -15,6 +15,7 @@ import { useContacts, useToggleStarMessage } from "@/lib/api/chatQueries";
 import { TMessage } from "@/lib/types";
 import { MessageText } from "./Message/MessageText";
 import { UserImage } from "./UserImage";
+import { useTranslation } from "@/lib/i18n";
 
 const dimensions: Record<"square" | "landscape" | "portrait", string> = {
   square: "aspect-[1]",
@@ -27,6 +28,7 @@ export function MediaMessageDialog({
 }: {
   mediaMessage: TMessage;
 }) {
+  const { t } = useTranslation();
   const [containerRef, { width, height }] = useElementSize();
   const [forwardMessagesDialog, setForwardMessagesDialog] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -45,14 +47,14 @@ export function MediaMessageDialog({
   const isOwnMsg = user.id === message.owner;
   const ownerName = isOwnMsg
     ? user.name
-    : contactEntry?.contact?.name || message.senderName || "Usuario";
+    : contactEntry?.contact?.name || message.senderName || t("common.user");
   const ownerPicture = isOwnMsg
     ? user.picture
     : contactEntry?.contact?.pictureUrl || message.senderPicture || "";
 
   if (!message) return null;
 
-  const formatTime = dayjs(message?.time).format("DD/MM/YYYY [a la(s)] HH:mm");
+  const formatTime = dayjs(message?.time).format(t("chat.mediaTimeFormat"));
   const ownReaction = message.reactions?.find((r) => r.owner === user.id);
 
   const handleZoomIn = () => setZoom((prev) => Math.min(3, +(prev + 0.25).toFixed(2)));
@@ -88,7 +90,7 @@ export function MediaMessageDialog({
               <div className="flex items-center gap-1 bg-background-5/50 rounded-lg px-2 py-1">
                 <IconButton
                   onClick={handleZoomOut}
-                  label="Alejar (Zoom Out)"
+                  label={t("chat.zoomOut")}
                   icon={ZoomOut}
                   disabled={zoom <= 0.5}
                 />
@@ -96,13 +98,13 @@ export function MediaMessageDialog({
                   type="button"
                   onClick={handleResetZoom}
                   className="text-xs text-background-12 font-medium px-1.5 py-0.5 rounded hover:bg-background-6 transition-colors select-none"
-                  title="Restablecer zoom"
+                  title={t("chat.resetZoom")}
                 >
                   {Math.round(zoom * 100)}%
                 </button>
                 <IconButton
                   onClick={handleZoomIn}
-                  label="Acercar (Zoom In)"
+                  label={t("chat.zoomIn")}
                   icon={ZoomIn}
                   disabled={zoom >= 3}
                 />
@@ -112,11 +114,11 @@ export function MediaMessageDialog({
                 onClick={() => {
                   setForwardMessagesDialog(true);
                 }}
-                label="Reenviar mensaje"
+                label={t("chat.forward")}
                 icon={Forward}
               />
               <IconButton
-                label="Destacar mensaje"
+                label={t("chat.starMessage")}
                 icon={Star}
                 iconClassName={
                   isStarred ? "fill-background-12" : undefined
@@ -127,12 +129,12 @@ export function MediaMessageDialog({
                 }}
               />
               <ReactionMenu ownReaction={ownReaction} message={message}>
-                <IconButton label="Reaccionar a este mensaje" icon={Smile} />
+                <IconButton label={t("chat.reactToMessage")} icon={Smile} />
               </ReactionMenu>
               <DialogClose asChild>
                 <IconButton
                   onClick={closeMediaMessage}
-                  label="Cerrar imagen"
+                  label={t("chat.closeImage")}
                   icon={X}
                 />
               </DialogClose>
@@ -163,7 +165,7 @@ export function MediaMessageDialog({
               ) : (
                 <img
                   src={message?.hasMedia?.src}
-                  alt={`Foto enviada por ${ownerName}`}
+                  alt={t("chat.photoSentBy", { name: ownerName })}
                   style={{
                     width,
                     height,

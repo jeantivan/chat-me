@@ -259,7 +259,7 @@ describe("Frontend Group Chat UI & Participant Management Seam", () => {
       </QueryClientProvider>
     );
 
-    const titleInput = screen.getByPlaceholderText(/Nombre del grupo/i);
+    const titleInput = screen.getByPlaceholderText(/Nombre del grupo|Group name/i);
     fireEvent.change(titleInput, { target: { value: "New Design Team" } });
 
     // Select Bob
@@ -267,7 +267,7 @@ describe("Frontend Group Chat UI & Participant Management Seam", () => {
     fireEvent.click(bobCheckbox);
 
     // Click create group button
-    const createButton = screen.getByRole("button", { name: /Crear grupo/i });
+    const createButton = screen.getByRole("button", { name: /Crear grupo|Create group/i });
     expect(createButton).not.toBeDisabled();
     fireEvent.click(createButton);
 

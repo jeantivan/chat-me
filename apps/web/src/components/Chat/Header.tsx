@@ -17,6 +17,7 @@ import { useUpdateChatParticipant } from "@/lib/api/chatQueries";
 import { UserImage } from "@/components/UserImage";
 import { ClearChatDialog } from "./ClearChatDialog";
 import { DeleteChatDialog } from "./DeleteChatDialog";
+import { useTranslation } from "@/lib/i18n";
 
 dayjs.extend(relativeTime);
 
@@ -31,6 +32,7 @@ const Content = ({
   onOpenClear: () => void;
   onOpenDelete: () => void;
 }) => {
+  const { t } = useTranslation();
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
   const closeChat = useStore((state) => state.closeChat);
   const updateParticipant = useUpdateChatParticipant();
@@ -42,7 +44,7 @@ const Content = ({
           rightDrawerGoTo("CONTACT_INFO");
         }}
       >
-        Info de contacto
+        {t("chat.contactInfo")}
       </MenuItem>
       <MenuItem
         onClick={(e) => {
@@ -50,7 +52,7 @@ const Content = ({
           rightDrawerGoTo("SHARED_CONTENT");
         }}
       >
-        Archivos
+        {t("chat.files")}
       </MenuItem>
 
       <MenuItem
@@ -59,7 +61,7 @@ const Content = ({
           updateParticipant.mutate({ chatId, muted: !isMuted });
         }}
       >
-        {isMuted ? "Activar notificaciones" : "Silenciar notificaciones"}
+        {isMuted ? t("chat.unmuteNotifications") : t("chat.muteNotifications")}
       </MenuItem>
       <MenuItem
         onClick={(e) => {
@@ -67,7 +69,7 @@ const Content = ({
           closeChat();
         }}
       >
-        Cerrar chat
+        {t("chat.closeChat")}
       </MenuItem>
 
       <MenuItem
@@ -76,7 +78,7 @@ const Content = ({
           onOpenClear();
         }}
       >
-        Vaciar chat
+        {t("chat.clearChat")}
       </MenuItem>
 
       <MenuItem
@@ -85,13 +87,14 @@ const Content = ({
           onOpenDelete();
         }}
       >
-        Eliminar chat
+        {t("chat.deleteChat")}
       </MenuItem>
     </MenuContent>
   );
 };
 
 export function Header({ chat }: { chat: TChat }) {
+  const { t } = useTranslation();
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
   const isInChatSearchOpen = useStore((state) => state.isInChatSearchOpen);
   const toggleInChatSearch = useStore((state) => state.toggleInChatSearch);
@@ -115,7 +118,7 @@ export function Header({ chat }: { chat: TChat }) {
           <span className="w-10 h-10 rounded-full mr-3 shrink-0">
             <UserImage
               src={picture}
-              alt={`Foto de perfil de ${name}`}
+              alt={t("chat.profilePictureOf", { name })}
               className="w-full h-full"
               fallback={
                 isGroup ? (
@@ -133,7 +136,7 @@ export function Header({ chat }: { chat: TChat }) {
                 data-testid="header-typing-indicator"
                 className="text-xs text-primary-9 font-medium italic leading-tight animate-pulse"
               >
-                typing...
+                {t("chat.typing")}
               </span>
             ) : isGroup ? (
               <span
@@ -148,7 +151,7 @@ export function Header({ chat }: { chat: TChat }) {
                 className="text-xs text-green-500 font-medium flex items-center gap-1 leading-tight"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-                online
+                {t("chat.online")}
               </span>
             ) : (
               <span
@@ -156,8 +159,8 @@ export function Header({ chat }: { chat: TChat }) {
                 className="text-xs text-background-11 leading-tight"
               >
                 {presence?.lastSeenAt
-                  ? `last seen ${dayjs(presence.lastSeenAt).fromNow()}`
-                  : "offline"}
+                  ? t("chat.lastSeen", { time: dayjs(presence.lastSeenAt).fromNow() })
+                  : t("chat.offline")}
               </span>
             )}
           </span>
@@ -166,12 +169,12 @@ export function Header({ chat }: { chat: TChat }) {
           <IconButton
             data-testid="toggle-in-chat-search"
             icon={Search}
-            label="Buscar"
+            label={t("common.search")}
             onClick={() => toggleInChatSearch()}
           />
           <MenuRoot>
             <MenuTrigger asChild>
-              <IconButton icon={MoreVerticalIcon} label="Abrir menu del chat" />
+              <IconButton icon={MoreVerticalIcon} label={t("chat.openChatMenu")} />
             </MenuTrigger>
             <Content
               chatId={chat.id}
@@ -193,7 +196,7 @@ export function Header({ chat }: { chat: TChat }) {
             type="text"
             value={inChatSearchQuery}
             onChange={(e) => setInChatSearchQuery(e.target.value)}
-            placeholder="Buscar en el chat"
+            placeholder={t("chat.searchInChatPlaceholder")}
             className="flex-1 bg-transparent text-sm text-background-12 placeholder:text-background-10 focus:outline-none"
             autoFocus
           />
@@ -201,7 +204,7 @@ export function Header({ chat }: { chat: TChat }) {
             <button
               type="button"
               data-testid="clear-in-chat-search"
-              aria-label="Clear in-chat search"
+              aria-label={t("chat.clearInChatSearch")}
               onClick={clearInChatSearchQuery}
               className="p-1 text-background-10 hover:text-background-12 shrink-0 cursor-pointer"
             >
@@ -211,7 +214,7 @@ export function Header({ chat }: { chat: TChat }) {
           <button
             type="button"
             data-testid="close-in-chat-search"
-            aria-label="Close search"
+            aria-label={t("chat.closeSearch")}
             onClick={() => toggleInChatSearch(false)}
             className="p-1 text-background-10 hover:text-background-12 shrink-0 cursor-pointer"
           >

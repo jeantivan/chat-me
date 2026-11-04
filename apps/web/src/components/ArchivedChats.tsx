@@ -3,10 +3,12 @@ import orderBy from "lodash/orderBy";
 import { useUserId } from "@/lib/hooks";
 import { useChats } from "@/lib/api/chatQueries";
 import { toUiChat, getDateOfLastMessage } from "@/lib/utils/chatAdapter";
+import { useTranslation } from "@/lib/i18n";
 import { ChatItem } from "./ChatItem";
 import { ScrollArea } from "./ui/ScrollArea";
 
 export function ArchivedChats() {
+  const { t } = useTranslation();
   const currentUserId = useUserId();
   const { data: serverChats } = useChats();
 
@@ -18,7 +20,7 @@ export function ArchivedChats() {
   }, [serverChats, currentUserId]);
 
   return (
-    <ScrollArea type="always" className="p-2">
+    <ScrollArea type="always" className="p-2" aria-label={t("menu.archivedChats")}>
       <div className="grid gap-1">
         {archivedChats.map((chat) => (
           <ChatItem key={chat.id} chat={chat} />

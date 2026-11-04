@@ -11,6 +11,7 @@ import { TChat } from "@/lib/types";
 import { useCurrentChatId } from "@/lib/hooks";
 import { useChatDisplay } from "@/lib/hooks/useChatCounterpart";
 import { router } from "@/routes/router";
+import { useTranslation } from "@/lib/i18n";
 
 const iconVariants = {
   initial: { scale: 0, opacity: 0, y: -10 },
@@ -35,6 +36,7 @@ interface ChatItemProps {
   chat: TChat;
 }
 export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
+  const { t } = useTranslation();
   const { currentChatId, setCurrentChatId } = useCurrentChatId();
 
   const { hasUnreadMsg } = chat;
@@ -61,7 +63,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
         <div className="w-14 h-14 relative">
           <UserImage
             src={picture}
-            alt={`Foto de perfil de ${name}`}
+            alt={t("chat.profilePictureOf", { name })}
             className="w-full h-full"
             fallback={
               isGroup ? (
@@ -111,7 +113,7 @@ export const ChatItem = memo(function ChatItemRoot({ chat }: ChatItemProps) {
               data-testid="chat-typing-indicator"
               className="text-sm text-primary-9 font-medium italic animate-pulse flex-1"
             >
-              typing...
+              {t("chat.typing")}
             </div>
           ) : (
             lastMessage && (

@@ -10,15 +10,17 @@ import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from "./ui/Menu";
 import useStore from "@/lib/store";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { IconButton } from "./ui/IconButton";
+import { useTranslation } from "@/lib/i18n";
 
 export function ShowMoreMenu() {
+  const { t } = useTranslation();
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
   const { logout } = useAuth();
 
   return (
     <MenuRoot>
       <MenuTrigger asChild>
-        <IconButton icon={MoreVertical} label="Mostrar más" />
+        <IconButton icon={MoreVertical} label={t("menu.showMore")} />
       </MenuTrigger>
       <MenuContent align="end" className="w-60">
         <MenuItem
@@ -27,7 +29,7 @@ export function ShowMoreMenu() {
             leftDrawerGoTo("NEW_GROUP");
           }}
         >
-          Nuevo grupo
+          {t("menu.newGroup")}
         </MenuItem>
         <MenuItem
           icon={Archive}
@@ -35,7 +37,7 @@ export function ShowMoreMenu() {
             leftDrawerGoTo("ARCHIVED_CHATS");
           }}
         >
-          Chats Archivados
+          {t("menu.archivedChats")}
         </MenuItem>
         <MenuItem
           icon={Bookmark}
@@ -43,7 +45,7 @@ export function ShowMoreMenu() {
             leftDrawerGoTo("STARRED_MESSAGES");
           }}
         >
-          Mensajes destacados
+          {t("menu.starredMessages")}
         </MenuItem>
         <MenuItem
           icon={Settings}
@@ -51,7 +53,7 @@ export function ShowMoreMenu() {
             leftDrawerGoTo("OPTIONS");
           }}
         >
-          Configuración
+          {t("menu.settings")}
         </MenuItem>
 
         <MenuItem
@@ -60,7 +62,7 @@ export function ShowMoreMenu() {
             logout();
           }}
         >
-          Cerrar sesión
+          {t("menu.logOut")}
         </MenuItem>
       </MenuContent>
     </MenuRoot>

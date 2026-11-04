@@ -150,21 +150,21 @@ describe("User Profile Persistence, S3 Avatar Pipeline & Socket Sync Seam", () =
     renderWithProviders(<ChangeUserImage />);
 
     // Trigger avatar menu
-    const menuTrigger = screen.getByRole("button", { name: /foto de perfil|opciones de foto/i });
+    const menuTrigger = screen.getByRole("button", { name: /foto de perfil|opciones de foto|choose profile picture/i });
     fireEvent.pointerDown(menuTrigger, { pointerType: "mouse" });
     fireEvent.click(menuTrigger);
 
     // Menu options should be visible
-    expect(screen.getByText(/ver foto/i)).toBeInTheDocument();
-    expect(screen.getByText(/subir foto|cambiar foto/i)).toBeInTheDocument();
-    expect(screen.getByText(/eliminar foto/i)).toBeInTheDocument();
+    expect(screen.getByText(/ver foto|view photo/i)).toBeInTheDocument();
+    expect(screen.getByText(/subir foto|cambiar foto|upload photo/i)).toBeInTheDocument();
+    expect(screen.getByText(/eliminar foto|delete photo/i)).toBeInTheDocument();
 
     // 1. View photo opens lightbox
-    fireEvent.click(screen.getByText(/ver foto/i));
+    fireEvent.click(screen.getByText(/ver foto|view photo/i));
     expect(screen.getByTestId("avatar-lightbox")).toBeInTheDocument();
 
     // Close lightbox
-    const closeBtn = screen.getByRole("button", { name: /cerrar/i });
+    const closeBtn = screen.getByRole("button", { name: /cerrar|close/i });
     fireEvent.click(closeBtn);
     await waitFor(() => {
       expect(screen.queryByTestId("avatar-lightbox")).not.toBeInTheDocument();
@@ -172,7 +172,7 @@ describe("User Profile Persistence, S3 Avatar Pipeline & Socket Sync Seam", () =
 
     // 2. Upload photo via presigned S3 pipeline
     const file = new File(["fake binary avatar"], "new-avatar.png", { type: "image/png" });
-    const fileInput = screen.getByLabelText(/seleccionar imagen de perfil/i);
+    const fileInput = screen.getByLabelText(/seleccionar imagen de perfil|select profile picture/i);
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
@@ -217,7 +217,7 @@ describe("User Profile Persistence, S3 Avatar Pipeline & Socket Sync Seam", () =
     // 3. Remove photo clears pictureUrl
     fireEvent.pointerDown(menuTrigger, { pointerType: "mouse" });
     fireEvent.click(menuTrigger);
-    fireEvent.click(screen.getByText(/eliminar foto/i));
+    fireEvent.click(screen.getByText(/eliminar foto|delete photo/i));
 
     await waitFor(() => {
       expect(fetchMock).toHaveBeenCalledWith(
