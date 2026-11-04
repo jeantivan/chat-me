@@ -8,7 +8,6 @@ import {
   createChatSlice,
   createLeftDrawerSlice,
   createRightDrawerSlice,
-  createLoadingSlice,
   createMediaMessageSlice,
   createSearchSlice,
 } from "./slices";
@@ -17,7 +16,6 @@ const useStore = create<StoreSlice>()(
   devtools(
     persist(
       immer((...a) => ({
-        ...createLoadingSlice(...a),
         ...createProfileSlice(...a),
         ...createCurrentChatIdSlice(...a),
         ...createChatSlice(...a),
