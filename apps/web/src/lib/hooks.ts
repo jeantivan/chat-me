@@ -19,17 +19,3 @@ export function useTheme() {
     colors: theme.colors,
   }));
 }
-
-/**
- * @deprecated Legacy hook. Server mutations belong in TanStack Query (`useUpdateChatParticipant`, `useDeleteChat`, `useClearChat`) per ADR 0003.
- * For closing the active viewport, use `useStore((state) => state.closeChat)`.
- */
-export function useChatActions() {
-  return useStore((state) => ({
-    archiveChat: state.archiveChat,
-    muteChat: state.muteChat,
-    closeChat: state.closeChat,
-    deleteChat: state.deleteChat,
-    pinChat: state.pinChat,
-  }));
-}

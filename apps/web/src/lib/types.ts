@@ -12,7 +12,6 @@ export type TParticipant = TUser & {
 
 export type TProfile = {
   user: TUser;
-  contacts: TUser[];
 } & TConfig;
 
 export type TConfig = {

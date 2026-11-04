@@ -23,13 +23,6 @@ let mockCurrentUserId = "user-alice";
 vi.mock("../src/lib/hooks", () => ({
   useUserId: () => mockCurrentUserId,
   useCurrentChatId: () => ({ currentChatId: "chat-active", setCurrentChatId: vi.fn() }),
-  useChatActions: () => ({
-    archiveChat: vi.fn(),
-    muteChat: vi.fn(),
-    deleteChat: vi.fn(),
-    closeChat: vi.fn(),
-    pinChat: vi.fn(),
-  }),
 }));
 
 vi.mock("../src/lib/api/chatQueries", async () => {

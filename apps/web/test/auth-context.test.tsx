@@ -170,6 +170,6 @@ describe("Frontend AuthContext Seam", () => {
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBeNull();
     expect(result.current.token).toBeNull();
-    expect(useStore.getState().user.id).toBe("348441f8-c083-4cd1-9af3-59ca8cab0917");
+    expect(useStore.getState().user.id).toBe("");
   });
 });

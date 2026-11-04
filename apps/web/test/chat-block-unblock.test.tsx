@@ -53,11 +53,6 @@ vi.mock("../src/lib/hooks", () => ({
       currentActiveChatId = id;
     }),
   }),
-  useChatActions: () => ({
-    muteChat: vi.fn(),
-    deleteChat: vi.fn(),
-    closeChat: vi.fn(),
-  }),
 }));
 
 describe("Direct Chat Block / Unblock Interaction & Composer Banner Seam", () => {

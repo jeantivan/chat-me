@@ -133,13 +133,6 @@ vi.mock("../src/lib/hooks", () => ({
     currentChatId: "chat-direct-1",
     setCurrentChatId: vi.fn(),
   }),
-  useChatActions: () => ({
-    archiveChat: vi.fn(),
-    muteChat: vi.fn(),
-    deleteChat: vi.fn(),
-    closeChat: vi.fn(),
-    pinChat: vi.fn(),
-  }),
 }));
 
 vi.mock("../src/lib/hooks/useChatCounterpart", () => ({

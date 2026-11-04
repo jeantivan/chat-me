@@ -6,10 +6,10 @@ import { sysModePref } from "@/lib/utils/sysModePref.js";
 const initialProfileState: TProfile = {
   // TUser values
   user: {
-    id: "348441f8-c083-4cd1-9af3-59ca8cab0917",
-    name: "Jane Doe",
-    bio: "Hola estoy usando ChatMe!",
-    phone: "000 000 0000",
+    id: "",
+    name: "",
+    bio: "",
+    phone: "",
     picture: "",
   },
   // TNotifications
@@ -32,7 +32,6 @@ const initialProfileState: TProfile = {
     mode: sysModePref(),
     colors: "slate-indigo",
   },
-  contacts: [],
 };
 
 export const createProfileSlice: StateCreator<
@@ -149,7 +148,6 @@ export const createProfileSlice: StateCreator<
       state.notifications = { ...initialProfileState.notifications };
       state.privacy = { ...initialProfileState.privacy };
       state.theme = { ...initialProfileState.theme };
-      state.contacts = [];
     });
   },
 });
