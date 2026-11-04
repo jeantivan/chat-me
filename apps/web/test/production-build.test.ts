@@ -190,4 +190,34 @@ describe("Production Build & Docker Configuration Seam", () => {
     expect(execSync("make -n seed", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/db:seed/);
     expect(execSync("make -n health", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/health/);
   });
+
+  it("enforces web asset hygiene by eliminating dead prototype assets, duplicate emoji dictionaries, and orphaned utilities", () => {
+    const webRoot = path.resolve(__dirname, "..");
+    const assetsDir = path.join(webRoot, "src/assets");
+    const utilsDir = path.join(webRoot, "src/lib/utils");
+    const componentsDir = path.join(webRoot, "src/components");
+
+    // Legacy prototype SVG reaction icons must be deleted
+    const reactionsEmojisDir = path.join(assetsDir, "reactions-emojis");
+    expect(fs.existsSync(reactionsEmojisDir)).toBe(false);
+
+    // Duplicate emoji dictionaries must be deleted
+    expect(fs.existsSync(path.join(assetsDir, "emojis-pretty.json"))).toBe(false);
+    expect(fs.existsSync(path.join(assetsDir, "emojis-dictionary.json"))).toBe(false);
+
+    // Active emoji dictionaries must remain present and parseable
+    const activeEmojis = path.join(assetsDir, "emojis.json");
+    const activeEmojiDict = path.join(assetsDir, "emojis-dictionary-pretty.json");
+    expect(fs.existsSync(activeEmojis)).toBe(true);
+    expect(fs.existsSync(activeEmojiDict)).toBe(true);
+    expect(() => JSON.parse(fs.readFileSync(activeEmojis, "utf-8"))).not.toThrow();
+    expect(() => JSON.parse(fs.readFileSync(activeEmojiDict, "utf-8"))).not.toThrow();
+
+    // Orphaned utilities must be deleted
+    expect(fs.existsSync(path.join(utilsDir, "createMessage.ts"))).toBe(false);
+    expect(fs.existsSync(path.join(utilsDir, "getImageData.ts"))).toBe(false);
+
+    // Orphaned component must be deleted
+    expect(fs.existsSync(path.join(componentsDir, "Fab.tsx"))).toBe(false);
+  });
 });
