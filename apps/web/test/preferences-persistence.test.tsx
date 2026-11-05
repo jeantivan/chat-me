@@ -5,6 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Theme } from "../src/components/Configuration/Theme";
 import { Notifications } from "../src/components/Configuration/Notifications";
 import useStore from "../src/lib/store";
+import { useTranslation } from "../src/lib/i18n";
+
+// These suites assert the Spanish (es) copy; pin the locale for determinism.
+beforeEach(() => {
+  useTranslation.getState().setLocale("es");
+});
 
 describe("User Preferences Persistence & Drawers Seam", () => {
   let queryClient: QueryClient;

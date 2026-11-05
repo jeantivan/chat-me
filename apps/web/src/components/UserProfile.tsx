@@ -3,8 +3,10 @@ import { UserImage } from "./UserImage";
 import { ShowMoreMenu } from "./ShowMoreMenu";
 import { IconButton } from "./ui/IconButton";
 import useStore from "@/lib/store";
+import { useTranslation } from "@/lib/i18n";
 
 export function UserProfile() {
+  const { t } = useTranslation();
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
 
   return (
@@ -23,7 +25,7 @@ export function UserProfile() {
       <div className="flex items-center gap-2">
         <IconButton
           icon={Edit}
-          label="Nuevo chat"
+          label={t("drawer.newChat")}
           onClick={() => {
             leftDrawerGoTo("NEW_CHAT");
           }}

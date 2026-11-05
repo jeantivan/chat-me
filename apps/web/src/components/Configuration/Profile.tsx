@@ -3,9 +3,11 @@ import { EditableInput } from "@/components/EditableInput";
 import { ChangeUserImage } from "@/components/ChangeUserImage";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
+import { useTranslation } from "@/lib/i18n";
 import { useUserProfile, useUpdateProfile } from "@/lib/api/profileQueries";
 
 export function Profile() {
+  const { t } = useTranslation();
   const { data: userProfile } = useUserProfile();
   const zustandUser = useStore((state) => state.user);
   const name = userProfile?.name ?? zustandUser.name;
@@ -36,20 +38,19 @@ export function Profile() {
       <div className="p-6 ">
         <div className="mb-10">
           <EditableInput
-            label="Nombre"
+            label={t("settings.nameLabel")}
             value={name}
             maxLength={100}
             required
             onSave={handleSaveUserName}
           />
           <div className="text-sm text-background-11">
-            Este no es tu nombre de usuario ni un PIN. Este nombre será visible
-            para tus contactos de ChatMe.
+            {t("settings.nameHelper")}
           </div>
         </div>
         <div className="mb-5">
           <EditableInput
-            label="Estado"
+            label={t("settings.statusLabel")}
             value={bio}
             maxLength={500}
             onSave={handleSaveUserStatus}

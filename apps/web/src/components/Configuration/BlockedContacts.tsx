@@ -10,8 +10,10 @@ import {
   useBlockUser,
   useUnblockUser,
 } from "@/lib/api/settingsQueries";
+import { useTranslation } from "@/lib/i18n";
 
 export function BlockedContacts() {
+  const { t } = useTranslation();
   const { data: blockedUsers = [] } = useBlockedUsers();
   const { data: contacts = [] } = useContacts();
   const { mutate: blockUser, isPending: isBlocking } = useBlockUser();
@@ -39,19 +41,19 @@ export function BlockedContacts() {
             className="flex items-center gap-3 p-3 rounded-lg bg-background-3 hover:bg-background-4 text-primary-9 transition-colors text-left font-medium text-sm"
           >
             <Icon icon={UserPlus} label="add-user-icon" className="w-5 h-5 text-primary-9" />
-            <span>Añadir contacto para bloquear</span>
+            <span>{t("settings.addContactToBlock")}</span>
           </button>
         ) : (
           <div className="flex flex-col gap-2 p-3 bg-background-3 rounded-lg border border-background-6">
             <div className="flex items-center justify-between pb-2 border-b border-background-5">
               <span className="text-sm font-semibold text-background-12">
-                Selecciona un contacto para bloquear
+                {t("settings.selectContactToBlock")}
               </span>
               <button
                 type="button"
                 onClick={() => setIsAddingBlock(false)}
                 className="p-1 rounded hover:bg-background-4 text-background-10"
-                aria-label="Cerrar selección"
+                aria-label={t("settings.closeSelection")}
               >
                 <Icon icon={X} label="close-icon" className="w-4 h-4" />
               </button>
@@ -59,7 +61,7 @@ export function BlockedContacts() {
 
             {availableToBlock.length === 0 ? (
               <p className="text-xs text-background-11 py-2">
-                No hay contactos disponibles para bloquear
+                {t("settings.noContactsToBlock")}
               </p>
             ) : (
               <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
@@ -105,7 +107,7 @@ export function BlockedContacts() {
         {/* List of blocked contacts */}
         <div className="flex flex-col gap-2">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-background-11 px-1">
-            Usuarios bloqueados ({blockedUsers.length})
+            {t("settings.blockedUsersCount", { count: blockedUsers.length })}
           </h3>
 
           {blockedUsers.length === 0 ? (
@@ -116,14 +118,14 @@ export function BlockedContacts() {
                 className="w-10 h-10 text-background-9 stroke-1"
               />
               <p data-testid="no-blocked-users" className="text-sm text-background-11">
-                No tienes contactos bloqueados
+                {t("settings.noBlockedContacts")}
               </p>
             </div>
           ) : (
             <div className="flex flex-col divide-y divide-background-5">
               {blockedUsers.map((item) => {
                 const targetId = item.id;
-                const displayName = item.name || item.user?.name || "Usuario";
+                const displayName = item.name || item.user?.name || t("common.user");
                 const displayBio = item.bio || item.user?.bio || item.email || item.user?.email || "";
                 const displayPicture = item.pictureUrl || item.user?.pictureUrl || "";
 
@@ -159,7 +161,7 @@ export function BlockedContacts() {
                       onClick={() => unblockUser(targetId)}
                       className="shrink-0 text-xs px-3 py-1.5"
                     >
-                      Desbloquear
+                      {t("settings.unblock")}
                     </Button>
                   </div>
                 );

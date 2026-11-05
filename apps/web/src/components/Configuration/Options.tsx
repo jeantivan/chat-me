@@ -4,12 +4,50 @@ import {
   Bell,
   Lock,
   Paintbrush,
+  Languages,
 } from "lucide-react";
 
 import { Icon } from "@/components/ui/Icon";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { UserImage } from "@/components/UserImage";
 import useStore from "@/lib/store";
+import { Locale, useTranslation } from "@/lib/i18n";
+
+const LANGUAGE_OPTIONS: { value: Locale; label: string }[] = [
+  { value: "en", label: "English" },
+  { value: "es", label: "Español" },
+];
+
+const LanguageSelector = () => {
+  const { t, locale, setLocale } = useTranslation();
+  const label = t("settings.language");
+  return (
+    <div className="w-full flex items-center">
+      <span className="w-20 flex items-center justify-center">
+        <Icon icon={Languages} label={label} className="w-6 h-6 text-background-10" />
+      </span>
+      <label
+        htmlFor="settings-language"
+        className="py-4 pr-4 flex-1 flex items-center gap-4 border-b text-left text-lg font-medium text-background-12 border-background-7"
+      >
+        <span className="flex-1">{label}</span>
+        <select
+          id="settings-language"
+          data-testid="language-selector"
+          value={locale}
+          onChange={(e) => setLocale(e.target.value as Locale)}
+          className="bg-background-1 text-background-12 text-sm font-normal border border-background-7 rounded px-2 py-1 cursor-pointer"
+        >
+          {LANGUAGE_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </label>
+    </div>
+  );
+};
 
 const UserProfileSummary = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   const { name, bio } = useStore((state) => state.user);
@@ -53,6 +91,7 @@ const Item = ({ icon, label, subtitle, ...rest }: ItemProps) => (
 );
 
 export function Options() {
+  const { t } = useTranslation();
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
   const { bio } = useStore((state) => state.user);
   const notifications = useStore((state) => state.notifications);
@@ -60,25 +99,25 @@ export function Options() {
   const theme = useStore((state) => state.theme);
 
   const notificationSubtitle = !notifications.all
-    ? "Desactivadas"
+    ? t("settings.notificationsOff")
     : notifications.sound && notifications.reactions
-    ? "Sonidos y reacciones activados"
+    ? t("settings.notificationsSoundAndReactions")
     : notifications.sound
-    ? "Sonidos activados"
+    ? t("settings.notificationsSound")
     : notifications.reactions
-    ? "Reacciones activadas"
-    : "Activadas";
+    ? t("settings.notificationsReactions")
+    : t("settings.notificationsOn");
 
   const privacySubtitle = privacy.readReceipt
-    ? "Confirmaciones de lectura activadas"
-    : "Confirmaciones de lectura desactivadas";
+    ? t("settings.readReceiptsOn")
+    : t("settings.readReceiptsOff");
 
   const themeSubtitle =
     theme.mode === "dark"
-      ? "Oscuro"
+      ? t("settings.themeDark")
       : theme.mode === "light"
-      ? "Claro"
-      : "Tema del sistema";
+      ? t("settings.themeLight")
+      : t("settings.themeSystem");
 
   return (
     <ScrollArea type="auto" className="pr-2.5">
@@ -88,15 +127,15 @@ export function Options() {
         }}
       />
       <Item
-        label="Perfil"
-        subtitle={bio || "Nombre y mensaje de estado"}
+        label={t("settings.profile")}
+        subtitle={bio || t("settings.profileSubtitle")}
         icon={UserIcon}
         onClick={() => {
           leftDrawerGoTo("PROFILE");
         }}
       />
       <Item
-        label="Notificaciones"
+        label={t("settings.notifications")}
         subtitle={notificationSubtitle}
         icon={Bell}
         onClick={() => {
@@ -104,7 +143,7 @@ export function Options() {
         }}
       />
       <Item
-        label="Privacidad"
+        label={t("settings.privacy")}
         subtitle={privacySubtitle}
         icon={Lock}
         onClick={() => {
@@ -112,17 +151,18 @@ export function Options() {
         }}
       />
       <Item
-        label="Tema"
+        label={t("settings.theme")}
         subtitle={themeSubtitle}
         icon={Paintbrush}
         onClick={() => {
           leftDrawerGoTo("THEME");
         }}
       />
+      <LanguageSelector />
       <footer className="flex w-full justify-center p-3 mt-5">
         <p className="text-base text-background-12">
-          Made with{" "}
-          <span className="mx-2" aria-label="Cup of coffee">
+          {t("welcome.madeWith")}{" "}
+          <span className="mx-2" aria-label={t("welcome.cupOfCoffee")}>
             ☕
           </span>
           <a

@@ -1,6 +1,7 @@
 import { ShieldCheck, ShieldAlert, UserMinus } from "lucide-react";
 import type { ChatParticipantSummary } from "@chat-me/shared";
 import { UserImage } from "@/components/UserImage";
+import { useTranslation } from "@/lib/i18n";
 
 interface GroupParticipantItemProps {
   participant: ChatParticipantSummary;
@@ -19,6 +20,7 @@ export function GroupParticipantItem({
   onToggleRole,
   onRemove,
 }: GroupParticipantItemProps) {
+  const { t } = useTranslation();
   const p = participant;
 
   return (
@@ -41,11 +43,11 @@ export function GroupParticipantItem({
           <div className="text-sm font-medium text-background-12 truncate flex items-center gap-2">
             <span>{p.user?.name}</span>
             {isSelf && (
-              <span className="text-xs text-background-11">(Tú)</span>
+              <span className="text-xs text-background-11">{t("info.you")}</span>
             )}
           </div>
           <div className="text-xs text-background-11 truncate">
-            {isOnline ? "En línea" : "Desconectado"}
+            {isOnline ? t("info.online") : t("info.offline")}
             {p.user?.bio ? ` • ${p.user.bio}` : ""}
           </div>
         </div>
@@ -57,21 +59,23 @@ export function GroupParticipantItem({
             data-testid="admin-badge"
             className="text-xs px-2 py-0.5 rounded bg-primary-3 text-primary-9 font-medium"
           >
-            Admin
+            {t("info.admin")}
           </span>
         ) : (
           <span
             data-testid="member-badge"
             className="text-xs px-2 py-0.5 rounded bg-background-6 text-background-11 font-medium"
           >
-            Miembro
+            {t("info.member")}
           </span>
         )}
 
         {isAdmin && !isSelf && (
           <div className="flex items-center gap-1">
             <button
-              title={p.role === "admin" ? "Degradar a miembro" : "Promover a admin"}
+              title={
+                p.role === "admin" ? t("info.demoteToMember") : t("info.promoteToAdmin")
+              }
               onClick={() => onToggleRole(p.userId, p.role)}
               className="p-1 rounded text-background-11 hover:text-primary-9 hover:bg-background-6/20"
             >
@@ -82,7 +86,7 @@ export function GroupParticipantItem({
               )}
             </button>
             <button
-              title="Eliminar del grupo"
+              title={t("info.removeFromGroup")}
               onClick={() => onRemove(p.userId)}
               className="p-1 rounded text-background-11 hover:text-red-500 hover:bg-background-6/20"
             >

@@ -211,7 +211,7 @@ describe("Frontend Message Reactions, Starred Messages, Deletion & Forwarding Se
       </QueryClientProvider>
     );
 
-    expect(screen.getByText("Mensajes destacados")).toBeInTheDocument();
+    expect(screen.getByText(/mensajes destacados|starred messages/i)).toBeInTheDocument();
     expect(screen.getByText("Bookmarked architecture decision")).toBeInTheDocument();
   });
 

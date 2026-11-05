@@ -5,6 +5,7 @@ import mc from "@/lib/utils/mergeClassnames";
 import { useTheme } from "@/lib/hooks";
 import { TTheme } from "@/lib/types";
 import { useUpdateSettings } from "@/lib/api/settingsQueries";
+import { useTranslation } from "@/lib/i18n";
 
 type Option = { name: string; bg: string };
 const options: Record<TTheme["colors"], Option> = {
@@ -51,13 +52,14 @@ const ModeItem = (props: RadioGroup.RadioGroupItemProps) => {
 };
 
 export function Theme() {
+  const { t } = useTranslation();
   const { colors, mode, changeThemeColors, changeThemeMode } = useTheme();
   const { mutate: updateSettings } = useUpdateSettings();
 
   return (
     <div className="overflow-y-auto flex-1 bg-background-1 flex flex-col p-4">
       <div className="mb-5">
-        <p className="text-primary-10 mb-4">Color principal</p>
+        <p className="text-primary-10 mb-4">{t("settings.primaryColor")}</p>
         <RadioGroup.Root
           className="w-full grid grid-cols-3 gap-4"
           value={colors}
@@ -73,7 +75,7 @@ export function Theme() {
         </RadioGroup.Root>
       </div>
       <div className="mb-5">
-        <p className="text-primary-10 mb-4">Modo</p>
+        <p className="text-primary-10 mb-4">{t("settings.mode")}</p>
         <RadioGroup.Root
           value={mode}
           onValueChange={(newValue) => {
@@ -84,11 +86,11 @@ export function Theme() {
           className="flex"
         >
           <ModeItem value="light">
-            <Sun className="w-4 h-4" /> Claro
+            <Sun className="w-4 h-4" /> {t("settings.themeLight")}
           </ModeItem>
           <ModeItem value="dark">
             <Moon className="w-4 h-4" />
-            Oscuro
+            {t("settings.themeDark")}
           </ModeItem>
         </RadioGroup.Root>
       </div>

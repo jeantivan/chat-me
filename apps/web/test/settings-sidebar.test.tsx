@@ -6,6 +6,7 @@ import { Privacy } from "../src/components/Configuration/Privacy";
 import { ChangeUserImage } from "../src/components/ChangeUserImage";
 import { LeftColumn } from "../src/containers/LeftColumn";
 import useStore from "../src/lib/store";
+import { useTranslation } from "../src/lib/i18n";
 
 vi.mock("../src/components", () => ({
   UserProfile: () => <div data-testid="user-profile-stub">UserProfileStub</div>,
@@ -15,6 +16,11 @@ vi.mock("../src/components", () => ({
 vi.mock("../src/components/UserImage", () => ({
   UserImage: () => <div data-testid="user-image-stub">UserImageStub</div>,
 }));
+
+// These suites assert the Spanish (es) copy; pin the locale for determinism.
+beforeEach(() => {
+  useTranslation.getState().setLocale("es");
+});
 
 describe("Settings Sidebar Cleanup & Summary Navigation Seam", () => {
   const leftDrawerGoToMock = vi.fn();

@@ -3,9 +3,11 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Separator } from "@/components/ui/Separator";
 import { Label } from "@/components/ui/Label";
 import useStore from "@/lib/store";
+import { useTranslation } from "@/lib/i18n";
 import { useUpdateSettings } from "@/lib/api/settingsQueries";
 
 export function Notifications() {
+  const { t } = useTranslation();
   const notifications = useStore((state) => state.notifications);
   const toggleNotification = useStore((state) => state.toggleNotifications);
   const { mutate: updateSettings } = useUpdateSettings();
@@ -18,12 +20,12 @@ export function Notifications() {
       transition={{ type: "tween" }}
     >
       <div className="p-6">
-        <h2 className="text-primary-9 mb-6">Mensajes</h2>
+        <h2 className="text-primary-9 mb-6">{t("settings.messagesHeading")}</h2>
         <div className="flex gap-4 items-center w-full mb-2">
           <Label htmlFor="all">
-            Notificaciones de mensajes
+            {t("settings.messageNotifications")}
             <span className="mt-1 text-sm select-none inline-block text-background-11">
-              Se muestran notificaciones de mensajes nuevos
+              {t("settings.messageNotificationsDesc")}
             </span>
           </Label>
           <Checkbox
@@ -39,7 +41,7 @@ export function Notifications() {
         <Separator />
         <div className="flex gap-4 items-center w-full mt-5 mb-4">
           <Label htmlFor="preview" disabled={!notifications.all}>
-            Vista previa de los mensajes
+            {t("settings.messagePreview")}
           </Label>
           <Checkbox
             id="preview"
@@ -55,7 +57,7 @@ export function Notifications() {
         </div>
         <div className="flex gap-4 items-center w-full">
           <Label htmlFor="reactions" disabled={!notifications.all}>
-            Mostrar notificaciones de reacciones
+            {t("settings.reactionNotifications")}
           </Label>
           <Checkbox
             id="reactions"
@@ -71,9 +73,9 @@ export function Notifications() {
         </div>
         <div className="flex items-center w-full mt-12">
           <Label htmlFor="sound" disabled={!notifications.all}>
-            Sonido
+            {t("settings.sound")}
             <span className="mt-1 text-sm select-none inline-block text-background-11">
-              Reproduce un sonido cuando llega un mensaje
+              {t("settings.soundDesc")}
             </span>
           </Label>
           <Checkbox

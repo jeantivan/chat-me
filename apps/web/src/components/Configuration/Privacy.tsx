@@ -7,18 +7,20 @@ import { Icon } from "@/components/ui/Icon";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
+import { TranslationKey, useTranslation } from "@/lib/i18n";
 import { useUserSettings, useUpdateSettings, useBlockedUsers } from "@/lib/api/settingsQueries";
 
-const AUDIENCE_LABELS: Record<PrivacyAudience, string> = {
-  all: "Todos",
-  contacts: "Mis contactos",
-  none: "Nadie",
+const AUDIENCE_LABEL_KEYS: Record<PrivacyAudience, TranslationKey> = {
+  all: "settings.audienceAll",
+  contacts: "settings.audienceContacts",
+  none: "settings.audienceNone",
 };
+
+const AUDIENCE_VALUES: PrivacyAudience[] = ["all", "contacts", "none"];
 
 interface AudienceOptionProps {
   id: string;
   label: string;
-  ariaLabel?: string;
   value: PrivacyAudience;
   onChange: (value: PrivacyAudience) => void;
   className?: string;
@@ -27,29 +29,31 @@ interface AudienceOptionProps {
 function AudienceOption({
   id,
   label,
-  ariaLabel,
   value,
   onChange,
   className = "relative flex py-4 items-center text-sm cursor-pointer group",
 }: AudienceOptionProps) {
+  const { t } = useTranslation();
   return (
     <div className={className}>
       <div className="flex-1">
         <h3 className="text-background-12">{label}</h3>
         <p className="text-background-11">
-          {AUDIENCE_LABELS[value] || "Todos"}
+          {t(AUDIENCE_LABEL_KEYS[value] ?? AUDIENCE_LABEL_KEYS.all)}
         </p>
       </div>
       <select
         id={id}
-        aria-label={ariaLabel || label}
+        aria-label={label}
         value={value}
         onChange={(e) => onChange(e.target.value as PrivacyAudience)}
         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
       >
-        <option value="all">Todos</option>
-        <option value="contacts">Mis contactos</option>
-        <option value="none">Nadie</option>
+        {AUDIENCE_VALUES.map((audience) => (
+          <option key={audience} value={audience}>
+            {t(AUDIENCE_LABEL_KEYS[audience])}
+          </option>
+        ))}
       </select>
       <Icon
         icon={ChevronRight}
@@ -61,6 +65,7 @@ function AudienceOption({
 }
 
 export function Privacy() {
+  const { t } = useTranslation();
   const { data: userSettings } = useUserSettings();
   const { data: blockedUsers = [] } = useBlockedUsers();
   const zustandPrivacy = useStore((state) => state.privacy);
@@ -81,13 +86,12 @@ export function Privacy() {
       <div className="grid pr-2.5 bg-background-5">
         <div className="py-4 px-6 mb-5 bg-background-2">
           <h2 className="text-primary-9 mb-4">
-            Quién puede ver mi información personal
+            {t("settings.privacyHeading")}
           </h2>
 
           <AudienceOption
             id="privacy-last-seen"
-            label="Última vez en linea."
-            ariaLabel="Última vez en linea"
+            label={t("settings.lastSeen")}
             value={privacy.lastTimeOnline}
             className="relative flex pb-4 items-center text-sm cursor-pointer group"
             onChange={(val) => {
@@ -100,8 +104,7 @@ export function Privacy() {
 
           <AudienceOption
             id="privacy-picture"
-            label="Foto de perfil."
-            ariaLabel="Foto de perfil"
+            label={t("settings.profilePhoto")}
             value={privacy.picture}
             onChange={(val) => {
               setPrivacy("picture", val);
@@ -113,8 +116,7 @@ export function Privacy() {
 
           <AudienceOption
             id="privacy-bio"
-            label="Info."
-            ariaLabel="Info."
+            label={t("settings.about")}
             value={privacy.bio}
             onChange={(val) => {
               setPrivacy("bio", val);
@@ -127,17 +129,15 @@ export function Privacy() {
           <div className="flex pt-4 items-center">
             <Label.Root asChild htmlFor="privacy-read-receipt">
               <div className="select-none mr-2 text-background-12 cursor-pointer">
-                Confirmaciones de lectura.
+                {t("settings.readReceipts")}
                 <span className="mt-1 select-none text-sm inline-block text-background-11">
-                  Si desactivas las confirmaciones de lectura, no podrás
-                  enviarlas ni recibirlas. Las confirmaciones de lectura se
-                  enviarán siempre en los chats grupales.
+                  {t("settings.readReceiptsDesc")}
                 </span>
               </div>
             </Label.Root>
             <Checkbox
               id="privacy-read-receipt"
-              aria-label="Confirmaciones de lectura."
+              aria-label={t("settings.readReceipts")}
               checked={privacy.readReceipt}
               onCheckedChange={(checked) => {
                 const nextVal = Boolean(checked);
@@ -151,8 +151,7 @@ export function Privacy() {
         <div className="py-4 px-6 bg-background-2">
           <AudienceOption
             id="privacy-groups"
-            label="Grupos"
-            ariaLabel="Grupos"
+            label={t("settings.groups")}
             value={privacy.groups}
             className="relative flex py-3 items-center text-sm cursor-pointer group"
             onChange={(val) => {
@@ -174,7 +173,7 @@ export function Privacy() {
             className="flex py-3 items-center text-sm cursor-pointer group"
           >
             <div className="flex-1">
-              <h3 className="text-background-12">Contactos bloqueados</h3>
+              <h3 className="text-background-12">{t("settings.blockedContacts")}</h3>
               <p data-testid="blocked-contacts-count" className="text-background-11">
                 {blockedUsers.length}
               </p>

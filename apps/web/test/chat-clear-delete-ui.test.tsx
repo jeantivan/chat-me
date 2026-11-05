@@ -255,7 +255,7 @@ describe("Frontend Chat Empty & Delete Confirmation Dialogs Seam", () => {
     );
 
     // Find "Vaciar chat" action item
-    const clearAction = screen.getByText("Vaciar chat");
+    const clearAction = screen.getByText(/vaciar chat|clear chat/i);
     fireEvent.click(clearAction);
 
     const clearTitle = await screen.findByText(/(¿Vaciar este chat\?|Clear this chat\?)/i);
@@ -266,7 +266,7 @@ describe("Frontend Chat Empty & Delete Confirmation Dialogs Seam", () => {
     expect(mockClearMutate).toHaveBeenCalledWith("chat-direct-1");
 
     // Find "Eliminar chat" action item
-    const deleteAction = screen.getByText("Eliminar chat");
+    const deleteAction = screen.getByText(/eliminar chat|delete chat/i);
     fireEvent.click(deleteAction);
 
     const deleteTitle = await screen.findByText(/(¿Eliminar este chat\?|Delete this chat\?)/i);
