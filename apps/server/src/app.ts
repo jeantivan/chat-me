@@ -55,13 +55,23 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
   );
 
   // Content parser for raw uploads (PUT /api/v1/media/storage/*)
-  app.addContentTypeParser(
-    ["application/octet-stream", "image/*", "video/*", "audio/*", "text/*"],
-    { parseAs: "buffer" },
-    (req, body, done) => {
-      done(null, body);
-    }
-  );
+  const binaryContentTypes = [
+    "application/octet-stream",
+    "application/pdf",
+    /^image\/.+/,
+    /^video\/.+/,
+    /^audio\/.+/,
+    /^text\/.+/,
+  ];
+  for (const ct of binaryContentTypes) {
+    app.addContentTypeParser(
+      ct,
+      { parseAs: "buffer" },
+      (req, body, done) => {
+        done(null, body);
+      }
+    );
+  }
 
   await app.register(cors, {
     origin: true,

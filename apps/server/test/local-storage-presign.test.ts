@@ -52,21 +52,21 @@ describe("Local Storage Signed PUT/GET Seam", () => {
   });
 
   it("handles PUT upload with signed URL and serves file via GET", async () => {
-    const key = `test/item-${Date.now()}.txt`;
+    const key = `test/item-${Date.now()}.png`;
     const { uploadUrl, publicUrl } = await generatePresignedUploadUrl({
       key,
-      mimeType: "text/plain",
+      mimeType: "image/png",
       sizeBytes: 12,
     });
 
-    const fileContent = "Hello Render";
+    const fileContent = "Fake PNG binary";
 
-    // PUT to uploadUrl
+    // PUT to uploadUrl with image/png
     const putRes = await app.inject({
       method: "PUT",
       url: uploadUrl,
       headers: {
-        "content-type": "text/plain",
+        "content-type": "image/png",
       },
       payload: Buffer.from(fileContent),
     });
@@ -78,7 +78,7 @@ describe("Local Storage Signed PUT/GET Seam", () => {
       url: publicUrl,
     });
     expect(getRes.statusCode).toBe(200);
-    expect(getRes.headers["content-type"]).toContain("text/plain");
+    expect(getRes.headers["content-type"]).toContain("image/png");
     expect(getRes.body).toBe(fileContent);
   });
 
