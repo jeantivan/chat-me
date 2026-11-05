@@ -176,6 +176,7 @@ chat-me/
 | `make fclean` | Complete clean (`clean` + remove all `node_modules` and tear down Docker containers with named volumes `-v`). Preserves `.env`. |
 | `make re` | Scratch rebuild (`fclean` followed by `all`). |
 | `make env` | Non-interactively provision `.env` files and generate cryptographic secrets idempotently. |
+| `make install` | Install monorepo package dependencies via `pnpm install`. |
 | `make up` / `make down` | Start (`up -d --wait`) or stop (`down`) backing Docker containers. |
 | `make logs` | Stream Docker container logs (`docker compose logs -f`). |
 | `make migrate` | Apply pending PostgreSQL schema migrations. |

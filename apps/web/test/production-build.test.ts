@@ -149,6 +149,7 @@ describe("Production Build & Docker Configuration Seam", () => {
       "fclean",
       "re",
       "env",
+      "install",
       "dev",
       "test",
       "test-e2e",
@@ -172,6 +173,20 @@ describe("Production Build & Docker Configuration Seam", () => {
     // Verify key target command semantics in dry-run output
     expect(execSync("make -n all", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/pnpm install/);
     expect(execSync("make -n all", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/docker compose up/);
+    expect(execSync("make -n install", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/pnpm install/);
+
+    // Verify canonical prerequisite execution sequence for make all (env -> install -> up -> migrate -> build)
+    const dryRunAll = execSync("make -n all", { cwd: repoRoot, encoding: "utf-8" });
+    const envIdx = dryRunAll.indexOf("setup-env.sh");
+    const installIdx = dryRunAll.indexOf("pnpm install");
+    const upIdx = dryRunAll.indexOf("docker compose up");
+    const migrateIdx = dryRunAll.indexOf("db:migrate");
+    const buildIdx = dryRunAll.indexOf("pnpm build");
+    expect(envIdx).toBeGreaterThanOrEqual(0);
+    expect(installIdx).toBeGreaterThan(envIdx);
+    expect(upIdx).toBeGreaterThan(installIdx);
+    expect(migrateIdx).toBeGreaterThan(upIdx);
+    expect(buildIdx).toBeGreaterThan(migrateIdx);
     expect(execSync("make -n clean", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/rm -rf/);
     expect(execSync("make -n clean", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/docker compose stop/);
     expect(execSync("make -n fclean", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/node_modules/);

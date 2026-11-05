@@ -16,6 +16,8 @@ playwright-report/
 # production
 /build
 dist/
+uploads/
+apps/*/uploads/
 
 # misc
 .DS_Store

@@ -14,15 +14,13 @@ BLUE    := \033[34m
 CYAN    := \033[36m
 RED     := \033[31m
 
-.PHONY: all clean fclean re help env dev test test-e2e lint typecheck build check ci up down logs health migrate seed
+.PHONY: all clean fclean re help env install dev test test-e2e lint typecheck build check ci up down logs health migrate seed
 
 # -----------------------------------------------------------------------------
 # 42 Canonical Lifecycle Rules
 # -----------------------------------------------------------------------------
 
-all: env up migrate build
-	@echo "$(BLUE)==> Ensuring monorepo dependencies are installed...$(RESET)"
-	pnpm install
+all: env install up migrate build
 	@echo "$(GREEN)$(BOLD)==> Build and initialization complete! Ready for development.$(RESET)"
 
 clean:
@@ -30,6 +28,7 @@ clean:
 	rm -rf dist apps/*/dist packages/*/dist
 	rm -rf .turbo apps/*/.turbo packages/*/.turbo
 	rm -rf coverage test-results playwright-report apps/*/coverage apps/*/test-results apps/*/playwright-report
+	rm -rf apps/*/uploads
 	docker compose stop
 	@echo "$(GREEN)==> Clean finished successfully.$(RESET)"
 
@@ -48,6 +47,10 @@ re: fclean all
 env:
 	@echo "$(BLUE)==> Provisioning environment configurations...$(RESET)"
 	./scripts/setup-env.sh
+
+install:
+	@echo "$(BLUE)==> Ensuring monorepo dependencies are installed...$(RESET)"
+	pnpm install
 
 dev: env up migrate
 	@echo "$(BLUE)==> Verifying initial database seed state...$(RESET)"
@@ -132,6 +135,7 @@ help:
 	@echo "  $(CYAN)re$(RESET)          Execute fclean followed by all (complete scratch rebuild)"
 	@echo ""
 	@echo "$(BOLD)Development & Environment:$(RESET)"
+	@echo "  $(CYAN)install$(RESET)     Install monorepo package dependencies via pnpm"
 	@echo "  $(CYAN)dev$(RESET)         Start infrastructure, apply migrations, seed if empty, and run web + server dev servers"
 	@echo "  $(CYAN)env$(RESET)         Non-interactively provision .env files and generate cryptographic secrets idempotently"
 	@echo ""
