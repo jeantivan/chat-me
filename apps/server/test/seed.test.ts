@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, and, ne } from "drizzle-orm";
 import * as schema from "../src/db/schema.js";
 import {
   users,
@@ -12,6 +12,7 @@ import {
   mediaAttachments,
 } from "../src/db/schema.js";
 import { seedDb } from "../src/db/seed.js";
+import { SEED_USERS } from "../src/db/seed-data.js";
 
 describe("Database Seed Dataset Verification", () => {
   let pool: pg.Pool;
@@ -65,6 +66,12 @@ describe("Database Seed Dataset Verification", () => {
       .where(eq(users.email, "alice@example.com"))
       .limit(1);
 
+    const seedUserRows = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(inArray(users.email, SEED_USERS.map((u) => u.email)));
+    const seedUserIds = new Set(seedUserRows.map((u) => u.id));
+
     const aliceMemberships = await db
       .select({
         chatId: chatParticipants.chatId,
@@ -74,10 +81,24 @@ describe("Database Seed Dataset Verification", () => {
       .innerJoin(chats, eq(chatParticipants.chatId, chats.id))
       .where(eq(chatParticipants.userId, alice.id));
 
-    const directChats = aliceMemberships.filter((m) => m.type === "direct");
+    const directChats: string[] = [];
+    for (const m of aliceMemberships.filter((m) => m.type === "direct")) {
+      const otherParticipants = await db
+        .select({ userId: chatParticipants.userId })
+        .from(chatParticipants)
+        .where(
+          and(
+            eq(chatParticipants.chatId, m.chatId),
+            ne(chatParticipants.userId, alice.id)
+          )
+        );
+      if (otherParticipants.some((p) => seedUserIds.has(p.userId))) {
+        directChats.push(m.chatId);
+      }
+    }
+
     const groupChats = aliceMemberships.filter((m) => m.type === "group");
 
-    expect(aliceMemberships.length).toBe(10);
     expect(directChats.length).toBe(8);
     expect(groupChats.length).toBe(2);
   });
@@ -191,12 +212,44 @@ describe("Database Seed Dataset Verification", () => {
       .where(eq(users.email, "alice@example.com"))
       .limit(1);
 
-    const aliceChats = await db
-      .select({ chatId: chatParticipants.chatId })
+    const seedUserRows = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(inArray(users.email, SEED_USERS.map((u) => u.email)));
+    const seedUserIds = new Set(seedUserRows.map((u) => u.id));
+
+    const aliceMemberships = await db
+      .select({
+        chatId: chatParticipants.chatId,
+        type: chats.type,
+      })
       .from(chatParticipants)
+      .innerJoin(chats, eq(chatParticipants.chatId, chats.id))
       .where(eq(chatParticipants.userId, alice.id));
 
-    for (const { chatId } of aliceChats) {
+    const seedChatIds: string[] = [];
+    for (const m of aliceMemberships) {
+      if (m.type === "group") {
+        seedChatIds.push(m.chatId);
+      } else {
+        const otherParticipants = await db
+          .select({ userId: chatParticipants.userId })
+          .from(chatParticipants)
+          .where(
+            and(
+              eq(chatParticipants.chatId, m.chatId),
+              ne(chatParticipants.userId, alice.id)
+            )
+          );
+        if (otherParticipants.some((p) => seedUserIds.has(p.userId))) {
+          seedChatIds.push(m.chatId);
+        }
+      }
+    }
+
+    expect(seedChatIds.length).toBe(10);
+
+    for (const chatId of seedChatIds) {
       const chatMessages = await db
         .select()
         .from(messages)

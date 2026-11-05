@@ -12,8 +12,11 @@ describe("Contacts Database Schema & REST Seam", () => {
   let db: ReturnType<typeof drizzle>;
 
   let userAId: string;
+  let userAEmail: string;
   let userBId: string;
   let userCId: string;
+  let userDId: string;
+  let userDEmail: string;
   let tokenA: string;
   let tokenB: string;
 
@@ -26,11 +29,12 @@ describe("Contacts Database Schema & REST Seam", () => {
     db = drizzle(pool);
 
     // Register User A
+    userAEmail = `alice-contacts-${Date.now()}@example.com`;
     const regARes = await app.inject({
       method: "POST",
       url: "/api/v1/auth/register",
       payload: {
-        email: `alice-contacts-${Date.now()}@example.com`,
+        email: userAEmail,
         password: "Password123!",
         name: "Alice Contacts",
       },
@@ -65,12 +69,27 @@ describe("Contacts Database Schema & REST Seam", () => {
     });
     const regCData = JSON.parse(regCRes.payload);
     userCId = regCData.user.id;
+
+    // Register User D
+    userDEmail = `diana-contacts-${Date.now()}@example.com`;
+    const regDRes = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/register",
+      payload: {
+        email: userDEmail,
+        password: "Password123!",
+        name: "Diana Contacts",
+      },
+    });
+    const regDData = JSON.parse(regDRes.payload);
+    userDId = regDData.user.id;
   });
 
   afterAll(async () => {
     if (userAId) await db.delete(users).where(eq(users.id, userAId));
     if (userBId) await db.delete(users).where(eq(users.id, userBId));
     if (userCId) await db.delete(users).where(eq(users.id, userCId));
+    if (userDId) await db.delete(users).where(eq(users.id, userDId));
     await app.close();
     await pool.end();
   });
@@ -95,18 +114,18 @@ describe("Contacts Database Schema & REST Seam", () => {
       .from(contacts)
       .where(eq(contacts.userId, userAId));
 
-    expect(aContacts).toHaveLength(1);
-    expect(aContacts[0].contactUserId).toBe(userBId);
-    expect(aContacts[0].nickname).toBe("Bobby");
+    const aContactToB = aContacts.find((c) => c.contactUserId === userBId);
+    expect(aContactToB).toBeDefined();
+    expect(aContactToB!.nickname).toBe("Bobby");
 
     const bContacts = await db
       .select()
       .from(contacts)
       .where(eq(contacts.userId, userBId));
 
-    expect(bContacts).toHaveLength(1);
-    expect(bContacts[0].contactUserId).toBe(userAId);
-    expect(bContacts[0].nickname).toBe("Ali");
+    const bContactToA = bContacts.find((c) => c.contactUserId === userAId);
+    expect(bContactToA).toBeDefined();
+    expect(bContactToA!.nickname).toBe("Ali");
   });
 
   it("GET /api/v1/contacts returns the authenticated user's contact list with profile information", async () => {
@@ -160,5 +179,105 @@ describe("Contacts Database Schema & REST Seam", () => {
       .from(contacts)
       .where(eq(contacts.userId, userCId));
     expect(cContacts.some((c) => c.contactUserId === userAId)).toBe(true);
+
+    const postData = JSON.parse(res.payload);
+    expect(postData.userId).toBe(userAId);
+    expect(postData.contactUserId).toBe(userCId);
+    expect(postData.nickname).toBe("Chuck");
+    expect(postData.contact).toBeDefined();
+    expect(postData.contact.id).toBe(userCId);
+  });
+
+  it("POST /api/v1/contacts adds a contact by email and returns ContactSummary", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/contacts",
+      headers: {
+        authorization: `Bearer ${tokenA}`,
+      },
+      payload: {
+        email: userDEmail,
+        nickname: "Dee",
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const data = JSON.parse(res.payload);
+    expect(data.userId).toBe(userAId);
+    expect(data.contactUserId).toBe(userDId);
+    expect(data.nickname).toBe("Dee");
+    expect(data.contact).toBeDefined();
+    expect(data.contact.id).toBe(userDId);
+    expect(data.contact.name).toBe("Diana Contacts");
+
+    // Verify bidirectional link in DB
+    const dContacts = await db
+      .select()
+      .from(contacts)
+      .where(eq(contacts.userId, userDId));
+    expect(dContacts.some((c) => c.contactUserId === userAId)).toBe(true);
+  });
+
+  it("POST /api/v1/contacts rejects adding self by email with 400", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/contacts",
+      headers: {
+        authorization: `Bearer ${tokenA}`,
+      },
+      payload: {
+        email: userAEmail,
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+    const data = JSON.parse(res.payload);
+    expect(data.error).toBe("Cannot add self as contact");
+  });
+
+  it("POST /api/v1/contacts returns 404 for unknown email", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/contacts",
+      headers: {
+        authorization: `Bearer ${tokenA}`,
+      },
+      payload: {
+        email: "nonexistent-user-xyz@example.com",
+      },
+    });
+
+    expect(res.statusCode).toBe(404);
+  });
+
+  it("POST /api/v1/contacts returns 400 when neither contactUserId nor email is provided", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/contacts",
+      headers: {
+        authorization: `Bearer ${tokenA}`,
+      },
+      payload: {
+        nickname: "Nobody",
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("POST /api/v1/contacts returns 400 when both contactUserId and email are provided", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/contacts",
+      headers: {
+        authorization: `Bearer ${tokenA}`,
+      },
+      payload: {
+        contactUserId: userDId,
+        email: userDEmail,
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
   });
 });
