@@ -224,7 +224,7 @@ export interface SocketServerOptions {
 
 export function setupSocketServer(
   app: FastifyInstance,
-  redisUrl: string,
+  redisUrl?: string,
   options?: SocketServerOptions
 ): SocketIOServer<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData> {
   const io = new SocketIOServer<
@@ -240,31 +240,41 @@ export function setupSocketServer(
     transports: ["websocket", "polling"],
   });
 
-  // Redis Adapter
-  const pubClient = new Redis(redisUrl, {
-    lazyConnect: true,
-    maxRetriesPerRequest: 3,
-  });
-  pubClient.on("error", (err) => {
-    app.log.warn({ err }, "Socket.IO Redis pubClient error");
-  });
-  const subClient = pubClient.duplicate();
-  subClient.on("error", (err) => {
-    app.log.warn({ err }, "Socket.IO Redis subClient error");
-  });
+  const isRedisEnabled = !!redisUrl && redisUrl !== "none";
+  let pubClient: Redis | null = null;
+  let subClient: Redis | null = null;
 
-  Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
-    io.adapter(createAdapter(pubClient, subClient));
-  }).catch((err) => {
-    app.log.warn({ err }, "Socket.IO Redis adapter connection error, running with default in-memory adapter");
-  });
+  if (isRedisEnabled) {
+    // Redis Adapter
+    pubClient = new Redis(redisUrl, {
+      lazyConnect: true,
+      maxRetriesPerRequest: 3,
+    });
+    pubClient.on("error", (err) => {
+      app.log.warn({ err }, "Socket.IO Redis pubClient error");
+    });
+    subClient = pubClient.duplicate();
+    subClient.on("error", (err) => {
+      app.log.warn({ err }, "Socket.IO Redis subClient error");
+    });
+
+    Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+      if (pubClient && subClient) {
+        io.adapter(createAdapter(pubClient, subClient));
+      }
+    }).catch((err) => {
+      app.log.warn({ err }, "Socket.IO Redis adapter connection error, running with default in-memory adapter");
+    });
+  } else {
+    app.log.info("Redis not configured or set to 'none', running Socket.IO with in-memory adapter");
+  }
 
   // Clean up on server close
   app.addHook("onClose", async () => {
     cancelAllPendingDemoJobs();
     io.close();
-    pubClient.disconnect();
-    subClient.disconnect();
+    if (pubClient) pubClient.disconnect();
+    if (subClient) subClient.disconnect();
   });
 
   // JWT Connection Handshake Authentication

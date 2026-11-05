@@ -2,16 +2,24 @@ import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
 import jwt from "@fastify/jwt";
+import fastifyStatic from "@fastify/static";
 import pg from "pg";
 import { Redis } from "ioredis";
+import path from "node:path";
+import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 import type { HealthResponse } from "@chat-me/shared";
 import { createDb } from "./db/index.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { usersRoutes } from "./routes/users.routes.js";
 import { chatsRoutes } from "./routes/chats.routes.js";
 import { contactsRoutes } from "./routes/contacts.routes.js";
+import { mediaStorageRoutes } from "./routes/storage.routes.js";
 import { setupSocketServer } from "./socket/index.js";
 import type { DemoAutoReplyDelays } from "./socket/demo-responder.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export interface AppOptions {
   databaseUrl?: string;
@@ -20,6 +28,8 @@ export interface AppOptions {
   cookieSecret?: string;
   enableDemoAutoReply?: boolean;
   demoAutoReplyDelays?: Partial<DemoAutoReplyDelays>;
+  serveStaticWeb?: boolean;
+  staticWebDir?: string;
 }
 
 export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> {
@@ -44,6 +54,25 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
     }
   );
 
+  // Content parser for raw uploads (PUT /api/v1/media/storage/*)
+  const binaryContentTypes = [
+    "application/octet-stream",
+    "application/pdf",
+    /^image\/.+/,
+    /^video\/.+/,
+    /^audio\/.+/,
+    /^text\/.+/,
+  ];
+  for (const ct of binaryContentTypes) {
+    app.addContentTypeParser(
+      ct,
+      { parseAs: "buffer" },
+      (req, body, done) => {
+        done(null, body);
+      }
+    );
+  }
+
   await app.register(cors, {
     origin: true,
     credentials: true,
@@ -62,10 +91,9 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
     process.env.DATABASE_URL ||
     "postgres://postgres:postgres@localhost:5434/chat_me";
 
-  const redisUrl =
-    opts.redisUrl ||
-    process.env.REDIS_URL ||
-    "redis://localhost:6379";
+  const rawRedisUrl = opts.redisUrl !== undefined ? opts.redisUrl : process.env.REDIS_URL;
+  const isRedisEnabled = rawRedisUrl !== undefined && rawRedisUrl !== "" && rawRedisUrl !== "none";
+  const redisUrl = isRedisEnabled ? rawRedisUrl : undefined;
 
   const pgPool = new pg.Pool({
     connectionString: databaseUrl,
@@ -87,17 +115,22 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
     }
   });
 
-  const redisClient = new Redis(redisUrl, {
-    lazyConnect: true,
-    maxRetriesPerRequest: 3,
-  });
-  redisClient.on("error", () => {
-    // Avoid unhandled rejection on lazy disconnect
-  });
+  let redisClient: Redis | null = null;
+  if (isRedisEnabled && redisUrl) {
+    redisClient = new Redis(redisUrl, {
+      lazyConnect: true,
+      maxRetriesPerRequest: 3,
+    });
+    redisClient.on("error", () => {
+      // Avoid unhandled rejection on lazy disconnect
+    });
+  }
 
   app.addHook("onClose", async () => {
     await pgPool.end();
-    redisClient.disconnect();
+    if (redisClient) {
+      redisClient.disconnect();
+    }
   });
 
   // Health check endpoint
@@ -117,14 +150,19 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
       postgresOk = false;
     }
 
-    try {
-      if (redisClient.status !== "ready") {
-        await redisClient.connect();
-      }
-      await redisClient.ping();
+    if (!isRedisEnabled || !redisClient) {
+      // Single-node mode without Redis cluster: reports true / healthy
       redisOk = true;
-    } catch {
-      redisOk = false;
+    } else {
+      try {
+        if (redisClient.status !== "ready") {
+          await redisClient.connect();
+        }
+        await redisClient.ping();
+        redisOk = true;
+      } catch {
+        redisOk = false;
+      }
     }
 
     const isHealthy = postgresOk && redisOk;
@@ -145,12 +183,45 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
   await app.register(usersRoutes, { prefix: "/api/v1/users" });
   await app.register(chatsRoutes, { prefix: "/api/v1/chats" });
   await app.register(contactsRoutes, { prefix: "/api/v1/contacts" });
+  await app.register(mediaStorageRoutes, { prefix: "/api/v1/media" });
 
   const io = setupSocketServer(app, redisUrl, {
     enableDemoAutoReply: opts.enableDemoAutoReply,
     demoAutoReplyDelays: opts.demoAutoReplyDelays,
   });
   app.decorate("io", io);
+
+  // Static web SPA hosting fallback
+  const shouldServeStatic =
+    opts.serveStaticWeb !== undefined
+      ? opts.serveStaticWeb
+      : process.env.SERVE_STATIC_WEB === "true" ||
+        (process.env.NODE_ENV === "production" && process.env.SERVE_STATIC_WEB !== "false");
+
+  const staticDir =
+    opts.staticWebDir ||
+    process.env.STATIC_WEB_DIR ||
+    path.resolve(__dirname, "../../web/dist");
+
+  if (shouldServeStatic && fs.existsSync(staticDir)) {
+    await app.register(fastifyStatic, {
+      root: staticDir,
+      wildcard: false,
+      preCompressed: false,
+    });
+
+    app.setNotFoundHandler(async (request, reply) => {
+      if (request.raw.url && request.raw.url.startsWith("/api/")) {
+        return reply.status(404).send({ error: "Not Found" });
+      }
+
+      const indexPath = path.join(staticDir, "index.html");
+      if (fs.existsSync(indexPath)) {
+        return reply.type("text/html").sendFile("index.html");
+      }
+      return reply.status(404).send({ error: "Not Found" });
+    });
+  }
 
   return app;
 }

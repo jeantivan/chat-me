@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: chat-me
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: frankfurt
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: HOST
+        value: 0.0.0.0
+      - key: NODE_ENV
+        value: production
+      - key: SERVE_STATIC_WEB
+        value: "true"
+      - key: STORAGE_MODE
+        value: local
+      - key: REDIS_URL
+        value: none
+      - key: AUTO_MIGRATE
+        value: "true"
+      - key: AUTO_SEED
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECRET
+        generateValue: true
+      - key: STORAGE_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chat-me-db
+          property: connectionString
+
+databases:
+  - name: chat-me-db
+    plan: free
+    region: frankfurt
+    postgresMajorVersion: 16
