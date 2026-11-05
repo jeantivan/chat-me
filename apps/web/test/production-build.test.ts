@@ -193,6 +193,19 @@ describe("Production Build & Docker Configuration Seam", () => {
     expect(execSync("make -n fclean", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/docker compose down -v/);
     expect(execSync("make -n env", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/setup-env\.sh/);
     expect(execSync("make -n dev", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/pnpm dev/);
+
+    // Verify canonical prerequisite execution sequence for make dev (env -> install -> up -> migrate -> dev)
+    const dryRunDev = execSync("make -n dev", { cwd: repoRoot, encoding: "utf-8" });
+    const devEnvIdx = dryRunDev.indexOf("setup-env.sh");
+    const devInstallIdx = dryRunDev.indexOf("pnpm install");
+    const devUpIdx = dryRunDev.indexOf("docker compose up");
+    const devMigrateIdx = dryRunDev.indexOf("db:migrate");
+    const devRunIdx = dryRunDev.indexOf("pnpm dev");
+    expect(devEnvIdx).toBeGreaterThanOrEqual(0);
+    expect(devInstallIdx).toBeGreaterThan(devEnvIdx);
+    expect(devUpIdx).toBeGreaterThan(devInstallIdx);
+    expect(devMigrateIdx).toBeGreaterThan(devUpIdx);
+    expect(devRunIdx).toBeGreaterThan(devMigrateIdx);
     expect(execSync("make -n test", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/pnpm test/);
     expect(execSync("make -n test-e2e", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/test:e2e/);
     expect(execSync("make -n check", { cwd: repoRoot, encoding: "utf-8" })).toMatch(/pnpm lint/);

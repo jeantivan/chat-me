@@ -51,8 +51,10 @@ env:
 install:
 	@echo "$(BLUE)==> Ensuring monorepo dependencies are installed...$(RESET)"
 	pnpm install
+	@echo "$(BLUE)==> Compiling shared workspace package...$(RESET)"
+	pnpm --filter @chat-me/shared build
 
-dev: env up migrate
+dev: env install up migrate
 	@echo "$(BLUE)==> Verifying initial database seed state...$(RESET)"
 	@USER_COUNT=$$(docker compose exec -T postgres psql -U postgres -d chat_me -P pager=off -t -A -c "SELECT COUNT(*) FROM users;" 2>/dev/null || echo "0"); \
 	if [ "$$USER_COUNT" = "0" ] || [ -z "$$USER_COUNT" ]; then \
