@@ -11,12 +11,15 @@ import { usersRoutes } from "./routes/users.routes.js";
 import { chatsRoutes } from "./routes/chats.routes.js";
 import { contactsRoutes } from "./routes/contacts.routes.js";
 import { setupSocketServer } from "./socket/index.js";
+import type { DemoAutoReplyDelays } from "./socket/demo-responder.js";
 
 export interface AppOptions {
   databaseUrl?: string;
   redisUrl?: string;
   jwtSecret?: string;
   cookieSecret?: string;
+  enableDemoAutoReply?: boolean;
+  demoAutoReplyDelays?: Partial<DemoAutoReplyDelays>;
 }
 
 export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> {
@@ -143,7 +146,10 @@ export async function buildApp(opts: AppOptions = {}): Promise<FastifyInstance> 
   await app.register(chatsRoutes, { prefix: "/api/v1/chats" });
   await app.register(contactsRoutes, { prefix: "/api/v1/contacts" });
 
-  const io = setupSocketServer(app, redisUrl);
+  const io = setupSocketServer(app, redisUrl, {
+    enableDemoAutoReply: opts.enableDemoAutoReply,
+    demoAutoReplyDelays: opts.demoAutoReplyDelays,
+  });
   app.decorate("io", io);
 
   return app;

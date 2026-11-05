@@ -287,6 +287,7 @@ export interface ChatClearedPayload {
 export interface ServerToClientEvents {
   "message:new": (message: MessagePayload) => void;
   "message:status_changed": (payload: ReceiptStatusPayload) => void;
+  "message:status_updated": (payload: ReceiptStatusPayload) => void;
   "receipt:updated": (payload: ReceiptStatusPayload) => void;
   "message:reaction_updated": (payload: {
     messageId: string;
@@ -298,6 +299,11 @@ export interface ServerToClientEvents {
     chatId: string;
   }) => void;
   "chat:typing_updated": (payload: {
+    chatId: string;
+    userId: string;
+    isTyping: boolean;
+  }) => void;
+  "typing:update": (payload: {
     chatId: string;
     userId: string;
     isTyping: boolean;

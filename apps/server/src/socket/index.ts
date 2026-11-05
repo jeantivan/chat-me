@@ -24,8 +24,14 @@ import type {
 import { processAndBroadcastReceipt } from "../lib/receipts.js";
 import { canViewPresence, sanitizeUserProfile, isBlockActiveBetween } from "../lib/privacy.js";
 import { formatUserProfile } from "../services/auth.service.js";
+import {
+  triggerDemoAutoResponder,
+  cancelPendingDemoJobsForUser,
+  cancelAllPendingDemoJobs,
+  type DemoAutoReplyDelays,
+} from "./demo-responder.js";
 
-interface SocketData {
+export interface SocketData {
   userId: string;
 }
 
@@ -181,7 +187,7 @@ export async function broadcastSanitizedProfileUpdate(
   }
 }
 
-function broadcastToChatAndParticipants(
+export function broadcastToChatAndParticipants(
   io: SocketIOServer<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>,
   chatId: string,
   participants: Array<{ userId: string }>,
@@ -211,9 +217,15 @@ function broadcastPresenceToConnectedPeers(
   }
 }
 
+export interface SocketServerOptions {
+  enableDemoAutoReply?: boolean;
+  demoAutoReplyDelays?: Partial<DemoAutoReplyDelays>;
+}
+
 export function setupSocketServer(
   app: FastifyInstance,
-  redisUrl: string
+  redisUrl: string,
+  options?: SocketServerOptions
 ): SocketIOServer<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData> {
   const io = new SocketIOServer<
     ClientToServerEvents,
@@ -249,6 +261,7 @@ export function setupSocketServer(
 
   // Clean up on server close
   app.addHook("onClose", async () => {
+    cancelAllPendingDemoJobs();
     io.close();
     pubClient.disconnect();
     subClient.disconnect();
@@ -291,6 +304,7 @@ export function setupSocketServer(
     // Track active connection and broadcast online presence
     const currentCount = userSocketCounts.get(userId) || 0;
     userSocketCounts.set(userId, currentCount + 1);
+    cancelPendingDemoJobsForUser(userId);
     if (currentCount === 0) {
       broadcastPresenceToConnectedPeers(app, userId, { status: "online" });
     }
@@ -486,6 +500,20 @@ export function setupSocketServer(
           .where(eq(chatParticipants.chatId, chatId));
 
         broadcastToChatAndParticipants(io, chatId, participants, "message:new", messagePayload);
+
+        // Schedule offline demo counterpart auto-responder if applicable
+        triggerDemoAutoResponder({
+          app,
+          io,
+          chatId,
+          messageId: id,
+          senderId: userId,
+          body,
+          enabled: options?.enableDemoAutoReply,
+          delays: options?.demoAutoReplyDelays,
+        }).catch((err) => {
+          app.log.error({ err, chatId, messageId: id }, "Error initiating demo auto-responder");
+        });
       } catch (err) {
         app.log.error({ err, id, chatId }, "Error persisting sent message");
         if (callback) {
