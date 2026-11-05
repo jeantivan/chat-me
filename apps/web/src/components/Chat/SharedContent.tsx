@@ -4,11 +4,13 @@ import { IconButton } from "@/components/ui/IconButton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
+import { useTranslation } from "@/lib/i18n";
 import { useCurrentChatId } from "@/lib/hooks";
 import { useChatMedia } from "@/lib/api/chatQueries";
 import { formatBytes, formatDuration } from "@/lib/utils/formatters";
 
 export function SharedContent() {
+  const { t } = useTranslation();
   const rdGoBack = useStore((state) => state.rdGoBack);
   const openMediaMessage = useStore((state) => state.openMediaMessage);
   const { currentChatId } = useCurrentChatId();
@@ -23,12 +25,12 @@ export function SharedContent() {
   return (
     <div className="bg-background-5 flex flex-col h-screen">
       <header className="min-h-[56px] py-2 px-4 flex items-center sticky gap-4 bg-background-2 shadow-sm">
-        <IconButton icon={ArrowLeft} label="Volver atrás" onClick={rdGoBack} />
+        <IconButton icon={ArrowLeft} label={t("common.goBack")} onClick={rdGoBack} />
         <h2
           id="right-drawer-title"
           className="text-lg font-medium line-clamp-1 truncate text-background-12"
         >
-          Compartido
+          {t("info.sharedTitle")}
         </h2>
       </header>
 
@@ -36,13 +38,13 @@ export function SharedContent() {
         <div className="px-4 pt-3 bg-background-2 border-b border-background-7">
           <TabsList className="grid grid-cols-3 w-full bg-background-3">
             <TabsTrigger value="multimedia" className="text-xs sm:text-sm">
-              Multimedia
+              {t("info.tabMedia")}
             </TabsTrigger>
             <TabsTrigger value="documentos" className="text-xs sm:text-sm">
-              Documentos
+              {t("info.tabDocuments")}
             </TabsTrigger>
             <TabsTrigger value="audio" className="text-xs sm:text-sm">
-              Audio
+              {t("info.tabAudio")}
             </TabsTrigger>
           </TabsList>
         </div>
@@ -52,7 +54,7 @@ export function SharedContent() {
           <ScrollArea type="auto" rootClassName="h-full">
             {visualItems.length === 0 ? (
               <div className="p-8 text-center text-background-11 text-sm">
-                No hay archivos multimedia
+                {t("info.noMedia")}
               </div>
             ) : (
               <div className="p-3 grid grid-cols-3 gap-2">
@@ -75,7 +77,7 @@ export function SharedContent() {
                     ) : (
                       <img
                         src={msg.hasMedia?.src}
-                        alt={msg.hasMedia?.filename || "Visual media"}
+                        alt={msg.hasMedia?.filename || t("info.visualMedia")}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                       />
                     )}
@@ -91,7 +93,7 @@ export function SharedContent() {
           <ScrollArea type="auto" rootClassName="h-full">
             {docItems.length === 0 ? (
               <div className="p-8 text-center text-background-11 text-sm">
-                No hay documentos compartidos
+                {t("info.noDocuments")}
               </div>
             ) : (
               <div className="p-3 divide-y divide-background-7/50">
@@ -105,18 +107,20 @@ export function SharedContent() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-medium text-background-12 truncate">
-                        {msg.hasMedia?.filename || "documento"}
+                        {msg.hasMedia?.filename || t("chat.document")}
                       </div>
                       <div className="text-xs text-background-11 flex items-center gap-1.5 mt-0.5">
                         <span>{formatBytes(msg.hasMedia?.sizeBytes)}</span>
                         <span>•</span>
-                        <span>{dayjs(msg.time).format("DD/MM/YYYY")}</span>
+                        <span>{dayjs(msg.time).format(t("info.dateFormat"))}</span>
                       </div>
                     </div>
                     <a
                       href={msg.hasMedia?.src}
-                      download={msg.hasMedia?.filename || "documento"}
-                      aria-label={`Descargar ${msg.hasMedia?.filename || "documento"}`}
+                      download={msg.hasMedia?.filename || t("chat.document")}
+                      aria-label={t("chat.downloadFile", {
+                        filename: msg.hasMedia?.filename || t("chat.document"),
+                      })}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 text-background-11 hover:text-primary-9 hover:bg-background-4 rounded-full transition-colors"
@@ -135,7 +139,7 @@ export function SharedContent() {
           <ScrollArea type="auto" rootClassName="h-full">
             {audioItems.length === 0 ? (
               <div className="p-8 text-center text-background-11 text-sm">
-                No hay audios compartidos
+                {t("info.noAudio")}
               </div>
             ) : (
               <div className="p-3 divide-y divide-background-7/50">
@@ -148,12 +152,12 @@ export function SharedContent() {
                       <div className="flex items-center gap-1.5">
                         <Music className="w-4 h-4 text-primary-9" />
                         <span className="font-medium text-background-12 truncate max-w-[180px]">
-                          {msg.hasMedia?.filename || "Audio"}
+                          {msg.hasMedia?.filename || t("chat.audio")}
                         </span>
                       </div>
                       <span>
                         {msg.hasMedia?.duration ? `${formatDuration(msg.hasMedia.duration)} • ` : ""}
-                        {dayjs(msg.time).format("DD/MM/YYYY")}
+                        {dayjs(msg.time).format(t("info.dateFormat"))}
                       </span>
                     </div>
                     <audio

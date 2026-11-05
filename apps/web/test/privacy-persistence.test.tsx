@@ -4,6 +4,12 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Privacy } from "../src/components/Configuration/Privacy";
 import useStore from "../src/lib/store";
+import { useTranslation } from "../src/lib/i18n";
+
+// These suites assert the Spanish (es) copy; pin the locale for determinism.
+beforeEach(() => {
+  useTranslation.getState().setLocale("es");
+});
 
 describe("Privacy Drawer Persistence Seam", () => {
   let queryClient: QueryClient;
@@ -58,10 +64,10 @@ describe("Privacy Drawer Persistence Seam", () => {
     renderWithProviders(<Privacy />);
 
     expect(screen.getByText("Quién puede ver mi información personal")).toBeInTheDocument();
-    expect(screen.getByText("Última vez en linea.")).toBeInTheDocument();
-    expect(screen.getByText("Foto de perfil.")).toBeInTheDocument();
+    expect(screen.getByText("Última vez en línea")).toBeInTheDocument();
+    expect(screen.getByText("Foto de perfil")).toBeInTheDocument();
     expect(screen.getByText("Info.")).toBeInTheDocument();
-    expect(screen.getByText("Confirmaciones de lectura.")).toBeInTheDocument();
+    expect(screen.getByText("Confirmaciones de lectura")).toBeInTheDocument();
     expect(screen.getByText("Grupos")).toBeInTheDocument();
 
     const readReceiptCheckbox = screen.getByRole("checkbox", {
@@ -73,7 +79,7 @@ describe("Privacy Drawer Persistence Seam", () => {
   it("changing privacyLastSeen optimistically updates store and calls PATCH /me/settings", async () => {
     renderWithProviders(<Privacy />);
 
-    const select = screen.getByRole("combobox", { name: /última vez en linea/i });
+    const select = screen.getByRole("combobox", { name: /última vez en línea/i });
     expect(select).toHaveValue("all");
 
     fireEvent.change(select, { target: { value: "none" } });

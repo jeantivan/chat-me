@@ -185,7 +185,7 @@ describe("Frontend Group Chat UI & Participant Management Seam", () => {
 
     expect(screen.getByText("Frontend Guild")).toBeInTheDocument();
     expect(screen.getByTestId("group-bio-text")).toHaveTextContent("Frontend engineers guild");
-    expect(screen.getAllByText(/3 participantes/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/3 (participantes|participants)/i).length).toBeGreaterThanOrEqual(1);
 
     // Check member names
     expect(screen.getByText("Alice Admin")).toBeInTheDocument();

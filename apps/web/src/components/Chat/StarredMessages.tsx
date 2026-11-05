@@ -3,11 +3,13 @@ import { IconButton } from "@/components/ui/IconButton";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Message } from "@/components/Message";
 import useStore from "@/lib/store";
+import { useTranslation } from "@/lib/i18n";
 import { useCurrentChatId, useUserId } from "@/lib/hooks";
 import { useStarredMessages } from "@/lib/api/chatQueries";
 import type { TMessage } from "@/lib/types";
 
 export function StarredMessages({ isLeftDrawer = false }: { isLeftDrawer?: boolean } = {}) {
+  const { t } = useTranslation();
   const rdGoBack = useStore((state) => state.rdGoBack);
   const userId = useUserId();
   const { currentChatId } = useCurrentChatId();
@@ -33,12 +35,12 @@ export function StarredMessages({ isLeftDrawer = false }: { isLeftDrawer?: boole
     <div className="bg-background-5 flex flex-col h-full">
       {!isLeftDrawer && (
         <header className="min-h-[56px] py-2 px-4 flex items-center sticky gap-4 bg-background-2">
-          <IconButton icon={ArrowLeft} label="Volver atrás" onClick={rdGoBack} />
+          <IconButton icon={ArrowLeft} label={t("common.goBack")} onClick={rdGoBack} />
           <h2
             id="right-drawer-title "
             className="text-lg line-clamp-1 truncate text-background-12"
           >
-            Mensajes destacados
+            {t("drawer.starredMessages")}
           </h2>
         </header>
       )}
@@ -47,7 +49,7 @@ export function StarredMessages({ isLeftDrawer = false }: { isLeftDrawer?: boole
           {starredMessages.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-background-11 gap-2">
               <Star className="w-8 h-8 opacity-40" />
-              <p className="text-sm">No hay mensajes destacados</p>
+              <p className="text-sm">{t("info.noStarredMessages")}</p>
             </div>
           ) : (
             starredMessages.map((msg) => (

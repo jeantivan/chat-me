@@ -18,6 +18,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Switch } from "@/components/ui/Switch";
 import useStore from "@/lib/store";
+import { useTranslation } from "@/lib/i18n";
 import { useContacts, useUpdateChatParticipant } from "@/lib/api/chatQueries";
 import { useUserId } from "@/lib/hooks";
 import { usePresenceStore } from "@/lib/store/presenceStore";
@@ -39,6 +40,7 @@ interface GroupInfoDrawerProps {
 }
 
 export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const closeRightDrawer = useStore((state) => state.closeRightDrawer);
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
@@ -63,7 +65,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
   const isMuted = myParticipant?.muted || false;
   const isArchived = myParticipant?.archived || false;
   const updateParticipant = useUpdateChatParticipant();
-  const groupTitle = chatSummary.title || "Grupo";
+  const groupTitle = chatSummary.title || t("common.group");
   const groupBio = chatSummary.bio || "";
   const groupPicture = chatSummary.pictureUrl || "";
 
@@ -137,12 +139,12 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
     <div className="bg-background-5 flex flex-col h-screen">
       <header className="min-h-[56px] py-2 px-4 flex items-center sticky gap-4 bg-background-2">
         <IconButton
-          label="Cerrar info. del grupo"
+          label={t("info.closeGroupInfo")}
           icon={X}
           onClick={closeRightDrawer}
         />
         <span className="text-base text-background-12 font-medium">
-          Info. del grupo
+          {t("info.groupInfoTitle")}
         </span>
       </header>
 
@@ -170,7 +172,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
                     setIsEditingPicture(!isEditingPicture);
                   }}
                   className="absolute bottom-4 right-0 p-2 bg-primary-9 text-white rounded-full hover:bg-primary-10 transition-colors shadow"
-                  title="Cambiar foto del grupo"
+                  title={t("info.changeGroupPhoto")}
                 >
                   <Edit2 className="w-4 h-4" />
                 </button>
@@ -181,7 +183,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
               <div className="flex items-center gap-2 mb-3 px-6 w-full max-w-xs">
                 <input
                   type="text"
-                  placeholder="URL de imagen..."
+                  placeholder={t("info.imageUrlPlaceholder")}
                   value={editedPicture}
                   onChange={(e) => setEditedPicture(e.target.value)}
                   className="flex-1 bg-background-1 text-background-12 text-sm border border-background-7 rounded px-2 py-1"
@@ -238,7 +240,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
                   <input
                     type="text"
                     value={editedBio}
-                    placeholder="Descripción del grupo..."
+                    placeholder={t("info.groupDescriptionPlaceholder")}
                     onChange={(e) => setEditedBio(e.target.value)}
                     className="flex-1 bg-background-1 text-background-12 text-xs border border-background-7 rounded px-2 py-1"
                     autoFocus
@@ -256,7 +258,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
                     data-testid="group-bio-text"
                     className="text-xs text-background-11 italic"
                   >
-                    {groupBio || (isAdmin ? "Añadir descripción..." : "")}
+                    {groupBio || (isAdmin ? t("info.addDescription") : "")}
                   </span>
                   {isAdmin && (
                     <button
@@ -274,8 +276,12 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
               )}
 
               <div className="text-sm text-background-11 mt-1">
-                {participants.length}{" "}
-                {participants.length === 1 ? "participante" : "participantes"}
+                {t(
+                  participants.length === 1
+                    ? "info.participantCount"
+                    : "info.participantsCount",
+                  { count: participants.length }
+                )}
               </div>
             </div>
           </section>
@@ -284,7 +290,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
           <section className="py-4 shadow bg-background-3">
             <div className="flex items-center justify-between px-5 mb-3">
               <div className="text-sm font-medium text-primary-9">
-                {participants.length} Participantes
+                {t("info.participantsCount", { count: participants.length })}
               </div>
               {isAdmin && (
                 <button
@@ -293,7 +299,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
                   className="inline-flex items-center gap-1 text-sm text-primary-9 hover:underline"
                 >
                   <UserPlus className="w-4 h-4" />
-                  Añadir participante
+                  {t("info.addParticipant")}
                 </button>
               )}
             </div>
@@ -306,7 +312,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
                   onChange={(e) => setSelectedNewParticipantId(e.target.value)}
                   className="flex-1 bg-background-1 text-background-12 text-sm border border-background-7 rounded px-2 py-1.5"
                 >
-                  <option value="">Selecciona un contacto...</option>
+                  <option value="">{t("info.selectContact")}</option>
                   {availableContactsToAdd.map((sc) => (
                     <option key={sc.contact.id} value={sc.contact.id}>
                       {sc.nickname || sc.contact.name}
@@ -318,7 +324,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
                   disabled={!selectedNewParticipantId}
                   className="px-3 py-1.5 bg-primary-9 text-white text-xs font-medium rounded hover:bg-primary-10 disabled:opacity-50"
                 >
-                  Añadir
+                  {t("info.add")}
                 </button>
               </div>
             )}
@@ -347,7 +353,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
             <div className="flex items-center justify-between px-6 py-2">
               <div className="flex items-center gap-4 text-background-12">
                 <Bell className="w-6 h-6 text-background-11" />
-                <span className="text-base">Silenciar Notificaciones</span>
+                <span className="text-base">{t("chat.muteNotifications")}</span>
               </div>
               <Switch
                 checked={isMuted}
@@ -369,7 +375,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
             >
               <div className="flex items-center gap-4">
                 <Star className="w-6 h-6 text-background-11" />
-                <span className="text-base">Mensajes destacados</span>
+                <span className="text-base">{t("drawer.starredMessages")}</span>
               </div>
               <ChevronRight className="w-5 h-5 text-background-11" />
             </div>
@@ -388,7 +394,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
             >
               <Archive className="w-6 h-6 text-background-11" />
               <span className="text-base">
-                {isArchived ? "Desarchivar chat" : "Archivar chat"}
+                {isArchived ? t("chat.unarchiveChat") : t("chat.archiveChat")}
               </span>
             </div>
             <div
@@ -397,7 +403,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
               className="flex items-center gap-4 py-4 px-6 text-red-500 hover:bg-background-4 cursor-pointer transition-colors"
             >
               <Eraser className="w-6 h-6" />
-              <span className="text-base font-medium">Vaciar chat</span>
+              <span className="text-base font-medium">{t("chat.clearChat")}</span>
             </div>
             <div
               data-testid="leave-group-button"
@@ -405,7 +411,7 @@ export function GroupInfoDrawer({ chatSummary }: GroupInfoDrawerProps) {
               className="flex items-center gap-4 py-4 px-6 text-red-500 hover:bg-background-4 cursor-pointer transition-colors"
             >
               <LogOut className="w-6 h-6" />
-              <span className="text-base font-medium">Salir del grupo</span>
+              <span className="text-base font-medium">{t("info.leaveGroup")}</span>
             </div>
           </section>
         </div>

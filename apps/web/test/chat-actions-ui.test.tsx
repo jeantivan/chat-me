@@ -427,7 +427,7 @@ describe("Chat Actions & UI Seams (Pin, Mute, Archive, Mark Read/Unread)", () =>
     });
 
     // Archive item
-    const archiveItem = screen.getByText(/archivar chat/i);
+    const archiveItem = screen.getByText(/archivar chat|archive chat/i);
     fireEvent.click(archiveItem);
 
     expect(mockMutate).toHaveBeenCalledWith({
@@ -481,7 +481,7 @@ describe("Chat Actions & UI Seams (Pin, Mute, Archive, Mark Read/Unread)", () =>
     });
 
     // Archive item in group drawer
-    const archiveItem = screen.getByText(/archivar chat/i);
+    const archiveItem = screen.getByText(/archivar chat|archive chat/i);
     fireEvent.click(archiveItem);
 
     expect(mockMutate).toHaveBeenCalledWith({

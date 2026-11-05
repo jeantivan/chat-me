@@ -310,8 +310,8 @@ describe("Shared Media Browser & Timeline Seam", () => {
     );
 
     // Tab buttons exist
-    expect(screen.getByRole("tab", { name: /multimedia/i })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: /documentos/i })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /multimedia|media/i })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /documentos|documents/i })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: /audio/i })).toBeInTheDocument();
 
     // Default tab is Multimedia -> shows beach.jpg and clip.mp4
@@ -323,7 +323,7 @@ describe("Shared Media Browser & Timeline Seam", () => {
     expect(useStore.getState().mediaMessage?.id).toBe("msg-photo-1");
 
     // Switch to Documentos tab
-    const docTab = screen.getByRole("tab", { name: /documentos/i });
+    const docTab = screen.getByRole("tab", { name: /documentos|documents/i });
     fireEvent.pointerDown(docTab);
     fireEvent.click(docTab);
     fireEvent.keyDown(docTab, { key: "Enter" });
@@ -331,7 +331,7 @@ describe("Shared Media Browser & Timeline Seam", () => {
     // Verify document card rendered with filename, size, and download link
     expect(screen.getByText("report-q3.pdf")).toBeInTheDocument();
     expect(screen.getByText(/2(\.0)? MB/i)).toBeInTheDocument();
-    const downloadLink = screen.getByRole("link", { name: /descargar report-q3\.pdf/i });
+    const downloadLink = screen.getByRole("link", { name: /(descargar|download) report-q3\.pdf/i });
     expect(downloadLink).toHaveAttribute("href", "https://minio/docs/report-q3.pdf");
 
     // Switch to Audio tab

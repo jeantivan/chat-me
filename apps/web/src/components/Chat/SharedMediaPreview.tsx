@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { Icon } from "@/components/ui/Icon";
 import useStore from "@/lib/store";
+import { useTranslation } from "@/lib/i18n";
 import { useChatMedia } from "@/lib/api/chatQueries";
 
 export function SharedMediaPreview({
@@ -10,6 +11,7 @@ export function SharedMediaPreview({
   chatId?: string;
   testIdPrefix?: "contact" | "group";
 }) {
+  const { t } = useTranslation();
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
   const { data: allMedia = [] } = useChatMedia(chatId);
   const { data: visualMedia = [] } = useChatMedia(chatId, "visual");
@@ -18,7 +20,7 @@ export function SharedMediaPreview({
     <section className="py-4 shadow bg-background-3">
       <div className="flex px-5 mb-4">
         <div className="flex-1 text-sm text-primary-9">
-          Archivos, enlaces y documentos.
+          {t("info.sharedSectionTitle")}
         </div>
         <button
           data-testid={`${testIdPrefix}-shared-content-button`}
@@ -28,7 +30,7 @@ export function SharedMediaPreview({
           className="inline-flex items-center text-background-11 text-sm hover:text-primary-9 transition-colors"
         >
           {allMedia.length}
-          <Icon icon={ChevronRight} label="Ver más" />
+          <Icon icon={ChevronRight} label={t("info.seeMore")} />
         </button>
       </div>
       <div
@@ -50,7 +52,7 @@ export function SharedMediaPreview({
             ) : (
               <img
                 src={item.hasMedia?.src}
-                alt={item.hasMedia?.filename || "Visual media"}
+                alt={item.hasMedia?.filename || t("info.visualMedia")}
                 className="w-full h-full object-cover"
               />
             )}
@@ -58,7 +60,7 @@ export function SharedMediaPreview({
         ))}
         {visualMedia.length === 0 && (
           <div className="text-sm text-background-11 italic">
-            No hay archivos compartidos
+            {t("info.noSharedFiles")}
           </div>
         )}
       </div>

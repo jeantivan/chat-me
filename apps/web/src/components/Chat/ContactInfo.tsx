@@ -15,6 +15,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { Switch } from "@/components/ui/Switch";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import useStore from "@/lib/store";
+import { useTranslation } from "@/lib/i18n";
 import mc from "@/lib/utils/mergeClassnames";
 import { useChats, useUpdateChatParticipant } from "@/lib/api/chatQueries";
 import {
@@ -76,6 +77,7 @@ const Item = ({
 };
 
 export function ContactInfo({ chatId }: { chatId?: string } = {}) {
+  const { t } = useTranslation();
   const closeRightDrawer = useStore((state) => state.closeRightDrawer);
   const rightDrawerGoTo = useStore((state) => state.rightDrawerGoTo);
   const updateParticipant = useUpdateChatParticipant();
@@ -134,6 +136,10 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
     targetUserId && blockedUsers.some((b) => b.id === targetUserId)
   );
 
+  const blockLabel = isBlocked
+    ? t("info.unblockContact", { name })
+    : t("info.blockContact", { name });
+
   const handleToggleBlock = () => {
     if (!targetUserId || isBlocking || isUnblocking) return;
     if (isBlocked) {
@@ -147,7 +153,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
     <div className="bg-background-5 flex flex-col h-screen">
       <header className="min-h-[56px] py-2 px-4 flex items-center sticky gap-4 bg-background-2">
         <IconButton
-          label="Cerrar info. del contacto"
+          label={t("info.closeContactInfo")}
           icon={X}
           onClick={() => {
             closeRightDrawer();
@@ -157,7 +163,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
           id="contact-info-title "
           className="text-lg line-clamp-1 truncate text-background-12"
         >
-          Info. del Contacto
+          {t("info.contactInfoTitle")}
         </h2>
       </header>
       <ScrollArea type="auto">
@@ -168,7 +174,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
                 <div className="w-40 h-40 rounded-full">
                   <UserImage
                     src={isBlocked ? "" : picture}
-                    alt={`Foto de perfil de ${name}`}
+                    alt={t("chat.profilePictureOf", { name })}
                     className="w-full h-full"
                   />
                 </div>
@@ -181,7 +187,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
           </section>
           <section className="py-4 shadow bg-background-3">
             <div className="px-5">
-              <div className="text-sm text-primary-9">Info.</div>
+              <div className="text-sm text-primary-9">{t("info.about")}</div>
               <div className={`text-lg text-background-12`}>{bio}</div>
             </div>
           </section>
@@ -196,7 +202,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
               icon={Star}
               action={<ChevronRight className="w-6 h-6" />}
             >
-              Mensajes destacados
+              {t("drawer.starredMessages")}
             </Item>
             <Item
               icon={Bell}
@@ -209,7 +215,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
                 />
               }
             >
-              Silenciar Notificaciones
+              {t("chat.muteNotifications")}
             </Item>
           </section>
           <section className="shadow bg-background-3">
@@ -228,22 +234,22 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
             >
               {chatSummary.participants.find((p) => p.userId === currentUserId)
                 ?.archived
-                ? "Desarchivar chat"
-                : "Archivar chat"}
+                ? t("chat.unarchiveChat")
+                : t("chat.archiveChat")}
             </Item>
             <Item
               icon={Eraser}
               danger
               onClick={() => setIsClearOpen(true)}
             >
-              Vaciar chat
+              {t("chat.clearChat")}
             </Item>
             <Item
               icon={Trash2}
               danger
               onClick={() => setIsDeleteOpen(true)}
             >
-              Eliminar chat
+              {t("chat.deleteChat")}
             </Item>
             <Item
               icon={CircleSlash}
@@ -251,7 +257,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
               data-testid="block-unblock-contact-action"
               role="button"
               tabIndex={0}
-              aria-label={isBlocked ? `Desbloquear a ${name}` : `Bloquear a ${name}`}
+              aria-label={blockLabel}
               onClick={handleToggleBlock}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
@@ -260,7 +266,7 @@ export function ContactInfo({ chatId }: { chatId?: string } = {}) {
                 }
               }}
             >
-              {isBlocked ? `Desbloquear a ${name}` : `Bloquear a ${name}`}
+              {blockLabel}
             </Item>
           </section>
         </div>
