@@ -17,10 +17,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id: string) {
-          if (!id.includes("node_modules")) return undefined;
-          if (id.includes("/react/") || id.includes("/react-dom/") || id.includes("/scheduler/")) {
+          if (id.includes("commonjsHelpers")) {
             return "react-vendor";
           }
+          if (!id.includes("node_modules")) return undefined;
           if (id.includes("/@tanstack/")) {
             return "tanstack-vendor";
           }
@@ -45,6 +45,14 @@ export default defineConfig({
             id.includes("/blurhash/")
           ) {
             return "utils-vendor";
+          }
+          if (
+            id.includes("/node_modules/react/") ||
+            id.includes("/node_modules/react-dom/") ||
+            id.includes("/node_modules/scheduler/") ||
+            id.includes("/node_modules/use-sync-external-store/")
+          ) {
+            return "react-vendor";
           }
           return undefined;
         },

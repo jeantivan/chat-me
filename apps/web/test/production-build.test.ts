@@ -23,10 +23,13 @@ describe("Production Build & Docker Configuration Seam", () => {
     expect(typeof output.manualChunks).toBe("function");
 
     // Verify vendor module chunk categorization
+    expect(output.manualChunks("commonjsHelpers.js")).toBe("react-vendor");
     expect(output.manualChunks("/node_modules/react/index.js")).toBe("react-vendor");
     expect(output.manualChunks("/node_modules/@tanstack/react-query/index.js")).toBe("tanstack-vendor");
     expect(output.manualChunks("/node_modules/lexical/index.js")).toBe("lexical-vendor");
+    expect(output.manualChunks("/node_modules/@lexical/react/LexicalComposer.js")).toBe("lexical-vendor");
     expect(output.manualChunks("/node_modules/@radix-ui/react-dialog/index.js")).toBe("ui-vendor");
+    expect(output.manualChunks("/node_modules/@floating-ui/react/index.js")).toBe("ui-vendor");
   });
 
   it("defines multi-stage production Dockerfile for apps/server (Node.js Alpine runtime)", () => {
