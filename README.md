@@ -127,6 +127,25 @@ Open `http://localhost:5173` in a regular browser window and a second **Incognit
 
 ---
 
+## 100% Free Cloud Deployment ($0, Zero Credit Card on Render)
+
+`chat-me` is architected to run as a single unified container with zero external dependencies when needed:
+- **Optional Single-Node Redis**: Uses Socket.IO's default in-memory adapter when `REDIS_URL` is omitted or set to `none`.
+- **Built-in Signed Storage**: Generates HMAC-signed presigned `PUT` upload URLs and serves media attachments directly at `GET /api/v1/media/storage/*` when S3/MinIO is not configured.
+- **Same-Origin Static SPA**: The Fastify backend serves the production `@chat-me/web/dist` SPA bundle and client-side fallback routes directly when `SERVE_STATIC_WEB=true`.
+- **Zero-Downtime Provisioning**: Automatically runs database migrations (`AUTO_MIGRATE=true`) and conditional demo seeding (`AUTO_SEED=true`) on startup.
+
+### Deploying to Render via Blueprint
+
+1. Fork or push this repository to GitHub.
+2. In the [Render Dashboard](https://dashboard.render.com/), click **New +** → **Blueprint**.
+3. Connect your repository. Render automatically reads [`render.yaml`](./render.yaml), provisioning:
+   - A free **PostgreSQL Database** (`chat-me-db`, PostgreSQL 16)
+   - A free **Web Service** running the root [`Dockerfile`](./Dockerfile)
+4. Click **Apply**. Within a few minutes, your full-stack chat instance will be live on Render with automatic HTTPS and demo data ready to explore.
+
+---
+
 ## Monorepo Layout & Quality Gates
 
 ```text
