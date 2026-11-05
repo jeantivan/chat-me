@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { z } from "zod";
-import { eq, and } from "drizzle-orm";
+import { eq, and, ilike } from "drizzle-orm";
 import { contacts, users } from "../db/schema.js";
 import { sanitizeUserProfiles } from "../lib/privacy.js";
 import type { ContactSummary } from "@chat-me/shared";
@@ -62,63 +62,122 @@ export const contactsRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   );
 
   // POST /api/v1/contacts - Add contact with bidirectional link
-  app.post<{ Body: { contactUserId: string; nickname?: string } }>(
+  app.post<{ Body: { contactUserId?: string; email?: string; nickname?: string } }>(
     "/",
     {
       preHandler: [app.authenticate],
     },
     async (request, reply) => {
-      const payloadSchema = z.object({
-        contactUserId: z.string().uuid(),
-        nickname: z.string().max(100).optional(),
-      });
+      const payloadSchema = z
+        .object({
+          contactUserId: z.string().uuid().optional(),
+          email: z.string().email().optional(),
+          nickname: z.string().max(100).optional(),
+        })
+        .refine(
+          (data) =>
+            (Boolean(data.contactUserId) && !data.email) ||
+            (!data.contactUserId && Boolean(data.email)),
+          {
+            message: "Either contactUserId or email must be provided, but not both",
+          }
+        );
 
       const parseResult = payloadSchema.safeParse(request.body);
       if (!parseResult.success) {
         return reply.status(400).send({ error: parseResult.error.flatten() });
       }
 
-      const { contactUserId, nickname } = parseResult.data;
+      const { contactUserId, email, nickname } = parseResult.data;
       const currentUserId = (request.user as { sub: string }).sub;
 
-      if (currentUserId === contactUserId) {
-        return reply.status(400).send({ error: "Cannot add self as contact" });
+      let targetUserRows: Array<typeof users.$inferSelect> = [];
+      if (contactUserId) {
+        targetUserRows = await app.db
+          .select()
+          .from(users)
+          .where(eq(users.id, contactUserId))
+          .limit(1);
+      } else if (email) {
+        targetUserRows = await app.db
+          .select()
+          .from(users)
+          .where(ilike(users.email, email.trim()))
+          .limit(1);
       }
 
-      // Check target user exists
-      const targetUser = await app.db
-        .select()
-        .from(users)
-        .where(eq(users.id, contactUserId))
-        .limit(1);
-
-      if (targetUser.length === 0) {
+      if (targetUserRows.length === 0) {
         return reply.status(404).send({ error: "Target contact user not found" });
       }
 
-      // Bidirectional insert
-      await app.db
-        .insert(contacts)
-        .values({
-          userId: currentUserId,
-          contactUserId,
-          nickname: nickname || null,
-        })
-        .onConflictDoUpdate({
-          target: [contacts.userId, contacts.contactUserId],
-          set: { nickname: nickname || null },
-        });
+      const target = targetUserRows[0];
 
-      await app.db
-        .insert(contacts)
-        .values({
-          userId: contactUserId,
-          contactUserId: currentUserId,
-          nickname: null,
-        })
-        .onConflictDoNothing();
+      if (currentUserId === target.id) {
+        return reply.status(400).send({ error: "Cannot add self as contact" });
+      }
 
-      return reply.status(200).send({ success: true });
+      // Bidirectional transactional insert
+      const contactRow = await app.db.transaction(async (tx) => {
+        await tx
+          .insert(contacts)
+          .values({
+            userId: currentUserId,
+            contactUserId: target.id,
+            nickname: nickname || null,
+          })
+          .onConflictDoUpdate({
+            target: [contacts.userId, contacts.contactUserId],
+            set: { nickname: nickname || null },
+          });
+
+        await tx
+          .insert(contacts)
+          .values({
+            userId: target.id,
+            contactUserId: currentUserId,
+            nickname: null,
+          })
+          .onConflictDoNothing();
+
+        const [row] = await tx
+          .select()
+          .from(contacts)
+          .where(
+            and(
+              eq(contacts.userId, currentUserId),
+              eq(contacts.contactUserId, target.id)
+            )
+          )
+          .limit(1);
+
+        return row;
+      });
+
+      const rawContact = {
+        id: target.id,
+        email: target.email,
+        name: target.name,
+        bio: target.bio,
+        phone: target.phone,
+        pictureUrl: target.pictureUrl,
+        createdAt: target.createdAt.toISOString(),
+      };
+
+      const [sanitizedContact] = await sanitizeUserProfiles(
+        app.db,
+        [rawContact],
+        currentUserId
+      );
+
+      const summary: ContactSummary = {
+        userId: contactRow.userId,
+        contactUserId: contactRow.contactUserId,
+        nickname: contactRow.nickname,
+        createdAt: contactRow.createdAt.toISOString(),
+        contact: sanitizedContact,
+      };
+
+      return reply.status(200).send(summary);
     }
   );
 };

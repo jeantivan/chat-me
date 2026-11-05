@@ -17,40 +17,9 @@ import {
   generateDirectPairHash,
 } from "./schema.js";
 import { hashPassword } from "../services/auth.service.js";
+import { makeLexicalBody } from "../services/onboarding.service.js";
 import { migrateDb } from "./migrate.js";
 import { SEED_USERS, SAMPLE_IMAGES, getRandomPhrase } from "./seed-data.js";
-
-function makeLexicalBody(text: string): string {
-  return JSON.stringify({
-    root: {
-      children: [
-        {
-          children: [
-            {
-              detail: 0,
-              format: 0,
-              mode: "normal",
-              style: "",
-              text,
-              type: "text",
-              version: 1,
-            },
-          ],
-          direction: "ltr",
-          format: "",
-          indent: 0,
-          type: "paragraph",
-          version: 1,
-        },
-      ],
-      direction: "ltr",
-      format: "",
-      indent: 0,
-      type: "root",
-      version: 1,
-    },
-  });
-}
 
 export async function seedDb(pool: pg.Pool) {
   const db = drizzle(pool, { schema });
@@ -310,8 +279,10 @@ export async function seedDb(pool: pg.Pool) {
     { id: ianId, unread: 0, offset: 8 },
   ];
 
+  const aliceDirectChatIds: string[] = [chatAliceBob];
   for (const partner of alicePartners) {
     const cId = await getOrCreateDirectChat(aliceId, partner.id);
+    aliceDirectChatIds.push(cId);
     await seedMessagesForDirectChat(cId, aliceId, partner.id, {
       unreadForUser1: partner.unread,
       chatSeedOffset: partner.offset * 10,
@@ -329,11 +300,33 @@ export async function seedDb(pool: pg.Pool) {
     { id: ianId, offset: 18 },
   ];
 
+  const bobDirectChatIds: string[] = [chatAliceBob];
   for (const partner of bobPartners) {
     const cId = await getOrCreateDirectChat(bobId, partner.id);
+    bobDirectChatIds.push(cId);
     await seedMessagesForDirectChat(cId, bobId, partner.id, {
       chatSeedOffset: partner.offset * 10,
     });
+  }
+
+  // Clean up any extraneous direct chats for Alice and Bob
+  const directChatCleanupTargets = [
+    { userId: aliceId, validChatIds: new Set(aliceDirectChatIds) },
+    { userId: bobId, validChatIds: new Set(bobDirectChatIds) },
+  ];
+
+  for (const { userId, validChatIds } of directChatCleanupTargets) {
+    const existingDirectChats = await db
+      .select({ chatId: chatParticipants.chatId })
+      .from(chatParticipants)
+      .innerJoin(chats, eq(chatParticipants.chatId, chats.id))
+      .where(and(eq(chatParticipants.userId, userId), eq(chats.type, "direct")));
+
+    for (const { chatId } of existingDirectChats) {
+      if (!validChatIds.has(chatId)) {
+        await db.delete(chats).where(eq(chats.id, chatId));
+      }
+    }
   }
 
   console.log("🌱 Seeding 2 group conversations...");

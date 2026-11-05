@@ -7,6 +7,7 @@ import {
   verifyPassword,
   sendAuthResponse,
 } from "../services/auth.service.js";
+import { seedStarterOnboarding } from "../services/onboarding.service.js";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -61,6 +62,8 @@ export const authRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
           userId: createdUser.id,
         })
         .returning();
+
+      await seedStarterOnboarding(tx, createdUser.id);
 
       return { user: createdUser, settings: createdSettings };
     });

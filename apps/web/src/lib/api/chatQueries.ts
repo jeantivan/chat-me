@@ -67,6 +67,43 @@ export function useContacts() {
   });
 }
 
+export function useAddContact() {
+  const queryClient = useQueryClient();
+  return useMutation<
+    ContactSummary,
+    Error,
+    { email?: string; contactUserId?: string; nickname?: string }
+  >({
+    mutationFn: async (payload) => {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+      const res = await fetch(`${apiBase}/api/v1/contacts`, {
+        method: "POST",
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const errMsg =
+          data?.error?.formErrors?.[0] ||
+          data?.error ||
+          data?.message ||
+          "Failed to add contact";
+        throw new Error(typeof errMsg === "string" ? errMsg : "Failed to add contact");
+      }
+
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: chatKeys.contacts });
+    },
+  });
+}
+
 export function useChatMessages(chatId: string) {
   const { isAuthenticated, token } = useSafeAuth();
   return useInfiniteQuery({

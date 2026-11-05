@@ -1,14 +1,14 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import map from "lodash/map";
 import groupBy from "lodash/groupBy";
 import { useQueryClient } from "@tanstack/react-query";
-import { Users } from "lucide-react";
+import { Users, UserPlus, Loader2 } from "lucide-react";
 
 import { ScrollArea } from "./ui/ScrollArea";
 import { ContactItem } from "./ContactItem";
 
 import useStore from "@/lib/store";
-import { useContacts } from "@/lib/api/chatQueries";
+import { useContacts, useAddContact } from "@/lib/api/chatQueries";
 import { getAuthHeaders } from "@/lib/auth/authClient";
 import { chatKeys } from "@/lib/socket/useSocketSync";
 import { router } from "@/routes/router";
@@ -22,6 +22,35 @@ export function NewChat() {
   const closeLeftDrawer = useStore((state) => state.closeLeftDrawer);
   const leftDrawerGoTo = useStore((state) => state.leftDrawerGoTo);
   const { data: serverContacts } = useContacts();
+  const addContactMutation = useAddContact();
+
+  const [email, setEmail] = useState("");
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const handleAddContact = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) return;
+
+    setFeedback(null);
+
+    try {
+      await addContactMutation.mutateAsync({ email: trimmedEmail });
+      setFeedback({
+        type: "success",
+        message: t("drawer.contactAddedSuccess"),
+      });
+      setEmail("");
+    } catch (err: any) {
+      setFeedback({
+        type: "error",
+        message: err.message || t("drawer.contactAddError"),
+      });
+    }
+  };
 
   const allContacts: TUser[] = useMemo(() => {
     if (serverContacts) {
@@ -90,6 +119,51 @@ export function NewChat() {
             </div>
           </div>
         </button>
+
+        <form
+          onSubmit={handleAddContact}
+          className="p-3 bg-background-3 rounded-xl flex flex-col gap-2"
+        >
+          <label className="text-xs font-medium text-background-11 flex items-center gap-1.5">
+            <UserPlus className="w-4 h-4 text-primary-9" />
+            {t("drawer.addContactByEmail")}
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (feedback) setFeedback(null);
+              }}
+              placeholder={t("drawer.emailPlaceholder")}
+              className="flex-1 min-w-0 bg-background-2 border border-background-6 rounded-lg px-3 py-1.5 text-sm text-background-12 placeholder:text-background-8 focus:outline-none focus:border-primary-8"
+              disabled={addContactMutation.isPending}
+            />
+            <button
+              type="submit"
+              disabled={addContactMutation.isPending || !email.trim()}
+              className="px-3 py-1.5 bg-primary-9 hover:bg-primary-10 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center shrink-0 min-w-[60px]"
+            >
+              {addContactMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                t("drawer.addContactButton")
+              )}
+            </button>
+          </div>
+          {feedback && (
+            <div
+              className={`text-xs px-2.5 py-1.5 rounded-md ${
+                feedback.type === "success"
+                  ? "bg-green-500/10 text-green-600 dark:text-green-400"
+                  : "bg-red-500/10 text-red-600 dark:text-red-400"
+              }`}
+            >
+              {feedback.message}
+            </div>
+          )}
+        </form>
 
         {contactGroupByFirstLetter.map(({ letter, contacts }) => {
           return (
